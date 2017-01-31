@@ -1,0 +1,83 @@
+### SKILLBASIERTE ITEMS
+
+	Natürliche Waffen ... hinzufügen wenn ein entsprechender Vorteil gewählt wird
+	
+### ITEMBASIERTE SKILLS
+	
+	Automatisch eine Fertigkeit hinzufügen, wenn ein Spieler einen entsprechenden 
+	Gegenstand hinzufügt. 
+	
+### SOCIAL SCREEN
+	Möglichkeit Bilder hinzuzufügen
+	
+### CHARAKTERBILDER
+    Die Möglichkeit mehrere Bilder hinzuzufügen
+	
+### FINANZEN - 
+	Konten und mehr ...
+	
+### HILFE
+    Tooltips implementieren
+	
+	
+	
+
+add skills to items - so if a player adds an item during character generation ...
+
+add
+
+###LIMITS # ###
+Überprüfe ob Fertigkeiten, Vorteile und Nachteile zueinander psssen. 
+in den XML Dateien wird ein <limit> tag verwendet
+die attribute: 
+	class =	
+		"skill" < betrifft eine fertigkeit
+		"data" < betrifft einen Datensatz Größe oder Gewicht
+		"attribute" < prüft ein bestimmtes attribut
+		"special" < besondere Eigenschaften z.B. "Effektive Bewegung"
+	
+	name = 
+		"Bezeichung" < Name des Attributs etc. 
+	
+	value = 
+		"1" integer wert der aufgrund type verglichen wird
+		
+	type =
+		"max" <== okay wenn der wert von 'name' <= 'value' ist 
+		"min" <== okay wenn der wert von 'name' >= 'value' ist
+		"maxrank" <== okay wenn der wert von 'name' <= dem wert von der in 'value' genannten <variable id=> ist
+		"minrank" <== okay wenn der wert von 'name' >= dem wert von der in 'value' genannten <variable id=> ist		
+
+	limit class = skill name = name -> get all child skills!
+	limit type = maxrank/minrank - compare value = id!
+
+	
+##MODIFIKATOREN # ##
+Fügt Modifikatorwerte zu verschiedenen Charaktereigenschaften hinzu
+<modify>
+	die attribute
+	class = 
+		"skill" verändert eine Fertigkeitprobe
+		"data" verändert einen Datenwert
+		"attribute" verändert ein Attribut
+		"special" verändert einen besonderen Wert
+	
+	name = 
+		"Bezeichnung"
+		
+	value = "Wert"
+	
+	type = 
+		"rank" <= multiply the rank with 'value' and set as modifier"
+		"add" <= add the given value to the modifier
+		
+
+
+###PROBENMODIFIKATOR # ###
+
+Gebe eine Probe an mit Fertigkeit und Attribut und es wird angezeigt, welche möglichen Modifikatoren hier greifen ...
+		
+
+		
+		
+

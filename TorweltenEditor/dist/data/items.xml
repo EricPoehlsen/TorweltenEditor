@@ -1,0 +1,746 @@
+<?xml version = "1.0" encoding = "utf-8" ?>
+<items>
+<meta target = "Torwelten Editor" version = "0.0"/>
+<group name = "Kleidung und Taschen">
+	<group name = "Alltagskleidung">
+		<item name = "Einwegunterwäsche" price = "2" weight = "50" type = "Kleidung">
+			<description>Sehr bequem, grundsätzlich auch waschbar. In vielen Farben verfügbar</description>
+			<option name = "Farbe"/>
+		</item>
+		
+		<item name = "Einfaches T-Shirt" price = "10" weight = "100" type = "Kleidung">
+			<description>Ein einfaches T-Shirt aus schmiegsamer Kunstfaser.</description>
+			<option name = "Farbe"/>
+		</item>
+		
+		<item name = "Hemd" price = "20" weight = "150" type = "Kleidung">
+			<option name = "Farbe"/>
+			<option name = "Verschluss" values = "Knopfleiste,Reißverschluss"/>
+			<option name = "Ärmel" values = "langarm,kurzarm"/>
+			<container name = "Hemdtasche" limit = "100"/>
+			<description>Ein zeitloser Klassiker. Das Hemd in einfacher Ausführung. Verfügbar mit klassischer Knopfleiste oder aber auch mit verdecktem Reißverschluss.</description>
+		</item>
+		
+		<item name = "Bluse" price = "20" weight = "150" type = "Kleidung">
+			<option name = "Farbe"/>
+			<option name = "Verschluss" values = "Knopfleiste,Reißverschluss"/>
+			<option name = "Ärmel" values = "langarm,kurzarm"/>
+			<description>Das Hemd im Schnitt für die Dame. Verfügbar mit klassischer Knopfleiste oder aber auch mit verdecktem Reißverschluss.</description>
+		</item>
+		
+		<item name = "Pullover" price = "20" weight = "500" type = "Kleidung">
+			<option name = "Farbe"/>
+			<description>Ein Oberteil zum überziehen, häufig aus einem wärmenden Stoff gefertigt</description>
+		</item>
+		
+		<item name = "Sakko" price = "150" weight = "1200" type = "Kleidung">
+			<option name = "Farbe"/>
+			<description>Eine leichte Anzugjacke für formelle Anlässe, meistens aus einem etwas hochwertigeren Stoff geschneidert</description>
+		</item>
+		
+		<item name = "Jackett" price = "150" weight = "1200" type = "Kleidung">
+			<option name = "Farbe"/>
+			<description>Eine leichte Anzugjacke für formelle Anlässe, üblicherweise aus einem eher hochwertigeren Stoff gefertigt</description>
+		</item>
+		
+		<item name = "Regenjacke" price = "50" weight = "700" type = "Kleidung">
+			<option name = "Farbe"/>
+			<container name = "Jackentaschen" limit = "1000"/>
+			<description>Eine leichte wind- und regendichte Jacke für den planetaren Einsatz</description>
+		</item>
+		
+		<item name = "Winterjacke" price = "150" weight = "1200" type = "Kleidung">
+			<option name = "Farbe"/>
+			<container name = "Jackentaschen" limit = "1000"/>
+			<description>Eine schwerere Jacke mit Thermoisolierung für den Einsatz im Winter. Komfortbereich +10°C bis -40°C.</description>
+		</item>	
+		
+		<item name = "Stretchhose" price = "40" weight = "400" type = "Kleidung">
+			<option name = "Farbe"/>
+			<container name = "Hosentaschen" limit = "250"/>
+			<description>Hosen aus einem Synthetikgewebe, angenehm zu tragen und gleichzeitig robust.</description>
+		</item>
+		
+		<item name = "Jeanshose" price = "60" weight = "500" type = "Kleidung">
+			<option name = "Farbe"/>
+			<containter name = "Hosentaschen" limit = "500"/>
+			<description>Seit über tausend Jahren bewährt ist Jeansstoff noch immer weit verbreitet und besonders im Haus Abrahams Teil der klassischen Mode.</description>
+		</item>
+		
+		<item name = "Cargohose" price = "50" weight = "250" type = "Kleidung">
+			<option name = "Farbe"/>
+			<container name = "Hosentaschen" limit = "1000"/>
+			<description>Bei dieser Freizeit- und Arbeitshose handelt es sich um die 'zivile' Variante der klassischen Uniformhose mit seitlich aufgesetzten Taschen.</description>
+		</item>
+		
+		<item name = "Rock" price = "30" weight = "300" type = "Kleidung">
+			<option name = "Farbe"/>
+			<description>In vielen Kulturen wird der Rock eher von weiblichen Vertretern der Spezies getragen.</description>
+		</item>
+		
+		<item name = "Gürtel" price = "10" weight = "100" type = "Harnisch">
+			<option name = "Farbe"/>
+			<option name = "Material"/>
+			<description>Ein Gürtel stellt nicht nur sicher, dass die Hose oben bleibt, man kann ihn auch verwenden, um eine Vielzahl praktischer Utensilien daran zu befestigen.</description>
+		</item>
+		
+		<item name = "Hut" price = "20" weight = "150" type = "Kleidung">
+			<option name = "Farbe"/>
+			<option name = "Material"/>
+			<description>Ein Hut kann vor Sonne und Regen schützen und außerdem ist er stylish ...</description>
+		</item>
+	</group>
+
+	<group name = "Arbeitskleidung">
+		<item name = "Arbeitsoverall" price = "75" weight = "1000" type = "Kleidung">
+			<option name = "Farbe"/>
+			<container name = "Taschen" limit = "2500"/>
+			<description>Der Einteiler mit dem Reißverschluss und einer Vielzahl von aufgesetzten Taschen ist nicht nur an Bord vieler ziviler Raumschiffe anzutreffen sondern in reglementierten Ausführungen auch als Uniformvariante vieler Marineeinheiten verbreitet. Üblicherweise werden Arbeitsoveralls aus einem flammhemmenden, pflegeleichen Synthetikgewebe gefertigt und sind quasi.</description>
+		</item>
+
+		<item name = "Uniformhose" price = "50" weight = "500" type = "Kleidung">
+			<option name = "Armee/Teilstreitmacht"/>
+			<containter name = "Hosentaschen" limit = "1000"/>
+			<description>Eine robuste, nahezu unverwüstliche Hose in Schnitt, Farbe und Ausführung gemäß der Regelungen des ausgebenden Militärs oder der Söldnergruppierung. Aufgesetzte seitliche Taschen bieten Platz für verschiedene Kleinigkeiten.</description>
+		</item>
+		
+		<item name = "Uniformhemd" price = "75" weight = "300" type = "Kleidung">
+			<option name = "Armee/Teilstreitmacht"/>
+			<container name = "Hemdtasche" limit = "100"/>
+			<description>Das Uniformhemd unterscheidet sich vom zivilen Hemd durch die aufgesetzten Schulterschlaufen zum Aufstecken von Rangabzeichen.</description>
+		</item>
+		
+		<item name = "Uniformjacke" price = "75" weight = "700" type = "Kleidung">
+			<option name = "Armee/Teilstreitmacht"/>
+			<container name = "Jackentaschen" limit = "1400"/>
+			<description>Die Uniformjacke ist eine robuste Allzweckjacke in Schnitt und Farbe gemäß der Regelungen der ausgebenden Fraktion.</description>
+		</item>
+		
+		<item name = "Taktische Uniform" price = "150" weight = "1500" type = "Kleidung">
+			<option name = "Armee/Teilstreitmacht"/>
+			<container name = "Uniformtaschen" limit = "2500"/>
+			<description>Bei diesem Kleidungsstück handelt es sich um eine komplette Kampfuniform einer regulären Armee oder größeren Söldnergruppierung. Sie besteht aus einem robusten Synthetikmaterial und besitzt eine Reihe großer Taschen. Die Uniform besteht aus Hose, Hemd und Jacke. In vielen Jurisdiktionen ist das Tragen regulärer Uniformen nur Mitgliedern der entsprechenden Truppen vorbehalten.</description>
+		</item>
+		
+	</group>
+
+	<group name = "Panzerung">
+		<item name = "Kugelsichere Weste" price = "500" weight = "4000" type = "Rüstung">
+			<damage value = "0/+1"/>
+		</item>
+	</group>
+	<group name = "Taschen">
+		<item name = "Kleiner Rucksack" price = "50" weight = "250" type = "Tasche">
+			<container name = "Kleiner Rucksack" limit = "10000"/>
+			<description>Der Standardrucksack für den Abenteurer mit genügend Platz um Ausrüstung für zwei bis drei Tage</description>
+		</item>
+		<item name = "Großer Rucksack" price = "150" weight = "750" type = "Tasche">
+			<container name = "Großer Rucksack" limit = "25000"/>
+			<description>>Ein größerer Rucksack</description>
+		</item>
+		<item name = "Reisetasche" price = "75" weight = "500" type = "Tasche">
+			<container name = "Reisetasche" limit = "30000"/>
+			<description>Die Reisetasche bietet Platz um eine Menge Ausrüstung mitzunehmen, ist aber mit </description>
+		</item>
+	</group>
+</group>
+
+<group name = "Diverse Ausrüstung">
+	<group name = "Werkzeug">
+		<item name = "Multitool" weight = "200" price = "25" type = "Werkzeug" avail = "-4">
+			<damage value = "1/0"/>
+			<description>Hierbei handelt es sich um ein größeres Taschenmesser, üblicherweise mit integrierter Kombizange und zählt im Sinne der Regeln als Werkzeug. Natürlich lässt es sich nicht nur als Werkzeug verwenden, dennoch wird ein Multitool in der Tasche der Bordmontur üblicherweise keine hochgezogenen Augenbrauen bei den Sicherheitskräften verursachen.&#10;Gewicht und Format eines Multitools reichen durchaus, um es als Hiebwaffe für einen Betäubungsschlag zu verwenden.</description>
+		</item>
+		
+		<item name = "Werkzeugset, universal" price = "50" weight = "500" avail = "-4" type = "Werkzeug">
+			<description>Ein Werkzeugset ist schon deutlich umfangreicher als ein Multitool, dabei aber so handlich, dass es in die aufgesetzte Hosentasche einer Cargohose oder eines Overalls passt. In der Tasche finded sich eine kleine Universalsäge, ein kleiner Hammer und eine Kombizange. Dazu kommt ein Schraubendreher mit etwa zwei Dutzend Bits und ein Satz Schraubenschlüssel oder eine Ratsche mit einem zweiten Satz Bits.</description>
+		</item>
+		
+		<item name = "Werkzeugset, Elektrotechnnik" price = "50" weight = "500" avail = "-4" type = "Werkzeug">
+			<description>Zu dem (isolierten) Schraubendreher mit zwei Dutzend Bits, kommt ein Satz kleiner Schraubendreher. Zusätzlich zur (isolierten) Kombizange finden sich einige weitere Zangen, eine Pinzette und etwas Verbrauchsmaterial - Lüsterklemmen, Schmelzsicherungen, etwas Draht. In etwas hochwertigeren Ausstattungsvarianten, enthält dieses Set vielleicht einen Akkuschrauber, einen Spannungsprüfer und einen Lötkolben.</description>
+		</item>
+		
+		<item name = "Werkzeugset, Umwelttechnik" price = "50" weight = "500" avail = "-4" type = "Werkzeug">
+			<description>Kombizange, Rohrzange und verschiedene Schraubenschlüssel, Standardschraubendreher mit fünf oder sechs Standardbits, Hammer und Metallsäge. Auch hier finden wir etwas Verbrauchsmaterial, wie Schlauchschellen, Dichtmanschetten, Silikontube, etc.&#10;In höherwertigen Varianten, finden sich vielleicht Akkuschrauber und ein einfacher Atmosphärensensor.</description>
+		</item>
+		
+		<item name = "Werkzeugset, speziell" price = "50" weight = "500" avail = "-4" type = "Werkzeug">
+			<option name = "Beruf"/>
+			<description>So ein kleines Werkzeugset enthält vielleicht ein Dutzend verschiedener Werkzeuge, für einen Friseur wären das Scheren, Kämme und ein Rasierer, für einen Koch verschiedene Messer und Löffel und ein paar Gewürze.</description>
+		</item>
+		
+		<item name = "Werkzeugkoffer, universell" price = "500" weight = "2500" avail = "-1" type = "Werkzeug">
+			<container name = "Werkzeugkoffer" limit = "7500"/>
+			<description>Neben der Basisausstattung aus dem Werkzeugset, finden sich weitere Zangen, vielleicht ein zweiter Hammer, mehrere Schraubendreher und eine Vielzahl an verschiedenen Bits. Neben einem kleinen Akkuschrauber findet man fast immer einen Spannungsprüfer. Auch enthält der Koffer verschiedenes Verbrauchsmaterial: Schrauben und Nägel, Schlauchschellen und Dichtringe, Sicherungen und Draht, Haken und Ösen, etc. &#10;Ungeachter der Bezeichnung, kann es sich natürlich auch um eine Kiste oder eine Tasche handeln. Hierbei handelt es sich bereits um eine ordentliche Ausstattung.</description>
+		</item>
+		
+		<item name = "Werkzeugkoffer, Elektrotechnnik" price = "500" weight = "2500" avail = "-1" type = "Werkzeug">
+			<container name = "Werkzeugkoffer" limit = "7500"/>
+			<description>Während ein Teil des groben Werkzeugs rausfällt, ist auf jeden Fall ein Lötkolben enthalten, im Fach für Verbrauchsmaterial stecken zwei bis drei Standardsteuerplatinen, wie sie in den meisten Anlagen verbaut werden. Neben diversen Sicherungen, enthält das Werkzeugset auch Draht und Kabel in verschiedenen Stärken.</description>
+		</item>
+		
+		<item name = "Werkzeugkoffer, Umwelttechnik" price = "500" weight = "2500" avail = "-1" type = "Werkzeug">
+			<container name = "Werkzeugkoffer" limit = "7500"/>
+			<description>Im Gegensatz zum Elektrikerwerkzeug, haben wir hier eher die groben Kaliber, große Schraubenschlüssel und eine etwas dickere Rohrzange. Neben Dichtungen und Dichtringen, Silikon und Fett, findet sich im Verbrauchsmaterialfach eine oder zwei Smartschaumdosen.</description>
+		</item>
+		
+		<item name = "Werkzeugkoffer, speziell" price = "500" weight = "2500" avail = "-1" type = "Werkzeug">
+			<option name = "Beruf"/>
+			<container name = "Werkzeugkoffer" limit = "7500"/>
+			<description>Dieses Werkzeugset enthält zwanzig bis fünfzig verschiedene Werkzeuge und Zubehör, außerdem Verbrauchsmaterial im Wert von ca. 200-250 Rand.</description>
+		</item>
+		
+		<item name = "Werkzeugkasten, universell" price = "2500" weight = "9500" type = "Werkzeug" avail = "+2">
+			<container name = "Werkzeugkasten" limit = "10500"/>
+			<description>Neben dem klassischen Werkzeug wie Hammer, verschiedenen Zangen, Sägen, Schraubenschlüsseln und mehreren Schraubendrehern, findet man unterschiedliche elektrische Werkzeuge und technische Spielereien: Ein kräftiger Bohrschrauber mit vielen Aufsätzen, Spannungsmesser, Lötkolben, ein kleines Schleifgerät, Laserschneiderm und vielleicht eine elektrische Säge.&#10;Als Verbrauchsmaterial finden sich einige Standardplatinen, Draht, Kabel und Lüsterklemmen, Klebeband, Klebstoffe, Schmiermittel und Smartschaum. Schrauben, Nägel, Muttern, Nieten, Schlauchschellen und Dichtungsringe.&#10;Es muss natürlich nicht zwingend ein Kasten oder eine Kiste sein. Das große Werkzeugset gibt es selbstverständlich auch als Koffer oder Rucksack. Aufgrund des Gewichts ist es nur bedingt für den mobilen Einsatz geeignet, üblicherweise befindet sich der Werkzeugkasten in einem Fahrzeug oder an einem Arbeitsplatz.</description>
+		</item>
+
+		<item name = "Werkzeugkasten, spezialisiert" price = "2500" weight = "9500" type = "Werkzeug" avail = "+2">
+			<container name = "Werkzeugkasten" limit = "10500"/>
+			<option name = "Beruf"/>
+			<description>Der spezialisierte Werkzeugkasten enthält üblicherweise einige Dutzend Werkzeuge, inklusive einiger elektischer Geräte für den gewünschten Anwendungsbereich. Es ist auch umfangreiches Verbrauchsmaterial enthalten</description>
+		</item>
+		
+		<item name = "Medi-Kit" price = "25" weight = "200" type = "Werkzeug" avail = "-4">
+			<description>Ein Verbandspäckchen, eine Rettungsdecke, ein Paar Einweghandschuhe und vielleicht noch eine kleine Tube Wundkleber. Damit lässt sich zumindest verhindern, dass noch mehr Blut aus der Wunde sickert. Und es ist definitiv besser, als irgendein zerissenes, verschmutztes T-Shirt auf die Wunde zu pressen.&#10;Minikits gibt es in praktischen Gürteltaschen oder versiegelten Päckchen für den Rucksack oder die Hosentasche.&#10;Man kann sich damit an einer Erste-Hilfe-Probe versuchen ohne einen Modifikator für 'fehlendes Werkzeug' zu erleiden.</description>
+		</item>
+		
+		<item name = "Erste-Hilfe-Set" price = "50" weight = "500" type = "Werkzeug" avail = "-2">
+			<description>Die kleine Box oder Tasche enthält mehrere Verbandspäckchen, eine Schere, eine Pinzette, zwei Rettungsdecken, Tape, eine Tube Wundkleber, ein Päckchen mit Einweghandschuhen, mehrere Wundkompressen und Desinfektionstücher.&#10;Hochwertigere Erste-Hilfe-Päckchen enthalten vielleicht noch einfache Medikamente, wie leichte Schmerzmittel.&#10;Bei einer erfolgreichen Anwendung von Erste-Hilfe mit einem Erste-Hilfe-Päckchen verändert sich der Regenerationswurf auf die EWT um +1/±0.</description>
+		</item>
+
+		<item name = "Sani-Tasche" price = "500" weight = "2500" type = "Werkzeug" avail = "-1">
+			<container name = "Sani-Tasche" limit = "7500"/>
+			<description>Meistens ein kleiner Rucksack oder eine entsprechende Standardtransportbox - neben einer guten Ausstattung an Verbandsmitteln, finden sich verschiedene Medikamente, Intubations- und Infusionsbesteck, vorbereitetes Nähzeug und Skalpelle. Ein bis zwei Beutel mit Infusionslösung sind ebenfalls enthalten.&#10;Bei einer erfolgreichen Anwendung von Erste-Hilfe mit einem Erste-Hilfe-Päckchen verändert sich der Regenerationswurf auf die EWT um +1/-2.</description>
+		</item>
+		
+		<item name = "Notarztkoffer" price = "2500" weight = "9500" type = "Werkzeug" avail = "+2">
+			<container name = "Notarztkoffer" limit = "10500"/>
+			<description>Der Koffer (oder die Tasche) für den ausgebildeten Mdiziner enthält neben Verbandsmitteln und Operationsbesteck auch potente Medikamente und einen Diagnosecomputer. Häufig wird ein solcher Koffer in einem Fahrzeug mitgeführt oder in einer kleinen Krankenstation verstaut.&#10;Wird ein Notarztkoffer mit der Fertigkeit 'Erste-Hilfe' verwendet, modifiziert er den Regenerationswurf analog zur Sani-Tasche. Mit 'Medizin' oder 'Notfallmedizin' steigt der Wurf gegen die EWT um +2/-2.</description>
+		</item>
+	</group>
+	<group name = "Kisten und Truhen">
+		<item name = "Kleine Transportkiste" price = "25" weight = "500" type = "Container">
+			<container name = "Transportkiste" limit = "20000" size = "2 big"/>
+			<description>Gefertigt aus einem nahezu unverwüstlichen Nano-Metallpolymer sind diese Kisten nicht nur sagenhaft leicht (solange sie leer sind), sondern auch wasserdicht, atmosphärenversiegelt und feuerfest.</description>
+		</item>
+		
+		
+		
+		<item name = "Box" price = "20" weight = "1000" type = "Container">
+		<container name = "Box" limit = "100000"/>
+		</item>
+	
+	</group>
+	
+</group>
+
+<group name = "Nahkampfwaffen">
+	<group name = "Hiebwaffen">
+		<item name = "Stuhlbein" price = "0" weight = "800" type = "Hiebwaffen" avail = "-6">
+			<damage value = "1/0"/>
+			<description>Diese Waffe steht stellvertretend für improvisierte einhändige Hiebwaffen. Vom namensgebenden Stuhlbein bis hin zum Bierkrug</description>
+		</item>
+		
+		<item name = "Teleskopschlagstock" price = "50" weight = "750" type = "Hiebwaffen" avail = "-4">
+			<damage value = "1/0"/>
+			<description>Dieser handliche Schlagstock gehört zur Standardausstattung der meisten Sicherheitskräfte. Auf Wunsch gibt es diese Waffe auch mit eingebauter Taschenlampe</description>
+		</item>
+		
+		<item name = "Sicherheitstaschenlampe" price = "35" weight = "750" type = "Hiebwaffen" avail = "-4">
+			<option name = "Sonderausstattung" values = "ohne,Elektroschocker" tag = "damage"/>
+			<damage value = "1/0" name = "ohne"/>
+			<damage value = "4/-2/E" name = "Elektroschocker"/>
+			<description>Eine schwere Taschenlampe aus Metallpolymer mit gummiertem Griff und praktischem Gürtelholster. Nicht nur bei Sicherheitskräften beliebt, sondern auch bei vielen Technikern im Werkzeugkasten zu finden. Auf Wunsch gibt es die Taschenlampe noch mit einem praktischen Elektroschocker im Griff. </description>
+		</item>
+		
+		<item name = "Betäubungsstab" price = "100" weight = "500" type = "Hiebwaffen" avail = "-4">
+			<damage value = "4/-2/E"/>
+			<description>Ein Schlagstock mit eingebautem Elektroschocker, der beim Auftreffen einen empfindlichen Elektroschock versetzt</description>
+		</item>
+		
+		<item name = "Baseballschläger" price = "25" weight = "1250" type = "Hiebwaffen" avail = "-5">
+			<damage value = "2/0"/>
+			<description>Der Baseballschläger steht repräsentativ für zweihändig zu führende improvisierte Waffen. Auch Golfschläger, Crickethämmer oder schwere Schraubenschlüssel fallen in diese Kategorie</description>
+		</item>
+		
+		<item name = "Vorschlaghammer" price = "50" weight = "5000" type = "Hiebwaffen" avail = "-5">
+			<damage value = "3/0"/>
+			<description>Der Vorschlaghammer ist in den richtigen Händen eine beeindruckende und tödliche Waffe. Nicht besonders schnell allerdings.</description>
+		</item>
+		
+		<item name = "Axt" price = "80" weight = "1200" type = "Hiebwaffen" avail = "-4">
+			<damage value = "2/0"/>
+			<description>Eine Werkzeugaxt ist, wie auch der Vorschlaghammer, eigentlich keine sinnvolle Waffe für den Kampfeinsatz. Wenn aber gerade nichts besseres zur Hand ist ...</description>
+		</item>
+
+		<item name = "Streitaxt" price = "300" weight = "2000" type = "Hiebwaffen" avail = "-2">
+			<damage value = "2/-1"/>
+			<description>Diese Axt ist nicht dafür gedacht Bäume zu fällen, sondern Menschen und andere Wesen zu töten und zu verletzen. Gegenüber einer Werkzeugaxt ist die Streitaxt deutlich weniger kopflastig und lässt sich schneller schwingen.</description>
+		</item>
+		
+		<item name = "Kriegshammer" price = "250" weight = "2000" type = "Hiebwaffen" avail = "-2">
+			<damage value = "2/0"/>
+			<description>Im Gegensatz zur Streitaxt, endet diese Waffe mit einem relativ stumpfen Ende. Man möchte trotzdem nicht auf der falschen Seite dieser Waffe stehen.</description>
+		</item>
+		
+		<item name = "Streitkolben" price = "200" weight = "2000" type = "Hiebwaffen" avail = "-2">
+			<damage value = "2/0"/>
+			<description>Hierbei handelt es sich um die professionelle Variante des Knüppels. Metallbeschläge und scharfe Kanten machen aus einem ohnehin schon gefährlichen Gegenstand eine tödliche Waffe.</description>
+		</item>
+		
+		<item name = "Morgenstern" price = "350" weight = "3000" type = "Hiebwaffen" avail = "-2">
+			<damage value = "2/-2"/>
+			<description>In seiner Grundform handelt es sich bei dieser Waffe um einen stachelbewehrten Streitkolben, in einer abgewandelten Variante befinden sich eine oder mehrere stachelbewehrte Kugeln, mit Ketten befestigt, am Ende des Stabs.</description>
+		</item>
+	</group>
+		
+	<group name = "Stabwaffen">
+		<item name = "Kampfstab" weight = "500" price = "100" type = "Stabwaffen">
+			<option name = "Variante" values = "natura,Metallbeschläge" tag = "damage"/>
+			<damage value = "1/0" name = "natura"/>
+			<damage value = "2/0" name = "Metallbeschläge"/>
+			<description>Der klassische Kampfstab, wird üblicherweise in einer Länge knapp unter der Körpergröße des Trägers verwendet. Auf Wunsch mit robusten Metallbeschlägen.</description> 
+		</item>
+		
+		<item name = "Teleskopstab" weight = "1000" price = "350" type = "Stabwaffen">
+			<damage value = "2/0"/>
+			<description>Der Teleskopkampfstab kann als Kurzstock mit einer Länge von ca. 60 cm verwendet werden oder durch einen Knopfdruck auf knapp 180 cm verlängert werden.</description>
+		</item>
+		
+		<item name = "Speer" weight = "1200" price = "400" type = "Stabwaffen">
+			<damage value = "2/0"/>
+			<description>Der angespitzte Stab war eine der ersten Waffen des Menschen und über die Jahrtausende weiterentwickelt handelt es sich um eine nicht zu unterschätzende Waffe, die sowohl im Nahkampf eingesetzt, als auch geworfen werden kann. Ihre geringe Verbreitung ergibt sich aus ihrer Unhandlichkeit</description>
+		</item>
+		
+		<item name = "Helebarde" weight = "1600" price = "750" type = "Stabwaffen">
+			<damage value = "2/-1"/>
+			<description>Historisch eine Infantriewaffe für das Schlachtfeld, eine elegante Symbiose aus Axt, Speer und Stab. Für den Einsatz in den beengten Korridoren eines Raumschiffs oder einer Orbitalstation natürlich denkbar ungeeignet und auf dem Schlachtfeld in Zeiten automatischer Blastergewehre auch nicht mehr die Waffe erster Wahl. Weit verbreitet ist die Helebarde allerdings als zeremonielle Waffe bei höfischen Garden in verschiedenen Kulturkreisen der Novaropäischen Allianz.</description>
+		</item>
+		
+	</group>
+
+	<group name = "Klingenwaffen">
+		<item name = "Skalpell" weight = "20" price = "2" type = "Klingenwaffen" avail = "-4">
+			<damage value = "1/0"/>
+			<description>Üblicherweise sehr leichte Messer, mit einer sehr kurzen, dafür aber höllisch scharfen Klinge. Billige Einwegskalpelle findet man in jedem gut sortierten Erste-Hilfe-Kasten. Es gibt natürlich auch hochwertigere Ausführungen für Ärzte oder auch Bastler. Skalpelle gibt es mit verschiedenen Klingenformen. Ungezielte Schnitte mit einem Skalpell verursachen schmerzhafte, klaffende, stark blutende Fleischwunden. Gezielte Schnitte oder Stiche können aber durchaus tödlich sein.</description>
+		</item>
+		
+		<item name = "Cutter" weight = "50" price = "10" type = "Klingenwaffen" avail = "-4">
+			<damage value = "1/0"/>
+			<description>Die Klinge eines derartigen Werkzeugs ist ähnlich scharf, wie die eines Skalpells. Üblicherweise kann die Klinge eines Cutters in den Griff zurückgezogen werden, so dass sich das Werkzeug sicher in der Tasche transportieren lässt. In den meisten Jurisdiktionen, wird ein Cutter als Werkzeug angesehen und kann ohne größere Probleme mitgeführt werden, so lange man sich nicht in besonders sicherheitskritischen Bereichen bewegt.</description>
+		</item>
+		
+		<item name = "Taschenmesser" weight = "100" price = "20" type = "Klingenwaffen" avail = "-4">
+			<damage value = "1/0"/>
+			<description>Ein handliches Klappmesser, oftmals mit einiten zusätzlichen Werkzeugen, wie Säge, Dosenöffner und Korkenzieher. Natürlich kann man auch hier zwischen günstiger Massenware und hochwertigen Qualitätsprodukten wählen. Aber sind wir mal ehrlich. Im Kampf ist es eher nebensächlich, ob man dem Gegner eine Pressblechklinge, die im geklappten Zustand zwischen zwei roten Plastikschalen ruht, in den Bauch stößt, oder eine handgeschmiedete Damaststahlklinge mit echtem Perlmuttbesatz am Griff.</description>
+		</item>
+		
+		<item name = "Küchenmesser" weight = "100" price = "25" type = "Klingenwaffen" avail = "-5">
+			<damage value = "1/0"/>
+			<description>Das hier ist der generische Überbegriff für eine Vielzahl unterschiedlicher Messertypen, die man in der Küche für die verschiedensten Aufgaben findet. Als Waffe wird dabei häufig das lange Allzweckmesser mit der glatten Klinge missbraucht.&#10;Die breite Klinge mit ihrer Länge von 20-30 cm schindet in einer direkten Konfrontation durchaus Eindruck. Im Kampf kann man damit nicht nur bedrohliche Schnittwunden, sondern auch äußerst unschöne Stichverletzungen beibringen.</description>
+		</item>
+
+		<item name = "Taktisches Messer" weight = "150" price = "50" type = "Klingenwaffen" avail = "-3">
+			<damage value = "1/-1"/>
+			<description>Hierbei handelt es sich um ein Taschenmesser mit längerer Klinge, welches für die Einhandverwendung ausgelegt ist. Die Klinge kann entweder mittels eines Feder- oder eines Klappmechanismus im Griff versenkt werden.&#10;Bei diesen Messern handelt es sich, per Definition, um Waffen. In bestimmten Jurisdiktionen oder in Sicherheitsbereichen kann das Mitführen von taktischen Messern eine Ordnungswidrigkeit oder auch ein Vergehen sein.</description>
+		</item>
+		
+		<item name = "Vibromesser" weight = "250" price = "250" type = "Klingenwaffen" avail = "0">
+			<damage value = "2/-1"/>
+			<description>Die Deluxé-Ausführung des Taktischen Messers verfügt über einen Impuls-Vibrator, der Mikroschwingungen durch die rasiermesserscharfe Klinge sendet. Selbst schwere Lederrüstungen und Schutzwesten, kann diese Waffe durchdringen. Sie schneidet nicht nur Haut und Muskeln sondern auch durch Knochen.</description>
+		</item>
+		
+		<item name = "Kurzdolch" weight = "250" price = "50" type = "Klingenwaffen" avail = "0">
+			<damage value = "1/-1"/>
+			<description>In diese Sammelkategorie fallen alle Dolche mit einer zweischneidigen Klinge von weniger als 20 cm. Natürlich finden sich viele unterschiedliche Varianten dieser Waffe, von der schmucklosen und zugleich effizienten Söldnerwaffe bis zum elegant gearbeiteten, vergoldeten Statussymbol.</description>
+		</item>
+		
+		<item name = "Stilett" weight = "400" price = "100" type = "Klingenwaffen" avail = "0">
+			<damage value = "1/-2"/>
+			<description>Diese Waffe zeichnet sich durch seine eher schmale, dafür aber besonders steife Klinge aus. Die Schneide ist eher stumpf, dafür aber nadelspitz. Das Stilett ist primär als Stichwaffe konzipiert und verfügt über eine kurze, gerade Parierstange.</description>
+		</item>
+		
+		<item name = "Katar" weight = "250" price = "150" type = "Klingenwaffen" avail = "2">
+			<damage value = "2/0"/>
+			<description>Diese Waffenform ist unter anderem im Einflussbereich des Hauses Said verbreitet. Es handelt sich um einen Faustdolch, bei dem die Klinge dann eine Verlängerung des Unterarmes darstellt.</description>
+		</item>
+		
+		<item name = "Gladius" weight = "600" price = "350" type = "Klingenwaffen" avail = "0">
+			<damage value = "2/0"/>
+			<description>Ein kurzes Schwert, mit relativ breiter Klinge, das besonders bei menschlichen Söldnertrupps beliebt ist.</description>
+		</item>
+		
+		<item name = "Szizsan" weight = "600" price = "350" type = "Klingenwaffen" avail = "0">
+			<damage value = "2/0"/>
+			<description>Das kurze Schwert der Hazaru ist hervorragend für den Enterkampf geeignet, mit einer Klingenlänge von 40-60 cm kann man seinen Gegner damit hervorragend auf Abstand halten und gleichzeitig auch in engen Korridoren agieren ohne an Wänden oder Decke hängen zu bleiben.</description>
+		</item>
+		
+		<item name = "Schattenklinge" weight = "800" price = "4500" type = "Klingenwaffen" avail = "3">
+			<damage value = "3/-2"/>
+			<description>Die mattschwarze Klinge dieser Waffe besteht aus einem besonderen Gefüge aus Nanokeramiken und einem speziellen Titanstahl. Ähnlich einem Vibromesser, verfügt auch die Schattenklinge über einen mechanischen Impulsgeber im Griff.&#10;Die Waffe ist als Kurzschwert mit einer Klingenlänge von 58cm und als Langschwert mit einer Klingenlänge von 98cm Verfügbar.</description>
+		</item>
+		
+		<item name = "Breitschwert" weight = "1400" price = "500" type = "Klingenwaffen" avail = "-2">
+			<damage value ="2/0"/>
+			<description>Das klassische deutsche Schwert ist nicht nur bei den Habsburgern, sondern auch bei Vertretern der Häuser Pendragon, d'Arc, DeBeer und Wolkow beliebt. Es zeichnet sich durch seine Robustheit aus und verfügt über eine ausgeprägte Parierstange. Ein günstiges Schwert in dieser Art kann man bereits für wenige hundert Rand erwerben, nach oben gibt es wohl keine Grenze.</description>
+		</item>
+		
+		<item name = "Jian" weight = "1200" price = "500" type = "Klingenwaffen" avail = "1">
+			<damage value = "2/0"/>
+			<description>Dieses Langschwert aus dem Kulturraum der Neo-Edo besitzt eine schlanke und zugleich robuste Klinge. Das Parierstück ist relativ klein, der Schwerpunkt der Waffe liegt weniger als einen Zentimeter jenseits des Griffs auf der Klinge. Dies erlaubt eine sehr schnelle Bewegung der Klinge. Die Waffe wird üblicherweise einhändig geführt.</description>
+		</item>
+		
+		<item name = "Bidenhänder" weight = "2000" price = "800" type = "Klingenwaffen" avail = "0">
+			<damage value = "2/-1"/>
+			<description>Der schwere Zweihänder ist ein Schwert mit einer Klingenlänge von deutlich über einem Meter. Es lässt sich üblicherweise nur mit beiden Händen führen und ist in der Handhabung deutlich langsamer als kurze Schwerter.&#10;Diese Waffe ist für den Einsatz an Bord von Raumschiffen oder orbitalen Einrichtungen eher weniger geeignet und deshalb auch eher ein Statussymbol.</description>
+		</item>
+		
+		<item name = "Entermesser" weight = "800" price = "200" type = "Klingenwaffen" avail = "-2">
+			<damage value = "2/0"/>
+			<description>Das Säbeläquivalent zum Kurzschwert ist besonders bei Abenteurern und Freihändlern beliebt. Es besitzt eine sehr breite, relativ schwere Klinge und wird eher wie eine Hiebwaffe, denn ein Schwert geführt. Die Waffe verfügt über einen Griffkorb, der der die Hand des Kämpfers schützt. Ab einer Klingenlänge von 60 cm wird es gemeinhin als Säbel bezeichnet.</description>
+		</item>
+		
+		<item name = "Infanteriesäbel" weight = "1200" price = "400" type = "Klingenwaffen" avail = "-1">
+			<damage value = "2/0"/>
+			<description>Weitere Verbreitung haben Säbel in den Kulturkreisen d'Arc, Pendragon und Abrahams. Eine derartige Waffe besitzt einen Griffkorb und kann nur einhändig geführt werden. Die Klingenlänge liegt zwischen 60 und 90 cm. Kürzere Varianten zählen als Entermesser.</description>
+		</item>
+		
+		<item name = "Katana" weight = "1500" price = "500" type = "Klingenwaffen" avail = "0">
+			<damage value = "2/0"/>
+			<description>Der wohl bekannteste Schwertklassiker aus der Edo Kultur, eine leicht gekrümmte, einschneidige Klinge. Häufig ist diese Waffe etwas schwerer, der Griff ist üblicherweise für eine zweihändige Führung ausgelegt. In den Händen eines erfahrenen Kämpfers eine tödliche Waffe.</description>
+		</item>
+		
+		<item name = "Szimitar" weight = "1500" price = "500" type = "Klingenwaffen" avail = "1">
+			<damage value = "2/0"/>
+			<description> Diese Klasse von Krummschwertern, die besonders in Said und Neo-Edo Kulturen zu finden sind, zeichnen sich dadurch aus, dass sie üblicherweise zweischneidig geschliffen sind.</description>
+		</item>
+		
+		<item name = "Schwanzklinge" weight = "400" price = "250" type = "Klingenwaffen" avail = "1">
+			<damage value = "2/0"/>
+			<description>Diese Waffe ist bei den Hazaru verbreitet und auch einzelne Raynora haben sich welche anfertigen lassen. Diese Klinge verfügt anstelle eines Griffs über eine Aufsteckhülse, mit der die Waffe am Schwanzende befestigt wird.</description>
+		</item>
+	</group>
+
+	<group name = "Sonstige Nahkampfwaffen">
+		<item name = "Peitsche" weight = "300" price = "100" type = "Andere Nahkampfwaffen">
+			<damage value = "1/-1"/>
+			<description>Peitsche</description>
+		</item>
+	</group>
+
+</group>
+
+<group name = "Fernkampfwaffen" >
+
+	<group name = "Wurfwaffen"/>
+
+	<group name = "Pistolen und Revolver">
+		<item name = "OMG Alpha 9mm" price = "400" weight = "800" type = "Pistolen">
+			<damage value = "2/0"/>
+			<option name = "Kaliber" values = "9x19 mm"/>
+			<ammo chambers = "1" />
+			<use skill = "Pistolen: OMG Alpha"/>
+		</item>
+		
+		<item name = "Ein Revolver" price = "350" weight = "800" type = "Revolver">
+			<damage value = "2/-1"/>
+			<option name = "Kaliber" values = ".357 ParaTec" />
+			<ammo chambers = "5"/>
+			<description>Bei dieser Waffe handelt es sich um einen schweren Revolver.</description>
+		</item>
+	</group>
+
+	<group name = "Flinten und Gewehre">
+		<item name = "Jagdgewehr" price = "900" weight = "800" type = "Gewehre">
+			<damage value = "3/-1"/>
+			<option name = "Kaliber" values = "5.56x45mm NA,7.62x51mm NA" />
+			<ammo chambers = "1"/>
+		</item>
+		<item name = "Pump-Gun" price = "900" weight = "800" type = "Flinten">
+			<damage value = "2/+1" name = "20/70"/>
+			<damage value = "2/+1" name = "16/70"/>
+			<damage value = "3/+1" name = "12/70"/>
+			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
+			<ammo chambers = "1"/>
+		</item>
+		<item name = "Schwere doppelläufige Schrotflinte" price = "900" weight = "800" type = "Flinten-SA">
+			<damage value = "3/+1"/>
+			<option name = "Kaliber" values = "12/76"/>
+			<ammo chambers = "2"/>
+		</item>
+
+	</group>
+
+	<group name = "Automatikwaffen">
+		<item name = "Sturmgewehr" price = "900" weight = "800" type = "Automatikwaffe">
+			<damage value = "2/-2" name = "5.56x45mm NA"/>
+			<damage value = "3/-2" name = "7.62x51mm NA"/>
+			<option name = "Kaliber" values = "5.56x45mm NA,7.62x51mm NA" />
+			<ammo chambers = "1"/>
+		</item>
+	</group>
+
+	<group name = "Strahlenwaffen und Blaster"/>
+
+	<group name = "Schwere Geschütze"/>
+	
+	<group name = "Waffenzubehör">
+		<item name = "Pistolenmagazin, kurz" price = "10" weight = "100" type = "Clip">
+			<container size = "8" />
+			<option name = "Kaliber" values = ".22 long,.38 short,.38 Special,9x19 mm,.357 ParaTec,.500 OMG"/>
+		</item>
+		<item name = "Pistolenmagazin, lang" price = "15" weight = "150" type = "Clip">
+			<container size = "15" />
+			<option name = "Kaliber" values = ".22 long,.38 short,.38 Special,9x19 mm,.357 ParaTec,.500 OMG"/>
+		</item>
+		<item name = "Gewehrmagazin, kurz" price = "15" weight = "100" type = "Clip">
+			<container size = "5" />
+			<option name = "Kaliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW,.50 OMG"/>
+		</item>
+		<item name = "Gewehrmagazin, lang" price = "20" weight = "100" type = "Clip">
+			<container size = "30" />
+			<option name = "Kaliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW,.50 OMG"/>
+		</item>
+		<item name = "Gurt" price = "15" weight = "100" type = "Clip">
+			<container size = "100" />
+			<option name = "Kaliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW,.50 OMG"/>
+		</item>
+	</group>
+</group>
+
+
+
+<group name = "Munition">
+	<group name = "Pistolen- und Revolverpatronen">
+		<item name = "Kleinkaliberpatrone" price = "0.5" weight = "5" type = "Munition">
+			<option name = "Kaliber" values = ".22 long,.38 short"/>
+			<damage value = "1/0"/>
+			<pack name = "Kleine Schachtel(25)" quantity = "25"/>
+			<pack name = "Große Schachtel(100)" quantity = "100"/>
+			<description>Diese Kleinkalibermunition ist für leichte Pistolen und Revolver gedacht</description>
+		</item>
+
+		<item name = "SecurGlas Baby" price = "0.5" weight = "5" type = "Munition">
+			<option name = "Kaliber" values = ".22 long,.38 short"/>
+			<damage value = "1/1"/>
+			<pack name = "Kleine Schachtel(25)" quantity = "25"/>
+			<pack name = "Große Schachtel(100)" quantity = "100"/>
+			<description>Sicherheitsmunition für Kleinkaliberhandfeuerwaffen. Für den umsichtigen Abenteurer an Bord von Raumschiffen oder orbitalen Einrichtungen.</description>
+		</item>
+		
+		<item name = "Vollmantelpatrone" price = "0.5" weight = "10" type = "Munition">
+			<option name = "Kaliber" values = "9x19 mm,.38 Special"/>
+			<damage value = "2/0"/>
+			<pack name = "Kleine Schachtel (25)" quantity = "25"/>
+			<pack name = "Große Schachtel (100)" quantity = "100"/>
+			<description>Das klassische Vollmantelgeschoss für Faustfeuerwaffen mittleren Kalibers. Passend für viele Pistolen, Revolver und Maschinenpistolen.</description>
+		</item>
+
+		<item name = "SecurGlas Patrone" price = "0.5" weight = "10" type = "Munition">
+			<option name = "Kaliber" values = "9x19 mm,.38 Special"/>
+			<damage value = "2/1"/>
+			<pack name = "Kleine Schachtel (25)" quantity = "25"/>
+			<pack name = "Große Schachtel (100)" quantity = "100"/>
+			<description>Niemand mag ein Loch in der Außenhülle. Diese Sicherheitsmunition aus röntgendichtem Polymer besitzt eine herausragende Mannstopwirkung bei zugleich geringer Durchschlagskraft</description>
+		</item>
+		
+		<item name = "Schweres Vollmantelgeschoss" price = "1" weight = "20" type = "Munition">
+			<option name = "Kaliber" values = ".357 ParaTec"/>
+			<damage value = "2/-1"/>
+			<pack name = "Kleine Schachtel (25)" quantity = "25"/>
+			<pack name = "Große Schachtel (100)" quantity = "100"/>
+			<description>Eine schwere Patrone für schwere Pistolen und Revolver.</description>
+		</item>
+		
+		<item name = "SecurGlas Maxi" price = "2" weight = "25" type = "Munition">
+			<option name = "Kaliber" values = ".357 ParaTec"/>
+			<damage value = "2/0"/>
+			<pack name = "Kleine Schachtel (15)" quantity = "15"/>
+			<pack name = "Große Schachtel (60)" quantity = "60"/>
+			<description>Die Große. Für schwere Pistolen und Revolver. Beliebt bei Soldaten und Sicherheitstruppen in allen Fraktionen.</description>
+		</item>
+		
+		<item name = ".500 OMG" price = "5" weight = "60" type = "Munition">
+			<option name = "Kaliber" values = ".500 OMG"/>
+			<damage value = "3/0"/>
+			<pack name = "Kleine Schachtel (10)" quantity = "10"/>
+			<pack name = "Große Schachtel (50)" quantity = "50"/>
+			<description>Der 'kleine' Bruder des Kaliber .50 Geschosses. Passend für überschwere Pistolen und Revolver. Ein Kaliber das nicht für jeden geeignet ist und darüberhinaus auch eines, das an Bord vieler Raumschiffe und orbitaler Einrichtungen nicht gerne gesehen wird.</description>
+		</item>
+		
+		<item name = "Gummigeschoss" price = "5" weight = "40" type = "Munition">
+			<option name = "Kaliber" values = ".357 ParaTec,.500 OMG" tag = "damage"/>
+			<damage value = "4/-2/E" name = ".357 ParaTec"/>
+			<damage value = "5/-2/E" name = ".500 OMG"/>
+			<pack name = "Kleine Schachtel (10)" quantity = "10"/>
+			<pack name = "Große Schachtel (50)" quantity = "50"/>
+			<description>Das Gummigeschoss ist ein nichttödliches Geschoss für schwere und überschwere Pistolen und Revolver.</description>
+		</item>
+		
+		<item name = "Signalpatrone" price = "10" weight = "40" type = "Munition">
+			<option name = "Kaliber" values = "9x19 mm,.357 ParaTec" tag = "damage"/>
+			<damage value = "3/2" name = "9x19 mm"/>
+			<damage value = "4/2" name = ".357 ParaTec"/>
+			<pack name = "Kleine Schachtel (10)" quantity = "10"/>
+			<pack name = "Große Schachtel (50)" quantity = "50"/>
+			<description>Patrone mit einer pyrotechnischen Ladung anstelle eines Geschosses, erzeugt eine hell leuchtende Lichtkugel, die einige Sekunden in der Luft bleib</description>
+		</item>
+
+		<item name = "Gefechtsfeldbeleuchtung 50" weight = "75" price = "15" type = "Munition">
+			<option name = "Kaliber" values = ".500 OMG"/>
+			<option name = "Farbe"/>
+			<damage value = "5/0"/>
+			<description>Diese Signalpatrone enthält einen kleinen Metallfallschirm, der durch die darunter brennende Pyroladung bis zu 15 Minuten in der Luft schwebt</description>
+		</item>
+		
+	</group>
+	
+	<group name = "Gewehrpatronen">
+		<item name = "Kleines Vollmantelgeschoss" weight = "15" price = "1" type = "Munition">
+			<option name = "Kaliber" values = "5.56x45mm NA,.223 SMI"/>
+			<damage value = "2/-2"/>
+			<pack name = "Kleine Schachtel (25)" quantity = "25"/>
+			<pack name = "Große Schachtel (100)" quantity = "100"/>
+			<pack name = "SquadPack (1000)" quantity = "1000"/>
+			<description>Die Standardpatrone für kleinere Gewehre und Automatikwaffen.</description>
+		</item>
+		
+		<item name = "Großes Vollmantelgeschoss" weight = "25" price = "2" type = "Munition">
+			<option name = "Kaliber" values = "7.62x51mm NA,.308FuDW"/>
+			<damage value = "3/-2"/>
+			<pack name = "Kleine Schachtel (25)" quantity = "25"/>
+			<pack name = "Große Schachtel (100)" quantity = "100"/>
+			<pack name = "SquadPack (1000)" quantity = "1000"/>
+			<description>Die Standardpatrone für größere Gewehre und Automatikwaffen.</description>
+		</item>
+		
+		<item name = "SecurGlas Long" weight = "20" price = "1.5" type = "Munition">
+			<option name = "Kaliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW" tag = "damage"/>
+			<damage value = "2/0" name = "5.56x45mm NA"/>
+			<damage value = "2/0" name = ".223 SMI"/>
+			<damage value = "3/0" name = "7.62x51mm NA"/>
+			<damage value = "3/0" name = ".308FuDW"/>
+			<description>Sicherheitspatrone für den Einsatz an Bord von Raumschiffen und orbitalen Einrichtungen. Verursacht zwar weniger Schaden an Zielen, aber auch deutlich weniger an der Umgebung.</description>
+		</item>
+		
+		<item name = "Panzerbrechendes Geschoss" weight = "25" price = "6" type = "Munition">
+			<option name = "Kaliber" values = "7.62x51mm NA,.308FuDW"/>
+			<damage value = "3/-4"/>
+			<pack name = "Kleine Schachtel (25)" quantity = "25"/>
+			<pack name = "Große Schachtel (100)" quantity = "100"/>
+			<description>Panzerbrechendes Geschoss für Sturmgewehre. Nicht besonders gerne gesehen an Bord von Raumschiffen und orbitalen Einrichtungen.</description>
+		</item>
+		
+		<item name = "Signalpatrone" weight = "20" price = "5" type = "Munition">
+			<option name = "Kaliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW" tag = "damage"/>
+			<option name = "Farbe"/>
+			<damage value = "4/0" name = "5.56x45mm NA"/>
+			<damage value = "4/0" name = ".223 SMI"/>
+			<damage value = "5/0" name = "7.62x51mm NA"/>
+			<damage value = "5/0" name = ".308FuDW"/>
+			<description>Patrone mit einer pyrotechnischen Ladung anstelle eines Geschosses, erzeugt eine hell leuchtende Lichtkugel, die einige Sekunden in der Luft bleibt</description>
+		</item>
+		
+		<item name = "Leuchtspurmunition" weight = "20" price = "6" type = "Munition">
+			<option name = "Kaliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW" tag = "damage"/>
+			<option name = "Farbe"/>
+			<damage value = "3/0" name = "5.56x45mm NA"/>
+			<damage value = "3/0" name = ".223 SMI"/>
+			<damage value = "4/0" name = "7.62x51mm NA"/>
+			<damage value = "4/0" name = ".308FuDW"/>
+			<pack name = "Kleine Schachtel (25)" quantity = "25"/>
+			<pack name = "Große Schachtel (100)" quantity = "100"/>
+			<pack name = "SquadPack (1000)" quantity = "1000"/>
+			<description>Leuchtspurmunition wird zur Zielführung verwendet und je nach Waffentyp als jede fünfte oder zehnte Patrone in Magazin oder Gurt geladen.</description>
+		</item>
+		
+		<item name = "Vollmantelgeschoss .50 OMG" weight = "110" price = "10" type = "Munition">
+			<option name = "Kaliber" values = ".50 OMG"/>
+			<damage value = "4/-3"/>
+			<pack name = "Kleine Schachtel (25)" quantity = "25"/>
+			<pack name = "Große Schachtel (100)" quantity = "100"/>
+			<pack name = "SquadPack (1000)" quantity = "1000"/>
+			<description>Wer einmal ein derartiges Geschoss in der Hand hatte, der weiß, dass er nicht auf der falschen Seite der Waffe stehen möchte, aus der dieses Projektil abgefeuert wird.</description>
+		</item>
+			
+		<item name = "Panzerbrechendes Geschoss .50 OMG" weight = "125" price = "30" type = "Munition">
+			<option name = "Kaliber" values = ".50 OMG"/>
+			<damage value = "5/-5"/>
+			<pack name = "Kleine Schachtel (25)" quantity = "25"/>
+			<pack name = "Große Schachtel (100)" quantity = "100"/>
+			<description>Für den Einsatz gegen Fahrzeuge und Raumschiffe ausgelegt. Wird unter anderem in kleineren Invasionsabwehrgeschützen verwendet.</description>
+		</item>
+			
+		<item name = "Gefechtsfeldbeleuchtung 50" weight = "125" price = "20" type = "Munition">
+			<option name = "Kaliber" values = ".50 OMG"/>
+			<option name = "Farbe"/>
+			<damage value = "6/-1"/>
+			<description>Diese Signalpatrone enthält einen kleinen Metallfallschirm, der durch die darunter brennende Pyroladung bis zu 15 Minuten in der Luft schwebt</description>
+		</item>
+	</group>
+	<group name = "Schrotmunition">
+		<item name = "Schrotpatrone" weight = "75" price = "2" type = "Munition">
+			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
+			<damage value = "2/+1" name = "20/70"/>
+			<damage value = "2/+1" name = "16/70"/>
+			<damage value = "3/+1" name = "12/76"/>
+			<pack name = "Schachtel (25)" quantity = "25"/>
+		</item>
+		<item name = "Buckshot" weight = "75" price = "2.5" type = "Munition">
+			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
+			<damage value = "2/0" name = "20/70"/>
+			<damage value = "2/0" name = "16/70"/>
+			<damage value = "3/0" name = "12/76"/>
+			<pack name = "Schachtel (25)" quantity = "25"/>
+		</item>
+		<item name = "Buckshot SecurGlas" weight = "65" price = "2" type = "Munition">	
+			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
+			<damage value = "2/+2" name = "20/70"/>
+			<damage value = "2/+2" name = "16/70"/>
+			<damage value = "3/+2" name = "12/76"/>
+			<pack name = "Schachtel (25)" quantity = "25"/>
+		</item>
+		<item name = "Salzpatrone" weight = "65" price = "1" type = "Munition">
+			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
+			<damage value = "2/+2" name = "20/70"/>
+			<damage value = "2/+2" name = "16/70"/>
+			<damage value = "3/+2" name = "12/76"/>
+		</item>
+		<item name = "Flintenlaufgeschoss" weight = "90" price = "5" type = "Munition">
+			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
+			<damage value = "3/-1" name = "20/70"/>
+			<damage value = "3/-1" name = "16/70"/>
+			<damage value = "4/-1" name = "12/76"/>
+			<pack name = "Schachtel (10)" quantity = "10"/>
+		</item>
+		<item name = "Dragonbreath" weight = "75" price = "10" type = "Munition">
+			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
+			<damage value = "5/+2" name = "20/70"/>
+			<damage value = "5/+2" name = "16/70"/>
+			<damage value = "6/+2" name = "12/76"/>
+			<pack name = "Schachtel (10)" quantity = "10"/>
+		</item>
+		<item name = "BeanBag" weight = "90" price = "10" type = "Munition">
+			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
+			<damage value = "5/-2/E" name = "20/70"/>
+			<damage value = "5/-2/E" name = "16/70"/>
+			<damage value = "6/-2/E" name = "12/76"/>
+			<pack name = "Schachtel (10)" quantity = "10"/>
+		</item>
+		<item name = "Shocker" weight = "90" price = "10" type = "Munition">
+			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
+			<damage value = "7/-2/E" name = "20/70"/>
+			<damage value = "7/-2/E" name = "16/70"/>
+			<damage value = "7/-2/E" name = "12/76"/>
+			<pack name = "Schachtel (10)" quantity = "10"/>
+		</item>
+
+	</group>
+</group>
+	
+	
+<group name = "Dienstleistungen"/>
+
+
+</items>

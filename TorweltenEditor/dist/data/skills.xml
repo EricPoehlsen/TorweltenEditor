@@ -1,0 +1,377 @@
+<?xml version='1.0' encoding='utf-8'?>
+<skills>
+<meta target="Torwelten Editor" version="0.1" />
+
+<skillgroup maxid="129999" minid="110000" name="Körperlich" type="active">
+	<skill id="110000" name="Athletik" parent="0" spec="1" type="active" />
+	<skill id="110100" name="Klettern" parent="110000" spec="2" type="active" />
+	<skill id="110101" name="Hochgebirgsklettern" parent="110100" spec="3" type="active" />
+	<skill id="110102" name="Freiklettern" parent="110100" spec="3" type="active" />
+	<skill id="110103" name="Fassadenklettern" parent="110100" spec="3" type="active" />
+	<skill id="110104" name="Höhenrettung" parent="110100" spec="3" type="active" />
+	<skill id="110200" name="Reiten" parent="110000" spec="2" type="active" />
+	<skill id="110201" name="Pferde" parent="110200" spec="3" type="active" />
+	<skill id="110202" name="Oliphanten" parent="110200" spec="3" type="active" />
+	<skill id="110203" name="Katzen" parent="110200" spec="3" type="active" /><skill id="110300" name="Schwimmen" parent="110000" spec="2" type="active" />
+	<skill id="110301" name="Langstreckenschwimmen" parent="110300" spec="3" type="active" />
+	<skill id="110302" name="Rettungsschwimmen" parent="110300" spec="3" type="active" />
+	<skill id="110303" name="Freitauchen" parent="110300" spec="3" type="active" />
+	<skill id="110304" name="Gerätetauchen" parent="110300" spec="3" type="active" />
+	<skill id="110305" name="Schnorcheln" parent="110300" spec="3" type="active" />
+	<skill id="110400" name="Fliegen" parent="110000" spec="2" type="active" />
+	<skill id="110401" name="Fallschirme" parent="110400" spec="3" type="active" />
+	<skill id="110402" name="Gleitschirme" parent="110400" spec="3" type="active" />
+	<skill id="110403" name="Hängegleiter" parent="110400" spec="3" type="active" />
+	<skill id="110500" name="Überleben" parent="110000" spec="2" type="active" />
+	<skill id="110501" name="Jagen" parent="110500" spec="3" type="active" />
+	<skill id="110502" name="Angeln" parent="110500" spec="3" type="active" />
+	<skill id="110503" name="Unterschlupf finden" parent="110500" spec="3" type="active" />
+	<skill id="110504" name="Region" parent="110500" spec="3" type="active" />
+	<skill id="120000" name="Geschick" parent="0" spec="1" type="active" />
+	<skill id="120100" name="Beweglichkeit" parent="120000" spec="2" type="active" />
+	<skill id="120101" name="Entfesseln" parent="120100" spec="3" type="active" />
+	<skill id="120102" name="Winden" parent="120100" spec="3" type="active" />
+	<skill id="120200" name="Körperkontrolle" parent="120000" spec="2" type="active" />
+	<skill id="120201" name="Balance" parent="120200" spec="3" type="active" />
+	<skill id="120202" name="0G-Manöver" parent="120200" spec="3" type="active" />
+	<skill id="120203" name="Fallen" parent="120200" spec="3" type="active" />
+	<skill id="120300" name="Tanzen" parent="120000" spec="2" type="active" />
+	<skill id="120301" name="Tango" parent="120300" spec="3" type="active" />
+	<skill id="120302" name="Salsa" parent="120300" spec="3" type="active" />
+	<skill id="120303" name="Rock n Roll" parent="120300" spec="3" type="active" />
+	<skill id="120304" name="Choreographie" parent="120300" spec="3" type="active" />
+	<skill id="120400" name="Schleichen" parent="120000" spec="2" type="active" />
+	<skill id="120401" name="Verfolgen" parent="120400" spec="3" type="active" />
+	<skill id="120402" name="Sich verstecken" parent="120400" spec="3" type="active" />
+</skillgroup>	
+<skillgroup maxid="139999" minid="130000" name="Technisch" type="active">
+	<skill id="130000" name="Fingerfertigkeit" parent="0" spec="1" type="active" />
+	<skill id="130100" name="Medizin und Erste Hilfe" parent="130000" spec="2" type="active" />
+	<skill id="130101" name="Erste Hilfe" parent="130100" spec="3" type="active" />
+	<skill id="130102" name="Chirurgie" parent="130100" spec="3" type="active" />
+	<skill id="130103" name="Medizinische Behandlung" parent="130100" spec="3" type="active" />
+	<skill id="130200" name="Bauen und Reparieren" parent="130000" spec="2" type="active" />
+	<skill id="130201" name="Mechanik und Maschinen" parent="130200" spec="3" type="active" />
+	<skill id="130202" name="Elekro- und Hochenergiesysteme" parent="130200" spec="3" type="active" />
+	<skill id="130203" name="Computer und Elektronik" parent="130200" spec="3" type="active" />
+	<skill id="130204" name="Installation und Umweltsysteme" parent="130200" spec="3" type="active" />
+	<skill id="130205" name="Metallbau" parent="130200" spec="3" type="active" />
+	<skill id="130206" name="Schlösser knacken" parent="130200" spec="3" type="active" />
+	<skill id="130300" name="Malen und Zeichnen" parent="130000" spec="2" type="active" />
+	<skill id="130301" name="Illustration" parent="130300" spec="3" type="active" />
+	<skill id="130302" name="Kartographie" parent="130300" spec="3" type="active" />
+	<skill id="130303" name="Kalligraphie" parent="130300" spec="3" type="active" />
+	<skill id="130304" name="Technisches Zeichnen" parent="130300" spec="3" type="active" />
+	<skill id="130400" name="Modellieren" parent="130000" spec="2" type="active" />
+	<skill id="130401" name="Töpfern" parent="130400" spec="3" type="active" />
+	<skill id="130402" name="Schnitzen" parent="130400" spec="3" type="active" />
+	<skill id="130403" name="Steinmetz" parent="130400" spec="3" type="active" />
+	<skill id="130404" name="Maskenbildner" parent="130400" spec="3" type="active" />
+	<skill id="130500" name="Taschenspielerei" parent="130000" spec="2" type="active" />
+	<skill id="130501" name="Kartentricks" parent="130500" spec="3" type="active" />
+	<skill id="130502" name="Zaubertricks" parent="130500" spec="3" type="active" />
+	<skill id="130503" name="Jonglieren" parent="130500" spec="3" type="active" />
+	<skill id="130504" name="Taschendiebstahl" parent="130500" spec="3" type="active" />
+</skillgroup>
+<skillgroup maxid="239999" minid="210000" name="Mental" type="active">
+	<skill id="210000" name="Organisation und Verwaltung" parent="0" spec="1" type="active" />
+	<skill id="210100" name="Administration" parent="210000" spec="2" type="active" />
+	<skill id="210101" name="Kalkulation und Buchführung" parent="210100" spec="3" type="active" />
+	<skill id="210102" name="Personalplanung." parent="210100" spec="3" type="active" />
+	<skill id="210200" name="Handel" parent="210000" spec="2" type="active" />
+	<skill id="210201" name="Schätzen" parent="210200" spec="3" type="active" />
+	<skill id="210202" name="Zollbestimmungen" parent="210200" spec="3" type="active" />
+	<skill id="210300" name="Ladung und Fracht" parent="210000" spec="2" type="active" />
+	<skill id="210301" name="Packen und Stauen" parent="210300" spec="3" type="active" />
+	<skill id="210302" name="Gefahrgut" parent="210300" spec="3" type="active" />
+	<skill id="210303" name="Lagerverwaltung" parent="210300" spec="3" type="active" />
+	<skill id="210304" name="Expedition ausrüsten" parent="210300" spec="3" type="active" />
+	<skill id="210400" name="Führung" parent="210000" spec="2" type="active" />
+	<skill id="210401" name="Kommando" parent="210400" spec="3" type="active" />
+	<skill id="220000" name="Computer und Technik" parent="0" spec="1" type="active" />
+	<skill id="220100" name="Computer" parent="220000" spec="2" type="active" />
+	<skill id="220101" name="Computernutzung" parent="220100" spec="3" type="active" />
+	<skill id="220102" name="Informationsrecherche" parent="220100" spec="3" type="active" />
+	<skill id="220103" name="Programmierung" parent="220100" spec="3" type="active" />
+	<skill id="220104" name="Hacking" parent="220100" spec="3" type="active" />
+	<skill id="220200" name="Sensorsysteme" parent="220000" spec="2" type="active" />
+	<skill id="220201" name="Radar" parent="220200" spec="3" type="active" />
+	<skill id="220202" name="Sonar" parent="220200" spec="3" type="active" />
+	<skill id="220300" name="Schiffssysteme" parent="220000" spec="2" type="active" />
+	<skill id="220301" name="Reaktorsteuerung" parent="220300" spec="3" type="active" />
+	<skill id="220302" name="Umweltsysteme" parent="220300" spec="3" type="active" />
+	<skill id="230000" name="Forschung und Wissenschaft" parent="0" spec="1" type="active" />
+	<skill id="230100" name="Experimente und Laborarbeit" parent="230000" spec="2" type="active" />
+	<skill id="230101" name="Wissenschaftliche Methodik" parent="230100" spec="3" type="active" />
+	<skill id="230102" name="Chemische Analysen und Synthesen" parent="230100" spec="3" type="active" />
+	<skill id="230103" name="Forensik" parent="230100" spec="3" type="active" />
+	<skill id="230200" name="Archäologie" parent="230000" spec="2" type="active" />
+	<skill id="230300" name="Bibliotheksnutzung und Recherche" parent="230000" spec="2" type="active" />
+</skillgroup>
+<skillgroup maxid="249999" minid="240000" name="Pilot" type="active">
+	<skill id="240000" name="Pilot" parent="0" spec="1" type="active" />
+	<skill id="240100" name="Bodenfahrzeuge" parent="240000" spec="2" type="active" />
+	<skill id="240101" name="Motorräder und Quads" parent="240100" spec="3" type="active" />
+	<skill id="240102" name="Automobile" parent="240100" spec="3" type="active" />
+	<skill id="240103" name="Lastwagen" parent="240100" spec="3" type="active" />
+	<skill id="240104" name="Baumaschinen und schweres Gerät" parent="240100" spec="3" type="active" />
+	<skill id="240105" name="Hovercrafts und Schweber" parent="240100" spec="3" type="active" />
+	<skill id="240200" name="Luftfahrzeuge" parent="240000" spec="2" type="active" />
+	<skill id="240201" name="Flugzeuge" parent="240200" spec="3" type="active" />
+	<skill id="240202" name="Helikopter" parent="240200" spec="3" type="active" />
+	<skill id="240203" name="Schweber 15m+" parent="240200" spec="3" type="active" />
+	<skill id="240300" name="Raumschiffe" parent="240000" spec="2" type="active" />
+	<skill id="240301" name="Kampfmanöver" parent="240300" spec="3" type="active" />
+	<skill id="240302" name="Asteroidenflug" parent="240300" spec="3" type="active" />
+	<skill id="240303" name="Planetare Landungen" parent="240300" spec="3" type="active" />
+	<skill id="240304" name="Raumschiffe (?)" parent="240300" spec="3" type="active" />
+	<skill id="240400" name="Schiffe" parent="240000" spec="2" type="active" />
+	<skill id="240401" name="Segelschiffe" parent="240400" spec="3" type="active" />
+	<skill id="240402" name="Frachtschiffe" parent="240400" spec="3" type="active" />
+	<skill id="240403" name="Speedboote" parent="240400" spec="3" type="active" />
+	<skill id="240404" name="U-Boote" parent="240400" spec="3" type="active" />
+	<skill id="240500" name="Navigation" parent="240000" spec="2" type="active" />
+	<skill id="240501" name="Karten lesen" parent="240500" spec="3" type="active" />
+	<skill id="240502" name="Routenplanung" parent="240500" spec="3" type="active" />
+	<skill id="240600" name="Astrogation" parent="240000" spec="2" type="active" />
+	<skill id="240601" name="Torverbindungen" parent="240600" spec="3" type="active" />
+	<skill id="240602" name="Schleichwege" parent="240600" spec="3" type="active" />
+	<skill id="240603" name="Gefechtsastrogation" parent="240600" spec="3" type="active" />
+	<skill id="240604" name="Asteroidenfelder" parent="240600" spec="3" type="active" />
+</skillgroup>
+<skillgroup maxid="399999" minid="310000" name="Sozial" type="active">
+	<skill id="310000" name="Kommunikation" parent="0" spec="1" type="active" />
+	<skill id="310100" name="Verhandlungen" parent="310000" spec="2" type="active" />
+	<skill id="310101" name="Feilschen" parent="310100" spec="3" type="active" />
+	<skill id="310102" name="Vertragsgestaltung" parent="310100" spec="3" type="active" />
+	<skill id="310200" name="Überreden" parent="310000" spec="2" type="active" />
+	<skill id="310201" name="Totlabern" parent="310200" spec="3" type="active" />
+	<skill id="310202" name="Bedrohen" parent="310200" spec="3" type="active" />
+	<skill id="310203" name="Erpressen" parent="310200" spec="3" type="active" />
+	<skill id="310204" name="Einschüchtern" parent="310200" spec="3" type="active" />
+	<skill id="310300" name="Überzeugen" parent="310000" spec="2" type="active" />
+	<skill id="310301" name="Verführen" parent="310300" spec="3" type="active" />
+	<skill id="310302" name="Propaganda" parent="310300" spec="3" type="active" />
+	<skill id="310303" name="Hypnose" parent="310300" spec="3" type="active" />
+	<skill id="310304" name="Gehirnwäsche" parent="310300" spec="3" type="active" />
+	<skill id="310400" name="Lügen" parent="310000" spec="2" type="active" />
+	<skill id="310500" name="Ausfragen" parent="310000" spec="2" type="active" />
+	<skill id="310501" name="Verhör" parent="310500" spec="3" type="active" />
+	<skill id="310502" name="Lügen erkennen" parent="310500" spec="3" type="active" />
+	<skill id="310503" name="Folter" parent="310500" spec="3" type="active" />
+	<skill id="320000" name="Lehren und Unterrichten" parent="0" spec="1" type="active" />
+	<skill id="320100" name="Lehrer" parent="320000" spec="2" type="active" />
+	<skill id="320200" name="Trainer" parent="320000" spec="2" type="active" />
+	<skill id="320300" name="Professor" parent="320000" spec="2" type="active" />
+	<skill id="320400" name="Militärausbilder" parent="320000" spec="2" type="active" />
+	<skill id="330000" name="Schauspielerei" parent="0" spec="1" type="active" />
+	<skill id="330100" name="Verkleiden" parent="330000" spec="2" type="active" />
+	<skill id="330101" name="MakeUp" parent="330100" spec="3" type="active" />
+	<skill id="330102" name="Maskenbildner" parent="330100" spec="3" type="active" />
+	<skill id="330103" name="Kostüm" parent="330100" spec="3" type="active" />
+	<skill id="330200" name="Imitation" parent="330000" spec="2" type="active" />
+	<skill id="330201" name="Personen nachahmen" parent="330200" spec="3" type="active" />
+	<skill id="330202" name="Stimmen imitieren" parent="330200" spec="3" type="active" />
+	<skill id="330300" name="Soziale Anpassungsfertigkeit" parent="330000" spec="2" type="active" />
+	<skill id="340000" name="Etikette und Gebräuche" parent="0" spec="1" type="active" />
+	<skill id="340100" name="Höfisches Benehmen" parent="340000" spec="2" type="active" />
+	<skill id="340101" name="Spezielles Haus" parent="340100" spec="3" type="active" />
+	<skill id="340200" name="Militärisches Verhalten" parent="340000" spec="2" type="active" />
+	<skill id="340201" name="Spezielle Einheit oder Truppengattung" parent="340200" spec="3" type="active" />
+	<skill id="340300" name="Kultur oder Subkultur" parent="340000" spec="2" type="active" />
+</skillgroup>
+<skillgroup maxid="499999" minid="410000" name="Nahkampf" type="active">
+	<skill id="410000" name="Unbewaffneter Nahkampf" parent="0" spec="1" type="active" />
+	<skill id="410100" name="Raufen" parent="410000" spec="2" type="active" />
+	<skill id="410200" name="Boxen" parent="410000" spec="2" type="active" />
+	<skill id="410300" name="Karate" parent="410000" spec="2" type="active" />
+	<skill id="410400" name="Kung Fu" parent="410000" spec="2" type="active" />
+	<skill id="420000" name="Klingenwaffen" parent="0" spec="1" type="active" />
+	<skill id="420100" name="Messer und Dolche" parent="420000" spec="2" type="active" />
+	<skill id="420200" name="Kurzschwerter" parent="420000" spec="2" type="active" />
+	<skill id="420300" name="Langschwerter" parent="420000" spec="2" type="active" />
+	<skill id="420400" name="Bidenhänder" parent="420000" spec="2" type="active" />
+	<skill id="420500" name="Säbel und Krummschwerter" parent="420000" spec="2" type="active" />
+	<skill id="430000" name="Hiebwaffen" parent="0" spec="1" type="active" />
+	<skill id="430100" name="Knüppel und improvisierte Hiebwaffen" parent="430000" spec="2" type="active" />
+	<skill id="430101" name="Kurzstöcke" parent="430100" spec="3" type="active" />
+	<skill id="430102" name="Teleskopschlagstock" parent="430100" spec="3" type="active" />
+	<skill id="430200" name="Beile und Hämmer" parent="430000" spec="2" type="active" />
+	<skill id="430201" name="Vorschlaghämmer" parent="430200" spec="3" type="active" />
+	<skill id="430202" name="Streitkolben" parent="430200" spec="3" type="active" />
+	<skill id="430203" name="Äxte" parent="430200" spec="3" type="active" />
+	<skill id="430300" name="Stangenwaffen" parent="430000" spec="2" type="active" />
+	<skill id="430301" name="Kampfstäbe" parent="430300" spec="3" type="active" />
+	<skill id="430302" name="Hellebarden" parent="430300" spec="3" type="active" />
+	<skill id="430303" name="Speere" parent="430300" spec="3" type="active" />
+	<skill id="430400" name="Peitschen" parent="430000" spec="2" type="active" />
+</skillgroup>
+<skillgroup maxid="599999" minid="510000" name="Fernkampf" type="active">
+	<skill id="510000" name="Pistolen und Revolver" parent="0" spec="1" type="active" />
+	<skill id="510100" name="Pistolen" parent="510000" spec="2" type="active" />
+	<skill id="510200" name="Revolver" parent="510000" spec="2" type="active" />
+	<skill id="510300" name="Maschinenpistolen" parent="510000" spec="2" type="active" />
+	<skill id="520000" name="Gewehre" parent="0" spec="1" type="active" />
+	<skill id="520100" name="Schrotflinten" parent="520000" spec="2" type="active" />
+	<skill id="520200" name="Flinten" parent="520000" spec="2" type="active" />
+	<skill id="520300" name="Scharfschützengewehre" parent="520000" spec="2" type="active" />
+	<skill id="520400" name="Sturmgewehre" parent="520000" spec="2" type="active" />
+	<skill id="530000" name="Strahlenwaffen" parent="0" spec="1" type="active" />
+	<skill id="530100" name="Strahlenpistolen" parent="530000" spec="2" type="active" />
+	<skill id="530200" name="Strahlengewehre" parent="530000" spec="2" type="active" />
+	<skill id="540000" name="Schwere Waffen" parent="0" spec="1" type="active" />
+	<skill id="540100" name="Maschinengewehre und Maschinenkanonen" parent="540000" spec="2" type="active" />
+	<skill id="540200" name="Raketen- und Granatwerfer" parent="540000" spec="2" type="active" />
+	<skill id="550000" name="Geschütze" parent="0" spec="1" type="active" />
+	<skill id="550100" name="Artillerie und Fahrzeugkanonen" parent="550000" spec="2" type="active" />
+	<skill id="550200" name="Bordgeschütz" parent="550000" spec="2" type="active" />
+	<skill id="550300" name="Invasionsabwehrgeschütz" parent="550000" spec="2" type="active" />
+	<skill id="560000" name="Sprühtanks" parent="0" spec="1" type="active" />
+	<skill id="560100" name="Flammenwerfer und Säuretanks" parent="560000" spec="2" type="active" />
+	<skill id="570000" name="Wurfwaffen" parent="0" spec="1" type="active" />
+	<skill id="570100" name="Wurfklingen" parent="570000" spec="2" type="active" />
+	<skill id="570101" name="Wurfdolche" parent="570100" spec="3" type="active" />
+	<skill id="570102" name="Edo-Stern" parent="570100" spec="3" type="active" />
+	<skill id="570200" name="Schleudern" parent="570000" spec="2" type="active" />
+	<skill id="570201" name="Bola" parent="570200" spec="3" type="active" />
+	<skill id="570202" name="Diskus" parent="570200" spec="3" type="active" />
+	<skill id="570203" name="Lasso" parent="570200" spec="3" type="active" />
+	<skill id="570300" name="Netz" parent="570000" spec="2" type="active" />
+	<skill id="570400" name="Granaten" parent="570000" spec="2" type="active" />
+</skillgroup>
+<skillgroup maxid="619999" minid="610000" name="Psionik" type="active">
+	<skill id="610000" name="Psionik" parent="0" spec="1" type="active" />
+	<skill id="610100" name="Psychokinese" parent="610000" spec="2" type="active" />
+	<skill id="610101" name="Heben" parent="610100" spec="3" type="active" />
+	<skill id="610102" name="Levitation" parent="610100" spec="3" type="active" />
+	<skill id="610103" name="Stoppen" parent="610100" spec="3" type="active" />
+	<skill id="610200" name="Telepathie" parent="610000" spec="2" type="active" />
+	<skill id="610300" name="Thermodynamik" parent="610000" spec="2" type="active" />
+	<skill id="610301" name="Entzünden" parent="610300" spec="3" type="active" />
+	<skill id="610302" name="Kochen" parent="610300" spec="3" type="active" />
+	<skill id="610303" name="Metall erhitzen" parent="610300" spec="3" type="active" />
+	<skill id="610304" name="Schockfrieren" parent="610300" spec="3" type="active" />
+</skillgroup>
+<skillgroup maxid="719999" minid="710000" name="Naturwissenschaften" type="passive">
+	<skill id="710000" name="Naturwissenschaften und Technologie" parent="0" spec="1" type="passive" />
+	<skill id="710100" name="Biologie" parent="710000" spec="2" type="passive" />
+	<skill id="710101" name="Zellbiologie" parent="710100" spec="3" type="passive" />
+	<skill id="710102" name="Genetik" parent="710100" spec="3" type="passive" />
+	<skill id="710103" name="Tierkunde" parent="710100" spec="3" type="passive" />
+	<skill id="710104" name="Pflanzenkunde" parent="710100" spec="3" type="passive" />
+	<skill id="710105" name="Biologie der Hanzaru" parent="710100" spec="3" type="passive" />
+	<skill id="710106" name="Humanbiologie" parent="710100" spec="3" type="passive" />
+	<skill id="710107" name="Stellarbiologie" parent="710100" spec="3" type="passive" />
+	<skill id="710108" name="Biospären" parent="710100" spec="3" type="passive" />
+	<skill id="710109" name="Gaja-Hypothese" parent="710100" spec="3" type="passive" />
+	<skill id="710200" name="Chemie" parent="710000" spec="2" type="passive" />
+	<skill id="710201" name="Biochemie" parent="710200" spec="3" type="passive" />
+	<skill id="710202" name="Sprengstoffherstellung" parent="710200" spec="3" type="passive" />
+	<skill id="710203" name="Pharmazie" parent="710200" spec="3" type="passive" />
+	<skill id="710204" name="Drogenproduktion" parent="710200" spec="3" type="passive" />
+	<skill id="710205" name="Materialkunde" parent="710200" spec="3" type="passive" />
+	<skill id="710206" name="Nanochemie" parent="710200" spec="3" type="passive" />
+	<skill id="710300" name="Medizin" parent="710000" spec="2" type="passive" />
+	<skill id="710301" name="Anatomie" parent="710300" spec="3" type="passive" />
+	<skill id="710302" name="Neurologie" parent="710300" spec="3" type="passive" />
+	<skill id="710303" name="Speziesbezogene Medizinkenntnisse" parent="710300" spec="3" type="passive" />
+	<skill id="710304" name="Psychologie" parent="710300" spec="3" type="passive" />
+	<skill id="710305" name="Mensch-Maschine-Integration" parent="710300" spec="3" type="passive" />
+	<skill id="710306" name="Psionik" parent="710300" spec="3" type="passive" />
+	<skill id="710400" name="Mathematik" parent="710000" spec="2" type="passive" />
+	<skill id="710401" name="Logik" parent="710400" spec="3" type="passive" />
+	<skill id="710402" name="Algebra" parent="710400" spec="3" type="passive" />
+	<skill id="710403" name="Geometrie" parent="710400" spec="3" type="passive" />
+	<skill id="710404" name="Statistik" parent="710400" spec="3" type="passive" />
+	<skill id="710405" name="Wirtschaftsmathematik" parent="710400" spec="3" type="passive" />
+	<skill id="710406" name="Technische Mathematik" parent="710400" spec="3" type="passive" />
+	<skill id="710500" name="Physik" parent="710000" spec="2" type="passive" />
+	<skill id="710501" name="Mechanik" parent="710500" spec="3" type="passive" />
+	<skill id="710502" name="Elektrodynamik" parent="710500" spec="3" type="passive" />
+	<skill id="710503" name="Thermodynamik" parent="710500" spec="3" type="passive" />
+	<skill id="710504" name="Relativitätstheorie" parent="710500" spec="3" type="passive" />
+	<skill id="710505" name="Astrophysik" parent="710500" spec="3" type="passive" />
+	<skill id="710506" name="Quantenphysik" parent="710500" spec="3" type="passive" />
+	<skill id="710507" name="Extraspatialphysik" parent="710500" spec="3" type="passive" />
+	<skill id="710600" name="Technologie und Ingenieurwissenschaften" parent="710000" spec="2" type="passive" />
+	<skill id="710601" name="Maschinenbau" parent="710600" spec="3" type="passive" />
+	<skill id="710602" name="Feinmechanik" parent="710600" spec="3" type="passive" />
+	<skill id="710603" name="Waffentechnik" parent="710600" spec="3" type="passive" />
+	<skill id="710604" name="Elektrik und Energietechnik" parent="710600" spec="3" type="passive" />
+	<skill id="710605" name="Elektronik und Computer" parent="710600" spec="3" type="passive" />
+	<skill id="710606" name="Baustatik" parent="710600" spec="3" type="passive" />
+	<skill id="710607" name="Umweltsysteme" parent="710600" spec="3" type="passive" />
+	<skill id="710608" name="Raumschiffbau" parent="710600" spec="3" type="passive" />
+	<skill id="710700" name="Geowissenschaften" parent="710000" spec="2" type="passive" />
+	<skill id="710701" name="Geologie" parent="710700" spec="3" type="passive" />
+	<skill id="710702" name="Tektonik und Vulkanologie" parent="710700" spec="3" type="passive" />
+	<skill id="710703" name="Metereologie" parent="710700" spec="3" type="passive" />
+	<skill id="710704" name="Kartographie" parent="710700" spec="3" type="passive" />
+	<skill id="710705" name="Terraforming" parent="710700" spec="3" type="passive" />
+</skillgroup>
+<skillgroup maxid="729999" minid="720000" name="Geisteswissenschaften" type="active">
+	<skill id="720000" name="Gesellschafts- und Sozialwissenschaften" parent="0" spec="1" type="passive" />
+	<skill id="720100" name="Geschichte" parent="720000" spec="2" type="passive" />
+	<skill id="720101" name="Kultur / Epoche" parent="720100" spec="3" type="passive" />
+	<skill id="720102" name="Geschichte: Galaktisch" parent="720100" spec="3" type="passive" />
+	<skill id="720103" name="Geschichte: Menschen (ältere)" parent="720100" spec="3" type="passive" />
+	<skill id="720104" name="Geschichte: Menschen (neuere)" parent="720100" spec="3" type="passive" />
+	<skill id="720105" name="Geschichte: Hazaru" parent="720100" spec="3" type="passive" />
+	<skill id="720106" name="Geschichte: Douwg" parent="720100" spec="3" type="passive" />
+	<skill id="720107" name="Kultur / Epoche" parent="720100" spec="3" type="passive" />
+	<skill id="720108" name="Kultur / Epoche" parent="720100" spec="3" type="passive" />
+	<skill id="720109" name="Kultur / Epoche" parent="720100" spec="3" type="passive" />
+	<skill id="720200" name="Politik" parent="720000" spec="2" type="passive" />
+	<skill id="720201" name="Gesellschaftsentwürfe" parent="720200" spec="3" type="passive" />
+	<skill id="720202" name="Regierungsformen" parent="720200" spec="3" type="passive" />
+	<skill id="720203" name="Novaropäische Allianz" parent="720200" spec="3" type="passive" />
+	<skill id="720300" name="Rechtswissenschaften" parent="720000" spec="2" type="passive" />
+	<skill id="720301" name="Zoll- und Einfuhrbestimmungen" parent="720300" spec="3" type="passive" />
+	<skill id="720302" name="Interstellares Handelsrecht" parent="720300" spec="3" type="passive" />
+	<skill id="720303" name="Strafrecht des Hauses Neo Edo" parent="720300" spec="3" type="passive" />
+	<skill id="720400" name="Theologie" parent="720000" spec="2" type="passive" />
+	<skill id="720401" name="Religion oder Kult" parent="720400" spec="3" type="passive" />
+	<skill id="720500" name="Wirtschaftswissenschaften" parent="720000" spec="2" type="passive" />
+	<skill id="720501" name="Volkswirtschaftslehre" parent="720500" spec="3" type="passive" />
+	<skill id="720502" name="Geldwirtschaft" parent="720500" spec="3" type="passive" />
+	<skill id="720503" name="Finanzierung" parent="720500" spec="3" type="passive" />
+	<skill id="720504" name="Märkte" parent="720500" spec="3" type="passive" />
+	<skill id="720505" name="Unternehmensführung" parent="720500" spec="3" type="passive" />
+	<skill id="720506" name="Unternehmensstrategie" parent="720500" spec="3" type="passive" />
+	<skill id="720507" name="Marketing" parent="720500" spec="3" type="passive" />
+</skillgroup>
+<skillgroup maxid="899999" minid="810000" name="Sprachen" type="language">
+	<skill id="810000" name="Sprachen und Linguistik" parent="0" spec="1" type="lang" />
+	<skill id="810100" name="Novababel" parent="810000" spec="2" type="lang" />
+	<skill id="810200" name="Novasperanto" parent="810000" spec="2" type="lang" />
+	<skill id="810300" name="Anglesh" parent="810000" spec="2" type="lang" />
+	<skill id="810400" name="Araby" parent="810000" spec="2" type="lang" />
+	<skill id="810500" name="Gotick" parent="810000" spec="2" type="lang" />
+	<skill id="810600" name="Españal" parent="810000" spec="2" type="lang" />
+	<skill id="810700" name="Franças" parent="810000" spec="2" type="lang" />
+	<skill id="810800" name="Latin" parent="810000" spec="2" type="lang" />
+	<skill id="810900" name="Helleniki" parent="810000" spec="2" type="lang" />
+	<skill id="810901" name="Helleniki (Athenisch)" parent="810900" spec="3" type="lang" /><skill id="811000" name="Nippon" parent="810000" spec="2" type="lang" />
+	<skill id="811100" name="Rosska" parent="810000" spec="2" type="lang" />
+	<skill id="811200" name="Technobabel" parent="810000" spec="2" type="lang" />
+	<skill id="811300" name="AlphaGanimed-Babel" parent="810000" spec="2" type="lang" />
+	<skill id="811400" name="Konklav-Hazaru" parent="810000" spec="2" type="lang" />
+	<skill id="811500" name="Szezaru" parent="810000" spec="2" type="lang" />
+	<skill id="811600" name="Cyronianisch" parent="810000" spec="2" type="lang" />
+	<skill id="811700" name="Rhu" parent="810000" spec="2" type="lang" />
+	<skill id="811800" name="Orionischer Standard" parent="810000" spec="2" type="lang" />
+</skillgroup>
+<skillgroup maxid="999999" minid="910000" name="Sonstige Wissensfertigkeiten" type="passive">
+	<skill id="910000" name="Straßenwissen und Allgemeines Wissen" parent="0" spec="1" type="passive" />
+	<skill id="910100" name="Livestyle und Mode" parent="910000" spec="2" type="passive" />
+	<skill id="910200" name="Speisen und Getränke" parent="910000" spec="2" type="passive" />
+	<skill id="910300" name="Kunst" parent="910000" spec="2" type="passive" />
+	<skill id="910400" name="Mythen der Grenzwelten" parent="910000" spec="2" type="passive" />
+	<skill id="910500" name="Sport und Sportwetten" parent="910000" spec="2" type="passive" />
+	<skill id="910600" name="Spiele und Glücksspiele" parent="910000" spec="2" type="passive" />
+	<skill id="920000" name="Soldat" parent="0" spec="1" type="passive" />
+	<skill id="920100" name="Soldatisches Verhalten" parent="920000" spec="2" type="passive" />
+	<skill id="920200" name="Taktik" parent="920000" spec="2" type="passive" />
+	<skill id="920300" name="Strategie" parent="920000" spec="2" type="passive" />
+</skillgroup>
+</skills>

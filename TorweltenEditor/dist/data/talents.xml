@@ -1,0 +1,339 @@
+<?xml version = "1.0" encoding = "utf-8" ?>
+
+<traits>
+<trait name = "Blind" xp = "-18" class = "phy" group = "Wahrnehmung">
+<description><text>Der Charakter kann Licht im für Menschen üblicherweise sichtbaren Spektrum nicht wahrnehmen.</text></description>
+<text>&#10;Dieser Nachteil schließt nicht aus, dass der Charakter möglicherweise durch den Vorteil Infrarotsicht oder UV-Sicht sehen kann.</text>
+</trait>
+
+<trait name = "Dämmerungssicht" xp = "3" class = "phy" group = "Wahrnehmung">
+<description><text>Dieser Vorteil erhöht die Lichtempfindlichkeit der Augen. Der Modifikator für schlechte Lichtverhältnisse wird für diesen Charakter nicht angewendet.</text></description>
+</trait>
+
+<trait name = "Infrarotsicht" xp = "6" class = "phy" group = "Wahrnehmung">
+<description><text>Der Charaktere ist in der Lage Licht im Infrarotspektrum wahrzunehmen.</text></description>
+</trait>
+
+<trait name = "UV-Sicht" xp = "6" class = "phy" group = "Wahrnehmung">
+<text>Der Charakter ist in der Lage Licht im ultravioletten Spektrum zu sehen</text>
+</trait>
+<trait name = "Erweitertes Sichtfeld" xp = "0" class = "phy" group = "Wahrnehmung">
+<text>Ein Charakter mit diesem Vorteil besitzt ein Sichtfeld das deutlich über 180°. Das heißt es ist deutlich schwieriger, den Charakter zu überraschen. Der Vorteil kostet pro 15° Sichtfelderweiterung einen Punkt. Für ein Sichtfeld von 270° also 6 Punkte und für 360° 12 Punkte.</text>
+
+<variable id = "1" name = "Blickfeld" values = "210°,240°,270°,300°,330°,360°" xp = "2,4,6,8,10,12" factor = "add" />
+</trait>
+<trait name = "Eingeschränktes Sichtfeld" xp = "0" class = "phy" group = "Wahrnehmung">
+<variable id = "1" name = "Blickfeld" values = "150°,120°,90°,60°,30°" xp ="-2,-4,-6,-8,-10" factor = "add" />
+<text>Der Charakter hat ein eingeängtes Gesichtfeld. Hierunter fallen Erkrankungen, die einen Tunnelblick verursachen, aber auch der Umstand, dass der Charakter nur ein Auge besitzt. Analog zum Erweiterten Sichtfeld bringt dieser Nachteil 1 Punkt / 15° Einschränkung. (-4): wäre 120°, was dem Sichtfeld eines einäugigen Charakters entspricht.
+Ein Sichtfeld von weniger als 30° sollte über den Nachteil Blind abgehandelt werden.
+</text>
+</trait>
+
+<trait name = "Vermindertes Spektrum" xp ="0" class = "phy" group = "Wahrnehmung">
+<text>Durch diesen Nachteil werden verschiedene Spielarten der Farbenblindheit abgedeckt. Charaktere erleiden negative Modifikatoren auf Proben, bei denen es auch auf Farben ankommen - etwa die Beurteilung von Kunstwerken oder das Erkennen von gefälschten Geldscheinen, aber auch für Proben auf elektronische Reparaturen.
+</text>
+<variable id = "1" name = "Auswahl:" values = "Rot-Grün-Blind,Farbenbline,Kurzes Spektrum" xp = "-3,-6,-6" factor="add">
+<text style = "bold" >Rot-Grün-Bild
+</text><text>Der Charakter kann Rot- und Grüntöne nur als hell/dunkel wahrnehmen.</text>
+<text style = "bold" >Farbenblind\n</text><text> Ein Charakter mit diesem Nachteil kann Farben gar nicht unterscheiden, nur die Helligkeit.</text>
+<text style = "bold" >Kurzes Spektrum\n</text><text> Der Charakter kann den oberen oder unteren Bereich des für Menschen sichtbaren Spektrums gar nicht wahrnehmen.</text>
+</variable>
+</trait>
+
+<trait name ="Kurzsichtig" xp = "0" class = "phy" group = "Wahrnehmung">
+<type class = "phy" group = "Wahrnehmung" />
+<description><text>Die Augen des Charakters sind nicht in der Lage auf große Entfernungen zu fokussieren. Ohne Brille oder Kontaktlinsen kann der Charakter weiter entfernte Objekte nur schwer oder gar nicht erkennen.</text></description>
+<variable id = "1" name = "Ausprägung" values = "leicht,deutlich,erheblich" xp = "-1,-3,-6" factor = "add">
+<description value = "leicht"><text style="bold">(-1): </text><text>Geringe Beeinträchtigung, Modifikator +1 für Wahrnehmungsproben auf Sicht bei einer Distanz von mehr als 5m.&#10;</text></description>
+<description value = "deutlich"><text>Bei einer deutlich ausgeprägten Sehschwäche erhöht sich der Modifikator für Wahrnehmungsproben auf Sicht alle 3m um +1
+</text></description>
+<description value = "erheblich"><text>Bei einer erheblichen Kurzsichtigkeit erhöht sich der Wahrnehmungsmodifikator für jeden Meter um +1.
+</text></description>
+</variable>
+</trait>
+
+<trait name = "Robustes Gehör" xp = "3" class = "phy" group = "Wahrnehmung">
+<text>
+Die Ohren des Charakters sind ziemlich unempfindlich und erst ein Schalldruck jenseits von 140dB verursacht Schmerzen und Unwohlsein.
+
+Taub (-9)
+Ein Charakter mit diesem Nachteil kann Töne und Klänge im üblichen menschlichen Wahrnehmungsbereich nicht hören.
+
+Schmecken und Riechen
+Feine Nase (3)
+Der Geruchssinn dieses Charakters ist deutlich besser ausgeprägt, als der eines Menschen. Er kann Aromastoffe in deutlich geringeren Spuren wahrnehmen. Um die Aromastoffe auch zuzuordnen, benötigt der Charakter passende Wissensfertigkeiten, beispielsweise Geruchskenntnis (Drogen) oder Geruchskenntnis (Gewürze).
+
+Tasten und Fühlen
+In diesen Bereich fällt die haptische Wahrnehmung, sowie die Temperatur- und Schmerzsensibilität. Die Vorteile und Nachteile in diesem Abschnitt beziehen sich auf die rein biologische Veranlagung.
+
+Verminderter Tastsinn (-3)
+Der Charakter hat ein deutlich weniger ausgeprägtes Tastgefühl, als die meisten Menschen. Er weiß zwar, wenn sich seine Hände um einen Gegenstand schließen, kann aber höchstens durch Sicht abschätzen, wie fest er jetzt zudrückt. Proben bei denen es auf Fingerfertigkeit ankommt, werden um einen Punkt erschwert.
+
+Kein Tastempfinden (-6)
+Der Charakter besitzt keinerlei Tastempfinden. Proben, bei denen es auf Fingerfertigkeit und Feingefühl ankommt, werden um zwei Punkte erschwert. Zudem können auch Proben bei denen es ganz allgemein auf einen festen uns sicheren Griff ankommen, wie etwa Klettern, erschwert werden.
+
+Ausgeprägter Tastsinn (6)
+Durch diesen Vorteil ist der Charakter in der Lage, deutlich feinere Strukturen zu erstasten, als ein Mensch das könnte. Der Charakter erkennt feinste Unebenheiten oder Risse in Oberflächen.
+
+Vermindertes Schmerzempfinden (-3)
+Schmerzen sind ein Warnsignal, dass irgendetwas mit dem Körper nicht in Ordnung ist, somit handelt es sich um einen Nachteil. Ein Charakter mit diesem Nachteil muss eine unmodifizierte MEN-Probe ablegen, um eine Verletzung zu registrieren.
+
+Kein Schmerzempfinden (-6)
+Dieser Charakter hat überhaupt kein Schmerzempfinden. Das kann zwar in gewissen Situationen durchaus von Vorteil sein, allerdings muss er eine um 2 erschwerte MEN-Probe ablegen, um eine Verletzung zu registrieren.
+
+Hohe Schmerzempfindlichkeit (-6)
+Der Charakter empfindet bereits kleinere Verletzungen als schmerzhaft. Wird der Charakter verletzt und verliert LP, muss er eine unmodifizierte MEN-Probe bestehen. Bei einem Misserfolg ist er W10 Kampfrunden benommen und alle Proben werden um +1 erschwert.
+
+Ausgeprägte Temperaturwahrnehmung (3)
+Der Charakter kann sehr feine Temperaturgradienten unterscheiden und auch ziemlich genau abschätzen, wie warm oder kalt ein Gegenstand ist.
+
+Keinerlei Temperaturempfindung (-6)
+Mit diesem Nachteil ist der Charakter nicht in der Lage festzustellen, ob ein Gegenstand oder eine Flüssigkeit möglicherweise zu heiß oder zu kalt ist. Sofern der Charakter allerdings über ein normales Schmerzempfinden verfügt, bemerkt er, wenn er sich verbrennt oder Erfrierungen zuzieht.
+
+Sonstige Wahrnehmung
+Synesthesie (3)
+Der Charakter besitzt kombinierte Sinne - kann Farben schmecken oder Geräusche sehen.
+
+0-G-Intoleranz (-6)
+Der Charakter verträgt keine Schwerelosigkeit. Jedes Mal, wenn er Schwerelosigkeit ausgesetzt wird muss er eine PHY-Probe ablegen. Bei Gelingen sind alle Proben in Schwerelosigkeit um einen Punkt erschwert. Bei Misslingen hat der Charakter mit Schwindel, Übelkeit, Sturzgefühlen und ähnlichem zu kämpfen. Seine Proben sind um 3 Punkte erschwert.
+
+Richtungssinn (6/9)
+Der Charakter hat ein ausgesprochen gutes Gespür für Richtungen und Dimensionen, er weiß in welche Richtung er sich bewegt und wie weit. Selbst in auf dem Meer oder in der Wüste schafft er es geradeaus zu gehen. Auch kann er die Größe von Räumen oder Objekten ziemlich gut abschätzen. In der teureren Variante gilt das auch für Situationen in Schwerelosigkeit.
+
+Körperbau
+Dieser Abschnitt betrachtet Vorteile und Nachteile, die dazu geeignet sind, Charaktere zu erschaffen, deren Körperbau sich vom Standardbauplan unterscheidet
+
+Körpergröße
+Riesenwuchs/Gigant (-3 / -6)
+Der Charakter ist nach dem Maßstab der Gesellschaft zu groß. Er hat Schwierigkeiten, passende Kleidung zu finden. Standardmäßige Betten und Räume sind ihm zu eng und zu niedrig. Er neigt dazu, sich an Türstöcken anzustoßen oder ständig gebeugt zu gehen. Zudem reagieren manche Menschen negativ auf ihn – vorwiegend mit Angst und entsprechender Abneigung.
+
+Ein Charakter mit diesem Nachteil sollte ein PHY-Attribut von mindestens 5 besitzen.
+
+(-3): bei einer Größe von 2,10m - 2,50m,
+(-6): für Charaktere über 2,50m
+
+Zwergenwuchs/Winzig (-3 / -6)
+Der Charakter ist zu klein für die Gesellschaft. Es ist eine Herausforderung, passende Kleidung zu finden, alle Möbel und Gerätschaften sind zu groß. Außerdem reagieren Fremde auf den Charakter mit Mitleid oder Vorurteilen...
+(-3): bei einer Körpergröße von 1,00m bis 1,50m,
+(-6): bei einer Größe unter 1,00m
+
+Gliedmaßen
+Üblicherweise verfügt ein Charakter über zwei Arme, zwei Beine (und einen Schwanz). Ein normaler Arm besitzt vier bis sechs Finger, von denen mindestens einer als Daumen fungiert.
+</text>
+</trait>
+<trait name = "Fehlende oder verkrüppelte Gliedmaßen" type = "phy" group = "Körperbau" xp = "0">
+<specification name = "Körperteil"/>
+<variable id = "1" name = "Einschränkung" xp = "-1,-3,-6,-9,-12" values = "geringfügig,mäßig,deutlich,erheblich,schwerwiegend" factor = "add"/>
+<text>Hierbei handelt es sich um einen Nachteil, der in seinen Ausprägungen und auch seiner tatsächlichen Wirkung extrem vielschichtig ist.&#10;
+Die nachfolgende Auflistung erhebt aus diesem Grund auch keinen Anspruch auf vollständigkeit und soll nur einen groben Rahmen darstellen:&#10;</text>
+<text style = "bold">(-1):</text><text> Einzelne verkrüppelte oder fehlende Finger. Bei speziellen Fingerfertigkeitsproben, wie Musizieren, kann ein +1 Modifikator zum Tragen kommen.&#10;</text>
+<text style = "bold">(-3):</text><text> Steifes Handgelenk. Bestimmte Fingerfertigkeits oder Gewandtheitsproben können um +1 erschwert werden.&#10;</text>
+<text style = "bold">(-6):</text><text> Fingerlose, verkrüppelte Hand mit eingeschränkter Beweglichkeit. Fingerfertigkeitsproben, bei denen üblicherweise beide Hände zum Einsatz kommen, werden um bis zu zwei Punkte erschwert. Dieser Nachteil umfasst auch Hände die zu Klauen gebildet sind.&#10;</text>
+<text style = "bold">(-9):</text><text> Arm endet unterhalb des Ellbogen und kann nur sehr eingeschränkt eingesetzt werden. Fertigkeitsproben wie Klettern werden um +2 erschwert. Gewisse Aufgaben können auch tatsächlich unmöglich sein, etwa die Verwendung zweihändiger Nahkampfwaffen.&#10;</text>
+<text style = "bold">(-12):</text><text> Fehlender Arm. Die Erschwernis für Athletikproben kann bis +3 reichen. Während der Charakter mit dem (-9) Nachteil ein Gewehr noch über den Unterarm legen kann, fällt das bei diesem Grad der Behinderung aus.&#10;</text>
+<text style = "bold">(-6):</text><text> Steifes Knie. Die effektive BEW des Charakters reduziert sich um 1, bestimmte Athletikproben können erschwert sein.&#10;</text>
+<text style = "bold">(-9):</text><text> Teil- oder Vollamputation eines Beines. Der Charakter benötigt Prothesen, Krücken, einen Rollstuhl oder einen Antigrav-Rucksack zur Fortbewegung. Bestimmte Athletische Proben können erschwert oder unmöglich sein, die effektive BEW sinkt um 3.&#10;</text>
+<text>
+Viele der Einschränkungen können prinzipiell mit Prothesen ausgeglichen werden. Die Wirkung verschiedener Hilfsmittel wird in der Ausrüstungsliste beschrieben. Natürlich ist es möglich, Prothesen zur Charaktererschaffung mit dem Vorteil Startkapital zu erwerben.
+
+Gliedmaßen, die aufgrund von Erkrankungen oder Verletzungen im Laufe des Lebens verloren wurden, können durchaus auch wiederhergestellt werden. Die entsprechende medizinische Prozedur ist allerdings eher unangenehm und sehr teuer.
+
+Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit des Charakters im Auge behalten.
+
+Schwanz (0 / 3 / 9)
+Ein einfacher Schwanz zählt nur als kosmetische Modifikation und kostet keine Punkte. Der Schwanz für 3 Vorteilspunkte ist deutlich beweglicher und kräftig genug um etwa einen Hebel umzulegen oder einen Gegenstand gezielt wegzuschieben. Auch kann der Spielleiter eine Erleichterung auf Balanceproben gewähren. Für 9 Punkte kann der Charakter seinen Schwanz fast wie einen normalen Arm einsetzen. Er kann angreifenm eine entsprechend gearbeitete Waffe verwenden und gewöhnliche, nicht all zu filigrane Gegenstände umfassen und bewegen.
+
+Tentakeln (variabel)
+Der Charakter verfügt über Tentakeln. Die Kosten für diesen Vorteil setzen sich aus einer Reihe von Faktoren zusammen:
+Kosten:
+	
+(1)
+	
+(2)
+	
+(3)
+	
+(4)
+	
+(5)
+	
+(6)
+Anzahl:
+	
+2
+			
+4
+		
+8
+Kraft (gesamt):
+	
+½x PHY kg
+	
+1x PHY kg
+	
+2x PHY kg
+	
+3x PHY kg
+	
+5x PHY kg
+	
+10x PHY kg
+Länge:
+		
+1x Armlänge
+		
+2x Armlännge
+		
+3x Armlänge
+Es mag durchaus Spezies gegeben, die statt Armen Tentakeln besitzen. Ein Satz von vier Tentakeln (4) mit einer Kraft von (6) und einfacher Armlänge (2) kostet insgesamt (12) und kompensiert somit genau einmal den Nachteil Fehlender Arm.
+
+Jeder Satz Tentakeln mit einer Anzahl von vier oder acht, kann als Hand gewertet werden.
+
+Weiteres Armpaar (9 / 18)
+Der Charakter besitzt mehr als zwei Arme. Diesen Vorteil gibt es in zwei Varianten:
+
+(9) Diese Arme sind kürzer, schwächer oder weniger fingerfertig, als die Hauptarme. Dennoch ist der Charakter möglicherweise in der Lage, mit diesen Armen schon einmal den Ersatzclip aus der Gürteltasche zu ziehen, während sie mit den anderen Armen noch schießen.
+
+(18) Der Charakter besitzt ein weiteres voll ausgebildetes Armpaar. Er ist prinzipiell in der Lage, zwei zweihändige Waffen zu führen und bekommt deutliche Erleichterungen auf bestimmte Athletikproben, etwa Klettern
+
+Charaktere die multitasken, etwa eine Leiter hochklettern und gleichzeitig mit den anderen Armen schießen, erhalten auf die Aktionen entsprechende Erschwernisse analog zu Aktionen während der Bewegung.
+
+Ja, es mag Spezies geben, bei denen der der doppelt gewählte Nachteil Fehlende/Verkrüppelte Gliedmaßen: Bein durch diesen Vorteil ausgeglichen wird.
+
+Flügel (-6)
+Der Charakter besitzt einen Satz Flügel. Du liest das schon korrekt, das ist ein Nachteil! Flügel sind unhandlich und groß. Und allein der Umstand, dass der Charakter über diese Gliedmaßen verfügt, bedeutet noch lange nicht, dass er auch wirklich fliegen kann. Das wird über entsprechende Fertigkeiten und Talente abgewickelt, die zusätzlich erworben werden müssen.
+
+Beidhändigkeit (9)
+Der Charakter kann mit beiden Händen gleich gut umgehen. Insbesondere vermag er zwei gleichartige einhändige Waffen zu führen die als ein Angriff gewertet werden.
+
+Haut und Knochen
+Zunächst einmal spielt es keine Rolle, ob die Natur einer Spezies nackte Haut, dichten Pelz, Schuppen oder ein Federkleid spendiert hat. Doch es gibt Spezies, deren Körperoberfläche Eigenschaften besitzt, die als Vor- und Nachteile behandelt werden sollten.
+
+Natürliche Panzerung (9)
+Die Haut des Charakters besitzt eine besonders robuste Beschaffenheit und ist schwer zu verletzen. Der Charakter besitzt 0/+1 Schadensresistenz.
+
+Spezialisierte Eigenschaften
+Kräftig (9)
+Der Charakter ist besonders muskulös und athlethisch.Athletikproben werden um einen Punkt erleichtert.
+
+Der Charakter sollte ein PHY Attribut von 5 oder mehr besitzen, wenn er diesen Vorteil wählt.
+
+Schwach (-9)
+Die Kraft des Charakters lässt zu wünschen übrig. Athletikproben für diesen Charakter werden um 1 Punkt erschwert.
+
+Dieser Nachteil sollte nicht von Charakteren gewählt werden, die einen PHY-Wert von 5 oder mehr besitzen. Darüber hinaus, empfielt es sich, entsprechende Fertigkeit maximal auf Rang 2 zu beherrschen.
+
+Gelenkig (9)
+Durch diesen Vorteil ist der Charakter besonders beweglich, er kann sich durch sehr schmale Ritzen schieben. Proben bei denen es auf Gewandheit ankommt, werden um einen Punkt erleichtert.
+
+Um diesen Vorteil zu wählen, sollte der Charakter mindestens einen PHY-Wert von 5 besitzen.
+
+Ungelenkig (-9)
+Dieser Charakter ist eher unbeweglich und hat Schwierigkeiten mit komplexen, koordinierten Körperbewegungen. Proben, die sich um Gewandheit drehen, werden um einen Punkt erschwert.
+
+Der Charakter sollte maximal ein PHY Attribut von 4 besitzen, Fertigkeiten aus der Betroffenen Gruppe, sollten nicht über einem Wert von 2 beherrscht werden.
+
+Fingerfertig (9)
+Durch diesen Vorteil hat der Charakter besonders flinke Finger und eine gute Hand-Auge-Koordination. Proben, die sich auf Fingerfertigkeit beziehen, werden um einen Punkt erleichtert.
+
+Da die Fingerfertigkeit eher ein kleiner Aspekt der gesamten körperlichen Präsenz ist, ergeht hier keine zwingende Empfehlung, dass der PHY-Wert mindestens 5 betragen sollte.
+
+Grobmotoriker (-9)
+Dieser Nachteil ist für Charaktere gedacht, die sich regelmäßig die Finger verknoten. Fingerfertigkeitsproben sind um einen Punkt erschwert.
+
+Ebenso gibt es auch keinen Grund, diesen Nachteil von einem maximalen PHY-Wert abhängig zu machen, allerdings wäre zu empfehlen, keine Fertigkeiten aus der Fingerfertigkeitsgruppe über einem Wert von 2 zu nehmen.
+
+Schnell (3 / 6 [pro Rang])
+Dieser Vorteil verändert das BEW-Attribut ausgehend vom Standardwert 10. Es kostet 3 Punkte pro Rang bis zu einem Rang von PHY, darüberhinaus 6 Punkte pro Rang.
+
+Langsam (-3 [pro Rang])
+Dieser Nachteil senkt das BEW-Attribut vom Standardwert 10. Es bringt 3 Punkte pro Rang.
+
+Eiserner Lebenswille (3 [pro Rang])
+Der Charakter ist ein zäher Brocken. Er überlebt auch Verletzungen, die jeden anderen töten würden. Die Todesschwelle erhöht sich um zwei Punkte pro Rang.
+
+Beispiel: Ein Charakter mit 5 LP und 2 Rängen in diesem Vorteil hat eine Todesschwelle von -9
+
+Natürliche Waffen
+ 
+Raubtiergebiss (1 / 3 / 6)
+Der Charakter besitzt einen kräftigen Kiefer und besonders Spitze, sowie scharfe Zähne. Bei einem erfolgreichen Angriff, verursacht sein Biss schwerere Verletzungen. Ein Raubtiergebiss findet man bei vielen Hazaru-Unterarten aber auch bei den Reynora und den Douwg.
+
+(1) Starker Kiefer: Schaden 1/-1
+
+(3) Böse Reißzähne: Schaden 2/0
+
+(6) Kräftiges Raubtiergebiss: Schaden 2/-2
+
+Krallen / Klauen (1 / 3 / 6)
+Die Finger und/oder Zehen des Charakters laufen in ernsthafte Krallen oder Klauen aus. Bei einem erfolgreichen Angriff verursachen sie klaffende Wunden und schwere Verletzungen.
+
+(1) Schmerzhafte Pranken: Schaden 1/-1
+
+(3) Scharfe Krallen: Schaden 2/0
+
+(6) Eindrucksvolle Klauen: Schaden 2/-2
+
+Je nach Länge der Krallen, bietet es sich an, dazu eine entsprechende Einschränkung der Fingerfertigkeit in Betracht zu ziehen
+
+Krankheiten und andere Einschränkungen</text>
+</trait>
+<trait name = "Allergien und Asthma" xp = "0">
+<type class = "phy" group = "Krankheit"/>
+<text>Der Charakter ist gegen eine oder mehrere Substanzen allergisch. Der Punktwert hängt von der Schwere der Allergie und der Art des Auslösers ab.
+An dieser Stelle ist der Spielleiter gefragt. Macht euch gemeinsam Gedanken, welche Auswirkungen die Allergie auf den Charakter hat. Eine Kontaktallergie die nässende Ausschläge verursacht wird eher die handwerklichen Fähigkeiten des Charakters beeinflussen. Eine Atemwegsallergie kann sich im Normalfall auf Ausdauer oder Wahrnehmung niederschlagen. Wenn im folgenden Text von 'betroffenen Fertigkeiten' die Rede ist, dann sind dei Fertigkeiten gemeint, die durch die jeweilige Allergie in Mitleidenschaft gezogen werden.
+Allergien lassen sich aus folgenden Komponenten zusammenbauen. Letztes Wort über Art und Auswirkung der Allergie hat der Spielleiter.</text>
+<subtrait name ="Ausschlag" xp = "1">
+<text>Nässender juckender Ausschlag. Alle Proben bei denen entsprechende Körperteile beteiligt sind, werden um 1 Punkt erschwert.</text>
+</subtrait>
+<subtrait name ="Reizhusten" xp="-1">
+<text> Immer wieder Husten, der den Charakter zeitweilig einschränkt. Für jede Spielrunde wird eine PHY-Probe gewürfelt. Misslingt diese, werden alle Proben für die nächste Spielrunde aufgrund von Hustenanfällen um 1 Punkt erschwert.</text>
+</subtrait>
+<subtrait name = "Schwerer Reizhusten" xp="-2">
+<text> Der Charakter wird, während er dem Allergen ausgesetzt ist, ständig von Husten gestört (1 Punkt Erschwernis). Für jede Spielrunde wird eine PHY-Probe gewürfelt, misslingt diese werden die Proben für die nächste Spielrunde um 3 Punkte erschwert.</text>
+</subtrait>
+<subtrait name = "Atemnot" xp ="-3">
+<text>Der Charakter ist kurzatmig und kann keine anstrengenden Aktionen ausführen. 1 Punkt Erschwernis für anstrengende Aktionen.</text>
+</subtrait>
+<subtrait name="Schwere Atemnot" xp ="-4">
+<text>Während der Charakter dem Allergen ausgesetzt ist, ist er extrem kurzatmig und eventuell auf Inhalatoren angeweisen. Grundsätzlich sind alle Proben um 1 Punkt erschwert. Anstrengende Aufgaben werden um 3 Punkte erschwert. Jede Minute wird eine PHY-Probe fällig, misslingt die Probe, erleidet der Charakter 1/0 Energieschaden.</text>
+</subtrait>
+<subtrait name="Schwindelanfälle" xp = "-3">
+<text>Alle zehn Minuten eine PHY-Probe, bei Misslingen werden alle Proben um 1 Punkt erschwert. Alle Fertigkeiten die Koordination erfordern (Schießen, Nahkampf, Klettern, Feinmotorische Dinge, etc.) sind um 3 Punkte erschwert.</text>
+</subtrait>
+<subtrait name = "Schnupfen" xp ="-1">
+<text>Atemschwierigkeiten. Erschwernis von 3 Punkten auf Riechen oder Schmecken. 1 Punkt Aufschlag auf anstrengende körperliche Tätigkeiten.</text>
+</subtrait>
+<subtrait name ="Allergischer Schock" xp = "-6">
+<text>Tritt direkt nach dem Kontakt mit dem Allergen auf und wird jede Minute in der der Charakter nicht behandelt wird wiederholt. Der Charakter ist handlungsunfähig, gelingt die PHY-Probe erleidet er 1/0 Schaden, bei Misslingen der Probe 2/0 Schaden.</text>
+</subtrait>
+<factor name = "Allgegenwärtiger Auslöser" type = "multiply" amount = "3.0">
+<text>Sehr verbreitete Auslöser - Chemikalienoder Nahrungsmittel, wie Nanopolymere, Kunststoffe, Erdnüsse, Kaffee oder Soja.</text>
+</factor>
+<factor name = "Leichte Körperliche Anstrengung" type = "multiply" amount = "2.0">
+<text>Der Charakter erleidet bei leichter körperlicher Belastung die Einschränkung</text>
+</factor>
+<factor name = "Verbreitete Auslöser" type = "multiply" amount = "2.0">
+<text>Der Auslöser ist relativ verbreitet, häufig vorkommende Chemikalien oder Nahrungsmittel wie Nickel, Onavu oder andere übliche Nahrungsmittel.</text>
+</factor>
+<factor name = "Schwere körperliche Anstrenung" type = "multiply" amount = "1.0">
+<text>Der Charakter erfährt bei schwerer körperlicher Anstrengung die Einschränkungen.</text>
+</factor>
+<factor name = "Seltener Auslöser" type = "multiply" amount = "1.0">
+<text>Der Charakter reagiert auf chemische Verbindungen, Pflanzenpollen oder Tiere, die es nur auf wenigen Welten gibt und die nicht besonders weit verbreitet sind</text>
+</factor>
+<factor name = "Extrem seltener Auslöser" type = "multiply" amount = "0.5">
+<text>Der Charakter muss schon echtes Pech haben, um mit den Auswirkungen seiner Krankheit konfrontiert zu werden. Der Auslöser für seine Allergie ist nur auf einer Welt zu finden.</text>
+</factor>
+</trait>
+<trait name ="Motorische Störungen" xp = "0">
+<text>Dieser Nachteil umfasst eine Vielzahl von unterschiedlichen Erkrankungen, die zur Folge haben, dass der Charakter nur eingeschränkte Kontrolle über seinen Körper besitzt. Dazu gehören kleinere Ärgernisse, wie unwillkürliche Muskelzuckungen, bis hin zu schwerwiegenden Einschränkungen, wie einer kompletten Querschnittslähmung vom Hals abwärts. Dementsprechend ist auch hier die Bandbreite der Punktewerte und Wirkungen von (-1) bis (-18) oder gar darüber hinaus anzusiedeln.
+
+Als grobe Richtlinie kann man sich an die Punktwerte aus dem Nachteil Fehlende oder verstümmelte Gliedmaßen halten. Wenn die Störung nicht immer besteht, sondern in Schüben oder Episoden vorkommt, können die Punktwerte reduziert werden.
+
+ 
+Tot (-100)
+Der Charakter ist gestorben. Dies kann als Abenteueraufhänger für andere Charaktere dienen. Nein, die Punkte sind nicht übertragbar.
+</text>
+</trait>
+</traits>

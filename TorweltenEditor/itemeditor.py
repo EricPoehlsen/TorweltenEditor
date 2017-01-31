@@ -1,0 +1,712 @@
+# coding=utf-8
+import tkinter as tk
+import config
+import re
+
+it = config.ItemTypes()
+msg = config.Messages()
+
+class ItemEditor(tk.Toplevel):
+    def __init__(self,app,item):
+        tk.Toplevel.__init__(self)
+        self.app = app
+        self.char = app.char
+        self.item = item
+
+        self.item_name = item.get("name")
+        self.item_quantity = int(item.get("quantity"))
+        self.item_price = float(item.get("price"))
+
+        self.description_content = ""
+
+        self.protocol("WM_DELETE_WINDOW", self.close)
+        self.item_screen = tk.Frame(self)
+        self.item_title = tk.Frame(self.item_screen)
+        self.item_body = tk.Frame(self.item_screen)
+        self.item_title.pack(fill = tk.X, expand = 1, anchor = tk.N)
+        self.item_body.pack(fill = tk.BOTH, expand = 1, anchor = tk.N)
+        self.bottom_menu = tk.Frame(self)
+        self.item_screen.pack(fill = tk.BOTH, expand = 1, anchor = tk.NW)
+        self.bottom_menu.pack(side = tk.BOTTOM, anchor = tk.S, fill = tk.X)
+        self.setMinHeight()
+ 
+        # important variables:
+        self.split_number = tk.IntVar()
+        self.destroy_check = 0
+        self.some_item_id = -1
+
+        self._showItemInfo()
+        self.addMenuIcons()
+
+    def setMinHeight(self):
+        height = self.winfo_height()
+        width = self.winfo_width()
+        self.minsize(width = width, height = height)
+
+        
+    def addMenuIcons(self):
+        widgets = self.bottom_menu.winfo_children()
+        for widget in widgets: widget.destroy()
+
+        # reset check ...
+        self.destroy_check = 0
+
+        if self.item.get("equipped","0") == "1":
+            unequip_button = tk.Button(self.bottom_menu, text = msg.IE_UNEQUIP,command = self.unequipItem)
+            unequip_button.pack(side = tk.LEFT)
+        else: 
+            if self.item.get("type","") in self.app.itemlist.EQUIPPABLE:
+                equip_button = tk.Button(self.bottom_menu, text = msg.IE_EQUIP, command = self.equipItem)
+                equip_button.pack(side = tk.LEFT)
+
+        if self.item_quantity > 1:
+            
+            split_scroller = tk.Spinbox(self.bottom_menu, textvariable = self.split_number, width = 2, from_ = 1, to = (self.item_quantity - 1))
+            split_scroller.pack(side = tk.LEFT, fill = tk.Y)
+            split_button = tk.Button(self.bottom_menu,text = msg.IE_SPLIT,command = self.split)
+            split_button.pack(side = tk.LEFT)
+        
+        if self.char.getIdenticalItem(self.item) is not None:
+            condense_button = tk.Button(self.bottom_menu,text = msg.IE_CONDENSE,command = self.condense)
+            condense_button.pack(side = tk.LEFT)
+
+        content_list = self.item.get("content","").split()
+        if not content_list:
+            sell_button = tk.Button(self.bottom_menu,text = msg.IE_SELL, command = self.sellItem)
+            sell_button.pack(side = tk.LEFT)
+
+        destroy_button = tk.Button(self.bottom_menu,text = msg.IE_DESTROY, command = self.destroyItem)
+        destroy_button.pack(side = tk.LEFT)
+
+    # This method shows the information for that item 
+    def _showItemInfo(self):
+        """ Display the item info in the main screen section
+        """
+
+        item_title = self.item_title
+        item_body = self.item_body
+
+        # clear the frames (if necessary)
+        widgets = item_title.winfo_children()
+        for widget in widgets: widget.destroy()
+
+        widgets = item_body.winfo_children()
+        for widget in widgets: widget.destroy()
+
+        
+        quant_label = tk.Label(item_title,text = str(self.item_quantity) + "x - ", font = "Helvetica 12 bold")
+        quant_label.pack(side = tk.LEFT)
+
+        name_label = tk.Entry(item_title, font = "Helvetica 12 bold")
+        name_label.insert(0,self.item_name)
+        name_label.config(relief = tk.FLAT, 
+                          state = tk.DISABLED, 
+                          disabledbackground = "#eeeeee", 
+                          disabledforeground = "#000000")
+        name_label.pack(side = tk.LEFT, expand = 1)
+        name_label.bind("<Double-Button-1>",self._activateEntryField)
+        name_label.bind("<Return>",lambda event: self._updateAttribute(event, attribute="name"))
+
+        weight = self.getWeight()
+        if weight > 500: 
+            weight_str = str(round(weight/1000.0,2)).replace(".",",") + msg.IE_KG
+        else: 
+            weight_str = str(weight) + msg.IE_G 
+
+        weight_str = msg.IE_WEIGHT + weight_str
+        
+        weight_label = tk.Label(item_body, text = weight_str)
+        weight_label.pack(fill = tk.X)
+
+        options = self.item.findall("option")
+        for option in options:
+            name = option.get("name","")
+            value = option.get("value","")
+            frame = tk.Frame(self.item_body)
+            tk.Label(frame,text = name + ":").pack(side = tk.LEFT,anchor = tk.W)
+            entry = tk.Entry(frame, width = len(value)+2)
+            entry.delete(0,tk.END)
+            entry.insert(0,value)
+            entry.bind("<Double-Button-1>",self._activateEntryField)
+            entry.bind("<Return>",lambda event, name = name: self._updateTag(event, tagname="option", name=name))
+            entry.config(relief = tk.FLAT, 
+                         state = tk.DISABLED, 
+                         disabledbackground = "#eeeeee", 
+                         disabledforeground = "#000000")
+            entry.pack(side = tk.RIGHT, anchor = tk.E)
+            frame.pack()
+
+
+        # display the description Window ...
+        description_text = tk.Text(item_body, width = 30, height = 8, wrap = tk.WORD, font = "Helvetica 9")
+        description_text.bind("<KeyRelease>",self.descriptionEdited)
+        description_text.pack(fill = tk.X)
+        description = self.item.find("description")
+        if description is not None:
+            description_text.insert(tk.END,description.text)
+        
+
+        # call the specialized information based on the item type ... 
+        item_type = self.item.get("type")
+        if item_type in [it.BAG,it.BOX,it.CONTAINER]:
+            self.showContent(item_body)
+        elif item_type == it.CLIP:
+            self.getClipInfo(item_body)
+        elif item_type in [it.REVOLVERS,it.RIFLES_SA,it.SHOT_GUNS_SA]:
+            self.getRevolverInfo(item_body)
+        elif item_type in [it.PISTOLS,it.RIFLES,it.SHOT_GUNS, it.MASCHINE_GUNS,
+                           it.AUTOMATIC_PISTOLS,it.AUTOMATIC_RIFLES]:
+            self.getPistolInfo(item_body)
+        elif item_type == it.AMMO:
+            self.getAmmoInfo(item_body)
+
+
+    # try to set the active chamber of a multi chambered weapon
+    def selectChamber(self,event,number):
+        """Selecting the chamber
+        event: an event as normally called by a button click
+        number: int - the intended chamber
+        """
+        selected = self.char.setActiveChamber(self.item,number+1)
+        if selected: self._showItemInfo()
+
+
+    # load a round into the active chamber     
+    def loadRoundInChamber(self,event,item,mode = "weapon"):
+        """This method is used to load an ammo item into the active chamber
+        event: tk.Event() - triggering the load
+        mode: if "weapon" it is assumed self.item is the target / otherwise item is the target
+        item: the second item (either weapon or round - see mode)
+        """
+        if mode == "weapon":
+            weapon = self.item
+            ammo = item
+        else:
+            weapon = item
+            ammo = self.item
+        loaded = self.char.loadRoundInChamber(ammo,weapon)
+        if loaded: 
+            self.char.setActiveChamber(self.item,"next")
+            self._showItemInfo()
+            self.app.updateItemList()
+            self.addMenuIcons()
+
+    # reloading a chamber
+    def reloadChamber(self,event,item):
+        """ 
+        this method 'works the slide' the first round from the clip will be loaded into the chamber
+        if there is already a round loaded it will be ejected (to the inventory)
+        item: et.Element <item> to be loaded into the gun
+        """
+        self.char.reloadChamber(item,self.item)
+        self._showItemInfo()
+        self.app.updateItemList()
+        self.addMenuIcons()
+        
+    # reloading a chamber (other method)
+    def chamberSingleRound(self,event,item,mode = "weapon"):
+        if mode == "weapon":
+            ammo = item
+            weapon == self.item
+        else:
+            ammo = self.item
+            weapon = item
+        self.char.unpackItem(ammo)
+        self.char.removeRoundFromChamber(weapon)
+        self.char.loadRoundInChamber(ammo,weapon)
+        self.app.updateItemList()
+        self._showItemInfo()
+        self.addMenuIcons()
+        if mode != "weapon" and self.item.get("quantity") == "1":
+            self.close()
+        
+
+    # loading rounds into a clip        
+    def loadRoundInClip(self,event,item,fill = True):
+        """ Loading rounds into a clip item.
+        event: this method is triggered by a tk.Event
+        item: the the rounds to load
+        line: tk.Frame holding 
+
+        """
+        # it must be a single clip!!
+        quantity = int(self.item.get("quantity"))
+        if quantity > 1:
+            self.char.splitItemStack(self.item,quantity - 1)
+
+        # add one
+        if not fill: 
+            self.char.loadRoundInClip(item,self.item)
+        
+        # or many
+        while fill:
+            fill = self.char.loadRoundInClip(item,self.item)
+        
+        self._showItemInfo()
+        self.app.updateItemList()
+        self.addMenuIcons()
+
+    # this method loads a clip into a weapon
+    def loadClip(self, event, item):
+        self.char.packItem(item,self.item)
+        self.app.updateItemList()
+        self._showItemInfo()
+        self.addMenuIcons()
+        pass
+
+    # eject the clip from a weapon
+    def ejectClip(self, event, item):
+        self.char.unpackItem(item)
+        self.app.updateItemList()
+        self._showItemInfo()
+        self.addMenuIcons()
+
+    # remove all items from the chambers (full and empty bullets)
+    def ejectBullets(self):
+        ammo_tag = self.item.find("ammo")
+        if ammo_tag is not None:
+            loaded_list = ammo_tag.get("loaded","x").split()
+            if loaded_list[0] != "x":
+                for ammo_id in loaded_list:
+                    ammo = self.char.getItemById(ammo_id)
+                    if ammo is not None:
+                        self.char.unpackItem(ammo)
+            chambers = int(ammo_tag.get("chambers","1"))
+            loaded = "-1 " * chambers
+            loaded = loaded.strip()
+            ammo_tag.set("loaded",loaded)
+        self._showItemInfo()
+        self.app.updateItemList()
+
+    # fire a weapon, spend the bullet, retrieve a empty casing ... 
+    def fireWeapon(self):
+        active_chamber = self.char.getActiveChamber(self.item)
+        loaded_round = self.char.getRoundFromChamber(self.item,active_chamber)
+        if loaded_round is not None:
+            # spend round ... 
+            loaded_round.set("name",msg.IE_SHELL_CASING)
+            weight = int( int(loaded_round.get("weight","0")) / 10)
+            loaded_round.set ("weight",str(weight))
+            value = float( float(loaded_round.get("price","0")) / 10)
+            loaded_round.find("damage").set("value","0/0")
+
+        if self.item.get("type") in [it.REVOLVERS,it.RIFLES_SA,it.SHOT_GUNS_SA]:
+            self.char.setActiveChamber(self.item,"next")
+            self._showItemInfo()
+
+        if self.item.get("type") in [it.PISTOLS,it.RIFLES,it.SHOT_GUNS, it.MASCHINE_GUNS,
+                                     it.AUTOMATIC_PISTOLS,it.AUTOMATIC_RIFLES]:
+            content_list = self.item.get("content","x").split()
+            
+            # get the next round 
+            clip = None
+            next_round = None
+            for item_id in content_list:
+                content_item = self.char.getItemById(item_id)
+                if content_item is not None:
+                    content_item_type = content_item.get("type","")
+                    if content_item_type == it.CLIP:
+                        clip = content_item
+                        break
+            if clip is not None:
+                clip_content = clip.get("content","x").split()
+                next_round = self.char.getItemById(clip_content[0])
+            self.char.reloadChamber(next_round,self.item)
+
+            self._showItemInfo()
+            self.addMenuIcons()
+            self.app.updateItemList()
+
+    # condense all identical items 
+    def condense(self):
+        
+        self.item_quantity = self.char.condenseItem(self.item)
+
+        # now update the title string and the rebuild the item list ...
+        self._showItemInfo()
+        self.app.updateItemList()
+        self.addMenuIcons()
+
+    # execute the split based on the selected value
+    def split(self):
+        # get the split_amount
+        split_amount = 0
+        try:
+            split_amount = int(self.split_number.get())
+        except ValueError: pass
+
+        if split_amount > 0 and self.item_quantity > 1:
+            quantity_and_new_item_id = self.char.splitItemStack(self.item,split_amount)
+
+            self.item_quantity = quantity_and_new_item_id[0]
+
+            # update the entry
+            self._showItemInfo()
+            self.app.updateItemList()
+            self.addMenuIcons()
+
+    # this method is invoked if the player sells an item ...
+    def sellItem(self):
+        price = float(self.item.get("price","0"))
+        quantity = int(self.item.get("quantity","1"))
+        self.char.unpackItem(self.item)
+        for sub_item_id in sub_item_ids:
+            sub_item = self.char.getItemById(sub_item_id)
+            if sub_item is not None:
+                self.char.unpackItem(sub_item)
+        self.char.addEvent(self.item,op=msg.CHAR_ITEM_SELL)
+        self.char.setItemQuantity(self.item,0)
+        self.char.updateAccount(price * quantity)
+        self.app.updateItemList()
+        self.close()
+
+    # unequip an item: called by unequip_button 
+    def unequipItem(self):
+        self.char.unequipItem(self.item)
+        self.app.updateItemList()
+        self.addMenuIcons()
+
+    # equip an item: called by equip_button
+    def equipItem(self):
+        self.char.unpackItem(self.item,equip = True)
+        self.app.updateItemList()
+        self.addMenuIcons()
+
+    def destroyItem(self):
+        if self.destroy_check == 0: 
+            widgets = self.bottom_menu.winfo_children()
+            for widget in widgets: widget.destroy()
+            self.destroy_check = 1
+            nope = tk.Button(self.bottom_menu, text = msg.IE_CANCEL, command = self.addMenuIcons)
+            nope.pack(side = tk.RIGHT)
+            confirm = tk.Button(self.bottom_menu, text = msg.IE_DESTROY, foreground = "#dd0000", command = self.destroyItem)
+            confirm.pack(side = tk.LEFT, fill = tk.X)
+        elif self.destroy_check == 1:
+            self.destroy_check = 0
+            sub_item_ids = self.item.get("content","")
+            sub_item_ids = sub_item_ids.split()
+            for sub_item_id in sub_item_ids:
+                sub_item = self.char.getItemById(sub_item_id)
+                if sub_item is not None:
+                    self.char.unpackItem(sub_item)
+
+            self.char.addEvent(self.item,op=msg.CHAR_ITEM_DESTROY)
+            self.char.setItemQuantity(self.item,0)
+            self.app.updateItemList()
+            self.close(destroy = True)
+
+    # unpack an Item 
+    def unpackItem(self, event, sub_item, line_widget):
+        self.char.unpackItem(sub_item)
+        line_widget.destroy()
+        self.app.updateItemList()
+
+    # retrieve weight of an item with all sub_items recursivly  ... 
+    def getWeight(self):
+        weight = self.char.getWeight(self.item)
+        return weight
+
+    # store the edited description as a string
+    # within the close() method the data will be written to the item ...
+    def descriptionEdited(self,event):
+        self.description_content = event.widget.get("1.0",tk.END)
+
+    def itemId(self):
+        return self.item.get("id")
+
+####################SPECIALIZED INFORMATION SCREENS # ##########################
+
+    # display content of a container item    
+    def showContent(self,frame):
+        content_ids = self.item.get("content","")
+        content_ids = content_ids.split(" ")
+        content_frame = tk.LabelFrame(frame,text = msg.IE_CONTENT)
+        for content_id in content_ids:
+            sub_item = self.char.getItemById(content_id)
+            if sub_item is not None:
+                sub_item_id = sub_item.get("id")
+                line = tk.Frame(content_frame)
+                label_text = sub_item.get("quantity") + "x - " + sub_item.get("name")
+                label = tk.Label(line, text = label_text)
+                label.bind("<Button-1>",lambda event, load_item = sub_item:self.close(load = load_item))
+                label.pack(side = tk.LEFT)
+                unpack_button = tk.Button(line,text = "U")
+                unpack_button.bind("<Button-1>",lambda event, sub = sub_item, line_widget = line: self.unpackItem(event, sub, line_widget))
+                unpack_button.pack(side = tk.RIGHT, anchor = tk.E)
+                line.pack(fill = tk.X, expand = 1)
+        content_frame.pack(fill = tk.X, expand = 1)
+
+    # this method gets the revolver screen ... 
+    def getRevolverInfo(self,frame):
+        number_chambers = int(self.item.find("ammo").get("chambers"))
+        active_chamber = int(self.item.find("ammo").get("active","1"))
+        loaded_ammo = self.item.find("ammo").get("loaded","-1")
+        ammo_list = loaded_ammo.split()
+        while len(ammo_list) < number_chambers:
+            ammo_list.append("-1")
+            
+        chamber_frame = tk.LabelFrame(frame, text = msg.IE_CHAMBERS)
+            
+        i = 0
+        while i < number_chambers:
+            loaded_item = None
+            if len(ammo_list) > i:
+                loaded_item = self.char.getItemById(str(ammo_list[i]))
+            text = msg.IE_EMPTY
+            if loaded_item is not None: text = loaded_item.get("name")
+                
+            chamber_button = tk.Button(chamber_frame, text = text)
+            if text == msg.IE_EMPTY: chamber_button.config(background = "#aaaaaa")
+            chamber_button.bind("<Button-1>",lambda event, i = i: self.selectChamber(event,i))
+            chamber_button.pack(fill = tk.X, expand = 1)
+            if i == active_chamber - 1: chamber_button.config(relief = tk.SUNKEN)
+            i = i + 1                    
+        chamber_frame.pack(fill = tk.X, expand = 1)
+
+        chambered_item = self.char.getItemById(ammo_list[active_chamber-1])
+        if chambered_item is not None:
+            if chambered_item.get("name") == msg.IE_SHELL_CASING:
+                chambered_item = None
+
+        fire_button = tk.Button(chamber_frame, text = msg.IE_FIRE_WEAPON, command = self.fireWeapon)
+
+        if chambered_item is None:
+            fire_button.config(state = tk.DISABLED)
+        fire_button.pack(fill = tk.X)
+
+        eject_button = tk.Button(chamber_frame, text = msg.IE_CLEAR, command = self.ejectBullets)
+        eject_button.pack(fill = tk.X)
+
+        select_label = tk.Label(frame, text = msg.IE_AVAILABLE_AMMO)
+        caliber = self.item.find("option[@name='"+it.OPTION_CALIBER+"']").get("value")
+        items = self.getMatchingAmmo(caliber)
+        if items: select_label.pack()
+        for item in items: 
+            line = tk.Frame(frame)
+            item_id = item.get("id")
+            ammo_button = tk.Button(line, text = item.get("name"))
+            ammo_button.bind("<Button-1>",lambda event, item = item, line = line: self.loadRoundInChamber(event,item)) 
+            ammo_button.pack(side = tk.RIGHT)
+            line.pack()
+
+
+    # this creates the infoscreen for a half and full automatic weapon ... 
+    def getPistolInfo(self,frame):
+        chambered_id = self.item.find("ammo").get("loaded","-1")
+        chambered_item = self.char.getItemById(str(chambered_id))
+        first_round = None
+        chamber_frame = tk.LabelFrame(frame, text = msg.IE_LOADED)
+        chamber_frame.pack(fill = tk.X, expand = 1)
+        if chambered_item is not None:
+            chamber_info = tk.Label(chamber_frame,text = chambered_item.get("name"))
+            chamber_info.pack(fill = tk.X, expand = 1)
+        else:
+            chamber_frame.config(text = msg.IE_NOT_LOADED)
+        
+        loaded_clip = None
+        content = self.item.get("content","-1").split()
+        for item_id in content:
+            item = self.char.getItemById(item_id)
+            if item is not None: 
+                if item.get("type") == it.CLIP:
+                    loaded_clip = item
+                    break
+        if loaded_clip is None:
+            tk.Label(frame,text = msg.IE_NO_CLIP_LOADED, borderwidth = 2, relief = tk.RIDGE).pack(fill = tk.X)
+        else:
+            loaded_clip_frame = tk.LabelFrame(frame, text = msg.IE_CLIP_LOADED)
+            loaded_rounds = 0
+            loaded_clip_content = loaded_clip.get("content","-1").split()
+            try:
+                first_round = self.char.getItemById(loaded_clip_content[0])
+            except IndexError: pass
+            if first_round is not None:
+                loaded_rounds = len(loaded_clip_content)
+            capacity = loaded_clip.find("container").get("size")
+            info = msg.IE_CLIP_STATUS +str(loaded_rounds)+" / "+str(capacity)
+            content_label = tk.Label(loaded_clip_frame, text = info)
+            content_label.pack(fill = tk.X, expand = 1)
+            eject_button = tk.Button(loaded_clip_frame, text = msg.IE_EJECT)
+            eject_button.bind("<Button-1>",lambda event, clip = loaded_clip: self.ejectClip(event, clip))
+            eject_button.pack(fill = tk.X, expand = 1)
+            loaded_clip_frame.pack(fill = tk.X, expand = 1)
+
+        fire_button = tk.Button(chamber_frame, text = msg.IE_FIRE_WEAPON, command = self.fireWeapon)
+        if chambered_item is None:
+            fire_button.config(state = tk.DISABLED)
+        fire_button.pack(fill = tk.X)
+
+        reload_button = tk.Button(chamber_frame,text = msg.IE_CYCLE_WEAPON)
+        reload_button.bind("<Button-1>",lambda event, item = first_round: self.reloadChamber(event,item))
+        reload_button.pack(fill = tk.X)
+
+
+        caliber = self.item.find("option[@name='"+it.OPTION_CALIBER+"']").get("value")
+        clips = self.getMatchingAmmo(caliber,it.CLIP)
+        if clips: 
+            clips_label = tk.Label(frame, text = msg.IE_COMPATIBLE_CLIPS)
+            clips_label.pack()
+
+        for clip in clips: 
+            clip_frame = tk.Frame(frame, borderwidth = "1", relief = tk.RIDGE)
+
+            name_frame = tk.Label(clip_frame)
+            name_frame.pack(fill = tk.X, expand = 1)
+            clip_capacity = clip.find("container").get("size")
+            clip_contents = "0"
+            content = clip.get("content","-1").split()
+            first_round = self.char.getItemById(content[0])
+            if first_round is not None:
+                clip_contents = str(len(content))
+                info = first_round.get("name") + " [" + first_round.find("damage").get("value") + "]"
+                first_round_label = tk.Label(clip_frame,text = info)
+                first_round_label.pack(fill = tk.X, expand = 1)
+            if loaded_clip is None:
+                load_button = tk.Button(clip_frame, text = msg.IE_LOAD_WEAPON)
+                load_button.bind("<Button-1>",lambda event, item = clip: self.loadClip(event,item))
+                load_button.pack(fill = tk.X, expand = 1)
+            name = clip.get("name") + " ("+clip_contents+"/"+clip_capacity+")"
+            name_frame.config(text = name) 
+
+            clip_frame.pack(fill = tk.X, expand = 1)
+    
+    # display information for clips ... 
+    def getClipInfo(self,frame):
+        self.showContent(frame)
+        caliber = self.item.find("option[@name='"+it.OPTION_CALIBER+"']").get("value")
+        size = self.item.find("container").get("size")
+        items = self.getMatchingAmmo(caliber)
+        for item in items:
+            line = tk.Frame(frame)
+            item_id = item.get("id")
+            name_label = tk.Label(line, text = item.get("name"))
+            name_label.pack(side = tk.LEFT)
+            button_fill = tk.Button(line, text = msg.IE_FILL_CLIP)
+            button_fill.bind("<Button-1>",lambda event, item = item: self.loadRoundInClip(event,item,True)) 
+            button_fill.pack(side = tk.RIGHT)
+            button_plus1 = tk.Button(line,text = msg.IE_ADD_ONE)
+            button_plus1.bind("<Button-1>",lambda event, item = item: self.loadRoundInClip(event,item,False))
+            button_plus1.pack(side = tk.RIGHT)
+            line.pack() 
+
+    # display information for ammo .... 
+    def getAmmoInfo(self,frame):
+        caliber = self.item.find("option[@name='"+it.OPTION_CALIBER+"']").get("value")
+        
+        items = self.char.getItems()
+        guns = []
+        for item in items: 
+            # try to get the caliber of the item ...
+            item_caliber = item.find("option[@name='"+it.OPTION_CALIBER+"']")
+            if item_caliber is not None: 
+                # make sure it is a weapon ...
+                if (item_caliber.get("value") == caliber and
+                    item.get("type") not in [it.AMMO,it.CLIP]):
+                    # add the item to the list of guns ...
+                    guns.append(item)
+        if guns:
+            info = tk.Label(frame, text = msg.IE_INSERT_CARTRIDGE)
+            info.pack()
+        for gun in guns:
+            button = tk.Button(frame, text = gun.get("name"))
+            button.pack(fill = tk.X, expand = 1) 
+            button.bind("<Button-1>", lambda event, item = gun: self.chamberSingleRound(event,item,"ammo"))            
+
+
+    # find matching ammo in inventory ...
+    def getMatchingAmmo(self,caliber,search_type=it.AMMO):
+        items = self.char.getItems()
+        ammo = []
+        for item in items: 
+            item_type = item.get("type")
+            if item_type == search_type:
+                if item.find("option[@name='"+it.OPTION_CALIBER+"']").get("value") == caliber:
+                    inside = item.get("inside","-1")
+                    available = False
+                    if inside == "-1": available = True
+                    elif inside != "-1":
+                        container_type = self.char.getItemById(inside).get("type")
+                        if container_type in [it.BAG,it.HARNESS]: 
+                            available = True
+
+                    if available == True:
+                        ammo.append(item)
+        return ammo
+
+    # this is called to close the window (or switch the item ...)
+    def close(self,load = None,destroy = False):
+        if not destroy and len(self.description_content) > 1: 
+            self.item.find("description").text = self.description_content
+            self.char.addEvent(self.item, op=msg.CHAR_ITEM_DESCRIPTION)
+                
+
+        # destroy window and remove from list
+        self.destroy()
+        self.app.open_windows["itemedit"] = 0
+
+        # create new window if a subitem is called
+        if load is not None:
+            self.app.open_windows["itemedit"] = ItemEditor(main,load)
+
+
+    ## activate the entry field ...
+    def _activateEntryField(self,event):
+        entry = event.widget
+        entry.config(state = tk.NORMAL)
+
+    # updating an item attribute
+    def _updateAttribute(self,event,attribute):
+        """ This method is used to update a specific item attribute
+        event: tk.Event()
+        attribute: string - attribute to update valid (name,quantity,quality,weight,price)
+        """
+
+        entry = event.widget
+        new_value = entry.get()
+
+        old_value = self.item.get(attribute)
+
+        regex_string = "[^a-zA-Z0-9 .,:\(\)\[\]\!\xE4\xF6\xFC\xC4\xD6\xDC\xDF]" 
+        if re.findall(regex_string,new_value): 
+            entry.config(foreground = "#ff0000")
+        else:
+            entry.config(foreground = "#000000", state = tk.DISABLED)
+            if new_value != old_value:
+                if attribute == "name":
+                    mod_info = self.item.get(attribute)
+                    op = msg.CHAR_ITEM_RENAMED
+                else:
+                    mod_info = attribute+":"+new_value
+                    op = msg.CHAR_ITEM_UPDATE
+                    
+                self.item.set(attribute,new_value)
+                self.char.addEvent(self.item, mod=mod_info, op=msg.CHAR_ITEM_UPDATE)
+                self.app.updateItemList()
+
+    # updating an item tag
+    def _updateTag(self,event,tagname,name = None):
+        """ This method is used to update an item tag
+        event: tk.event
+        tagname: string - xml name of tag (valid tags: option, damage, container)
+        name: string - name of option (not used in the tags ...)
+        """
+
+        entry = event.widget
+        new_value = entry.get()
+        if name is not None: 
+            tag = self.item.find(tagname+"[@name='"+name+"']")
+        else: 
+            tag = self.item.find(tagname)
+
+        old_value = tag.get("value","")
+
+        regex_string = "[^a-zA-Z0-9 .,:\(\)\[\]\!\xE4\xF6\xFC\xC4\xD6\xDC\xDF]" 
+        if re.findall(regex_string,new_value): 
+            entry.config(foreground = "#ff0000")
+        else:
+            entry.config(foreground = "#000000", width = len(new_value)+2, state = tk.DISABLED)
+            if new_value != old_value:
+                tag.set("value",new_value)
+                mod_info = tagname+":"+new_value
+                self.char.addEvent(self.item, mod=mod_info, op=msg.CHAR_ITEM_UPDATE)
+                

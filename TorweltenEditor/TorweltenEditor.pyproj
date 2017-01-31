@@ -12,6 +12,8 @@
     <OutputPath>.</OutputPath>
     <Name>TorweltenEditor</Name>
     <RootNamespace>TorweltenEditor</RootNamespace>
+    <InterpreterId>{dc392f3c-954f-4932-9cb5-f865ccace29f}</InterpreterId>
+    <InterpreterVersion>3.5</InterpreterVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +24,35 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="application.py" />
+    <Compile Include="charscreen.py" />
+    <Compile Include="char_xml.py" />
+    <Compile Include="config.py" />
+    <Compile Include="equipmentscreen.py" />
+    <Compile Include="ewtscreen.py" />
+    <Compile Include="exportpdf.py" />
+    <Compile Include="imagescreen.py" />
+    <Compile Include="improvewindow.py" />
+    <Compile Include="inventoryeditor.py" />
+    <Compile Include="itemeditor.py" />
+    <Compile Include="item_xml.py" />
+    <Compile Include="logscreen.py" />
+    <Compile Include="moduleeditor.py" />
+    <Compile Include="settingscreen.py" />
+    <Compile Include="setup.py" />
+    <Compile Include="sheetlayoutscreen.py" />
+    <Compile Include="skillselector.py" />
+    <Compile Include="skill_xml.py" />
+    <Compile Include="socialeditor.py" />
+    <Compile Include="socialscreen.py" />
+    <Compile Include="tooltip.py" />
     <Compile Include="TorweltenEditor.py" />
+    <Compile Include="traitinfo.py" />
+    <Compile Include="traitselector.py" />
+    <Compile Include="trait_xml.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{dc392f3c-954f-4932-9cb5-f865ccace29f}\3.5" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

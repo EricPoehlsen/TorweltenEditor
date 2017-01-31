@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<character><basics><xp available="4" total="300" /><edit type="generation" /><data name="name" value="Otto" /><data name="species" value="Mensch" /><data name="origin" value="Schwerkraftwelt" /><data name="concept" value="Techniker" /><data name="player" value="Tobi" /><data name="height" value="140" /><data name="weight" value="250" /><data name="gender" value="männnlich" /><data name="hair" value="braun" /><data name="eyes" value="braun" /><data name="skin" value="hell" /><data name="skintype" value="normal" /></basics><attributes><attribute name="phy" value="7" /><attribute name="men" value="6" /><attribute name="soz" value="4" /><attribute name="nk" value="4" /><attribute name="fk" value="4" /><attribute name="lp" value="4" /><attribute name="ep" value="4" /><attribute name="mp" value="4" /></attributes><traits><trait id="1" name="Zwergenwuchs" xp="-3"><selected id-1="sehr klein" /></trait><trait id="2" name="Kräftig" xp="9"><selected /></trait><trait id="3" name="Gravitationstoleranz" xp="9"><selected id-1="2.5G" /></trait></traits><skills><skill id="120202" name="0G-Manöver" parent="120200" spec="3" type="active" value="1" />
+	<skill id="130101" name="Erste Hilfe" parent="130100" spec="3" type="active" value="1" />
+	<skill id="130201" name="Mechanik und Maschinen" parent="130200" spec="3" type="active" value="2" />
+	<skill id="130202" name="Elekro- und Hochenergiesysteme" parent="130200" spec="3" type="active" value="3" />
+	<skill id="220302" name="Umweltsysteme" parent="220300" spec="3" type="active" value="1" />
+	<skill id="410100" name="Raufen" parent="410000" spec="2" type="active" value="2" />
+	<skill id="430000" name="Hiebwaffen" parent="0" spec="1" type="active" value="3" />
+	<skill id="530000" name="Strahlenwaffen" parent="0" spec="1" type="active" value="1" />
+	<skill id="710507" name="Extraspatialphysik" parent="710500" spec="3" type="passive" value="2" />
+	<skill id="710604" name="Elektrik und Energietechnik" parent="710600" spec="3" type="passive" value="2" />
+	<skill id="710608" name="Raumschiffbau" parent="710600" spec="3" type="passive" value="2" />
+	<skill id="810100" name="Novababel" parent="810000" spec="2" type="lang" value="2" />
+	<skill id="811200" name="Technobabel" parent="810000" spec="2" type="lang" value="1" />
+	<skill id="811400" name="Konklav-Hazaru" parent="810000" spec="2" type="lang" value="1" />
+	</skills><inventory><account balance="0.0" name="0" /></inventory><contacts /></character>

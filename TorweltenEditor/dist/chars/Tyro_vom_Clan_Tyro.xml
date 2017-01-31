@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<character><basics><xp available="-9" total="300" /><edit type="generation" /><data name="name" value="Tyro vom Clan Tyro" /><data name="species" value="Douwg" /><data name="origin" value="Harrev" /><data name="concept" value="Archäologe/Diplomat" /><data name="player" value="Eric" /><data name="height" value="145" /><data name="weight" value="60" /><data name="age" value="35" /><data name="gender" value="m" /><data name="hair" value="grau" /><data name="eyes" value="gold" /><data name="skin" value="schwarz" /><data name="skintype" value="fell" /></basics><attributes><attribute name="phy" value="5" /><attribute name="men" value="6" /><attribute name="soz" value="4" /><attribute name="nk" value="4" /><attribute name="fk" value="5" /><attribute name="lp" value="5" /><attribute name="ep" value="4" /><attribute name="mp" value="4" /></attributes><traits><trait id="1" name="Neugier" xp="-6"><selected rank-1="2" /></trait><trait id="2" name="Feine Nase" xp="3"><selected /></trait><trait id="3" name="Vermindertes Spektrum" xp="-6"><selected id-1="Kurzes Spektrum" /></trait><trait id="4" name="Dämmerungssicht" xp="3"><selected /></trait><trait id="5" name="Zwergenwuchs" xp="-6"><selected id-1="zu klein" /></trait></traits><skills><skill id="110100" name="Klettern" parent="110000" spec="2" type="active" value="1" />
+	<skill id="110500" name="Überleben" parent="110000" spec="2" type="active" value="1" />
+	<skill id="110503" name="Unterschlupf finden" parent="110500" spec="3" type="active" value="1" />
+	<skill id="210000" name="Organisation und Verwaltung" parent="0" spec="1" type="active" value="2" />
+	<skill id="210201" name="Schätzen" parent="210200" spec="3" type="active" value="2" />
+	<skill id="210304" name="Expedition ausrüsten" parent="210300" spec="3" type="active" value="2" />
+	<skill id="230100" name="Experimente und Laborarbeit" parent="230000" spec="2" type="active" value="1" />
+	<skill id="230200" name="Archäologie" parent="230000" spec="2" type="active" value="1" />
+	<skill id="240100" name="Bodenfahrzeuge" parent="240000" spec="2" type="active" value="1" />
+	<skill id="240105" name="Hovercrafts und Schweber" parent="240100" spec="3" type="active" value="1" />
+	<skill id="240203" name="Schweber 15m+" parent="240200" spec="3" type="active" value="1" />
+	<skill id="240501" name="Karten lesen" parent="240500" spec="3" type="active" value="2" />
+	<skill id="310204" name="Einschüchtern" parent="310200" spec="3" type="active" value="1" />
+	<skill id="320000" name="Lehren und Unterrichten" parent="0" spec="1" type="active" value="1" />
+	<skill id="340000" name="Etikette und Gebräuche" parent="0" spec="1" type="active" value="1" />
+	<skill id="430400" name="Peitschen" parent="430000" spec="2" type="active" value="2" />
+<skill id="510200" name="Revolver" parent="510000" spec="2" type="active" value="2" />
+	<skill id="720100" name="Geschichte" parent="720000" spec="2" type="passive" value="2" />
+	<skill id="720101" name="Kultur / Epoche" parent="720100" spec="3" type="passive" value="0" />
+	<skill id="720102" name="Geschichte: Galaktisch" parent="720100" spec="3" type="passive" value="1" />
+	<skill id="720103" name="Geschichte: Menschen (ältere)" parent="720100" spec="3" type="passive" value="2" />
+	<skill id="720104" name="Geschichte: Menschen (neuere)" parent="720100" spec="3" type="passive" value="3" />
+	<skill id="720105" name="Geschichte: Hazaru" parent="720100" spec="3" type="passive" value="2" />
+	<skill id="720106" name="Geschichte: Douwg" parent="720100" spec="3" type="passive" value="2" />
+	<skill id="720301" name="Zoll- und Einfuhrbestimmungen" parent="720300" spec="3" type="passive" value="1" />
+	<skill id="810100" name="Novababel" parent="810000" spec="2" type="lang" value="2" />
+	<skill id="810200" name="Novasperanto" parent="810000" spec="2" type="lang" value="2" />
+	<skill id="810300" name="Anglesh" parent="810000" spec="2" type="lang" value="2" />
+	<skill id="811400" name="Konklav-Hazaru" parent="810000" spec="2" type="lang" value="2" />
+	<skill id="811700" name="Rhu" parent="810000" spec="2" type="lang" value="2" />
+	<skill id="910300" name="Kunst" parent="910000" spec="2" type="passive" value="1" />
+	</skills><inventory><account balance="-745.0" initial="0" name="0" /><item content="8 6 7 5 4" equipped="1" id="1" name="Ein Revolver" price="350.0" quality="6" quantity="1" type="Revolver" weight="800"><damage value="2/-1" />
+			<ammo active="1" chambers="5" loaded="8 6 7 5 4" />
+			<option name="Kaliber" value=".357 ParaTec" /><description>Bei dieser Waffe handelt es sich um einen schweren Revolver.
+</description></item><item equipped="0" id="2" inside="9" name="Schweres Vollmantelgeschoss" price="1.0" quality="6" quantity="25" type="Munition" weight="20"><damage value="2/-1" />
+			<option name="Kaliber" value=".357 ParaTec" /><description>Eine schwere Patrone für schwere Pistolen und Revolver.
+</description></item><item equipped="0" id="4" inside="1" name="Schweres Vollmantelgeschoss" price="1.0" quality="6" quantity="1" type="Munition" weight="20"><damage value="2/-1" />
+			<option name="Kaliber" value=".357 ParaTec" /><description>Eine schwere Patrone für schwere Pistolen und Revolver.
+</description></item><item equipped="0" id="5" inside="1" name="Schweres Vollmantelgeschoss" price="1.0" quality="6" quantity="1" type="Munition" weight="20"><damage value="2/-1" />
+			<option name="Kaliber" value=".357 ParaTec" /><description>Eine schwere Patrone für schwere Pistolen und Revolver.
+</description></item><item equipped="0" id="6" inside="1" name="Schweres Vollmantelgeschoss" price="1.0" quality="6" quantity="1" type="Munition" weight="20"><damage value="2/-1" />
+			<option name="Kaliber" value=".357 ParaTec" /><description>Eine schwere Patrone für schwere Pistolen und Revolver.
+</description></item><item equipped="0" id="7" inside="1" name="Schweres Vollmantelgeschoss" price="1.0" quality="6" quantity="1" type="Munition" weight="20"><damage value="2/-1" />
+			<option name="Kaliber" value=".357 ParaTec" /><description>Eine schwere Patrone für schwere Pistolen und Revolver.
+</description></item><item equipped="0" id="8" inside="1" name="Schweres Vollmantelgeschoss" price="1.0" quality="6" quantity="1" type="Munition" weight="20"><damage value="2/-1" />
+			<option name="Kaliber" value=".357 ParaTec" /><description>Eine schwere Patrone für schwere Pistolen und Revolver.
+</description></item><item content="2" equipped="1" id="9" name="Kleiner Rucksack" price="50.0" quality="6" quantity="1" type="Tasche" weight="250"><container limit="10000" name="Kleiner Rucksack" />
+		<description>
+</description></item><item equipped="1" id="10" name="Hemd" price="20.0" quality="6" quantity="1" type="Kleidung" weight="150"><container limit="100" name="Hemdtasche" />
+			<option name="Verschluss" value="Knopfleiste" /><option name="Ärmel" value="langarm" /><description>Ein zeitloser Klassiker. Das Hemd in einfacher Ausführung. Verfügbar mit klassischer Knopfleiste oder aber auch mit verdecktem Reißverschluss.
+</description></item><item equipped="1" id="11" name="Cargohose" price="50.0" quality="6" quantity="1" type="Kleidung" weight="250"><container limit="1000" name="Hosentaschen" />
+			<description>Bei dieser Freizeit- und Arbeitshose handelt es sich um die 'zivile' Variante der klassischen Uniformhose mit seitlich aufgesetzten Taschen.
+</description></item><item equipped="1" id="12" name="Jackett" price="150.0" quality="6" quantity="1" type="Kleidung" weight="1200"><description>Eine leichte Anzugjacke für formelle Anlässe, üblicherweise aus einem eher hochwertigeren Stoff gefertigt
+</description></item><item equipped="1" id="13" name="Peitsche" price="100.0" quality="6" quantity="1" type="Andere Nahkampfwaffen" weight="300"><damage value="1/-1" />
+			<description>Peitsche
+</description></item></inventory><contacts /></character>
