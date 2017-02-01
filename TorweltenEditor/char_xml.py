@@ -4,7 +4,6 @@
 This module is used to store, access and modify a characters ElementTree representation 
 """
 
-
 import xml.etree.ElementTree as et
 import tkinter as tk
 import random
@@ -53,15 +52,15 @@ class Character():
     def _newChar(self):
         char = et.Element('character')
         basics = et.SubElement(char, 'basics')
-        et.SubElement(basics, 'xp', total = '0', available = '0')
-        et.SubElement(basics, 'edit', type = 'generation')
+        et.SubElement(basics, 'xp', total='0', available='0')
+        et.SubElement(basics, 'edit', type='generation')
         attributes = et.SubElement(char, 'attributes')
         for attr in self.ATTRIB_LIST:
-            et.SubElement(attributes, 'attribute', name = attr, value = '0')
+            et.SubElement(attributes, 'attribute', name=attr, value='0')
         et.SubElement(char, 'traits')
         et.SubElement(char, 'skills') 
         inventory = et.SubElement(char, 'inventory')
-        et.SubElement(inventory,"account",{"name":"0"})
+        et.SubElement(inventory,"account", name="0")
         et.SubElement(char, 'contacts')
         et.SubElement(char, 'events')
         char_tree = et.ElementTree(char)

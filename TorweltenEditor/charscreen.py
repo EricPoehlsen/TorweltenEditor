@@ -17,7 +17,8 @@ msg = config.Messages()
 
 class CharScreen(tk.Frame):
     """ The CharScreen class displays the character on the main_screen frame
-    main - MainScreen instance 
+    main (tk.Frame): the parent frame in which to display
+    app (Application): the main application 
     """
     def __init__(self, main, app):
         tk.Frame.__init__(self,main)
@@ -43,41 +44,71 @@ class CharScreen(tk.Frame):
             app.open_windows["inv"].close()
         if (app.open_windows["itemedit"] != 0):
             app.open_windows["itemedit"].close()
-    
-        # ##############################FRAME 1 # ###################################
+
+        # from here on we are building the screen layout ...
+
+        # column 1 ...
         self.frame_1 = frame_1 = tk.Frame(self)
-        
+
+        # starting with the attribute frame ...
         attr_frame = tk.Frame(frame_1)
         attr_list = self.char.ATTRIB_LIST
 
         for attr in attr_list:
             frame = tk.LabelFrame(attr_frame, text = attr.upper())
             # initiate the IntVars and bind their tcl names to the attributes
-            self.char.attrib_values[attr] = tk.IntVar()
-            self.char.attrib_values[attr].set(self.char.getAttributeValue(attr))
+            attrib_values = self.char.attrib_values
+            attrib_values[attr] = tk.IntVar()
+            attrib_values[attr].set(self.char.getAttributeValue(attr))
             
+            # in generation mode we have spinboxes ...             
             if (self.char.getEditMode() == "generation"):
-                self.char.attrib_trace[str(self.char.attrib_values[attr])] = attr
+                self.char.attrib_trace[str(attrib_values[attr])] = attr
 
-                self.widgets[attr] = tk.Spinbox(frame, from_= 0, to = 9, textvariable = self.char.attrib_values[attr], font = "Arial 12 bold", width = 3)
+                self.widgets[attr] = tk.Spinbox(
+                    frame, 
+                    from_=0, 
+                    to=9, 
+                    textvariable=attrib_values[attr], 
+                    font="Arial 12 bold", 
+                    width=3
+                    )
                 self.widgets[attr].pack()
                 self.char.widgets = self.widgets
-                self.char.attrib_values[attr].trace("w",self.char.attributeSpinner)
+                self.char.attrib_values[attr].trace(
+                    "w",
+                    self.char.attributeSpinner
+                    )
 
+            # in edit mode there are buttons and labels
             if (self.char.getEditMode() == "edit"):
-                value_field = tk.Label(frame, textvariable = self.char.attrib_values[attr], font = "Arial 12 bold", width = 3)
+                value_field = tk.Label(
+                    frame, 
+                    textvariable=attrib_values[attr], 
+                    font="Arial 12 bold",
+                    width = 3
+                    )
                 value_field.pack(side = tk.LEFT)
-                self.widgets[attr+"_inc"] = tk.Button(frame, text = "+", command = lambda attr = attr: self.increaseAttribute(attr))
-                self.widgets[attr+"_inc"].pack (side = tk.RIGHT)
+                self.widgets[attr+"_inc"] = tk.Button(
+                    frame, 
+                    text="+",
+                    command=lambda attr=attr: self.increaseAttribute(attr))
+                self.widgets[attr+"_inc"].pack(side=tk.RIGHT)
             
+            # in view mode there is only a label ...
             if (self.char.getEditMode() == "view"):
-                value_field = tk.Label(frame, textvariable = self.char.attrib_values[attr], font = "Arial 12 bold", width = 3)
+                value_field = tk.Label(
+                    frame,
+                    textvariable=attrib_values[attr], 
+                    font="Arial 12 bold",
+                    width=3
+                    )
                 value_field.pack()
 
             frame.pack()
-        
         attr_frame.pack(anchor = tk.N)    
         
+        # this displays the characters XP
         xp_frame = tk.LabelFrame(frame_1, text = msg.XP)
         xp_avail = tk.Label(xp_frame, textvariable = self.char.xp_avail)
         self.char.xp_avail.set(self.char.getAvailableXP())
@@ -89,98 +120,168 @@ class CharScreen(tk.Frame):
         
         frame_1.pack(side = tk.LEFT, anchor = tk.N)
         
-        # END OF ATTRIBUTE FRAME
-
-        # ##############################FRAME 2 # ###################################
-
-        # THIS makes the second block # #
+        # this makes the second block 
         frame_2 = tk.Frame(self)
         
-        data_frame = tk.LabelFrame(frame_2, text = msg.CS_BASE_DATA, font = "Arial 10 bold")
-        data_list = []
-        data_list.append(['name', msg.NAME , 0, 0, 4])
-        data_list.append(['species', msg.SPECIES, 1, 0, 4])
-        data_list.append(['origin', msg.ORIGIN, 2, 0, 4])
-        data_list.append(['concept', msg.CONCEPT, 3, 0, 4])
-        data_list.append(['player', msg.PLAYER, 4, 0, 4])
-        data_list.append(['height', msg.HEIGHT, 5, 0, 1])
-        data_list.append(['weight', msg.WEIGHT, 5, 1, 1])
-        data_list.append(['age', msg.AGE, 5, 2, 1])
-        data_list.append(['gender', msg.GENDER, 5, 3, 1])
-        data_list.append(['hair', msg.HAIR, 6, 0, 1])
-        data_list.append(['eyes', msg.EYES, 6, 1, 1])
-        data_list.append(['skin', msg.SKIN_COLOR, 6, 2, 1])
-        data_list.append(['skintype', msg.SKIN_TYPE, 6, 3, 1])
+        # beginning with the data frame 
+        data_frame = tk.LabelFrame(
+            frame_2,
+            text=msg.CS_BASE_DATA,
+            font = "Arial 10 bold"
+            )
+
+        data_list = [
+            ['name', msg.NAME , 0, 0, 4],
+            ['species', msg.SPECIES, 1, 0, 4],
+            ['origin', msg.ORIGIN, 2, 0, 4],
+            ['concept', msg.CONCEPT, 3, 0, 4],
+            ['player', msg.PLAYER, 4, 0, 4],
+            ['height', msg.HEIGHT, 5, 0, 1],
+            ['weight', msg.WEIGHT, 5, 1, 1],
+            ['age', msg.AGE, 5, 2, 1],
+            ['gender', msg.GENDER, 5, 3, 1],
+            ['hair', msg.HAIR, 6, 0, 1],
+            ['eyes', msg.EYES, 6, 1, 1],
+            ['skin', msg.SKIN_COLOR, 6, 2, 1],
+            ['skintype', msg.SKIN_TYPE, 6, 3, 1]
+            ]
         for data in data_list:
             frame = tk.LabelFrame(data_frame, text = data[1])
             # creating a StringVar() and linking the tcl name
-            self.char.data_values[data[0]] = tk.StringVar()
-            self.char.data_trace[str(self.char.data_values[data[0]])] = data[0]
+            value_var = tk.StringVar()
+            self.char.data_values[data[0]] = value_var
+            self.char.data_trace[str(value_var)] = data[0]
 
             # retrieve already stored data from character
             stored_value = self.char.getData(data[0])
             
-            if (stored_value != ""):
-                self.char.data_values[data[0]].set(stored_value)
-          
-            entry = tk.Entry(frame, textvariable = self.char.data_values[data[0]], width = 10*data[4])
+            if stored_value:
+                value_var.set(stored_value)
+
+            width = 10 * data[4]
+            entry = tk.Entry(
+                frame, 
+                textvariable=value_var,
+                width=width
+                )
             entry.bind("<FocusOut>", self.dataUpdated)
-            entry.pack(fill = tk.X,expand = 1)
-            frame.grid(row = data[2], column = data[3], columnspan = data[4],sticky = "WE")
+            entry.pack(fill=tk.X, expand=1)
+            frame.grid(
+                row=data[2],
+                column=data[3],
+                columnspan=data[4],
+                sticky = "WE"
+                )
         
-        for row in range(7): data_frame.rowconfigure(row, weight = 1)
-        for col in range(4): data_frame.columnconfigure(col, weight = 1)
-        data_frame.pack(fill = tk.BOTH, anchor = tk.N,expand = 1)
+        for row in range(7): data_frame.rowconfigure(row, weight=1)
+        for col in range(4): data_frame.columnconfigure(col, weight=1)
+        data_frame.pack(fill=tk.BOTH, anchor=tk.N, expand=1)
 
-        # THIS FRAME IS USED TO DISPLAY THE CHARACTER TRAITS
-        traits_frame = tk.LabelFrame(frame_2, text = msg.CS_TRAITS, font = "Arial 10 bold")
+        # within this frame will be the character traits
+        traits_frame = tk.LabelFrame(
+            frame_2,
+            text=msg.CS_TRAITS,
+            font="Arial 10 bold")
 
-        # DISPLAY EXISTING TRAITS # #
-        self.traits_text = tk.Text(traits_frame, bg = "#dddddd", font = "Arial 8", wrap = tk.WORD, height = 10, width = 10)
+        self.traits_text = tk.Text(
+            traits_frame, 
+            bg="#dddddd", 
+            font="Arial 10",
+            wrap = tk.WORD,
+            height = 10,
+            width = 10
+            )
         self.updateTraitList()
         # finally pack the field and disable it for editing
         self.traits_text.pack(fill = tk.BOTH, expand = 1)
         traits_frame.pack(fill = tk.BOTH,expand = 1)
-        # this canvas is needed for resizing purposes
-        self.frame_2_resizer = tk.Canvas(frame_2,width = 250,height = 1)
-        self.frame_2_resizer.pack()
 
-        button_new_traits = tk.Button(traits_frame, text = msg.CS_ADD_TRAIT, command = self.showTraitWindow)
-        button_new_traits.pack(fill = tk.X)
+        new_traits_button = tk.Button(
+            traits_frame, 
+            text=msg.CS_ADD_TRAIT, 
+            command=self.showTraitWindow
+            )
+        new_traits_button.pack(fill = tk.X)
         traits_frame.pack(fill = tk.BOTH,expand = 1)
-        button_new_traits.bind("<Enter>",lambda event: ToolTip(self.winfo_toplevel(), event=event, message="Test Tooltip Message"))
-        frame_2.pack(side = tk.LEFT, anchor = tk.N,fill = tk.Y,expand = 1)
+        # TODO: THIS IS A TEST OF THE TOOLTIP!!!
+        new_traits_button.bind(
+            "<Enter>",
+            lambda event: 
+            ToolTip(
+                self.winfo_toplevel(), 
+                event=event, 
+                message="Test Tooltip Message"
+                )
+            )
+        frame_2.pack(side=tk.LEFT, anchor=tk.N, fill=tk.Y, expand=1)
 
-
-        # ##############################FRAME 3 # ###################################
-
+        # this frame holds the character skills ... 
         frame_3 = tk.Frame(self)
-        self.active_skill_frame = tk.LabelFrame(frame_3, text = msg.CS_ACTIVE_SKILLS, font = "Arial 10 bold")
-        self.active_skill_canvas = tk.Canvas(self.active_skill_frame,width = 190,height = 500)
-        self.active_skill_canvas.pack(side = tk.LEFT)
-        self.active_skill_scroll = tk.Scrollbar(self.active_skill_frame,orient = tk.VERTICAL)
-        self.active_skill_scroll.pack(side = tk.LEFT,fill = tk.Y)
-        self.active_skill_scroll.config(command=self.active_skill_canvas.yview)
-        self.active_skill_canvas.config(yscrollcommand=self.active_skill_scroll.set)
 
-        self.passive_skill_frame = tk.LabelFrame(frame_3, text = msg.CS_PASSIVE_SKILLS, font = "Arial 10 bold")
-        self.passive_skill_canvas = tk.Canvas(self.passive_skill_frame,width = 190,height = 500)
-        self.passive_skill_canvas.pack(side = tk.LEFT)
-        self.passive_skill_scroll = tk.Scrollbar(self.passive_skill_frame,orient = tk.VERTICAL)
-        self.passive_skill_scroll.pack(side = tk.LEFT,fill = tk.Y)
-        self.passive_skill_scroll.config(command=self.passive_skill_canvas.yview)
-        self.passive_skill_canvas.config(yscrollcommand=self.passive_skill_scroll.set)
-        # show existing skills
-        # add Skill
+        # active skills ...
+        self.active_skill_frame = tk.LabelFrame(
+            frame_3, 
+            text=msg.CS_ACTIVE_SKILLS, 
+            font="Arial 10 bold"
+            )
+        self.active_skill_canvas = tk.Canvas(
+            self.active_skill_frame,
+            width=190,
+            height=500
+            )
+        self.active_skill_canvas.pack(side=tk.LEFT)
+        self.active_skill_scroll = tk.Scrollbar(
+            self.active_skill_frame,
+            orient = tk.VERTICAL
+            )
+        self.active_skill_scroll.pack(sid =tk.LEFT, fill=tk.Y)
+        self.active_skill_scroll.config(
+            command=self.active_skill_canvas.yview
+            )
+        self.active_skill_canvas.config(
+            yscrollcommand=self.active_skill_scroll.set
+            )
+
+        # passive skills
+        self.passive_skill_frame = tk.LabelFrame(
+            frame_3, 
+            text=msg.CS_PASSIVE_SKILLS,
+            font = "Arial 10 bold"
+            )
+        self.passive_skill_canvas = tk.Canvas(
+            self.passive_skill_frame,
+            width=190,
+            height=500
+            )
+        self.passive_skill_canvas.pack(side=tk.LEFT)
+        self.passive_skill_scroll = tk.Scrollbar(
+            self.passive_skill_frame,
+            orient=tk.VERTICAL
+            )
+        self.passive_skill_scroll.pack(side=tk.LEFT, fill=tk.Y)
+        self.passive_skill_scroll.config(
+            command=self.passive_skill_canvas.yview
+            )
+        self.passive_skill_canvas.config(
+            yscrollcommand=self.passive_skill_scroll.set
+            )
+
+        # initialize the list and place it on screen ...
         self.updateSkillList()
-        self.active_skill_frame.grid(row = 0, column = 0, sticky = "nsew")
-        self.passive_skill_frame.grid(row = 0, column = 1, sticky = "nsew")
+        self.active_skill_frame.grid(row=0, column=0, sticky="nsew")
+        self.passive_skill_frame.grid(row=0, column=1, sticky="nsew")
         
-        new_skill_button = tk.Button(frame_3, text = msg.CS_ADD_SKILLS, command = self.showSkillWindow)
-        new_skill_button.grid(row = 1, column = 0, columnspan = 2, sticky = "nsew")
+        # and a button to add skills
+        new_skill_button = tk.Button(
+            frame_3, 
+            text=msg.CS_ADD_SKILLS, 
+            command=self.showSkillWindow
+            )
+        new_skill_button.grid(row=1, column=0, columnspan=2, sticky="nsew")
 
-        frame_3.rowconfigure(0, weight = 100)
-        frame_3.pack(side = tk.LEFT, anchor = tk.N, fill = tk.BOTH)
+        frame_3.rowconfigure(0, weight=100)
+        frame_3.pack(side=tk.LEFT, anchor =tk.N, fill = tk.BOTH)
+
 
     def increaseAttribute(self,attr):
         self.char.increaseAttribute(attr)
@@ -328,8 +429,19 @@ class CharScreen(tk.Frame):
                 self.char.skill_values[skill_text].trace("w", self.char.skillSpinner)
                 # use a spinbox to move skill up and down
             
-            value_spinner = tk.Spinbox(canvas, from_=0, to=3, textvariable = self.char.skill_values[skill_text], width = 2, font = "Arial 10 bold")
-            value_button = self.widgets[skill_text+"_inc"] = tk.Button(canvas,text = "+", command = lambda canvas = canvas, skill_text = skill_text: self.increaseSkill(skill_text,canvas))
+            value_spinner = tk.Spinbox(
+                canvas, 
+                from_=0, 
+                to=3, 
+                textvariable=self.char.skill_values[skill_text], 
+                width=2, 
+                font = "Arial 10 bold"
+                )
+            value_button = self.widgets[skill_text+"_inc"] = tk.Button(
+                canvas,
+                text="+", 
+                command=lambda canvas=canvas, skill_text=skill_text:
+                    self.increaseSkill(skill_text,canvas))
             value_text = self.char.skill_values[skill_text].get()
  
             # render the line to the canvas
