@@ -77,7 +77,7 @@ class CharScreen(tk.Frame):
                 self.char.widgets = self.widgets
                 self.char.attrib_values[attr].trace(
                     "w",
-                    self.char.attributeSpinner
+                    self.char.attributeChange
                     )
 
             # in edit mode there are buttons and labels

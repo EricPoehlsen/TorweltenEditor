@@ -1,5 +1,3 @@
-# coding=utf-8
-
 """
 This module is used to store, access and modify a characters ElementTree representation 
 """
@@ -16,13 +14,22 @@ import config
 msg = config.Messages()
 
 class Character():
+    """ a character object 
+
+    this is mainly a wrapper around the underlying ElementTree which 
+    allows easy access to the appropriate parts of the tree ...
+
+    """
+
     def __init__(self):
         # this is the xml interpretation of the character
         self.ATTRIB_LIST = ["phy","men","soz","nk","fk","lp","ep","mp"]
-        self.xml_char = self._newChar()
-        self.addEvent(self.xml_char.getroot(),op=msg.CHAR_CREATED)
 
-        self.window = 0
+        # this is the main ElementTree!
+        self.xml_char = self._newChar()
+
+        # initial event
+        self.addEvent(self.xml_char.getroot(),op=msg.CHAR_CREATED)
 
         # some of the data is needed in other variables as well
         # the charactere attributes are stored as tkinter IntVar in a dict
@@ -47,9 +54,13 @@ class Character():
 
         self.widgets = {}
     
-    # create a new empty character # #
-    # DO NOT CALL OUTSIDE OF THIS CLASS! # #
+    # create a character
     def _newChar(self):
+        """ create a new character element tree 
+
+        return (et.ElementTree): the character skeleton"
+        """
+
         char = et.Element('character')
         basics = et.SubElement(char, 'basics')
         et.SubElement(basics, 'xp', total='0', available='0')
@@ -66,7 +77,7 @@ class Character():
         char_tree = et.ElementTree(char)
         return char_tree
 
-    # load an existing character # #
+    # load an existing character
     def load(self,file):
         self.xml_char = et.parse(file)
         self.addEvent(self.xml_char.getroot(),op=msg.CHAR_LOADED)
@@ -86,7 +97,6 @@ class Character():
         xp.set("total",str(total_xp))
         self.xp_avail.set(available_xp)
         self.addEvent(xp,mod=amount,op=reason)        
-
 
     # check in which edit mode the character is
     def getEditMode(self):
@@ -362,50 +372,58 @@ class Character():
         # overwriting the skills ... 
         skills[:] = [new_skill[-1] for new_skill in skill_list]
 
-    # updating an attribute wenn the spinner changes
-    # handling an IntVar.trace()
-    # var_name: tcl variable name
-    # empty: would be an index
-    # access_type: w / r - we only care for writes!
-    def attributeSpinner(self, var_name, empty, access_type):
-        if (access_type == "w"):
-            attrib_name = self.attrib_trace[var_name]
-            old_value = self.getAttributeValue(attrib_name)
-            new_value = old_value
+    # called as .trace() on the IntVars
+    def attributeChange(self, var_name, e=None, m=None):
+        """
+        handle an attribute change via Spinbox input
+
+        varname (string): the tk.IntVar we are tracing
+        e, m: not used (given by .trace())
+
+        """
+
+        attrib_name = self.attrib_trace[var_name]
+        old_value = self.getAttributeValue(attrib_name)
+        new_value = old_value
             
-            # we have to make sure a number is given and it is within the bounds of an attribute
-            try:
-                new_value = self.attrib_values[attrib_name].get()
-                if (new_value > 9): 
-                    new_value = 9
-                    self.attrib_values[attrib_name].set(new_value)
-                if (new_value < 0): 
-                    new_value = 0
-                    self.attrib_values[attrib_name].set(new_value)
-            except ValueError:
-                self.attrib_values[attrib_name].set(old_value)
+        # try reading the IntVar and make sure it is 
+        # within the valid bounds. 
+        try:
+            new_value = self.attrib_values[attrib_name].get()
+            if (new_value > 9): 
+                new_value = 9
+                self.attrib_values[attrib_name].set(new_value)
+            if (new_value < 0): 
+                new_value = 0
+                self.attrib_values[attrib_name].set(new_value)
+        except ValueError:
+            self.attrib_values[attrib_name].set(old_value)
 
-            old_xp_cost = old_value * (old_value + 1)
-            new_xp_cost = new_value * (new_value + 1)
-            xp_cost = new_xp_cost - old_xp_cost
-            self.updateAvailableXP(-xp_cost)
-            self.setAttribute(attrib_name, new_value)
+        # calculate xp cost and update attribute and xp. 
+        old_xp_cost = old_value * (old_value + 1)
+        new_xp_cost = new_value * (new_value + 1)
+        xp_cost = new_xp_cost - old_xp_cost
+        self.updateAvailableXP(-xp_cost)
+        self.setAttribute(attrib_name, new_value)
 
-    # returns a list with the names of the skills the character has
-    def getSkillList(self):
-        skills = list()
-        xml_skills = self.xml_char.findall("skills/skill")
-        for skill in xml_skills:
-            skills.append(skill.get("name"))
-        return skills    
-
-    # return a list with the characters traits
+    # get the characters traits
     def getTraits(self):
+        """ this method retrieves the characters traits
+
+        return [(et.Element<trait>, ...]
+        """
+
         xml_traits = self.xml_char.findall("traits/trait")
         return xml_traits
 
-    # return a character trait
     def getTrait(self, name):
+        """ retrieve a single character trait by name
+
+        name (string): name of the trait
+
+        return (et.Element<trait>): a single trait Element
+        """
+
         xml_trait = self.xml_char.find("traits/trait[@name='"+name+"']")
         return xml_trait
 
@@ -424,14 +442,12 @@ class Character():
 
     # returns a list with the names of the traits the character has
     def getTraitList(self):
-        traits = list()
+        traits = []
         xml_traits = self.xml_char.findall("traits/trait")
         for trait in xml_traits:
             traits.append(trait.get("name"))
         return traits    
 
-
-    # returns the skills as a list of etree elements
     def getSkills(self):
         skills = list()
         xml_skills = self.xml_char.findall("skills/skill")
@@ -449,6 +465,14 @@ class Character():
         xml_skill = self.xml_char.find("skills/skill[@id='"+id+"']")
         return xml_skill
 
+    # get a list of charakter skills 
+    def getSkillList(self):
+        skill_list = []
+        xml_skills = self.xml_char.findall("skills/skill")
+        for skill in xml_skills:
+            skill_list.append(skill.get("name"))
+        return skill_list    
+
 
     # returns the available XP from the XML object as integer
     def getTotalXP(self):
@@ -463,10 +487,6 @@ class Character():
         new_value = int(old_value + value)
         xp_element.set("available",str(new_value))
         self.xp_avail.set(new_value)
-
-    # update the changed attributes 
-    def updateAttributes(self):
-        pass
     
     # changing an attribute 
     def updateAttribute(self, attr_name, amount):
@@ -504,10 +524,9 @@ class Character():
         self.attrib_values[attrib_name].set(value)
         self.addEvent(xml_attr, op=msg.CHAR_ATTRIBUTE_CHANGED)
 
-
-
-###############HANDLING THE INVENTORY # ################
-
+    ####                          ####
+    #     Handling the inventory     #
+    ####                          ####
 
     # retrieve the inventory object of a character
     def getInventory(self):
@@ -643,7 +662,6 @@ class Character():
         
         if quantity > 0:
             item.set("quantity", str(quantity))
-
         else:
             inventory = self.getInventory()
             inventory.remove(item) 
