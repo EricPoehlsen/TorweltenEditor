@@ -1,0 +1,59 @@
+=======================================================================
+                      Torwelten Editor v.0.0
+=======================================================================
+
+This software is a character generator and toolbox for the pen and
+paper roleplaying universe "Torwelten" http://www.torwelten.com
+Author of this program is Eric Pöhlsen: https://www.eric-poehlsen.de
+
+The program in its present state is provided free of cost and
+"open-source". The author does not give any warranty concerning the
+usability and security of this software.
+
+The program is written in Python 3.6 and uses a number of different
+libraries and modules:
+
+It uses 'tkinter' for rendering the GUI with Tcl/Tk. 'ElementTree'
+is used to handle the XML parsing. Image imports are using the Python
+Imaging Library PIL (You can use Pillow as well).
+
+PDF exports are realized using the open-source-module 'ReportLab':
+http://www.reportlab.com/opensource
+
+A compiled Microsoft Windows executable stand-alone version of this
+software is created using 'Py2Exe': http://www.py2exe.org/
+[with Python 3.4 at the moment]
+
+Any program routines written by me are to be regarded as 'open-source'
+they may be used as inspiration and can be copied in small bits without
+explicit attribution. I only ask you not to distribute only slightly
+modified derivatives of the full program.
+
+If you liked my inspiration I'd appreciate links to my website
+https://www.eric-poehlsen.de or the project website:
+http://www.torwelten.com
+
+=======================================================================
+
+User-interface-icons within the subdirectory ./ui_img are part of the
+Free FatCow-Farm Fresh Icons v.3.92 icon set. They are distributed with
+the Creative Commons License in version 3.0, specified as CC-BY-3.0
+https://creativecommons.org/licenses/by/3.0/
+
+The attribution is hereby given to http://www.fatcow.com/free-icons
+
+I do not take ownership for any derivative icons within the mentioned
+dictionary, they are to be regarded as part of the original icon set.
+
+=======================================================================
+
+Especially for the PDF export the program uses the font "H.H. Samuel"
+by Fernando Haro. The font is published unter SIL Open Font License,
+version 1.1. http://scripts.sil.org/OFL
+
+=======================================================================
+
+The "Torwelten"-universe is published with the "Torwelten-Lizenz". It
+allows the non-commercial use of the universe. This license grants the
+"Torwelten-Projekt" the rights to add any content created for the
+universe to be included into the offical canon.

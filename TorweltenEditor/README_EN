@@ -1,0 +1,33 @@
+=======================================================================
+                              READ ME
+=======================================================================
+
+                 THIS IS A PRE ALPHA VERSION - v0.0!
+
+=======================================================================
+
+Where to start:
+
+run TorweltenEditor.py
+
+folders:
+
+../
+chars/      character directory
+data/       basic data
+fonts/      included fonts
+images/     images
+ui_img/     UI images [ONLY FatCow FarmFresh!]
+templates/  template files for PDF export
+
+the program is coded in python 3 (3.6 - should run fine 3.4+)
+
+beyond the standard library you'll need:
+* PIL (oder Pillow) -> pip install pillow
+* reportlab -> pip install reportlab
+
+=======================================================================
+
+to compile a windows version please run:
+> python setup.py py2exe
+[only 3.4 right now!]
