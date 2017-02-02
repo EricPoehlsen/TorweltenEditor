@@ -354,7 +354,7 @@ class ItemEditor(tk.Toplevel):
             sub_item = self.char.getItemById(sub_item_id)
             if sub_item is not None:
                 self.char.unpackItem(sub_item)
-        self.char.addEvent(self.item,op=msg.CHAR_ITEM_SELL)
+        self.char.logEvent(self.item, op=msg.CHAR_ITEM_SELL)
         self.char.setItemQuantity(self.item,0)
         self.char.updateAccount(price * quantity)
         self.app.updateItemList()
@@ -390,7 +390,7 @@ class ItemEditor(tk.Toplevel):
                 if sub_item is not None:
                     self.char.unpackItem(sub_item)
 
-            self.char.addEvent(self.item,op=msg.CHAR_ITEM_DESTROY)
+            self.char.logEvent(self.item, op=msg.CHAR_ITEM_DESTROY)
             self.char.setItemQuantity(self.item,0)
             self.app.updateItemList()
             self.close(destroy = True)
@@ -637,7 +637,7 @@ class ItemEditor(tk.Toplevel):
     def close(self,load = None,destroy = False):
         if not destroy and len(self.description_content) > 1: 
             self.item.find("description").text = self.description_content
-            self.char.addEvent(self.item, op=msg.CHAR_ITEM_DESCRIPTION)
+            self.char.logEvent(self.item, op=msg.CHAR_ITEM_DESCRIPTION)
                 
 
         # destroy window and remove from list
@@ -680,7 +680,7 @@ class ItemEditor(tk.Toplevel):
                     op = msg.CHAR_ITEM_UPDATE
                     
                 self.item.set(attribute,new_value)
-                self.char.addEvent(self.item, mod=mod_info, op=msg.CHAR_ITEM_UPDATE)
+                self.char.logEvent(self.item, mod=mod_info, op=msg.CHAR_ITEM_UPDATE)
                 self.app.updateItemList()
 
     # updating an item tag
@@ -708,5 +708,5 @@ class ItemEditor(tk.Toplevel):
             if new_value != old_value:
                 tag.set("value",new_value)
                 mod_info = tagname+":"+new_value
-                self.char.addEvent(self.item, mod=mod_info, op=msg.CHAR_ITEM_UPDATE)
+                self.char.logEvent(self.item, mod=mod_info, op=msg.CHAR_ITEM_UPDATE)
                 

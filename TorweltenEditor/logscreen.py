@@ -17,12 +17,12 @@ class LogScreen(tk.Frame):
         self.char = app.char
 
         # create canvas ... 
-        self.log_canvas = tk.Canvas(self,width = 770,height = 540)
-        self.log_canvas.pack(side = tk.LEFT)
-        self.log_scroll = tk.Scrollbar(self,orient = tk.VERTICAL)
-        self.log_scroll.pack(side = tk.LEFT, fill = tk.Y) 
-        self.log_scroll.config(command = self.log_canvas.yview)
-        self.log_canvas.config(yscrollcommand = self.log_scroll.set)
+        self.log_canvas = tk.Canvas(self, width=770, height=540)
+        self.log_canvas.pack(side=tk.LEFT)
+        self.log_scroll = tk.Scrollbar(self, orient=tk.VERTICAL)
+        self.log_scroll.pack(side=tk.LEFT, fill=tk.Y)
+        self.log_scroll.config(command=self.log_canvas.yview)
+        self.log_canvas.config(yscrollcommand=self.log_scroll.set)
 
         self.renderLog()
 
@@ -59,7 +59,7 @@ class LogScreen(tk.Frame):
             # display skill modifications
             elif element == "skill":
                 id = int(event.get("id"))
-                value = int(event.get("value","0"))
+                value = int(event.get("value", "0"))
                 skill_name = self.char.getSkillById(str(id)).get("name")
                 event_string = op + ": " + skill_name + " - " + str(value)
                 # storing data for the integrity check
@@ -100,7 +100,7 @@ class LogScreen(tk.Frame):
                 else: 
                     event_string = name + " " + str(quantity) + " " + op
                 # for the integrity check ... 
-                items[id] = (hash_value)
+                items[id] = hash_value
 
             else:
                 event_string = op
@@ -111,17 +111,30 @@ class LogScreen(tk.Frame):
             y += label.winfo_reqheight()
  
         # checking the log file integrity ... 
-        data_integrity = tk.LabelFrame(self.log_canvas,text = "Datenintegrität")
-        check_frame = Checkresults(data_integrity,text="Ereignisliste",relief = tk.RIDGE,borderwidth=2)
+        data_integrity = tk.LabelFrame(
+            self.log_canvas,
+            text="Datenintegrität"
+            )
+        check_frame = Checkresults(
+            data_integrity,
+            text="Ereignisliste",
+            relief=tk.RIDGE,
+            borderwidth=2
+            )
         stored_hash = int(events_tag.get("hash"))
         if stored_hash == current_hash:
             check_frame.setStatus("okay")
         else: 
-            check_frame.setStatus("okay")
+            check_frame.setStatus("error")
         check_frame.pack(side = tk.LEFT)
 
         # checking the attributes integrity ...
-        check_frame = Checkresults(data_integrity,text="Attribute",relief = tk.RIDGE,borderwidth=2)
+        check_frame = Checkresults(
+            data_integrity,
+            text="Attribute",
+            relief=tk.RIDGE,
+            borderwidth=2
+            )
         check_frame.setStatus("okay")
         for name in attributes:
             char_value = self.char.getAttributeValue(name)
@@ -131,7 +144,12 @@ class LogScreen(tk.Frame):
         check_frame.pack(side = tk.LEFT)
 
         # checking the skills for integrity
-        check_frame = Checkresults(data_integrity,text="Fertigkeiten",relief = tk.RIDGE,borderwidth=2)
+        check_frame = Checkresults(
+            data_integrity,
+            text="Fertigkeiten",
+            relief=tk.RIDGE,
+            borderwidth=2
+            )
         check_frame.setStatus("okay")
         current_skills = self.char.getSkills()
         for skill in skills:
@@ -142,7 +160,12 @@ class LogScreen(tk.Frame):
         check_frame.pack(side = tk.LEFT)
 
         # inventory integrity check
-        check_frame = Checkresults(data_integrity,text="Inventar",relief = tk.RIDGE,borderwidth=2)
+        check_frame = Checkresults(
+            data_integrity,
+            text="Inventar",
+            relief=tk.RIDGE,
+            borderwidth=2
+            )
         check_frame.setStatus("okay")
         current_items = self.char.getItems()
         for item in current_items:
@@ -158,6 +181,7 @@ class LogScreen(tk.Frame):
 
         # ... finally set the canvas scrollbox ... 
         self.log_canvas.config(scrollregion = self.log_canvas.bbox(tk.ALL))
+
 
 class Checkresults(tk.Frame):
     """ A two-state status display

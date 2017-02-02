@@ -62,7 +62,7 @@ class CharScreen(tk.Frame):
             attrib_values[attr].set(self.char.getAttributeValue(attr))
             
             # in generation mode we have spinboxes ...             
-            if (self.char.getEditMode() == "generation"):
+            if self.char.getEditMode() == "generation":
                 self.char.attrib_trace[str(attrib_values[attr])] = attr
 
                 self.widgets[attr] = tk.Spinbox(
@@ -426,7 +426,7 @@ class CharScreen(tk.Frame):
             # how to display the value (spinbox / value+button / only value)
             if (edit_mode == "generation"):
                 # adding a trace to the variable
-                self.char.skill_values[skill_text].trace("w", self.char.skillSpinner)
+                self.char.skill_values[skill_text].trace("w", self.char.skillChange)
                 # use a spinbox to move skill up and down
             
             value_spinner = tk.Spinbox(

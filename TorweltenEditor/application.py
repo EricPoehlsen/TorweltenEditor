@@ -1,5 +1,3 @@
-# coding=utf-8
-
 import re
 import tkinter.filedialog as tkfd
 import char_xml as character
@@ -24,9 +22,17 @@ import tkinter as tk
 
 msg = config.Messages()
 
+
 class Application(tk.Frame):
+    """ The applications main window layout
+
+    within this you find the primary screen layout
+    the calls to other windows and the definition of
+    the menus.
+    """
+
     def __init__(self, main):
-        tk.Frame.__init__(self,main)
+        tk.Frame.__init__(self, main)
         # maybe important later ... 
         self.dimensions = None
         
@@ -42,7 +48,7 @@ class Application(tk.Frame):
         # create the menu # #
         self.menubar = tk.Menu(main)
         # building the file menu
-        self.filemenu = tk.Menu(self.menubar,tearoff = "0")
+        self.filemenu = tk.Menu(self.menubar, tearoff="0")
         self.filemenu.add_command(
             label=msg.MENU_NEW,
             command=self.newChar
@@ -69,7 +75,7 @@ class Application(tk.Frame):
             )
 
         # building the tools menu
-        self.toolmenu = tk.Menu(self.menubar,tearoff = "0")
+        self.toolmenu = tk.Menu(self.menubar, tearoff="0")
         self.toolmenu.add_command(
             label=msg.MENU_EWT,
             command=lambda: self._switchWindow(msg.MENU_EWT)
@@ -153,7 +159,7 @@ class Application(tk.Frame):
         for button_label in buttons:
             button = tk.Button(self.toolbar, text=button_label)
             button.config(
-                command=lambda label = button_label:
+                command=lambda label=button_label:
                 self._switchWindow(label)
                 ) 
             button.pack(side=tk.LEFT)
@@ -172,14 +178,14 @@ class Application(tk.Frame):
     # display the file open dialog and load a characterfile 
     def openCharWindow(self):
         options = {
-            'defaultextension':'.xml',
+            'defaultextension': '.xml',
             'filetypes': [('Charakterdateien', '.xml')],
             'initialdir': './chars',
             'initialfile': 'character.xml',
             'parent': self.main,
             'title': 'Charakter laden ...',
             }
-        file = tkfd.askopenfile(mode="rb",**options)
+        file = tkfd.askopenfile(mode="rb", **options)
         if file:
             self.char.load(file)
             file.close()
@@ -188,13 +194,13 @@ class Application(tk.Frame):
         else:
             pass
 
-   # display the file save dialog and load a characterfile 
+    # display the file save dialog and load a characterfile
     def saveCharWindow(self):
         suggested_filename = "character.xml"
         charname = self.char.getData("name")
         if len(charname) > 0:
-            filter = "[^a-zA-Z0-9\xE4\xF6\xFC\xC4\xD6\xDC\xDF]"
-            suggested_filename = re.subn(filter,"_",charname)[0]+".xml"
+            regex = "[^a-zA-Z0-9\xE4\xF6\xFC\xC4\xD6\xDC\xDF]"
+            suggested_filename = re.subn(regex, "_", charname)[0]+".xml"
 
         options = {
             'defaultextension': '.xml',
@@ -208,13 +214,13 @@ class Application(tk.Frame):
         if file:
             self.char.save(file)
 
-   # display the file save dialog to export a PDF 
-    def exportCharWindow(self,template = None):
+    # display the file save dialog to export a PDF
+    def exportCharWindow(self, template=None):
         suggested_filename = "character.pdf"
         charname = self.char.getData("name")
         if len(charname) > 0:
-            filter = "[^a-zA-Z0-9\xE4\xF6\xFC\xC4\xD6\xDC\xDF]"
-            suggested_filename = re.subn(filter, "_", charname)[0]+".pdf"
+            regex = "[^a-zA-Z0-9\xE4\xF6\xFC\xC4\xD6\xDC\xDF]"
+            suggested_filename = re.subn(regex, "_", charname)[0]+".pdf"
             
         options = {
             'defaultextension': '.pdf',
@@ -227,15 +233,16 @@ class Application(tk.Frame):
         filename = tkfd.asksaveasfilename(**options)
         
         if len(filename) > 0:
-            pdfexport = ExportPdf(filename,self.char,self.traits,template)
+            ExportPdf(filename, self.char, self.traits, template)
 
-    ## clear the main_frame 
+    # clear the main_frame
     def _clearMainFrame(self):
         """ this destroys all children of self.main_frame"""
 
         widgets = self.main_frame.winfo_children()
         for widget in widgets: widget.destroy()
 
+    # switching to another progam part ...
     def _switchWindow(self,label):
         """ switching the main window 
         label (str): text on the widget calling the command ...
@@ -265,7 +272,8 @@ class Application(tk.Frame):
 
     def about(self):
         print("About")
-    
+
+    # TODO this is a currently unused
     def startScreenImage(self):
         photo = ImageTk.PhotoImage(file="logo.png")
         label = tk.Label(self.main_frame, image = photo)
