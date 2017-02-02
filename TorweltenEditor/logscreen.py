@@ -45,7 +45,8 @@ class LogScreen(tk.Frame):
             
             # common data
             element = event.get("element")
-            op = event.get("op")
+            op = event.get("op", "")
+            mod = event.get("mod" ,"")
             date = event.get("date")
 
             # displaying an attribute edit
@@ -103,7 +104,7 @@ class LogScreen(tk.Frame):
                 items[id] = hash_value
 
             else:
-                event_string = op
+                event_string = op + mod
 
             # show the logline on screen ... 
             label = tk.Label(self.log_canvas,text = date + " - " + event_string)

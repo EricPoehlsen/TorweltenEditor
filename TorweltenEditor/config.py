@@ -314,6 +314,7 @@ class Messages:
     # these strings are used in the character xml 
     CHAR_CREATED = "Charaktergenerierung gestartet ..."
     CHAR_INITIAL_XP = "Initiale Generierungspunkte"
+    CHAR_STARTING_CAPITAL = "Startkapital"
     CHAR_LOADED = "geöffnet"
     CHAR_SAVED = "gespeichert"
     CHAR_SWITCHED_EDIT_MODE = "Bearbeitungsmodus gewechselt"
@@ -354,7 +355,8 @@ class Messages:
     ep = "Energiepunkte"
     mp = "Moralpunkte"
 
-#THIS CLASS DEFINES VALUES CONCERNING PDF EXPORTS
+
+# THIS CLASS DEFINES VALUES CONCERNING PDF EXPORTS
 class Page:
     """ 
     The Page class defines core variables for the PDF Export. 
@@ -407,7 +409,8 @@ class Page:
     MOD_NOTES = "notes"
     MOD_IMAGE = "image"
 
-#this class handles the names of item types that are imported via xml
+
+# this class handles the names of item types that are imported via xml
 class ItemTypes:
     #  clothing and armor
     CLOTHING = "Kleidung"
@@ -452,7 +455,8 @@ class ItemTypes:
     OPTION_CALIBER = "Kaliber"
     OPTION_COLOR = "Farbe"
 
-#this class handles character XML data names 
+
+# this class handles character XML data names
 class Character:
     # attributes
     PHY = "phy"
@@ -485,6 +489,8 @@ class Colors:
     DARK_RED = "#dd0000"
     DARK_GREEN = "#00aa00"
     LIGHT_YELLOW = "#ffffcc"
+
+
 class Style:
     FONT = "Arial"
     SIZE = "10"

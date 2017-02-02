@@ -8,6 +8,7 @@ import config
 it = config.ItemTypes()
 msg = config.Messages()
 
+
 class EquipmentScreen(tk.Frame):
     def __init__(self,main,app):
         tk.Frame.__init__(self,main)
@@ -90,13 +91,11 @@ class EquipmentScreen(tk.Frame):
         self.unassigned_scroll.config(command = self.unassigned_canvas.yview)
         self.unassigned_canvas.config(yscrollcommand = self.unassigned_scroll.set)
 
-
         self.unassigned_frame.pack(fill = tk.BOTH, expand = 1)
         self.right_frame.pack(side = tk.LEFT, anchor = tk.N, fill = tk.BOTH)
         
         self.showUnassignedItems()
 
-   
     # handling the initial account ... 
     def initialAccount(self,change = 0):
         """ This method is called to update the initial account
@@ -112,9 +111,9 @@ class EquipmentScreen(tk.Frame):
         if new_value < 0: new_value = 0
 
         # update the account and xp ..
-        self.char.updateAccount(change * 1000)
+        self.char.updateAccount(change*1000, reason=msg.CHAR_STARTING_CAPITAL)
         self.char.updateAvailableXP(-change)
-        account.set("initial",str(new_value))
+        account.set("initial", str(new_value))
 
         # display the value ... 
         initial_amount = 1000 * new_value
