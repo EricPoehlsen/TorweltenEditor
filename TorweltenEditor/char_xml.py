@@ -24,7 +24,7 @@ class Character:
 
     def __init__(self):
         # this is the xml interpretation of the character
-        self.ATTRIB_LIST = ["phy","men","soz","nk","fk","lp","ep","mp"]
+        self.ATTRIB_LIST = ["phy", "men", "soz", "nk", "fk", "lp", "ep", "mp"]
 
         # this is the main ElementTree!
         self.xml_char = self._newChar()
@@ -72,7 +72,7 @@ class Character:
         et.SubElement(char, 'traits')
         et.SubElement(char, 'skills') 
         inventory = et.SubElement(char, 'inventory')
-        et.SubElement(inventory,"account", name="0")
+        et.SubElement(inventory, "account", name="0")
         et.SubElement(char, 'contacts')
         et.SubElement(char, 'events')
         char_tree = et.ElementTree(char)
@@ -86,7 +86,7 @@ class Character:
     # save the current character # #
     def save(self, file):
         self.logEvent(self.xml_char.getroot(), op=msg.CHAR_SAVED)
-        self.xml_char.write(file,encoding = "utf-8", xml_declaration=True)
+        self.xml_char.write(file, encoding="utf-8", xml_declaration=True)
         file.close()
         
     def addXP(self, amount, reason=None):
@@ -94,8 +94,8 @@ class Character:
         available_xp = int(xp.get('available')) + amount
         total_xp = int(xp.get('total')) + amount
         
-        xp.set("available",str(available_xp))
-        xp.set("total",str(total_xp))
+        xp.set("available", str(available_xp))
+        xp.set("total", str(total_xp))
         self.xp_avail.set(available_xp)
         self.logEvent(xp, mod=amount, op=reason)
 
@@ -112,7 +112,7 @@ class Character:
         ALLOWED_MODES = ["generation", "edit", "simulation", "view"]
         if edit_mode in ALLOWED_MODES:
             edit_type = self.xml_char.find('basics/edit')
-            edit_type.set("type",edit_mode)
+            edit_type.set("type", edit_mode)
             self.logEvent(edit_type, mod=edit_mode, op=msg.CHAR_SWITCHED_EDIT_MODE)
 
     # get a single attribute value # #
@@ -133,7 +133,7 @@ class Character:
         return int(xp_element.get('available'))
     # add a known skill based on its name
 
-    def addSkill(self,name):
+    def addSkill(self, name):
         skilltree = skill_xml.SkillTree()
         new_skill = skilltree.getSkill(name)
         if new_skill is not None:
@@ -143,7 +143,7 @@ class Character:
             self.logEvent(new_skill, op=msg.CHAR_SKILL_ADDED)
 
     # add a skill element 
-    def addSkillElement(self,skill):
+    def addSkillElement(self, skill):
         if skill is not None:
             skill.set("value", "0")
             charskills = self.xml_char.find('skills')
@@ -151,54 +151,54 @@ class Character:
             self.logEvent(skill, op=msg.CHAR_SKILL_ADDED)
 
     # remove a skill from a charakter
-    def delSkill(self,name):
+    def delSkill(self, name):
         charskills = self.xml_char.find("skills")
         skill = self.xml_char.find("skills/skill[@name='"+name+"']")
         if skill is not None:
             value = int(skill.get("value"))
-            type = skill.get("type")
+            skill_type = skill.get("type")
             xp = value * (value + 1)
-            if (type == "language" or type == "passive"): xp = xp / 2
+            if skill_type == "language" or skill_type == "passive":
+                xp /= 2
             self.updateAvailableXP(xp)
             self.logEvent(skill, op=msg.CHAR_SKILL_REMOVED)
             charskills.remove(skill)
     
-    
-    #  add a selected trait
-    def addTrait(self,full_trait,vars,xp_var,description):
+    # add a selected trait
+    def addTrait(self, full_trait, variables, xp_var, description):
         trait = et.Element("trait")
         # set ID
-        id = self.getHighestTraitID() + 1
-        trait.set("id",str(id))
+        trait_id = self.getHighestTraitID() + 1
+        trait.set("id", str(trait_id))
 
         xp = xp_var.get()
         xp = xp[1:-1]
         trait.set("xp", str(xp))
         trait.set("name", str(full_trait.get("name")))
-        selected = et.SubElement(trait,"selected")
+        selected = et.SubElement(trait, "selected")
         # get the specification 
         specification = full_trait.find("specification")
         if specification is not None:
-            selected.set("spec", str(vars["spec"].get()))
+            selected.set("spec", str(variables["spec"].get()))
 
         # get the ranks
         ranks = full_trait.findall("rank")
         if ranks:
             for rank in ranks:
-                id = rank.get("id")
-                id_tag = "rank-"+id
-                selected.set(id_tag, str(vars["rank_"+id].get()))
+                rank_id = rank.get("id")
+                id_tag = "rank-"+rank_id
+                selected.set(id_tag, str(vars["rank_"+rank_id].get()))
         
         # get the variables
         variables = full_trait.findall("variable")
         if variables:
             for variable in variables:
-                id = variable.get("id")
-                id_tag = "id-"+id
-                selected.set(id_tag, str(vars["var_"+id].get()))
+                var_id = variable.get("id")
+                id_tag = "id-"+var_id
+                selected.set(id_tag, str(vars["var_"+var_id].get()))
         
         if len(description) > 1:
-            description_tag = et.SubElement(trait,"description") 
+            description_tag = et.SubElement(trait, "description")
             description_tag.text = description
 
         char_traits = self.xml_char.find('traits')
@@ -210,10 +210,10 @@ class Character:
     # just in case something is wrong with the IDs
     def resetTraitIDs(self):
         traits = self.getTraits()
-        id = 0
+        trait_id = 0
         for trait in traits:
-            trait.set("id",str(id))
-            id = id + 1
+            trait.set("id", str(trait_id))
+            trait_id += 1
     
     # get the highest current trait id    
     def getHighestTraitID(self):
@@ -222,12 +222,13 @@ class Character:
         return: INT
         """
         traits = self.getTraits()
-        id = 0
+        highest_id = 0
         for trait in traits:
-            trait_id = trait.get("id","0")
+            trait_id = trait.get("id", "0")
             trait_id = int(trait_id)
-            if trait_id > id: id = trait_id
-        return id
+            if trait_id > highest_id:
+                highest_id = trait_id
+        return highest_id
 
     # update basic character data or insert it if it does not yet exist
     def updateData(self, data_name, data_value):
@@ -312,7 +313,7 @@ class Character:
             self.logEvent(xml_skill, op=msg.CHAR_SKILL_CHANGED)
 
     # increasing an attribute by one - used in edit mode ...
-    def increaseAttribute(self,attr):
+    def increaseAttribute(self, attr):
         success = False
         old_value = self.getAttributeValue(attr)
         new_value = old_value + 1
@@ -326,20 +327,21 @@ class Character:
         
         # only increase if there is enough xp available
         if xp_avail >= xp_cost > 0:
-            self.setAttribute(attr,new_value)
+            self.setAttribute(attr, new_value)
             self.updateAvailableXP(-xp_cost)
             success = True
         return success
 
     # increasing a skill by one - used in edit mode ...
-    def increaseSkill(self,skill_name):
+    def increaseSkill(self, skill_name):
         success = False
         xml_skill = self.xml_char.find(".//skill[@name='"+skill_name+"']")
         old_value = int(xml_skill.get("value"))
         new_value = old_value + 1
 
         # limit for skills is 3
-        if new_value > 3: new_value = 3
+        if new_value > 3:
+            new_value = 3
         old_xp = old_value * (old_value + 1)
         new_xp = new_value * (new_value + 1)
         xp_cost = new_xp - old_xp
@@ -368,7 +370,7 @@ class Character:
         skill_list = []
         for skill in skills:
             key = skill.get("id")
-            skill_list.append((key,skill))
+            skill_list.append((key, skill))
         skill_list.sort()
         # overwriting the skills ... 
         skills[:] = [new_skill[-1] for new_skill in skill_list]
@@ -491,7 +493,7 @@ class Character:
         xp_element = self.xml_char.find("basics/xp")
         old_value = int(float(xp_element.get('available')))
         new_value = int(old_value + value)
-        xp_element.set("available",str(new_value))
+        xp_element.set("available", str(new_value))
         self.xp_avail.set(new_value)
     
     # changing an attribute
@@ -535,7 +537,7 @@ class Character:
         return inventory
 
     # retrieve items from the character
-    def getItems(self,name = None,item_type = None):
+    def getItems(self, name=None, item_type=None):
         """
         Get Items from the character xml
         name = None: otherwise give a string to retrieve all items with that name ...
@@ -545,24 +547,26 @@ class Character:
         items = None
         name_filter = ""
         type_filter = ""
-        if name: name_filter = "[@name='"+name+"']"
-        if item_type: type_finter =  "[@type='"+item_type+"']"
+        if name:
+            name_filter = "[@name='"+name+"']"
+        if item_type:
+            type_finter = "[@type='"+item_type+"']"
         return inventory.findall("./item"+name_filter+type_filter)
 
     # retrieve an item by its ID
-    def getItemById(self,id):
+    def getItemById(self, id):
         inventory = self.getInventory()
         item = inventory.find("item[@id='"+id+"']")
         return item
 
     # add an item to the inventory
-    def addItem(self,item,account = "0"):
+    def addItem(self, item, account="0"):
         
         # check if the character already owns this item ... 
         item_price = float(item.get("price"))
         item_quantity = int(item.get("quantity"))
         price_per_unit = item_price / item_quantity
-        item.set("price",str(price_per_unit))
+        item.set("price", str(price_per_unit))
 
         # if this is just another instance of this item 
         # so we simply update the quantity ...
@@ -571,25 +575,24 @@ class Character:
             old_quantity = int(existing_item.get("quantity"))
             item_quantity = int(item.get("quantity"))
             new_quantity = old_quantity + item_quantity
-            existing_item.set("quantity",str(new_quantity))
+            existing_item.set("quantity", str(new_quantity))
             self.logEvent(existing_item, op=msg.CHAR_ITEM_ADDED)
         else:                                          
             # set the item id
             new_id = self.getHighestItemID() + 1
-            item.set("id",str(new_id))
+            item.set("id", str(new_id))
         
             # add item to inventory
             inventory = self.getInventory()
             inventory.append(item)
             self.logEvent(item, op=msg.CHAR_ITEM_ADDED)
 
-        
         # pay for the item (it does not matter if we increased the quantity of one item
         # or created a new item ...
-        self.updateAccount(-item_price,account)
+        self.updateAccount(-item_price, account)
     
     # splitting an item stack
-    def splitItemStack(self,item,amount):
+    def splitItemStack(self, item, amount):
         """ splits an item stack
         item: an et.Element() <item>
         amount: int > 1 (the method will try its best to sanitize bad input)
@@ -597,13 +600,16 @@ class Character:
         """
         try:
             amount = int(amount)
-        except ValueError: amount = 1
+        except ValueError:
+            amount = 1
 
         item_quantity = int(item.get("quantity"))
         if item_quantity > 1:
             # limit the split to the stack size
-            if amount > item_quantity: amount = item_quantity - 1
-            if amount < 1: amount = 1
+            if amount > item_quantity:
+                amount = item_quantity - 1
+            if amount < 1:
+                amount = 1
 
             inventory = self.getInventory()
             
@@ -612,29 +618,29 @@ class Character:
             
             # copy attributes
             for attrib in item.attrib:
-                new_item.set(attrib,item.attrib[attrib])
+                new_item.set(attrib, item.attrib[attrib])
             
             # copy tags
             for tag in item:
                 new_item.append(tag)
 
             # set new id
-            id = self.getHighestItemID() + 1
-            new_item.set("id",str(id))
+            new_id = self.getHighestItemID() + 1
+            new_item.set("id", str(new_id))
             
             # set quantities
-            new_item.set("quantity",str(amount))
+            new_item.set("quantity", str(amount))
             
-            item_quantity = item_quantity - amount
-            item.set("quantity",str(item_quantity))
+            item_quantity -= amount
+            item.set("quantity", str(item_quantity))
 
             self.logEvent(new_item, op=msg.CHAR_ITEM_SPLIT)
             # add the new_item to the inventory
             inventory.append(new_item)
 
-            return (item_quantity, id)
+            return item_quantity, new_id
 
-    def condenseItem(self,item):
+    def condenseItem(self, item):
         """ condense all identical items into one <item>
         item: et.Element() <item>
         return: int final quantity of that item
@@ -647,15 +653,15 @@ class Character:
         while existing_item is not None:
             # add the quantity of the other item to this item and remove the other item
             existing_quantity = int(existing_item.get("quantity"))
-            item_quantity = item_quantity + existing_quantity
-            item.set("quantity",str(item_quantity))
+            item_quantity += existing_quantity
+            item.set("quantity", str(item_quantity))
             inventory.remove(existing_item)
             existing_item = self.getIdenticalItem(item)
             self.logEvent(item, op=msg.CHAR_ITEM_CONDENSED)
         return item_quantity
 
     # set the item quantity
-    def setItemQuantity(self,item,quantity):
+    def setItemQuantity(self, item, quantity):
         """ you can set the item quantity to any number ...
         item: et.Element() <item>
         quantity: int (a value <= 0 deletes the item)
@@ -668,65 +674,66 @@ class Character:
             inventory.remove(item) 
     
     # set the active chamber of a weapon ...
-    def setActiveChamber(self,weapon,value):
+    def setActiveChamber(self, weapon, value):
         """ This method sets the active chamber of a weapon (esp. Revolvers)
 
         """
         success = False
         ammo_tag = weapon.find("ammo")
         if ammo_tag is not None:
-            chambers = int(ammo_tag.get("chambers","1"))
+            chambers = int(ammo_tag.get("chambers", "1"))
             try:
                 number = int(value)
             except ValueError:
                 number = 0
-            if number >= 1 and number <= chambers:
-                ammo_tag.set("active",str(number))
+            if 1 <= number <= chambers:
+                ammo_tag.set("active", str(number))
                 success = True
 
             if value == "next":
-                current = int(ammo_tag.get("active","1"))
-                next = current + 1
-                if next > chambers: next = 1
-                ammo_tag.set("active",str(next))
+                current = int(ammo_tag.get("active", "1"))
+                next_chamber = current + 1
+                if next_chamber > chambers:
+                    next_chamber = 1
+                ammo_tag.set("active", str(next_chamber))
                 success = True
 
             if value == "random":
-                random_chamber = random.randint(1,chambers)
-                ammo_tag.set("active",str(random_chamber))
+                random_chamber = random.randint(1, chambers)
+                ammo_tag.set("active", str(random_chamber))
                 success = True
 
             self.logEvent(weapon, op=msg.CHAR_ITEM_ROTATECHAMBER)
             return success
 
     # get the active chamber of a weapon
-    def getActiveChamber(self,weapon):
+    def getActiveChamber(self, weapon):
         ammo_tag = weapon.find("ammo")
         active = None
         if ammo_tag is not None:
-            active = int(ammo_tag.get("active","1"))
+            active = int(ammo_tag.get("active", "1"))
         return active
 
     # gets the item loaded in a specific chamber
-    def getRoundFromChamber(self,weapon,chamber):
+    def getRoundFromChamber(self, weapon, chamber):
         ammo_tag = weapon.find("ammo")
-        round = None
+        bullet = None
         if ammo_tag is not None:
-            chambers = int(ammo_tag.get("chambers","1"))
+            chambers = int(ammo_tag.get("chambers", "1"))
             chamber = int(chamber)
             if chamber < 1 or chamber > chambers:
                 chamber = 1
-            ammo_list = ammo_tag.get("loaded","x").split()
+            ammo_list = ammo_tag.get("loaded", "x").split()
             if ammo_list[0] != "x":
                 round_id = ammo_list[chamber - 1]
-                round = self.getItemById(round_id)
-        return round
+                bullet = self.getItemById(round_id)
+        return bullet
 
-    def reloadChamber(self,ammo,weapon):
+    def reloadChamber(self, ammo, weapon):
         # get the status from the weapon
         
         ammo_tag = weapon.find("ammo")
-        content = ammo_tag.get("loaded","-1")
+        content = ammo_tag.get("loaded", "-1")
         if content != "-1":
             loaded = self.getItemById(str(content))
             if loaded is not None:
@@ -735,12 +742,12 @@ class Character:
         if ammo is not None: 
             ammo_id = ammo.get("id")
             self.unpackItem(ammo)
-            self.packItem(ammo,weapon)
+            self.packItem(ammo, weapon)
         else:
             ammo_id = "-1"
-        ammo_tag.set("loaded",ammo_id)
+        ammo_tag.set("loaded", ammo_id)
 
-    def removeRoundFromChamber(self,weapon,chamber=1):
+    def removeRoundFromChamber(self, weapon, chamber=1):
         """ this method is used to remove a loaded round from the chamber
         weapon: et.Element() <item> needs <ammo> tag
         chamber: int - number of affected chamber (input is mildly sanitized)
@@ -751,38 +758,38 @@ class Character:
         # get the data ...
         ammo_tag = weapon.find("ammo")
         if ammo_tag is not None:
-            loaded = ammo_tag.get("loaded","x")
-            chambers = int(ammo_tag.get("chambers","1"))
+            loaded = ammo_tag.get("loaded", "x")
+            chambers = int(ammo_tag.get("chambers", "1"))
             if loaded == "x":
                 loaded_list = []
-                i = 0
-                while i < chambers:
+
+                while chamber in range(chambers):
                     loaded_list.append("-1")
-                    i = i + 1
-            else: loaded_list = loaded.split()
+            else:
+                loaded_list = loaded.split()
 
             # remove the round, if one is currently chambered
             if int(chamber) > chambers or int(chamber) < 1: 
                 chamber = 1
-                result = result + 10
+                result += 10
             loaded_item = self.getItemById(loaded_list[chamber - 1])
             if loaded_item is not None: 
                 self.unpackItem(loaded_item)
-                result = result + 1
+                result += 1
             loaded_list[chamber - 1] = "-1"
             new_content = ""
-            i = 0
-            for entry in loaded_list: 
-                new_content = new_content + " " + loaded_list[i]
-                i = i + 1
+
+            for bullet in loaded_list:
+                new_content = new_content + " " + bullet
             new_content.strip()
-            ammo_tag.set("loaded",new_content)
-            ammo_tag.set("active",str(chamber))
-        else: result = -1
+            ammo_tag.set("loaded", new_content)
+            ammo_tag.set("active", str(chamber))
+        else:
+            result = -1
         return result
 
     # loading a round into the chamber of a weapon
-    def loadRoundInChamber(self,ammo,weapon):
+    def loadRoundInChamber(self, ammo, weapon):
         """ if this method is called the given item is loaded into the
         active chamber of the weapon
         ammo: etElement() <item> - if the quantity > 1 it will be split
@@ -791,13 +798,11 @@ class Character:
         """
         success = False
 
-        id = ammo.get("id")
-        
         # get the status from the weapon
         ammo_tag = weapon.find("ammo")
-        active_chamber = int(ammo_tag.get("active","1"))
-        loaded = ammo_tag.get("loaded","-1")
-        chambers = int(ammo_tag.get("chambers","1"))
+        active_chamber = int(ammo_tag.get("active", "1"))
+        loaded = ammo_tag.get("loaded", "-1")
+        chambers = int(ammo_tag.get("chambers", "1"))
         loaded_list = loaded.split()
         while len(loaded_list) < chambers:
             loaded_list.append("-1")
@@ -806,29 +811,27 @@ class Character:
         if loaded_list[active_chamber - 1] == "-1":
             # split the ammo item if necessary
             if int(ammo.get("quantity")) > 1:
-                item_quantity_and_new_item_id = self.splitItemStack(ammo,1)
+                item_quantity_and_new_item_id = self.splitItemStack(ammo, 1)
                 new_id = item_quantity_and_new_item_id[1]
-                new_ammo = self.getItemById(str(new_id))
-                self.packItem(new_ammo, weapon)
-                id = new_id
-            else: 
-                self.packItem(ammo, weapon)
+                ammo = self.getItemById(str(new_id))
 
+            self.packItem(ammo, weapon)
+            ammo_id = ammo.get("id", "-1")
             # place the bullet
-            loaded_list[active_chamber - 1] = str(id)
+            loaded_list[active_chamber - 1] = str(ammo_id)
             loaded = ""
             for entry in loaded_list:
                 loaded = loaded + " " + str(entry)
             loaded = loaded.strip()
-            ammo_tag.set("loaded",loaded)
+            ammo_tag.set("loaded", loaded)
             success = True
         return success
 
     # loading a single round to a clip ...
-    def loadRoundInClip(self,ammo,clip):
+    def loadRoundInClip(self, ammo, clip):
         success = False
         size = int(clip.find("container").get("size"))
-        current_content = clip.get("content","").split(" ")
+        current_content = clip.get("content", "").split(" ")
         number_loaded = 0
         if current_content[0] != "":
             number_loaded = len(current_content)
@@ -838,18 +841,17 @@ class Character:
         if space >= 1:
             # split 1 from the stack and add it to the clip ...
             if int(ammo.get("quantity")) > 1:
-                item_quantity_and_new_item_id = self.splitItemStack(ammo,1)
+                item_quantity_and_new_item_id = self.splitItemStack(ammo, 1)
                 new_id = item_quantity_and_new_item_id[1]
                 new_ammo = self.getItemById(str(new_id))
                 self.packItem(new_ammo, clip)
             else: 
-                self.packItem(ammo,clip)
+                self.packItem(ammo, clip)
             success = True
         return success
 
-
     # get all (equipped) containers
-    def getContainers(self,equipped = True):
+    def getContainers(self, equipped=True):
         """ get a list of all bags
         equipped=True: if False ALL bags will be returned, standard is 'only equipped bags'
         returns: [containers] a list of et.Element() <item> with a child <bag>
@@ -860,14 +862,14 @@ class Character:
         for item in items:
             container = item.find("container")
             if container is not None:
-                if (equipped == True and item.get("equipped","0") == "1"):
+                if equipped is True and item.get("equipped", "0") == "1":
                     containers.append(item)
-                elif equipped == False:
+                elif equipped is False:
                     containers.append(item)
         return containers
 
     # adding an item to a container
-    def packItem(self,item,container):
+    def packItem(self, item, container):
         """ Putting an item into a container
         item: et.Element <item>  - the item to put into the container.
         container: et.Element <item> - the container item 
@@ -880,28 +882,28 @@ class Character:
         # making sure you don't pack an item into itself ...
         if container_id != item_id:
             # appending the item_id to the container content attribute
-            container_content = container.get("content","")
+            container_content = container.get("content", "")
             container_content = container_content + " " + item_id
             container_content = container_content.strip()
             
-            container.set("content",container_content)
+            container.set("content", container_content)
 
             # writing the container to the item and unequipping the item 
-            item.set("inside",container_id)
-            item.set("equipped","0")
+            item.set("inside", container_id)
+            item.set("equipped", "0")
 
             self.logEvent(item, op=msg.CHAR_ITEM_PACKED)
             self.logEvent(container, op=msg.CHAR_ITEM_PACKED_BAG)
 
     # removing an item from a container
-    def unpackItem(self,item,equip=False):
+    def unpackItem(self, item, equip=False):
         """ remove an item from the bag it is in ...
         We do not have to know which bag the item is in, we ask the item ...
         item: et.Element() <item>
         equip=False: set True if you want to set the equipped attribute of the item to 1.
         """
 
-        container_id = int(item.get("inside","-1"))
+        container_id = int(item.get("inside", "-1"))
         
         # of course only if it is currently packed ...
         if container_id >= 0:
@@ -918,39 +920,41 @@ class Character:
                     new_content = new_content + " " + entry
 
             new_content = new_content.strip()           
-            container.set("content",new_content)
+            container.set("content", new_content)
            
             # set the item as unpacked (and equipped)
-            item.set("inside","-1")
-        if equip: item.set("equipped","1") 
+            item.set("inside", "-1")
+            if equip:
+                item.set("equipped", "1")
 
-        self.logEvent(item, op=msg.CHAR_ITEM_UNPACKED)
-        self.logEvent(container, op=msg.CHAR_ITEM_UNPACKED_BAG)
-    
+            self.logEvent(item, op=msg.CHAR_ITEM_UNPACKED)
+            self.logEvent(container, op=msg.CHAR_ITEM_UNPACKED_BAG)
+
     # this method returns the weight of an item and all subitems
-    def getWeight(self,item):
+    def getWeight(self, item):
         weight = 0
         if item is not None: 
-            weight = int(item.get("weight","0")) * int(item.get("quantity","0"))
-            content = item.get("content","")
+            weight = int(item.get("weight", "0")) * int(item.get("quantity", "0"))
+            content = item.get("content", "")
             content_list = content.split()
             for item_id in content_list:
                 sub_item = self.getItemById(str(item_id))
                 if sub_item is not None:
                     # add the weight of this item
-                    sub_quantity = int(sub_item.get("quantity","1"))
-                    sub_weight = int(sub_item.get("weight","0")) * sub_quantity
-                    weight = weight + sub_weight
+                    sub_quantity = int(sub_item.get("quantity", "1"))
+                    sub_weight = int(sub_item.get("weight", "0")) * sub_quantity
+                    weight += sub_weight
 
                     # add potentials contents to the list ...
-                    sub_content = sub_item.get("content","")
+                    sub_content = sub_item.get("content", "")
                     sub_content_list = sub_content.split()
-                    for sub_id in sub_content_list: content_list.append(str(sub_id))
+                    for sub_id in sub_content_list:
+                        content_list.append(str(sub_id))
 
         return weight
 
     # retrieve one item from the inventory that is identical to the one we are checking
-    def getIdenticalItem(self,item):
+    def getIdenticalItem(self, item):
         """ get one item that is 'identical' to the one to check
         item: an et.Element() <item> that we want to find a match for
         returns: et.Element() <item> so similar to the input, that we can just stack them (or None)
@@ -959,16 +963,15 @@ class Character:
         item_name = item.get("name")
         item_options = item.findall("option")
         item_quality = item.get("quality")
-        item_id = item.get("id","x")
-        item_inside = item.get("inside","-1")
+        item_id = item.get("id", "x")
+        item_inside = item.get("inside", "-1")
         
         # items with content can never be identical ..
-        item_content = item.get("content","")
+        item_content = item.get("content", "")
         # equipped items can't be identical 
-        item_equipped = int(item.get("equipped","0"))
+        item_equipped = int(item.get("equipped", "0"))
 
-        if (item_content == "" and 
-            item_equipped == 0):
+        if item_content == "" and item_equipped == 0:
 
             # okay let's look through the other items
             current_items = self.getItems(item_name)
@@ -978,15 +981,15 @@ class Character:
 
                 # get the data for the first check ...
                 cur_id = current_item.get("id")
-                cur_equipped = current_item.get("equipped","0")
-                cur_inside = current_item.get("inside","-1")
+                cur_equipped = current_item.get("equipped", "0")
+                cur_inside = current_item.get("inside", "-1")
                 cur_quality = current_item.get("quality")
                 # compare quality and item location. 
                 # make sure it is not actually the same item!!
                 if (int(cur_quality) == int(item_quality) and 
                     int(cur_inside) == int(item_inside) and 
                     int(cur_equipped) != 1 and
-                    (cur_id != item_id)):
+                    cur_id != item_id):
 
                     # compare item options
                     cur_options = current_item.findall("option")
@@ -994,21 +997,27 @@ class Character:
                     for cur_option in cur_options:
                         for item_option in item_options:
                             if ((item_option.get("name") == cur_option.get("name")) and
-                            (item_option.get("value") != cur_option.get("value"))):
+                                 item_option.get("value") != cur_option.get("value")):
                                 identical = False
                 # nope they are different for sure (or literally the same)
-                else: identical = False
+                else:
+                    identical = False
             
                 # this is probably another instance of this item ...
                 if identical: 
                     # let's check the description
                     cur_description = current_item.find("description")
-                    if cur_description is not None: cur_description = cur_description.text
+                    if cur_description is not None:
+                        cur_description = cur_description.text
                     new_description = item.find("description")
-                    if new_description is not None: new_description = new_description.text
-                    if cur_description is None: cur_description = " "
-                    if new_description is None: new_description = " "
-                    if cur_description != new_description: identical = False
+                    if new_description is not None:
+                        new_description = new_description.text
+                    if cur_description is None:
+                        cur_description = " "
+                    if new_description is None:
+                        new_description = " "
+                    if cur_description != new_description:
+                        identical = False
                 # yes we are sure they are identical
                 if identical:
                     identical_item = current_item
@@ -1017,13 +1026,13 @@ class Character:
         return identical_item
     
     # assign item to body
-    def equipItem(self,item):
-        item.set("equipped","1")
+    def equipItem(self, item):
+        item.set("equipped", "1")
         self.logEvent(item, op=msg.CHAR_ITEM_EQUIP)
 
     # unassign item from body 
-    def unequipItem(self,item):
-        item.set("equipped","0")
+    def unequipItem(self, item):
+        item.set("equipped", "0")
         self.logEvent(item, op=msg.CHAR_ITEM_UNEQUIP)
 
     # this method reassigns item IDs
@@ -1031,24 +1040,23 @@ class Character:
         items = self.getItems()
         id = 0
         for item in items:
-            item.set("id",str(id))
-            id = id + 1
+            item.set("id", str(id))
+            id += 1
 
     # retrieve the highest current id
     def getHighestItemID(self):
         items = self.getItems()
         id = 0
         for item in items:
-            item_id = item.get("id")
-            if item_id:
-                item_id = int(item_id)
-                if item_id > id: id = item_id
+            item_id = int(item.get("id","0"))
+            if item_id > id:
+                id = item_id
         return id
 
     # Handling the characters funds
     
     # get a character account
-    def getAccount(self,name = "0"):
+    def getAccount(self, name="0"):
         return self.xml_char.find(".//account[@name='"+name+"']")
 
     # get a character account
@@ -1056,7 +1064,7 @@ class Character:
         return self.xml_char.findall(".//account")
     
     # create an account
-    def createAccount(self,name):
+    def createAccount(self, name):
         """ create a new named account
         name: string - the name of the new account
         """
@@ -1067,7 +1075,7 @@ class Character:
             inventory.append(account)
 
     # deleting an account
-    def deleteAccount(self,name):
+    def deleteAccount(self, name):
         """ this method removes the account of a character funds on that account will be transferred to '0'
         name: string - name of the account (the account '0' will not be deleted
         """
@@ -1077,26 +1085,25 @@ class Character:
             account = inventory.find("account[@name='"+name+"']")
             if account is not None:
                 balance = self.getAccountBalance(name)
-                self.updateAccount(-balance,name)
+                self.updateAccount(-balance, name)
                 self.updateAccount(balance)
                 inventory.remove(account)
         
-    def getAccountBalance(self,name="0", type=float):
+    def getAccountBalance(self, name="0", var_type=float):
         account = self.xml_char.find(".//account[@name='"+name+"']")
         balance = account.get("balance")
-        if type == float:
-            balance = type(balance)
-        if type == str:
+        if var_type == float:
+            balance = float(balance)
+        if var_type == str:
             parts = balance.split(".")
-
         return balance
 
     def updateAccount(self, value, name="0", reason=None):
         # update the account in the XML 
         account = self.xml_char.find(".//account[@name='"+name+"']")
-        cur_balance = account.get("balance","0.0")
+        cur_balance = account.get("balance", "0.0")
         new_balance = float(cur_balance) + float(value)
-        account.set ("balance",str(new_balance))
+        account.set("balance", str(new_balance))
 
         # retrieve the total balance variable
         total_balance = self.account_balance.get()
@@ -1117,7 +1124,7 @@ class Character:
     # ########################Handling contact # #################################
     
     # create a new contact
-    def newContact(self,name = ""):
+    def newContact(self, name=""):
         """ this method creates a new contact tag with a unique id and returns the id.
         name: string (optional) The name of the contact
         return: int - id of the contact (can than be used to load that contact for further editing)
@@ -1125,7 +1132,7 @@ class Character:
         id = self.getHighestContactId() + 1
 
         contact = et.Element("contact")
-        contact.set("id",str(id))
+        contact.set("id", str(id))
         contact.set("name", str(name))
 
         contacts = self.xml_char.find("contacts")
@@ -1165,38 +1172,42 @@ class Character:
         contacts = self.xml_char.findall("contacts/contact")
         highest_id = -1
         for contact in contacts:
-            id = int(contact.get("id"))
-            if id > highest_id: highest_id = id
+            id = int(contact.get("id","0"))
+            if id > highest_id:
+                highest_id = id
         return highest_id
 
-
-###########character image 
-    
-
-    # create or update reference to image
-    def setImage(self,filename):
+    # create or update reference to character image
+    def setImage(self, filename):
         image = self.xml_char.find("./basics/image")
         if image is not None:
-            image.set("name",filename)
+            image.set("name", filename)
         else:
             basics = self.xml_char.find("./basics")
-            image = et.SubElement(basics,"image",{"file":filename})
+            image = et.SubElement(basics, "image", {"file": filename})
 
-    
     # retrieve the image reference
     def getImage(self):
         return self.xml_char.find("./basics/image")
 
     # #
-    def setImageSize(self,size,x,y,scale):
+    def setImageSize(self, size, x, y, scale):
         image_tag = self.xml_char.find("./basics/image")
         size_tag = image_tag.find("size[@name='"+size+"']")
         if size_tag is None:
-            et.SubElement(image_tag,"size",{"name":size,"x":str(x),"y":str(y),"scale":str(scale)})
+            et.SubElement(
+                image_tag,
+                "size",
+                {"name": size,
+                 "x": str(x),
+                 "y": str(y),
+                 "scale": str(scale)
+                 }
+                )
         else:
-            size_tag.set("x",str(x))
-            size_tag.set("y",str(y))
-            size_tag.set("scale",str(scale))
+            size_tag.set("x", str(x))
+            size_tag.set("y", str(y))
+            size_tag.set("scale", str(scale))
 
     def removeImage(self):
         basics_tag = self.xml_char.find("./basics")
