@@ -341,10 +341,21 @@ class Messages:
     CHAR_ITEM_UPDATE = "geändert"
     CHAR_ITEM_DESCRIPTION = "Beschreibung geändert"
     CHAR_ITEM_RENAMED = "umbenannt"
+    CHAR_CONTACT_NEW = "erstellt"
 
     # LOG DISPLAY
+    LOG_XP_CHANGED = "Verfügbare XP: {total} ({delta})"
     LOG_ITEM_ADDED = "%s zum Inventar hinzugefügt - Gesamtmenge: %d"
     LOG_ITEM_RENAMED = "%s in %s umbenannt."
+    LOG_CONTACT_CHANGED = "ID: {id} - {name} {diff}"
+    LOG_CONTACT_RENAMED = "umbenannt in: "
+    LOG_CONTACT_COMPETENCY = "Kompetenz: "
+    LOG_CONTACT_LOYALITY = "Loyalität: "
+    LOG_CONTACT_FREQUENCY = "Kontakthäufigkeit: "
+    LOG_CONTACT_LOCATION = "Aufenthaltsort: "
+    LOG_CONTACT_DESC = "Beschreibung"
+    LOG_CONTACT_DESC_CHANGED = " geändert"
+    LOG_CONTACT_DESC_DELETED = " gelöscht"
         
     phy = "Physisch"
     men = "Mental"

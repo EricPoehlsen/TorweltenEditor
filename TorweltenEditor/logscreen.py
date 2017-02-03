@@ -24,6 +24,12 @@ class LogScreen(tk.Frame):
         self.log_scroll.config(command=self.log_canvas.yview)
         self.log_canvas.config(yscrollcommand=self.log_scroll.set)
 
+        # for integrity checking ...
+        self.skills = {}
+        self.attributes = {}
+        self.items = {}
+        self.contacts = {}
+
         self.renderLog()
 
     def renderLog(self):
@@ -32,9 +38,6 @@ class LogScreen(tk.Frame):
         stored_hash = int(self.char.getEvents().get("hash"))
         current_hash = 0
         events = events_tag.findall("event")
-        skills = {}
-        attributes = {}
-        items = {}
         y = 65
         
         # building the log display and extracting data for integrity checks
@@ -46,70 +49,40 @@ class LogScreen(tk.Frame):
             # common data
             element = event.get("element")
             op = event.get("op", "")
-            mod = event.get("mod" ,"")
+            mod = event.get("mod", "")
             date = event.get("date")
 
-            # displaying an attribute edit
-            if element == "attribute":
-                name = event.get("name")
-                value = int(event.get("value"))
-                event_string = op + " (" + name.upper() + "): " + str(value)
-                # add data to integrity check
-                attributes[name] = value
-
-            # display skill modifications
+            linebreak = True
+            x = 40
+            anchor = tk.NW
+            if element == "xp":
+                event_string = self.displayXP(event)
+                linebreak = False
+                x = 35
+                anchor = tk.NE
+            elif element == "attribute":
+                event_string = self.displayAttribute(event)
             elif element == "skill":
-                id = int(event.get("id"))
-                value = int(event.get("value", "0"))
-                skill_name = self.char.getSkillById(str(id)).get("name")
-                event_string = op + ": " + skill_name + " - " + str(value)
-                # storing data for the integrity check
-                skills[id] = value
-
-            # data modifications 
+                event_string = self.displaySkill(event)
             elif element == "data":
-                data_str = {
-                    'name': msg.NAME,
-                    'species': msg.SPECIES,
-                    'origin': msg.ORIGIN,
-                    'concept': msg.CONCEPT,
-                    'player': msg.PLAYER,
-                    'height': msg.HEIGHT,
-                    'weight': msg.WEIGHT,
-                    'age': msg.AGE,
-                    'gender': msg.GENDER,
-                    'hair': msg.HAIR,
-                    'eyes': msg.EYES,
-                    'skin': msg.SKIN_COLOR,
-                    'skintype': msg.SKIN_TYPE
-                    }
-                name = event.get("name")
-                value = event.get("value")
-                event_string = op + ": " + data_str[name] + ", " + str(value)
-
-            # retrieve inventory data ... 
+                event_string = self.displayData(event)
             elif element == "item":
-                name = event.get("name")
-                id = int(str(event.get("id")))
-                quantity = int(event.get("quantity"))
-                hash_value = int(event.get("hash"))
-                if op == msg.CHAR_ITEM_ADDED:
-                    event_string = msg.LOG_ITEM_ADDED %(name, quantity)
-                if op == msg.CHAR_ITEM_RENAMED:
-                    old_name = event.get("mod")
-                    event_string = msg.LOG_ITEM_RENAMED %(old_name, name)
-                else: 
-                    event_string = name + " " + str(quantity) + " " + op
-                # for the integrity check ... 
-                items[id] = hash_value
-
+                event_string = self.displayItem(event)
+            elif element == "contact":
+                event_string = self.displayContact(event)
             else:
                 event_string = op + mod
 
-            # show the logline on screen ... 
-            label = tk.Label(self.log_canvas,text = date + " - " + event_string)
-            self.log_canvas.create_window(0, y, window=label, anchor=tk.NW)
-            y += label.winfo_reqheight()
+            # show the logline on screen ...
+
+            if linebreak:
+                event_string = date + " - " + event_string
+
+            label = tk.Label(self.log_canvas, text=event_string)
+            self.log_canvas.create_window(x, y, window=label, anchor=anchor)
+
+            if linebreak:
+                y += label.winfo_reqheight()
  
         # checking the log file integrity ... 
         data_integrity = tk.LabelFrame(
@@ -137,12 +110,12 @@ class LogScreen(tk.Frame):
             borderwidth=2
             )
         check_frame.setStatus("okay")
-        for name in attributes:
+        for name in self.attributes:
             char_value = self.char.getAttributeValue(name)
-            event_value = attributes[name]
+            event_value = self.attributes[name]
             if char_value != event_value:
                 check_frame.setStatus("error")
-        check_frame.pack(side = tk.LEFT)
+        check_frame.pack(side=tk.LEFT)
 
         # checking the skills for integrity
         check_frame = Checkresults(
@@ -152,13 +125,13 @@ class LogScreen(tk.Frame):
             borderwidth=2
             )
         check_frame.setStatus("okay")
-        current_skills = self.char.getSkills()
-        for skill in skills:
-            id = int(skill.get("id"))
-            value = int(skill.get("value"))
-            if skills[id] != value:
+        for skill in self.skills:
+            id = skill
+            char_skill = self.char.getSkillById(id)
+            value = char_skill.get("value")
+            if self.skills[id] != value:
                 check_frame.setStatus("error")
-        check_frame.pack(side = tk.LEFT)
+        check_frame.pack(side=tk.LEFT)
 
         # inventory integrity check
         check_frame = Checkresults(
@@ -172,7 +145,7 @@ class LogScreen(tk.Frame):
         for item in current_items:
             id = int(item.get("id"))
             hash_value = self.char.hashElement(item)
-            logged_hash = items[id]
+            logged_hash = self.items[id]
             if hash_value != logged_hash:
                 check_frame.setStatus("error")
         check_frame.pack(side = tk.LEFT)
@@ -183,6 +156,138 @@ class LogScreen(tk.Frame):
         # ... finally set the canvas scrollbox ... 
         self.log_canvas.config(scrollregion = self.log_canvas.bbox(tk.ALL))
 
+    def displayXP(self,event):
+        delta = int(float(event.get("mod")))
+        if delta > 0:
+            event_string = "+"+str(delta)
+        else:
+            event_string = str(delta)
+        return event_string
+
+    def displayAttribute(self, event):
+        name = event.get("name")
+        value = int(event.get("value"))
+        event_string = "Attribut geändert" + " (" + name.upper() + "): " + str(value)
+        # add data to integrity check
+        self.attributes[name] = value
+        return event_string
+
+    def displaySkill(self,event):
+        op = event.get("op")
+        id = int(event.get("id"))
+        value = int(event.get("value", "0"))
+        skill_name = self.char.getSkillById(str(id)).get("name")
+        event_string = op + ": " + skill_name + " - " + str(value)
+        # storing data for the integrity check
+        self.skills[id] = value
+        return event_string
+
+        # data modifications
+    def displayData(self, event):
+        op = event.get("op")
+        data_str = {
+            'name': msg.NAME,
+            'species': msg.SPECIES,
+            'origin': msg.ORIGIN,
+            'concept': msg.CONCEPT,
+            'player': msg.PLAYER,
+            'height': msg.HEIGHT,
+            'weight': msg.WEIGHT,
+            'age': msg.AGE,
+            'gender': msg.GENDER,
+            'hair': msg.HAIR,
+            'eyes': msg.EYES,
+            'skin': msg.SKIN_COLOR,
+            'skintype': msg.SKIN_TYPE
+        }
+        name = event.get("name")
+        value = event.get("value")
+        event_string = op + ": " + data_str[name] + ", " + str(value)
+        return event_string
+
+    # retrieve inventory data ...
+    def displayItem(self, event):
+        op = event.get("op")
+        name = event.get("name")
+        id = int(str(event.get("id")))
+        quantity = int(event.get("quantity"))
+        hash_value = int(event.get("hash"))
+        if op == msg.CHAR_ITEM_ADDED:
+            event_string = msg.LOG_ITEM_ADDED % (name, quantity)
+        if op == msg.CHAR_ITEM_RENAMED:
+            old_name = event.get("mod")
+            event_string = msg.LOG_ITEM_RENAMED % (old_name, name)
+        else:
+            event_string = name + " " + str(quantity) + " " + op
+        # for the integrity check ...
+        self.items[id] = hash_value
+        return event_string
+
+    # retrieve inventory data ...
+    def displayContact(self, event):
+        op = event.get("op")
+        mod = event.get("mod")
+        id = int(str(event.get("id")))
+        contact = self.char.getContactById(id)
+
+        name = contact.get("name")
+
+        changes = []
+        if "name" in mod:
+            name = event.get("oldname")
+            changes.append((
+                msg.LOG_CONTACT_RENAMED,
+                contact.get("name", "")
+            ))
+        if "location" in mod:
+            changes.append((
+                msg.LOG_CONTACT_LOCATION,
+                event.get("loc", "")
+            ))
+        if "competency" in mod:
+            competency = event.get("comp", "")
+            if competency != "":
+                changes.append((
+                    msg.LOG_CONTACT_COMPETENCY,
+                    competency
+                ))
+        if "loyality" in mod:
+            changes.append((
+                msg.LOG_CONTACT_LOYALITY,
+                event.get("loy", "")
+            ))
+        if "frequency" in mod:
+            changes.append((
+                msg.LOG_CONTACT_FREQUENCY,
+                event.get("frq", "")
+            ))
+        if "description" in mod:
+            desc = event.get("desc")
+            if desc:
+                changes.append((
+                    msg.LOG_CONTACT_DESC,
+                    msg.LOG_CONTACT_DESC_CHANGED
+                ))
+            else:
+                changes.append((
+                    msg.LOG_CONTACT_DESC,
+                    msg.LOG_CONTACT_DESC_CHANGED
+                ))
+
+        info = ""
+        for change in changes:
+            what, diff = change
+            info += what + diff + ", "
+        info = info[0:-2]
+        event_string = msg.LOG_CONTACT_CHANGED.format(
+            id=id,
+            name=name,
+            diff=info)
+
+        # for the integrity check ...
+        hash_value = int(event.get("hash"))
+        self.contacts[id] = hash_value
+        return event_string
 
 class Checkresults(tk.Frame):
     """ A two-state status display

@@ -471,6 +471,7 @@ class Character:
 
     # returns a single skill element by Id
     def getSkillById(self, id):
+        id = str(id)
         xml_skill = self.xml_char.find("skills/skill[@id='"+id+"']")
         return xml_skill
 
@@ -495,6 +496,7 @@ class Character:
         new_value = int(old_value + value)
         xp_element.set("available", str(new_value))
         self.xp_avail.set(new_value)
+        self.logEvent(xp_element,mod=value)
     
     # changing an attribute
     # TODO Remove if not needed ...
@@ -1138,13 +1140,17 @@ class Character:
         contacts = self.xml_char.find("contacts")
         contacts.append(contact)
 
+        if name != "":
+            self.logEvent(contact, mod="name")
+
         return id
 
     # get a contact based on its id
-    def getContactById(self,id):
+    def getContactById(self, id):
         """ This method tries to retrieve a contact based on a given id.
         id: int (will be converted to string so it can be a string)
         return: et.Element() <contact>
+                None if invalid id.
         """
         id = str(id)
         contact = self.xml_char.find("./contacts/contact[@id='"+id+"']")
@@ -1237,6 +1243,11 @@ class Character:
 
         # add additional information based on the element
         # the transaction was performed on ... 
+
+        if tag.tag == "xp":
+            if mod > 0:
+                event.set("mod", "+"+str(mod))
+                event.set("xp", tag.get("available"))
         if tag.tag == "attribute":
             name = tag.get("name")
             value = tag.get("value")
@@ -1266,6 +1277,32 @@ class Character:
             event.set("name", name)
             event.set("id", id)
             event.set("quantity", quantity)
+            event.set("hash", str(self.hashElement(tag)))
+        elif tag.tag == "contact":
+            if "name" in mod:
+                event.set("oldname", op)
+            if "location" in mod:
+                location = tag.get("location")
+                event.set("loc", location)
+            if "competency" in mod:
+                competency = tag.get("competency", "")
+                level = tag.get("competencylevel", "")
+                if competency != "" and level != "":
+                    event.set("comp", competency+" "+level)
+            if "loyality" in mod:
+                loyality = tag.get("loyality", "")
+                event.set("loy", loyality)
+            if "frequency" in mod:
+                frequency = tag.get("frequency", "")
+                event.set("frq", frequency)
+            if "description" in mod:
+                desc = tag.find("description")
+                print(desc)
+                if desc is not None and desc.text:
+                    length = len(desc.text)
+                    event.set("desc", str(length))
+            id = tag.get("id")
+            event.set("id", id)
             event.set("hash", str(self.hashElement(tag)))
 
         # store the event

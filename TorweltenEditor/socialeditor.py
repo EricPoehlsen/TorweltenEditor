@@ -308,9 +308,12 @@ class SocialEditor(tk.Toplevel):
         """
         widget = event.widget
         self.vars["description"] = widget.get("1.0", tk.END)
- 
         self.delete_check = False
         self.updateMenu(self.bottom_menu)
+
+        if "description" not in self.changes:
+            self.changes.append("description")
+            print("added")
 
     # check if something was changed
     def wasChanged(self):
@@ -321,8 +324,6 @@ class SocialEditor(tk.Toplevel):
 
         return: True if changes are detected
         """
-
-        self.changes.clear()
 
         changed = False
 
@@ -369,12 +370,12 @@ class SocialEditor(tk.Toplevel):
         if old_description is None: old_description = ""
         if new_description != old_description:
             changed = True
-            self.changes.append("description")
 
         return changed
     
     # actually updating the contact ...
     def updateContact(self):
+        old_name = self.contact.get("name")
         frequency_var = int(self.vars["frequency_level"].get())
         frequencies = {0: 0.25, 1: 0.5, 2: 0.75, 3: 1.0, 4: 1.5, 5: 2.0}
         new_frequency = str(frequencies[frequency_var])
@@ -407,12 +408,18 @@ class SocialEditor(tk.Toplevel):
             description = et.SubElement(self.contact, "description")
         description.text = self.vars["description"]
 
+
         self.app.showContacts(self.app.contact_canvas)
 
         self.char.updateAvailableXP(-int(self.xp_cost.get()))
         self.calculateCosts()
         self.updateMenu(self.bottom_menu)
-        self.char.logEvent(self.contact,mod=self.changes)
+        self.changes = set(self.changes)
+        op = None
+        if "name" in self.changes:
+            op = old_name
+        self.char.logEvent(self.contact, mod=self.changes, op=op)
+        self.changes = []
 
     def calculateCosts(self):
         old_xp = int(self.contact.get("xp", "0"))

@@ -90,6 +90,7 @@ class SkillTree():
 
     # returns a single skill element by Id
     def getSkillById(self, id):
+        id = str(id)
         xml_skill = self.xml_char.find(".//skill[@name='"+str(id)+"']")
         return xml_skill
 
