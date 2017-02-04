@@ -38,8 +38,13 @@ class LogScreen(tk.Frame):
         stored_hash = int(self.char.getEvents().get("hash"))
         current_hash = 0
         events = events_tag.findall("event")
-        y = 65
-        
+
+        # draw the header
+        x, y = 0, 65
+        label = tk.Label(self.log_canvas, text=msg.LOG_HEADER)
+        self.log_canvas.create_window(x, y, window=label, anchor=tk.NW)
+        y += label.winfo_reqheight()
+
         # building the log display and extracting data for integrity checks
         for event in events:
             # hash for integrity check
@@ -48,14 +53,12 @@ class LogScreen(tk.Frame):
             
             # common data
             element = event.get("element")
-            op = event.get("op", "")
-            mod = event.get("mod", "")
             date = event.get("date")
 
             linebreak = True
             x = 40
             anchor = tk.NW
-            if element == "xp":
+            if element == "xp" and op == "upd":
                 event_string = self.displayXP(event)
                 linebreak = False
                 x = 35
@@ -68,13 +71,16 @@ class LogScreen(tk.Frame):
                 event_string = self.displayData(event)
             elif element == "item":
                 event_string = self.displayItem(event)
+            elif element == "account":
+                event_string = self.displayAccount(event)
             elif element == "contact":
                 event_string = self.displayContact(event)
             else:
-                event_string = op + mod
+                op = event.get("op", "")
+                mod = event.get("mod", "")
+                event_string = op + ": " + mod
 
             # show the logline on screen ...
-
             if linebreak:
                 event_string = date + " - " + event_string
 
@@ -128,8 +134,10 @@ class LogScreen(tk.Frame):
         for skill in self.skills:
             id = skill
             char_skill = self.char.getSkillById(id)
-            value = char_skill.get("value")
-            if self.skills[id] != value:
+            char_value = int(char_skill.get("value"))
+            event_value = int(self.skills[id])
+
+            if event_value != char_value:
                 check_frame.setStatus("error")
         check_frame.pack(side=tk.LEFT)
 
@@ -222,6 +230,18 @@ class LogScreen(tk.Frame):
         # for the integrity check ...
         self.items[id] = hash_value
         return event_string
+
+    def displayAccount(self, event):
+        op = event.get("op", "")
+        amount = float(event.get("mod", "0"))
+        amount = "{:+.2f}".format(amount)
+
+        event_string = op + " " +amount
+
+        return event_string
+
+
+
 
     # retrieve inventory data ...
     def displayContact(self, event):

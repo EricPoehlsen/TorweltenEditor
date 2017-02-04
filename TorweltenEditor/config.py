@@ -121,7 +121,7 @@ class Messages:
     ES_MELEE = "Nahkampfwaffen"
     ES_GUNS = "Fernkampfwaffen"
     ES_UNASSIGNED = "Nicht zugewiesen"
-    ES_INITIAL_FUNDS = "Startkapital: %s,00 Rand"
+    ES_INITIAL_FUNDS = "Startkapital: {amount},00 Rand"
     ES_CLOTHING_ARMOR = "Kleidung und Rüstung"
     ES_UNEQUIP = "Ablegen"
     ES_ITEMNAME = "Bezeichnung"
@@ -129,10 +129,11 @@ class Messages:
     ES_QUALITY_S = "Q"
     ES_UNEQUIP_S = "A"
     ES_NOT_LOADED = "nicht geladen"
-    ES_CHAMBERED_AMMO = "Kammern: %d - davon geladen: %d"
+    ES_CHAMBERED_AMMO = "Kammern: {chambers} - davon geladen: {loaded}"
     ES_KG = " kg"
     ES_G = " g"
     ES_WEIGHT = "Gewicht: "
+    ES_CLIP = "{name} - {number} / {capacity}"
 
     # ####ITEM EDITOR and INVENTORY EDITOR # ####
     IE_UNEQUIP = "Ablegen"
@@ -344,6 +345,7 @@ class Messages:
     CHAR_CONTACT_NEW = "erstellt"
 
     # LOG DISPLAY
+    LOG_HEADER = " ΔXP     Zeitpunkt:                  Ereignis:"
     LOG_XP_CHANGED = "Verfügbare XP: {total} ({delta})"
     LOG_ITEM_ADDED = "%s zum Inventar hinzugefügt - Gesamtmenge: %d"
     LOG_ITEM_RENAMED = "%s in %s umbenannt."

@@ -91,12 +91,9 @@ class Character:
         
     def addXP(self, amount, reason=None):
         xp = self.xml_char.find('basics/xp')
-        available_xp = int(xp.get('available')) + amount
         total_xp = int(xp.get('total')) + amount
-        
-        xp.set("available", str(available_xp))
         xp.set("total", str(total_xp))
-        self.xp_avail.set(available_xp)
+        self.updateAvailableXP(amount)
         self.logEvent(xp, mod=amount, op=reason)
 
     # check in which edit mode the character is
@@ -258,19 +255,6 @@ class Character:
         if dataset is not None:
             data_value = dataset.get("value")
         return data_value
-
-    # TODO REMOVE IF NOT NEEDED ...
-    """
-    def updateSkills(self):
-        for skill in self.skill_values:
-            xml_skill = self.getSkill(skill)
-            cur_value = int(xml_skill.get("value"))
-            new_value = self.skill_values[skill].get()
-
-            if cur_value != new_value:
-                xml_skill.set("value", str(new_value))
-                self.addEvent(xml_skill,op=msg.CHAR_SKILL_CHANGED)
-    """
 
     def skillChange(self, var_name, e, m):
         """
@@ -496,42 +480,7 @@ class Character:
         new_value = int(old_value + value)
         xp_element.set("available", str(new_value))
         self.xp_avail.set(new_value)
-        self.logEvent(xp_element,mod=value)
-    
-    # changing an attribute
-    # TODO Remove if not needed ...
-    """
-    def updateAttribute(self, attr_name, amount):
-        # get the current value from the XML dataset
-        xml_attr = self.xml_char.find("attributes/attribute[@name='"+attr_name+"']")
-        old_value = int(xml_attr.get('value'))        
-        
-        # check if value in the Entry-Field is a valid integer
-        # change to zero if not
-        try: 
-            int(self.attribs[attr_name].get())
-        except ValueError:
-            self.attribs[attr_name].set("0")
-        
-        # the new value would be ...
-        new_value = self.attribs[attr_name].get() + amount
-        
-        # ... but we need to check for bounds
-        if (new_value > 10):
-            new_value = 10
-        if (new_value < 0):
-            new_value = 0
-
-        # let us check for the xp_cost
-        xp_cost_old = old_value * (old_value + 1)
-        xp_cost_new = new_value * (new_value + 1)
-        xp_cost = xp_cost_new - xp_cost_old
-        
-        self.updateAvailableXP(-xp_cost)
-        
-        # update the Entry_Field and XML tree
-        self.setAttribute(attr_name, new_value)
-    """
+        self.logEvent(xp_element,mod=value,op="upd")
 
     # retrieve the inventory object of a character
     def getInventory(self):
@@ -1257,7 +1206,7 @@ class Character:
             id = tag.get("id")
             value = tag.get("value")
             event.set("id", id)
-            if int(value) > 0: event.set("value", value)
+            event.set("value", value)
         elif tag.tag == "trait":
             name = tag.get("name")
             xp = tag.get("xp")
