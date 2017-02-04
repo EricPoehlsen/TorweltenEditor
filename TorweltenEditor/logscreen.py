@@ -50,12 +50,15 @@ class LogScreen(tk.Frame):
             # hash for integrity check
             event_hash = self.char.hashElement(event)
             current_hash += event_hash
-            
+
+            op = event.get("op")
+
             # common data
             element = event.get("element")
             date = event.get("date")
 
             linebreak = True
+            display = True
             x = 40
             anchor = tk.NW
             if element == "xp" and op == "upd":
@@ -71,6 +74,8 @@ class LogScreen(tk.Frame):
                 event_string = self.displayData(event)
             elif element == "item":
                 event_string = self.displayItem(event)
+                if op == msg.CHAR_ITEM_BAG or op is None:
+                    display = False
             elif element == "account":
                 event_string = self.displayAccount(event)
             elif element == "contact":
@@ -83,12 +88,11 @@ class LogScreen(tk.Frame):
             # show the logline on screen ...
             if linebreak:
                 event_string = date + " - " + event_string
-
-            label = tk.Label(self.log_canvas, text=event_string)
-            self.log_canvas.create_window(x, y, window=label, anchor=anchor)
-
-            if linebreak:
-                y += label.winfo_reqheight()
+            if display:
+                label = tk.Label(self.log_canvas, text=event_string)
+                self.log_canvas.create_window(x, y, window=label, anchor=anchor)
+                if linebreak:
+                    y += label.winfo_reqheight()
  
         # checking the log file integrity ... 
         data_integrity = tk.LabelFrame(
@@ -154,6 +158,7 @@ class LogScreen(tk.Frame):
             id = int(item.get("id"))
             hash_value = self.char.hashElement(item)
             logged_hash = self.items[id]
+            print(item.get("name"), hash_value, logged_hash)
             if hash_value != logged_hash:
                 check_frame.setStatus("error")
         check_frame.pack(side = tk.LEFT)
@@ -164,7 +169,7 @@ class LogScreen(tk.Frame):
         # ... finally set the canvas scrollbox ... 
         self.log_canvas.config(scrollregion = self.log_canvas.bbox(tk.ALL))
 
-    def displayXP(self,event):
+    def displayXP(self, event):
         delta = int(float(event.get("mod")))
         if delta > 0:
             event_string = "+"+str(delta)
@@ -216,17 +221,34 @@ class LogScreen(tk.Frame):
     # retrieve inventory data ...
     def displayItem(self, event):
         op = event.get("op")
+
         name = event.get("name")
         id = int(str(event.get("id")))
         quantity = int(event.get("quantity"))
         hash_value = int(event.get("hash"))
         if op == msg.CHAR_ITEM_ADDED:
             event_string = msg.LOG_ITEM_ADDED % (name, quantity)
-        if op == msg.CHAR_ITEM_RENAMED:
+        elif op == msg.CHAR_ITEM_RENAMED:
             old_name = event.get("mod")
             event_string = msg.LOG_ITEM_RENAMED % (old_name, name)
+        elif op == msg.CHAR_ITEM_PACKED:
+            bag_id = event.get("mod")
+            bag_item = self.char.getItemById(bag_id)
+            bag_name = bag_item.get("name")
+            event_string = msg.LOG_ITEM_PACKED.format(
+                name=name,
+                container=bag_name
+            )
+        elif op == msg.CHAR_ITEM_UNPACKED:
+            bag_id = event.get("mod")
+            bag_item = self.char.getItemById(bag_id)
+            bag_name = bag_item.get("name")
+            event_string = msg.LOG_ITEM_UNPACKED.format(
+                name=name,
+                container=bag_name
+            )
         else:
-            event_string = name + " " + str(quantity) + " " + op
+            event_string = name + " " + str(quantity) + " " + str(op)
         # for the integrity check ...
         self.items[id] = hash_value
         return event_string
@@ -240,10 +262,6 @@ class LogScreen(tk.Frame):
 
         return event_string
 
-
-
-
-    # retrieve inventory data ...
     def displayContact(self, event):
         op = event.get("op")
         mod = event.get("mod")

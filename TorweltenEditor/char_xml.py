@@ -586,6 +586,7 @@ class Character:
             item.set("quantity", str(item_quantity))
 
             self.logEvent(new_item, op=msg.CHAR_ITEM_SPLIT)
+            self.logEvent(item)  # for integrity reasons
             # add the new_item to the inventory
             inventory.append(new_item)
 
@@ -776,6 +777,9 @@ class Character:
             loaded = loaded.strip()
             ammo_tag.set("loaded", loaded)
             success = True
+
+            self.logEvent(ammo)
+            self.logEvent(weapon)
         return success
 
     # loading a single round to a clip ...
@@ -843,8 +847,12 @@ class Character:
             item.set("inside", container_id)
             item.set("equipped", "0")
 
-            self.logEvent(item, op=msg.CHAR_ITEM_PACKED)
-            self.logEvent(container, op=msg.CHAR_ITEM_PACKED_BAG)
+            self.logEvent(
+                item,
+                mod=container.get("id"),
+                op=msg.CHAR_ITEM_PACKED
+            )
+            self.logEvent(container, op=msg.CHAR_ITEM_BAG)
 
     # removing an item from a container
     def unpackItem(self, item, equip=False):
@@ -878,8 +886,12 @@ class Character:
             if equip:
                 item.set("equipped", "1")
 
-            self.logEvent(item, op=msg.CHAR_ITEM_UNPACKED)
-            self.logEvent(container, op=msg.CHAR_ITEM_UNPACKED_BAG)
+            self.logEvent(
+                item,
+                mod=container.get("id"),
+                op=msg.CHAR_ITEM_UNPACKED
+            )
+            self.logEvent(container, op=msg.CHAR_ITEM_BAG)
 
     # this method returns the weight of an item and all subitems
     def getWeight(self, item):

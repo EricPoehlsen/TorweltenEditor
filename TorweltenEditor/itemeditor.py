@@ -274,7 +274,8 @@ class ItemEditor(tk.Toplevel):
             chambers = int(ammo_tag.get("chambers","1"))
             loaded = "-1 " * chambers
             loaded = loaded.strip()
-            ammo_tag.set("loaded",loaded)
+            ammo_tag.set("loaded", loaded)
+            self.char.logEvent(self.item)  # for integrity reasons
         self._showItemInfo()
         self.app.updateItemList()
 
