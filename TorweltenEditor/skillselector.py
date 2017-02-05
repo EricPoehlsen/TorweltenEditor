@@ -171,17 +171,19 @@ class SkillSelector:
         if new_skill_name != msg.SS_NEW_SKILL and self.origin != "":
             origin = self.origin.replace(msg.SS_X,"")
             skill = new_skill_name
-            self.all_skills.newSkill(skill,origin)
-            self.char.addSkill(skill)
+            self.all_skills.newSkill(skill, origin)
+            skill_element = self.all_skills.getSkill(skill)
+            self.char.addSkill(skill_element)
 
         # ... or adding / removing existing skills ...
         else:
             for item in selection:
                 skill_name = self.list_box.get(item).strip()
-                if (msg.SS_X in skill_name):
+                if msg.SS_X in skill_name:
                     self.char.delSkill(skill_name[:-len(msg.SS_X)])
                 else:
-                    self.char.addSkill(skill_name)
+                    skill_element = self.all_skills.getSkill(skill_name)
+                    self.char.addSkill(skill_element)
         
         # finally close the window
         self.main.updateSkillList()

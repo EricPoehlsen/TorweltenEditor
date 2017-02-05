@@ -37,19 +37,18 @@ class Character:
         self.attrib_values = {}
         self.attrib_trace = {}
 
-        # making the available as vars # #
+        self.skill_values = {}
+        self.skill_trace = {}
+
         self.data_values = {}
         self.data_trace = {}
         
         self.xp_avail = tk.IntVar()
+
         self.account_balance = tk.StringVar()
         self.updateAccount(0)
         # this variable holds temporary xp costs for increasing skills
         self.xp_cost = {}
-
-        # keeping track of the skills
-        self.skill_values = {}
-        self.skill_trace = {}
 
         self.items = {}
 
@@ -57,9 +56,10 @@ class Character:
     
     # create a character
     def _newChar(self):
-        """ create a new character element tree 
+        """ create a new character element tree
 
-        return (et.ElementTree): the character skeleton"
+         Returns:
+            et.ElementTree: the character skeleton
         """
 
         char = et.Element('character')
@@ -78,34 +78,60 @@ class Character:
         char_tree = et.ElementTree(char)
         return char_tree
 
-    # load an existing character
-    def load(self, file):
-        self.xml_char = et.parse(file)
-        self.logEvent(self.xml_char.getroot(), op=msg.CHAR_LOADED)
+    def load(self, filename):
+        """ loading a character from disk
 
-    # save the current character # #
-    def save(self, file):
-        self.logEvent(self.xml_char.getroot(), op=msg.CHAR_SAVED)
-        self.xml_char.write(file, encoding="utf-8", xml_declaration=True)
-        file.close()
-        
+        Args:
+            filename (string): a filename to load from.
+        """
+
+        with open(filename, mode="rb") as file:
+            self.xml_char = et.parse(file)
+            self.logEvent(self.xml_char.getroot(), op=msg.CHAR_LOADED)
+
+    def save(self, filename):
+        """ Saving a character to an XML file
+
+        Args:
+            filename (string): a filename to save to.
+        """
+
+        with open(filename, mode="wb") as file:
+            self.logEvent(self.xml_char.getroot(), op=msg.CHAR_SAVED)
+            self.xml_char.write(file, encoding="utf-8", xml_declaration=True)
+
     def addXP(self, amount, reason=None):
+        """ Adding experience points to character
+
+         Args:
+            amount (int): how many XP to add
+                This can be negative.
+            reason (str): a reason for that modification
+                Will be used in the eventlog
+        """
+
         xp = self.xml_char.find('basics/xp')
         total_xp = int(xp.get('total')) + amount
         xp.set("total", str(total_xp))
         self.updateAvailableXP(amount)
         self.logEvent(xp, mod=amount, op=reason)
 
-    # check in which edit mode the character is
     def getEditMode(self):
+        """ Retrieve the edit mode the character is currenty in
+
+        Returns:
+            str: edit mode
+        """
+
         edit_type = self.xml_char.find('basics/edit')
         return edit_type.get('type')
 
-    # set the edit type of the charakter
     def setEditMode(self, edit_mode):
+        """ Setting the characters edit mode
+
+        edit_mode (str): "generation", "edit", "simulation", "view"
         """
-        type: STRING: "generation", "edit", "simulation", "view"
-        """
+
         ALLOWED_MODES = ["generation", "edit", "simulation", "view"]
         if edit_mode in ALLOWED_MODES:
             edit_type = self.xml_char.find('basics/edit')
@@ -114,42 +140,53 @@ class Character:
 
     # get a single attribute value # #
     def getAttributeValue(self, name):
-        """
-        retrieve an attribute value
-        name: the name of an attribute
-        return: integer value
-        """
-        search = "attributes/attribute[@name='"+name+"']"
-        attr = self.xml_char.find(search)
-        value = int(attr.get('value'))
-        return value
+        """ Retrieves the value of a given attribute
 
-    # returns the available XP from the XML object as integer
+        Args:
+            name (str): one of the attribute acronyms
+        Returns:
+            int: value of given attribute
+        """
+
+        if name in self.ATTRIB_LIST:
+            search = "attributes/attribute[@name='"+name+"']"
+            attr = self.xml_char.find(search)
+            value = int(attr.get('value'))
+            return value
+        else:
+            raise ValueError("Valid values"+str(self.ATTRIB_LIST))
+
     def getAvailableXP(self):
+        """ Get the characters current available XP
+
+        Returns:
+            int: Available XP
+        """
+
         xp_element = self.xml_char.find("basics/xp")
         return int(xp_element.get('available'))
-    # add a known skill based on its name
 
-    def addSkill(self, name):
-        skilltree = skill_xml.SkillTree()
-        new_skill = skilltree.getSkill(name)
-        if new_skill is not None:
-            new_skill.set("value", "0")
-            charskills = self.xml_char.find('skills')
-            charskills.append(new_skill)
-            self.logEvent(new_skill, op=msg.CHAR_SKILL_ADDED)
+    def addSkill(self, skill):
+        """ Adding a skill to the character
 
-    # add a skill element 
-    def addSkillElement(self, skill):
+        Args:
+            skill (Element<skill>): The skill to add
+        """
+
         if skill is not None:
             skill.set("value", "0")
             charskills = self.xml_char.find('skills')
             charskills.append(skill)
             self.logEvent(skill, op=msg.CHAR_SKILL_ADDED)
 
-    # remove a skill from a charakter
     def delSkill(self, name):
-        charskills = self.xml_char.find("skills")
+        """ Removing a skill from a character
+
+        Args:
+            name (str): The name of the skill to remove
+        """
+
+        skills = self.xml_char.find("skills")
         skill = self.xml_char.find("skills/skill[@name='"+name+"']")
         if skill is not None:
             value = int(skill.get("value"))
@@ -159,9 +196,8 @@ class Character:
                 xp /= 2
             self.updateAvailableXP(xp)
             self.logEvent(skill, op=msg.CHAR_SKILL_REMOVED)
-            charskills.remove(skill)
+            skills.remove(skill)
     
-    # add a selected trait
     def addTrait(self, full_trait, variables, xp_var, description):
         trait = et.Element("trait")
         # set ID
@@ -1290,4 +1326,3 @@ class Character:
 
     def getEvents(self):
         return self.xml_char.find("events")
-

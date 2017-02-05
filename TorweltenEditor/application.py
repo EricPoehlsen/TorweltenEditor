@@ -52,64 +52,65 @@ class Application(tk.Frame):
         self.filemenu.add_command(
             label=msg.MENU_NEW,
             command=self.newChar
-            )
+        )
         self.filemenu.add_command(
             label=msg.MENU_LOAD,
             command=self.openCharWindow
-            )
+        )
         self.filemenu.add_command(
             label=msg.MENU_SAVE,
             command=self.saveCharWindow
-            )
+        )
         self.filemenu.add_command(
             label=msg.MENU_PDFEXPORT,
             command=self.exportCharWindow
-            )
+        )
         self.filemenu.add_command(
             label=msg.MENU_QUIT,
             command=self.main.destroy
-            )
+        )
         self.menubar.add_cascade(
             label=msg.MENU_FILE,
             menu=self.filemenu
-            )
+        )
 
         # building the tools menu
         self.toolmenu = tk.Menu(self.menubar, tearoff="0")
         self.toolmenu.add_command(
             label=msg.MENU_EWT,
             command=lambda: self._switchWindow(msg.MENU_EWT)
-            )
+        )
         self.toolmenu.add_command(
             label=msg.MENU_IMPROVE, 
             command=self._displayImprove
-            )
+        )
         self.toolmenu.add_command(
             label=msg.MENU_SETTINGS,
             command=lambda: self._switchWindow(msg.MENU_SETTINGS)
-            )
+        )
         self.toolmenu.add_command(
             label=msg.MENU_RELOAD_DATA,
             command=self._reloadData
-            )
+        )
         self.toolmenu.add_command(
             label=msg.MENU_CHAR_LOG,
-            command=lambda: self._switchWindow(msg.MENU_CHAR_LOG))
+            command=lambda: self._switchWindow(msg.MENU_CHAR_LOG)
+        )
         self.menubar.add_cascade(
             label=msg.MENU_TOOLS,
             menu=self.toolmenu
-            )
+        )
 
         # building the help menu
         self.helpmenu = tk.Menu(self.menubar, tearoff="0")
         self.helpmenu.add_command(
             label=msg.MENU_ABOUT,
             command=self.about
-            )
+        )
         self.menubar.add_cascade(
             label=msg.MENU_HELP,
             menu=self.helpmenu
-            )
+        )
 
         # assigning the menu ...
         main.config(menu=self.menubar)
@@ -126,7 +127,7 @@ class Application(tk.Frame):
             "itemedit": 0,
             "mod_ed": 0,
             "improve": 0
-            }
+        }
 
         self.widgets = {}
 
@@ -154,14 +155,14 @@ class Application(tk.Frame):
             msg.TOOLBAR_CHAR_CONTACTS,
             msg.TOOLBAR_CHAR_IMAGE,
             msg.TOOLBAR_CHAR_LAYOUT
-            ]
+        ]
 
         for button_label in buttons:
             button = tk.Button(self.toolbar, text=button_label)
             button.config(
                 command=lambda label=button_label:
                 self._switchWindow(label)
-                ) 
+            )
             button.pack(side=tk.LEFT)
 
     # creating a new character
@@ -171,7 +172,7 @@ class Application(tk.Frame):
         self.char.addXP(
             amount=300, 
             reason=msg.CHAR_INITIAL_XP
-            )
+        )
         self._switchWindow(msg.TOOLBAR_CHAR_DATA)
         self.status_bar.rebind(self)
     
@@ -185,10 +186,10 @@ class Application(tk.Frame):
             'parent': self.main,
             'title': 'Charakter laden ...',
             }
-        file = tkfd.askopenfile(mode="rb", **options)
-        if file:
-            self.char.load(file)
-            file.close()
+        filename = tkfd.askopenfilename(**options)
+        if filename:
+            self.char.load(filename)
+
             self._switchWindow(msg.TOOLBAR_CHAR_DATA)
             self.status_bar.rebind(self)
         else:
@@ -210,9 +211,9 @@ class Application(tk.Frame):
             'parent': self.main,
             'title': 'Charakter speichern ...',
             }
-        file = tkfd.asksaveasfile(mode="wb", **options)
-        if file:
-            self.char.save(file)
+        filename = tkfd.asksaveasfilename(**options)
+        if filename:
+            self.char.save(filename)
 
     # display the file save dialog to export a PDF
     def exportCharWindow(self, template=None):
