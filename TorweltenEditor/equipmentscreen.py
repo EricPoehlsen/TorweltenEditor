@@ -605,7 +605,7 @@ class EquipmentScreen(tk.Frame):
                         clip_size = loaded_clip.find("container").get("size")
                         clip_content = loaded_clip.get("content", "x").split()
                         ammo_in_clip = 0
-                        if clip_content[0] == "x" or clip_content[0] == "":
+                        if len(clip_content) == 1 and clip_content[0] == "x":
                             pass
                         else:
                             ammo_in_clip = len(clip_content)

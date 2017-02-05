@@ -204,19 +204,20 @@ class ItemEditor(tk.Toplevel):
         self.addMenuIcons()
         
     # reloading a chamber (other method)
-    def chamberSingleRound(self,event,item,mode = "weapon"):
+    def chamberSingleRound(self, event, item, mode="weapon"):
         if mode == "weapon":
             ammo = item
-            weapon == self.item
+            weapon = self.item
         else:
             ammo = self.item
             weapon = item
         self.char.unpackItem(ammo)
         self.char.removeRoundFromChamber(weapon)
-        self.char.loadRoundInChamber(ammo,weapon)
+        self.char.loadRoundInChamber(ammo, weapon)
         self.app.updateItemList()
         self._showItemInfo()
         self.addMenuIcons()
+
         if mode != "weapon" and self.item.get("quantity") == "1":
             self.close()
         

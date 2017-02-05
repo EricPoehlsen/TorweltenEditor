@@ -712,10 +712,10 @@ class Character:
         if ammo_tag is not None:
             loaded = ammo_tag.get("loaded", "x")
             chambers = int(ammo_tag.get("chambers", "1"))
+            loaded_list = []
             if loaded == "x":
-                loaded_list = []
-
-                while chamber in range(chambers):
+                print(range(chambers))
+                for chamber in range(chambers):
                     loaded_list.append("-1")
             else:
                 loaded_list = loaded.split()
@@ -724,6 +724,7 @@ class Character:
             if int(chamber) > chambers or int(chamber) < 1: 
                 chamber = 1
                 result += 10
+            print(loaded_list)
             loaded_item = self.getItemById(loaded_list[chamber - 1])
             if loaded_item is not None: 
                 self.unpackItem(loaded_item)
@@ -1289,3 +1290,4 @@ class Character:
 
     def getEvents(self):
         return self.xml_char.find("events")
+
