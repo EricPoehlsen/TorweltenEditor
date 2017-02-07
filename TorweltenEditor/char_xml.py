@@ -229,9 +229,9 @@ class Character:
                 selected.set(id_tag, str(variables["rank_"+rank_id].get()))
         
         # get the variables
-        variables = full_trait.findall("variable")
-        if variables:
-            for variable in variables:
+        variable_tags = full_trait.findall("variable")
+        if variable_tags:
+            for variable in variable_tags:
                 var_id = variable.get("id")
                 id_tag = "id-"+var_id
                 selected.set(id_tag, str(variables["var_"+var_id].get()))
