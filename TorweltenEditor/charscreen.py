@@ -165,7 +165,7 @@ class CharScreen(tk.Frame):
                 frame, 
                 textvariable=value_var,
                 width=width
-                )
+            )
             entry.bind("<FocusOut>", self.dataUpdated)
             entry.pack(fill=tk.X, expand=1)
             frame.grid(

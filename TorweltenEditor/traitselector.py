@@ -110,18 +110,21 @@ class TraitSelector:
         # clear the listbox
         self.list_box.delete(0,tk.END)
 
-        cur_traits = self.char.getTraitList()
+        cur_traits = [trait.get("name") for trait in self.char.getTraits()]
         for trait in traits:
-            if (search == False):
-                self.list_box.insert(tk.END,trait[0])
-            if (search == True):
+            if search is False:
+                self.list_box.insert(tk.END, trait[0])
+            if search is True:
                 selector = 0
-                if (self.search_mode == "name"): selector = 0
-                if (self.search_mode == "cls"): selector = 1
-                if (self.search_mode == "grp"): selector = 2
+                if self.search_mode == "name":
+                    selector = 0
+                if self.search_mode == "cls":
+                    selector = 1
+                if self.search_mode == "grp":
+                    selector = 2
                 
                 search_term = self.search.get()
-                if (trait[selector]):
+                if trait[selector]:
                     if search_term.lower() in trait[selector].lower():
                         self.list_box.insert(tk.END,trait[0])
 

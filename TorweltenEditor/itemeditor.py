@@ -286,19 +286,19 @@ class ItemEditor(tk.Toplevel):
         loaded_round = self.char.getRoundFromChamber(self.item,active_chamber)
         if loaded_round is not None:
             # spend round ... 
-            loaded_round.set("name",msg.IE_SHELL_CASING)
-            weight = int( int(loaded_round.get("weight","0")) / 10)
-            loaded_round.set ("weight",str(weight))
-            value = float( float(loaded_round.get("price","0")) / 10)
-            loaded_round.find("damage").set("value","0/0")
+            loaded_round.set("name", msg.IE_SHELL_CASING)
+            weight = int( int(loaded_round.get("weight", "0")) / 10)
+            loaded_round.set ("weight", str(weight))
+            value = float( float(loaded_round.get("price", "0")) / 10)
+            loaded_round.find("damage").set("value", "0/0")
 
         if self.item.get("type") in [it.REVOLVERS,it.RIFLES_SA,it.SHOT_GUNS_SA]:
-            self.char.setActiveChamber(self.item,"next")
+            self.char.setActiveChamber(self.item, "next")
             self._showItemInfo()
 
         if self.item.get("type") in [it.PISTOLS,it.RIFLES,it.SHOT_GUNS, it.MASCHINE_GUNS,
                                      it.AUTOMATIC_PISTOLS,it.AUTOMATIC_RIFLES]:
-            content_list = self.item.get("content","x").split()
+            content_list = self.item.get("content", "x").split()
             
             # get the next round 
             clip = None
@@ -313,7 +313,7 @@ class ItemEditor(tk.Toplevel):
             if clip is not None:
                 clip_content = clip.get("content","x").split()
                 next_round = self.char.getItemById(clip_content[0])
-            self.char.reloadChamber(next_round,self.item)
+            self.char.reloadChamber(next_round, self.item)
 
             self._showItemInfo()
             self.addMenuIcons()
@@ -648,8 +648,7 @@ class ItemEditor(tk.Toplevel):
 
         # create new window if a subitem is called
         if load is not None:
-            self.app.open_windows["itemedit"] = ItemEditor(main,load)
-
+            self.app.open_windows["itemedit"] = ItemEditor(self.app, load)
 
     ## activate the entry field ...
     def _activateEntryField(self,event):

@@ -105,7 +105,7 @@ class SkillSelector:
         skills = self.all_skills.list(minspec,maxspec)
         
         # skills the character already owns
-        cur_skills = self.char.getSkillList()
+        cur_skills = [skill.get("name") for skill in self.char.getSkills()]
 
         # filter for search mode ... 
         if search: 
