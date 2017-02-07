@@ -875,38 +875,6 @@ class Character(object):
 
         self.logEvent(weapon)  # for integrity reasons
 
-    def removeRoundFromChamber(self, weapon, chamber=1):
-        """ Removing a loaded round from a chamber
-
-        Args:
-            weapon (Element<item>): the weapon
-            chamber(int) selected chamber
-        """
-
-        ammo_tag = weapon.find("ammo")
-        if ammo_tag is not None:
-            loaded = ammo_tag.get("loaded", "x")
-            chambers = int(ammo_tag.get("chambers", "1"))
-            loaded_list = []
-            if loaded == "x":
-                print(range(chambers))
-                for chamber in range(chambers):
-                    loaded_list.append("-1")
-            else:
-                loaded_list = loaded.split()
-
-            if int(chamber) > chambers or int(chamber) < 1:
-                chamber = 1
-            loaded_item = self.getItemById(loaded_list[chamber - 1])
-            if loaded_item is not None: 
-                self.unpackItem(loaded_item)
-            loaded_list[chamber - 1] = "-1"
-            new_content = " "
-
-            new_content = new_content.join(loaded_list).strip()
-            ammo_tag.set("loaded", new_content)
-            ammo_tag.set("active", str(chamber))
-
     def loadRoundInChamber(self, ammo, weapon):
         """ Loading the given round into the active chamber
 
