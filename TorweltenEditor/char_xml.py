@@ -1,5 +1,6 @@
 """
-This module is used to store, access and modify a characters ElementTree representation 
+This module is used to store, access and modify a
+characters ElementTree representation
 """
 
 import xml.etree.ElementTree as et
@@ -133,7 +134,11 @@ class Character(object):
         if edit_mode in ALLOWED_MODES:
             edit_type = self.xml_char.find('basics/edit')
             edit_type.set("type", edit_mode)
-            self.logEvent(edit_type, mod=edit_mode, op=msg.CHAR_SWITCHED_EDIT_MODE)
+            self.logEvent(
+                edit_type,
+                mod=edit_mode,
+                op=msg.CHAR_SWITCHED_EDIT_MODE
+            )
 
     # get a single attribute value # #
     def getAttributeValue(self, name):
@@ -323,7 +328,8 @@ class Character(object):
         old_value = int(xml_skill.get("value"))
         new_value = old_value
 
-        # we have to make sure a number is given and it is within the bounds of a skill
+        # we have to make sure a number is given
+        # and it is within the bounds of a skill
         try:
             new_value = self.skill_values[skill_name].get()
             if new_value > 3:
@@ -603,7 +609,7 @@ class Character(object):
         new_value = int(old_value + value)
         xp_element.set("available", str(new_value))
         self.xp_avail.set(new_value)
-        self.logEvent(xp_element,mod=value, op="upd")
+        self.logEvent(xp_element, mod=value, op="upd")
 
     def getInventory(self):
         """ Retrieve the characters inverntory
@@ -735,7 +741,8 @@ class Character(object):
         identical_item = self.getIdenticalItem(item)
         inventory = self.getInventory()
         while identical_item is not None:
-            # add the quantity of the other item to this item and remove the other item
+            # add the quantity of the other item to this item
+            # and remove the other item
             identical_quantity = int(identical_item.get("quantity"))
             item_quantity += identical_quantity
             item.set("quantity", str(item_quantity))
@@ -1004,7 +1011,7 @@ class Character(object):
             container: (Element<item>): the container item
         """
 
-        if item.get("inside","-1") != "-1":
+        if item.get("inside", "-1") != "-1":
             self.unpackItem(item)
 
         container_id = container.get("id")
@@ -1062,8 +1069,10 @@ class Character(object):
         """
 
         weight = 0
-        if item is not None: 
-            weight = int(item.get("weight", "0")) * int(item.get("quantity", "0"))
+        if item is not None:
+            quantity = int(item.get("quantity", "0"))
+            single_weight = int(item.get("weight", "0"))
+            weight = single_weight * quantity
             content = item.get("content", "")
             content_list = content.split()
             for item_id in content_list:
@@ -1133,8 +1142,10 @@ class Character(object):
                     cur_options = current_item.findall("option")
                     for cur_option in cur_options:
                         for item_option in item_options:
-                            if (item_option.get("name") == cur_option.get("name") and
-                                item_option.get("value") != cur_option.get("value")
+                            if (item_option.get("name")
+                                    == cur_option.get("name")
+                                and item_option.get("value")
+                                    != cur_option.get("value")
                             ):
                                 identical = False
                 # definitly different (or literally the same)
