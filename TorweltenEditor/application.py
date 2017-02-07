@@ -45,7 +45,7 @@ class Application(tk.Frame):
         self.main = main
         self._setHotkeys()
 
-        # create the menu # #
+        # creating the menu
         self.menubar = tk.Menu(main)
         # building the file menu
         self.filemenu = tk.Menu(self.menubar, tearoff="0")
@@ -118,7 +118,7 @@ class Application(tk.Frame):
         # stuff that needs to be available across some functions
         self.global_vars = {}
 
-        # defining subwindows to track them!
+        # defining a dict for subwindows to track them
         self.open_windows = {
             "trait": 0,
             "skill": 0,
@@ -143,12 +143,12 @@ class Application(tk.Frame):
 
         self.main.rowconfigure(1, weight=1000)
 
-        # #self.startScreenImage()
-        
         self.newChar()
         self.showToolbar()
 
     def showToolbar(self):
+        """ Rendering the toolbar """
+
         buttons = [
             msg.TOOLBAR_CHAR_DATA,
             msg.TOOLBAR_CHAR_EQUIP,
@@ -165,9 +165,8 @@ class Application(tk.Frame):
             )
             button.pack(side=tk.LEFT)
 
-    # creating a new character
     def newChar(self):
-        # generate an empty character template
+        """ Creating a new empty character template """
         self.char = character.Character()
         self.char.addXP(
             amount=300, 
@@ -176,8 +175,9 @@ class Application(tk.Frame):
         self._switchWindow(msg.TOOLBAR_CHAR_DATA)
         self.status_bar.rebind(self)
     
-    # display the file open dialog and load a characterfile 
     def openCharWindow(self):
+        """ File open dialog => open character """
+
         options = {
             'defaultextension': '.xml',
             'filetypes': [('Charakterdateien', '.xml')],
@@ -195,8 +195,9 @@ class Application(tk.Frame):
         else:
             pass
 
-    # display the file save dialog and load a characterfile
     def saveCharWindow(self):
+        """ File save dialog => stores current character to disk """
+
         suggested_filename = "character.xml"
         charname = self.char.getData("name")
         if len(charname) > 0:
@@ -215,8 +216,9 @@ class Application(tk.Frame):
         if filename:
             self.char.save(filename)
 
-    # display the file save dialog to export a PDF
     def exportCharWindow(self, template=None):
+        """ File save dialog => PDF export to disk """
+
         suggested_filename = "character.pdf"
         charname = self.char.getData("name")
         if len(charname) > 0:
@@ -236,23 +238,24 @@ class Application(tk.Frame):
         if len(filename) > 0:
             ExportPdf(filename, self.char, self.traits, template)
 
-    # clear the main_frame
     def _clearMainFrame(self):
-        """ this destroys all children of self.main_frame"""
+        """ destroying all children in self.main_frame """
 
         widgets = self.main_frame.winfo_children()
         for widget in widgets: widget.destroy()
 
-    # switching to another progam part ...
-    def _switchWindow(self,label):
-        """ switching the main window 
-        label (str): text on the widget calling the command ...
-        """
-        self._clearMainFrame()
+    def _switchWindow(self, label):
 
-        # the window classes ... 
+        """ switching program modules
+
+         Args:
+             label (str): text on the widget calling the command ...
+        """
+
+        self._clearMainFrame()
         frame = self.main_frame
-        WindowClass = {
+        # the program modules...
+        ProgramModule = {
             msg.TOOLBAR_CHAR_DATA: CharScreen,
             msg.TOOLBAR_CHAR_EQUIP: EquipmentScreen,
             msg.TOOLBAR_CHAR_CONTACTS: SocialScreen,
@@ -262,11 +265,11 @@ class Application(tk.Frame):
             msg.MENU_EWT: EWTScreen,
             msg.MENU_CHAR_LOG: LogScreen}
 
-        window = WindowClass[label](frame, app=self)
+        window = ProgramModule[label](frame, app=self)
         window.pack()
                     
     def showTraitInfo(self, event):
-        window = TraitInfo(self,event)
+        window = TraitInfo(self, event)
 
     def _displayImprove(self):
         window = Improve(self)
@@ -281,26 +284,32 @@ class Application(tk.Frame):
         label.image = photo
         label.pack()
         
-    # defining global hotkeys ... 
     def _setHotkeys(self):
+        """ Binding global hotkeys """
+
         self.main.bind_all(
             "<Control-n>",
             lambda event: self.newChar()
-            )
+        )
         self.main.bind_all(
             "<Control-s>",
             lambda event: self.saveCharWindow()
-            )
+        )
         self.main.bind_all(
             "<Control-o>",
             lambda event: self.openCharWindow()
-            )
+        )
         self.main.bind_all(
             "<Control-F5>",
-            lambda event: self._reloadData())
+            lambda event: self._reloadData()
+        )
         
-    # reload data - called by menu or KeyEvent
     def _reloadData(self):
+        """ Reloading data files
+
+        called by menu entry or hotkey
+        """
+
         self.itemlist.loadTree()
         self.skills.loadTree()
         self.traits.loadTree()
@@ -318,7 +327,11 @@ class Application(tk.Frame):
         dpi = (width/width_in,height/height_in)
         print(dpi)
 
+
 class StatusBar(tk.Frame):
+    """ the status bar displays some information across all modules """
+
+
     def __init__(self, main):
         tk.Frame.__init__(self, main)
         self.char = main.char
@@ -344,7 +357,17 @@ class StatusBar(tk.Frame):
             )
         self.money_info.pack(side=tk.LEFT)
 
-    # after a new character is created the variables need to be reassigned!
-    def rebind(self,app):
+    def rebind(self, app):
+        """ Rebinding the status bar
+
+        Note:
+            After a new character is created or a character is loaded
+            the status bar need to be rebound to the character variables
+
+        Args:
+            app (Application): the main application instance
+
+            """
+
         self.xp_info.config(textvariable=app.char.xp_avail)
         self.money_info.config(textvariable=app.char.account_balance)
