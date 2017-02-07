@@ -11,7 +11,7 @@ import config
 msg = config.Messages()
 
 
-class Character:
+class Character(object):
     """ a character object 
 
     this is mainly a wrapper around the underlying ElementTree which 

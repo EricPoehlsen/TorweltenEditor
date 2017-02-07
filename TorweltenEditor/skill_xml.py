@@ -26,7 +26,7 @@ class SkillTree():
         return result
 
     # get skills from minimum specialization, maximum specialization
-    def list(self,minspec = 1,maxspec = 3):
+    def getList(self,minspec = 1,maxspec = 3):
 
         result = []
 
