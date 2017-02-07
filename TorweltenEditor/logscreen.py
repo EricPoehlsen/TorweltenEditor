@@ -11,8 +11,8 @@ class LogScreen(tk.Frame):
     app (Application): the programs primary screen 
     """
 
-    def __init__(self,main,app):
-        tk.Frame.__init__(self,main)
+    def __init__(self, main, app):
+        tk.Frame.__init__(self, main)
         self.app = app
         self.char = app.char
 
@@ -110,7 +110,7 @@ class LogScreen(tk.Frame):
             check_frame.setStatus("okay")
         else: 
             check_frame.setStatus("error")
-        check_frame.pack(side = tk.LEFT)
+        check_frame.pack(side=tk.LEFT)
 
         # checking the attributes integrity ...
         check_frame = Checkresults(
@@ -161,15 +161,16 @@ class LogScreen(tk.Frame):
             print(item.get("name"), hash_value, logged_hash)
             if hash_value != logged_hash:
                 check_frame.setStatus("error")
-        check_frame.pack(side = tk.LEFT)
+        check_frame.pack(side=tk.LEFT)
 
         # display the result of the integrity checks ... 
         self.log_canvas.create_window(0, 0, window=data_integrity, anchor=tk.NW)
 
         # ... finally set the canvas scrollbox ... 
-        self.log_canvas.config(scrollregion = self.log_canvas.bbox(tk.ALL))
+        self.log_canvas.config(scrollregion=self.log_canvas.bbox(tk.ALL))
 
-    def displayXP(self, event):
+    @staticmethod
+    def displayXP(event):
         delta = int(float(event.get("mod")))
         if delta > 0:
             event_string = "+"+str(delta)
@@ -185,7 +186,7 @@ class LogScreen(tk.Frame):
         self.attributes[name] = value
         return event_string
 
-    def displaySkill(self,event):
+    def displaySkill(self, event):
         op = event.get("op")
         id = int(event.get("id"))
         value = int(event.get("value", "0"))
@@ -195,8 +196,8 @@ class LogScreen(tk.Frame):
         self.skills[id] = value
         return event_string
 
-        # data modifications
-    def displayData(self, event):
+    @staticmethod
+    def displayData(event):
         op = event.get("op")
         data_str = {
             'name': msg.NAME,
@@ -218,7 +219,6 @@ class LogScreen(tk.Frame):
         event_string = op + ": " + data_str[name] + ", " + str(value)
         return event_string
 
-    # retrieve inventory data ...
     def displayItem(self, event):
         op = event.get("op")
 
@@ -253,12 +253,13 @@ class LogScreen(tk.Frame):
         self.items[id] = hash_value
         return event_string
 
-    def displayAccount(self, event):
+    @staticmethod
+    def displayAccount(event):
         op = event.get("op", "")
         amount = float(event.get("mod", "0"))
         amount = "{:+.2f}".format(amount)
 
-        event_string = op + " " +amount
+        event_string = op + " " + amount
 
         return event_string
 
@@ -327,6 +328,7 @@ class LogScreen(tk.Frame):
         self.contacts[id] = hash_value
         return event_string
 
+
 class Checkresults(tk.Frame):
     """ A two-state status display
 
@@ -334,25 +336,25 @@ class Checkresults(tk.Frame):
     status (string): "okay" or "error" 
     text (string): some kind of descriptive text ...
     """
-    def __init__(self,*args,status=None,text=None,**kwargs):
-        tk.Frame.__init__(self,*args,**kwargs)
+    def __init__(self, *args, status=None, text=None, **kwargs):
+        tk.Frame.__init__(self, *args, **kwargs)
         self.tick = ImageTk.PhotoImage(file="ui_img/tick.png")
         self.cross = ImageTk.PhotoImage(file="ui_img/cross.png")
 
         self.status = None
         self.icon = tk.Label(self)
-        self.icon.pack(side = tk.LEFT)
+        self.icon.pack(side=tk.LEFT)
         self.label = tk.Label(self, text=text)
         self.label.pack(side=tk.RIGHT) 
 
         if status: 
             self.setStatus(status)
 
-    def setStatus(self,status=None):
+    def setStatus(self, status=None):
         if status == "okay":
-            self.icon.config(image = self.tick)
+            self.icon.config(image=self.tick)
             self.status = status
         elif status == "error":
-            self.icon.config(image = self.cross)
+            self.icon.config(image=self.cross)
             self.status = status
         return self.status
