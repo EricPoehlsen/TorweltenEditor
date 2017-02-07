@@ -861,14 +861,17 @@ class Character(object):
             loaded = self.getItemById(int(content))
             if loaded is not None:
                 self.unpackItem(loaded)
-        
-        if ammo is not None: 
-            ammo_id = ammo.get("id")
+
+        ammo_id = "-1"
+        if ammo is not None:
+            quantity = int(ammo.get("quantity"))
+            if quantity > 1:
+                rest, ammo_id = self.splitItemStack(ammo, 1)
+                print(ammo_id)
+                ammo = self.getItemById(ammo_id)
             self.unpackItem(ammo)
             self.packItem(ammo, weapon)
-        else:
-            ammo_id = "-1"
-        ammo_tag.set("loaded", ammo_id)
+        ammo_tag.set("loaded", str(ammo_id))
 
         self.logEvent(weapon)  # for integrity reasons
 
@@ -1206,8 +1209,9 @@ class Character(object):
 
         items = self.getItems()
         id = 0
+        print(items)
         for item in items:
-            item_id = int(item.get("id, 0"))
+            item_id = int(item.get("id", "0"))
             if item_id > id:
                 id = item_id
         return id
