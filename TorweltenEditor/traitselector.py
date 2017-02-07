@@ -4,7 +4,7 @@ import config
 msg = config.Messages()
 
 
-class TraitSelector:
+class TraitSelector(tk.Toplevel):
     """ Creating a window for selecting character traits
 
     Args:
@@ -12,6 +12,7 @@ class TraitSelector:
     """
 
     def __init__(self, app):
+        tk.Toplevel.__init__(self, app)
         
         # point to character and traitstree
         self.char = app.char
@@ -29,18 +30,16 @@ class TraitSelector:
         title = msg.TS_TITLE
         
         # the main window
-        self.trait_editor = tk.Toplevel()
-        self.trait_editor.protocol("WM_DELETE_WINDOW", self.close)
-        self.trait_editor.title(title)
-        self.trait_editor.geometry("500x400")
+        self.protocol("WM_DELETE_WINDOW", self.close)
+        self.title(title)
+        self.geometry("500x400")
         
-        # the selection frame
-        self.left_frame = tk.Frame(self.trait_editor, width=250)
+        # the selection frame is used to display the search and listbox.
+        self.left_frame = tk.Frame(self, width=250)
         self.search_frame = tk.Frame(self.left_frame)
         self.search = tk.StringVar()
         self.search.set(msg.TS_SEARCH_NAME)
         self.search_mode = "name"
-        
         self.upper_search_frame = tk.Frame(self.search_frame)
         self.search_mode_name = tk.Button(
             self.upper_search_frame,
@@ -65,7 +64,6 @@ class TraitSelector:
         )
         self.search_mode_grp.pack(side=tk.LEFT, fill=tk.X, expand=1)
         self.upper_search_frame.pack(fill=tk.X, expand=1)
-        
         self.lower_search_frame = tk.Frame(self.search_frame)
         self.search_box = tk.Entry(
             self.lower_search_frame,
@@ -81,8 +79,6 @@ class TraitSelector:
         self.search_button.pack(side=tk.RIGHT)
         self.lower_search_frame.pack(fill=tk.X, expand=1)
         self.search_frame.pack(fill=tk.X)
-        
-        # THIS IS THE SELECTION FRAME 
         self.select_frame = tk.Frame(self.left_frame)
         self.scrollbar_select = tk.Scrollbar(
             self.select_frame,
@@ -100,8 +96,8 @@ class TraitSelector:
         self.select_frame.pack(fill=tk.Y, expand=1)
         self.left_frame.pack(fill=tk.Y, side=tk.LEFT, expand=1)
         
-        # the info frame
-        self.info_frame = tk.Frame(self.trait_editor, width=300)
+        # the info frame displays the information about the selected trait.
+        self.info_frame = tk.Frame(self, width=300)
         self.info_title_frame = tk.Frame(self.info_frame)
         self.info_xp = tk.Label(
             self.info_title_frame,
@@ -149,8 +145,7 @@ class TraitSelector:
         self.info_frame.pack(fill=tk.BOTH, side=tk.LEFT)
         
         self.listTraits()
-
-        self.trait_editor.focus()
+        self.focus()
     
     def listTraits(self, search=False):
         traits = self.all_traits.fullList()
@@ -505,5 +500,5 @@ class TraitSelector:
         return "break"
     
     def close(self):
-        self.trait_editor.destroy()
+        self.destroy()
         self.app.open_windows["trait"] = 0
