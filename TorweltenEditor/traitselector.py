@@ -148,7 +148,7 @@ class TraitSelector(tk.Toplevel):
         self.focus()
     
     def listTraits(self, search=False):
-        traits = self.all_traits.fullList()
+        traits = self.all_traits.getList()
         # clear the listbox
         self.list_box.delete(0, tk.END)
 
@@ -442,7 +442,7 @@ class TraitSelector(tk.Toplevel):
                         self.searchTraits()
                 )
 
-                traits = self.all_traits.fullList()
+                traits = self.all_traits.getList()
                 trait_set = set()
                 for trait in traits:
                     if trait[1]:
@@ -468,7 +468,7 @@ class TraitSelector(tk.Toplevel):
                     self.searchTraits()
                 )
 
-                traits = self.all_traits.fullList()
+                traits = self.all_traits.getList()
                 trait_set = set()
                 for trait in traits:
                     if trait[2]:

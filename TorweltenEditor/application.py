@@ -141,9 +141,9 @@ class Application(tk.Frame):
         self.status_bar = StatusBar(self)
         self.status_bar.grid(row=2, sticky="sw")
 
-        self.main.rowconfigure(1, weight=1000)
+        self.rowconfigure(1, weight=1000)
 
-        self.newChar()
+        self.startScreenImage()
         self.showToolbar()
 
     def showToolbar(self):
@@ -242,7 +242,8 @@ class Application(tk.Frame):
         """ destroying all children in self.main_frame """
 
         widgets = self.main_frame.winfo_children()
-        for widget in widgets: widget.destroy()
+        for widget in widgets:
+            widget.destroy()
 
     def _switchWindow(self, label):
 
@@ -279,8 +280,9 @@ class Application(tk.Frame):
 
     # TODO this is a currently unused
     def startScreenImage(self):
-        photo = ImageTk.PhotoImage(file="logo.png")
-        label = tk.Label(self.main_frame, image = photo)
+
+        photo = ImageTk.PhotoImage(file="images/logo.png")
+        label = tk.Label(self.main_frame, image=photo)
         label.image = photo
         label.pack()
         
@@ -330,7 +332,6 @@ class Application(tk.Frame):
 
 class StatusBar(tk.Frame):
     """ the status bar displays some information across all modules """
-
 
     def __init__(self, main):
         tk.Frame.__init__(self, main)

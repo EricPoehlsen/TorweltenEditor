@@ -6,7 +6,7 @@ import config
 it = config.ItemTypes()
 
 
-class ItemTree():
+class ItemTree(object):
     def __init__(self):
         # this is the xml interpretation of the available items
         self.xml_items = None
