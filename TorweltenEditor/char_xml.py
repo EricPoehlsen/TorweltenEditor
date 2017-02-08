@@ -1177,7 +1177,6 @@ class Character(object):
 
         items = self.getItems()
         id = 0
-        print(items)
         for item in items:
             item_id = int(item.get("id", "0"))
             if item_id > id:
