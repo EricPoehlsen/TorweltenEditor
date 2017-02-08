@@ -6,7 +6,6 @@ import skill_xml
 import trait_xml
 import config
 from charscreen import CharScreen
-from traitselector import TraitSelector
 from traitinfo import TraitInfo
 from equipmentscreen import EquipmentScreen
 from ewtscreen import EWTScreen
@@ -17,7 +16,7 @@ from sheetlayoutscreen import LayoutScreen
 from exportpdf import ExportPdf
 from imagescreen import ImageScreen
 from improvewindow import Improve
-from PIL import ImageTk,Image,PngImagePlugin
+from PIL import ImageTk, Image, PngImagePlugin
 import tkinter as tk
 
 msg = config.Messages()
@@ -143,7 +142,8 @@ class Application(tk.Frame):
 
         self.rowconfigure(1, weight=1000)
 
-        self.startScreenImage()
+        # self.startScreenImage()
+        self.newChar()
         self.showToolbar()
 
     def showToolbar(self):

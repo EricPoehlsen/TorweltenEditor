@@ -2,12 +2,15 @@
 import tkinter as tk
 import config
 
-#Display additional information about selected traits ... # #
-class TraitInfo:
-    def __init__(self,main, event):
-        self.main = main
-        self.char = main.char
-        self.traits = main.traits
+# Display additional information about selected traits ... # #
+
+
+class TraitInfo(tk.Toplevel):
+    def __init__(self, app, event):
+        tk.Toplevel.__init__(self, app)
+        self.app = app
+        self.char = app.char
+        self.traits = app.traits
 
         # build the window ...
         width = 200
@@ -16,11 +19,13 @@ class TraitInfo:
         y = event.y_root
         geometry = "+"+str(x)+"+"+str(y)
         
-        self.window = tk.Toplevel()
-        self.window.overrideredirect(True)
-        self.window.geometry(geometry)
-        self.window.bind("<FocusOut>", lambda a: self.window.destroy())
-        self.frame = tk.Frame(self.window, borderwidth = 3, relief = tk.GROOVE, background = config.Colors.LIGHT_YELLOW)
+        self.geometry(geometry)
+        self.frame = tk.Frame(
+            self,
+            borderwidth=3,
+            relief=tk.GROOVE,
+            background=config.Colors.LIGHT_YELLOW
+        )
 
         # get the information ...
         self.char_trait = self.getCharTrait(event)
@@ -31,24 +36,34 @@ class TraitInfo:
 
         self.trait_xp = self.char_trait.get("xp")
         self.title_frame = tk.Frame(self.frame)
-        self.title = tk.Label(self.title_frame, font = "Arial 12 bold", text = self.trait_name)
-        self.xp = tk.Label(self.title_frame, font = "Arial 12 bold", text = "("+self.trait_xp+")")
+        self.title = tk.Label(
+            self.title_frame,
+            font="Arial 12 bold",
+            text=self.trait_name
+        )
+        self.xp = tk.Label(
+            self.title_frame,
+            font="Arial 12 bold",
+            text="("+self.trait_xp+")"
+        )
 
-        if (self.char.getEditMode() == "generation"):
-            remove_button = tk.Button(self.title_frame, text = "Entfernen", command = self.removeTrait)
+        if self.char.getEditMode() == "generation":
+            remove_button = tk.Button(
+                self.title_frame,
+                text="Entfernen",
+                command=self.removeTrait
+            )
             remove_button.pack(side = tk.RIGHT, anchor = tk.E)
 
-
-
-        if (int(self.trait_xp) > 0):
-            self.xp.config(foreground = config.Colors.DARK_GREEN)
+        if int(self.trait_xp) > 0:
+            self.xp.config(foreground=config.Colors.DARK_GREEN)
         else:
-            self.xp.config(foreground = config.Colors.DARK_RED)
-        self.title.pack(side = tk.LEFT, anchor = tk.W)
-        self.xp.pack(side = tk.LEFT, anchor = tk.E)
+            self.xp.config(foreground=config.Colors.DARK_RED)
+        self.title.pack(side=tk.LEFT, anchor=tk.W)
+        self.xp.pack(side=tk.LEFT, anchor=tk.E)
         self.title_frame.pack(fill = tk.X)
 
-        self.info_description = tk.Text(self.frame, wrap = tk.WORD)
+        self.info_description = tk.Text(self.frame, wrap=tk.WORD)
         self.trait_specification = ""
         self.trait_ranks = ""
         self.trait_variables = ""
@@ -60,14 +75,14 @@ class TraitInfo:
             self.info_description.insert(tk.CURRENT, self.trait_specification)
             index_end = self.info_description.index(tk.CURRENT)
             self.info_description.tag_add("title",index_start,index_end)
-            self.info_description.tag_config("title", font = "Arial 10 bold")
+            self.info_description.tag_config("title", font="Arial 10 bold")
         
         description = self.char_trait.find("description")
         if description is None: description = self.trait.find("./description")
         self.setDescription(description)
         
         ranks = self.trait.findall("./rank")
-        if (ranks):
+        if ranks is not None:
             for rank in ranks:
                 rank_id = rank.get("id")
                 rank_name = rank.get("name")
@@ -80,7 +95,7 @@ class TraitInfo:
                 self.info_description.tag_config("title", font = "Arial 10 bold")
                 
         variables = self.trait.findall("./variable")
-        if (variables):
+        if variables is not None:
             for variable in variables:
                 var_id = variable.get("id")
                 var_name = variable.get("name")
@@ -97,7 +112,7 @@ class TraitInfo:
         self.info_description.pack()
         self.frame.pack()
 
-        self.window.focus()
+        self.focus()
 
     # retrieve the character trait based on the id passed as text_tag
     def getCharTrait(self, event):
@@ -122,25 +137,25 @@ class TraitInfo:
                 fragment_size = fragment.get("size")
                 fragment_style = fragment.get("style")
                 format_string = ""
-                if (fragment_font):
+                if fragment_font:
                     format_string = fragment_font
                 else: 
                     format_string = config.Style.FONT
 
-                if (fragment_size):
+                if fragment_size:
                     format_string = format_string + " " + fragment_size
                 else:
                     format_string = format_string + " " + config.Style.SIZE
 
-                if (fragment_style):
+                if fragment_style:
                     format_string = format_string + " " + fragment_style
 
                 fragment_id = "fragment" + str(fragment_count)
                 self.info_description.tag_add(fragment_id, old_index, new_index)
                 self.info_description.tag_config(fragment_id, font = format_string)
                 fragment_count += 1
+
     def removeTrait(self):
         self.char.removeTraitByID(self.id)
-        self.window.destroy()
-        self.main.updateTraitList()
-
+        self.destroy()
+        self.app.updateTraitList()

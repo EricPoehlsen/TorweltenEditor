@@ -71,14 +71,14 @@ class Messages:
     MENU_HELP = "Hilfe"
     MENU_ABOUT = "About ..."
 
-    # ####TOOLBAR
+    # TOOLBAR
     TOOLBAR_CHAR_DATA = "Daten, Fertigkeiten, Eigenschaften"
     TOOLBAR_CHAR_EQUIP = "Ausrüstung und Waffen"
     TOOLBAR_CHAR_CONTACTS = "Soziales und Kontakte"
     TOOLBAR_CHAR_IMAGE = "Charakterbild"
     TOOLBAR_CHAR_LAYOUT = "Layout"
 
-    # ###CHAR SCREEN
+    # CHAR SCREEN
     CS_BASE_DATA = "Basisdaten"
     CS_TRAITS = "Vor- und Nachteile"
     CS_ADD_TRAIT = "Neue Eigenschaft ..."
@@ -86,7 +86,7 @@ class Messages:
     CS_PASSIVE_SKILLS = "Wissen und Sprachen"
     CS_ADD_SKILLS = "Fertigkeiten hinzufügen ..."
 
-    # ###TRAIT SELECTOR
+    # TRAIT SELECTOR
     TS_TITLE = "Eigenschaft hinzufügen"
     TS_SEARCH_NAME = "nach Name suchen ..."
     TS_NAME = "Name"
@@ -98,7 +98,7 @@ class Messages:
     TS_ADD_TRAIT = "Ausgewählte Eigenschaft hinzufügen ..."
     TS_JUST_SCROLL = "einfach durchblättern..."
 
-    # ###SKILL SELECTOR
+    # SKILL SELECTOR
     SS_TITLE = "Fertigkeiten wählen"
     SS_ADD_REMOVE_SKILLS = "Fertigkeiten hinzufügen/entfernen"
     SS_ADD_SKILLS = "Fertigkeiten hinzufügen"
@@ -115,7 +115,17 @@ class Messages:
     SS_SEARCH = "Suche"
     SS_X = " [X]"
 
-    # ###EQUIPMENT SCREEN
+    # SKILL INFO
+    SI_SPEC1 = "ist eine Grundfertigkeit"
+    SI_SPEC2 = "Fertigkeit in"
+    SI_SPEC3 = "Spezialisierung in"
+    SI_SPEC0 = "nicht zugeordnet"
+    SI_OTHER_SPEC = "weitere Spezialisierungen"
+    SI_CHILD_SPEC = "zugeordnete Spezialisierungen"
+    SI_CHILD_SKILL = "zugeordnete Fertigkeiten"
+
+
+    # EQUIPMENT SCREEN
     ES_BUY_BUTTON = "Ausrüstung beschaffen"
     ES_EQUIPPED = "Mitgeführte Ausrüstung"
     ES_MELEE = "Nahkampfwaffen"
@@ -220,8 +230,9 @@ class Messages:
     SE_FREQUENCY_4 = "häufig"
     SE_FREQUENCY_5 = "dauernd"
 
-    # IMAGE SCREEN
 
+
+    # IMAGE SCREEN
     IS_ERROR = "Dateifehler!"
     IS_ERROR_TEXT = "Fehler beim Versuch die Datei %s zu laden."
     IS_ERROR_CLOSE = "Okay"
@@ -230,7 +241,6 @@ class Messages:
     IS_REMOVE_IMAGE = "Bild entfernen"
     IS_LOAD_IMAGE_TITLE = "Bilddatei laden ..."
     IS_LOAD_MIME = "Bilddateien ..."
-    
 
     # for the sheetlayoutscreen
     SL_NEW = "Neu ..."

@@ -43,6 +43,25 @@ class SkillTree(object):
         skill = self.xml_skills.find(".//skill[@name='"+name+"']") 
         return skill
 
+    def getChildren(self, id):
+        id = str(id)
+        base = self.xml_skills.find(".//skill[@id='"+id+"']")
+        search_id = -1
+        if base is not None:
+            spec = int(base.get("spec"))
+
+            if spec < 3:
+                search_id = base.get("id")
+            else:
+                search_id = base.get("parent")
+
+        skills = self.xml_skills.findall(".//skill[@parent='"+search_id+"']")
+        return skills
+
+
+
+
+
     # this creates a new skill and stores it in the skill
     def newSkill(self, name, origin):
         origin = self.getSkill(origin)

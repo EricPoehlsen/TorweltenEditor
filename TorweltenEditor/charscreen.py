@@ -2,6 +2,7 @@ import config
 from traitselector import TraitSelector
 from traitinfo import TraitInfo
 from skillselector import SkillSelector
+from skillinfo import SkillInfo
 from PIL import ImageTk,Image,PngImagePlugin
 from tooltip import ToolTip
 
@@ -498,13 +499,20 @@ class CharScreen(tk.Frame):
                     outline="#ddddff"
                 )
             # name
-            canvas.create_text(
-                0,                  # x
-                y_pos*height,       # y
+            text = canvas.create_text(
+                2,                  # x
+                y_pos*height + 2,   # y
                 anchor=tk.NW,
                 text=skill_text,
                 font=skill_font
             )
+            canvas.tag_bind(
+                text,
+                "<Button-1>",
+                lambda event, name=skill_text:
+                    self.showSkillInfo(name)
+            )
+
             # value
             if edit_mode == "generation": 
                 canvas.create_window(
@@ -545,3 +553,6 @@ class CharScreen(tk.Frame):
                     
     def showTraitInfo(self, event):
         window = TraitInfo(self, event)
+
+    def showSkillInfo(self, name):
+        window = SkillInfo(self, name)
