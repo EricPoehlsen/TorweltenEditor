@@ -297,8 +297,8 @@ class EquipmentScreen(tk.Frame):
                     anchor=tk.NW,
                     width=230
                 )
-                self.update_idletasks()
-                y += item_frame.winfo_height()    
+
+                y += name_label.winfo_reqheight() + 5
   
     # show the equipped items
     def showEquippedItems(self):
