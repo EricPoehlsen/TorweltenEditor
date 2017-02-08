@@ -90,16 +90,16 @@ class SkillSelector(tk.Toplevel):
         self.new_skill_entry.pack(fill=tk.X)
 
         self.add_button_text = tk.StringVar()
-        if self.char.getEditMode() == "generation": 
+        self.add_button = tk.Button(
+            self,
+            textvariable=self.add_button_text,
+            command=self.addSkills,
+            state=tk.DISABLED
+        )
+        if self.char.getEditMode() == "generation":
             self.add_button_text.set(msg.SS_ADD_REMOVE_SKILLS)
         else:
             self.add_button_text.set(msg.SS_ADD_SKILLS)
-            self.add_button = tk.Button(
-                self,
-                textvariable=self.add_button_text,
-                command=self.addSkills,
-                state=tk.DISABLED
-            )
         self.add_button.pack(fill=tk.X)
         
         self._showSkills()
