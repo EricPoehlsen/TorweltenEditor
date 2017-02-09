@@ -121,7 +121,6 @@
 			<container name = "Uniformtaschen" limit = "2500"/>
 			<description>Bei diesem Kleidungsstück handelt es sich um eine komplette Kampfuniform einer regulären Armee oder größeren Söldnergruppierung. Sie besteht aus einem robusten Synthetikmaterial und besitzt eine Reihe großer Taschen. Die Uniform besteht aus Hose, Hemd und Jacke. In vielen Jurisdiktionen ist das Tragen regulärer Uniformen nur Mitgliedern der entsprechenden Truppen vorbehalten.</description>
 		</item>
-		
 	</group>
 
 	<group name = "Panzerung">

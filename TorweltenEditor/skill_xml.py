@@ -6,37 +6,67 @@ import tkinter as tk
 class SkillTree(object):
     def __init__(self):
         # this is the xml interpretation of the character
-        self.xml_skills = None
-        self.loadTree()
+        self.xml_skills = self.loadTree()
+        self.addToTree("data/own_skills.xml")
+        self.addToTree("data/the_linguist.xml")
 
-    def loadTree(self, filename=None):
-        self.xml_skills = et.parse('data/skills.xml')
+    def loadTree(self, filename='data/skills.xml'):
+        tree = None
+        try:
+            tree = et.parse(filename)
+        except FileNotFoundError:
+            pass
+        return tree
 
-    def groups(self):
-        result = []
-        groups = self.xml_skills.findall(".//skillgroup")
-        for group in groups:
-            name = group.get("name")
-            skilltype = group.get("type")
-            minid = group.get("minid")
-            maxid = group.get("maxid")
-            result.append((name, skilltype, minid, maxid))
-        return result
+    def addToTree(self, filename=None):
+        """ Adding another set of skills to the skill tree
 
-    # get skills from minimum specialization, maximum specialization
+        Args:
+            filename (str): the file to parse
+        """
+
+        if filename is None:
+            filename = "data/demo_skills.xml"
+
+        local_tree = self.loadTree(filename)
+
+        skills = local_tree.findall(".//skill")
+        groups = self.xml_skills.findall("skillgroup")
+        for skill in skills:
+            name = skill.get("name")
+            existing_skill = self.getSkill(name)
+            if existing_skill is None:
+                id = int(skill.get("id", "0"))
+                relevant_group = None
+
+                for group in groups:
+                    min_id = int(group.get("minid", "0"))
+                    max_id = int(group.get("maxid", "0"))
+                    if min_id <= id <= max_id:
+                        relevant_group = group
+                        break
+                relevant_group.append(skill)
+                self.sortSkills(relevant_group)
+
     def getList(self, minspec=1, maxspec=3):
+        """ Get a list of skills
+
+        Args:
+            minspec (int): minimum specialization level
+            maxspec (int): maximum specialization level
+
+        Returns:
+            [(name(str), spec(str), id(str)),...]
+        """
 
         result = []
-
         skills = self.xml_skills.findall(".//skill")
         for skill in skills:
             name = skill.get("name")
             spec = int(skill.get("spec"))
             id = int(skill.get("id"))
-            
             if minspec <= spec <= maxspec:
                 result.append((name, spec, id))
-                
         return result
 
     def getSkill(self, name):
@@ -44,6 +74,12 @@ class SkillTree(object):
         return skill
 
     def getChildren(self, id):
+        """ Gets the children or siblings of a skill:
+
+        Args:
+            id (int) - skill id
+        """
+
         id = str(id)
         base = self.xml_skills.find(".//skill[@id='"+id+"']")
         search_id = -1
@@ -57,10 +93,6 @@ class SkillTree(object):
 
         skills = self.xml_skills.findall(".//skill[@parent='"+search_id+"']")
         return skills
-
-
-
-
 
     # this creates a new skill and stores it in the skill
     def newSkill(self, name, origin):
@@ -92,20 +124,31 @@ class SkillTree(object):
         if spec == 3:
             id = parent + new_num
 
-            skill = et.Element(
-                "skill",
-                {"name": str(name),
-                 "id": str(id),
-                 "parent": str(parent),
-                 "spec": str(spec),
-                 "type": origin_type
-                }
-            )
-            relevant_group.append(skill)
-            self.sortSkills(relevant_group)
+        skill = et.Element(
+            "skill",
+            {"name": str(name),
+             "id": str(id),
+             "parent": str(parent),
+             "spec": str(spec),
+             "type": origin_type
+            }
+        )
+        relevant_group.append(skill)
+        self.sortSkills(relevant_group)
+        self.updateLocalSkills(skill)
 
-        with open("data/skills.xml", mode="wb") as file:
-            self.xml_skills.write(file, encoding="utf-8", xml_declaration=True)
+    def updateLocalSkills(self,skill):
+        filename = "data/own_skills.xml"
+        local = self.loadTree(filename)
+        if local is not None:
+            root = local.getroot()
+            root.append(skill)
+        else:
+            root = et.Element("skills")
+            root.append(skill)
+            local = et.ElementTree(root)
+        with open(filename, mode="wb") as file:
+            local.write(file, encoding="utf-8", xml_declaration=True)
 
     # returns a single skill element by Id
     def getSkillById(self, id):
@@ -116,10 +159,11 @@ class SkillTree(object):
     def sortSkills(self, group):
         skill_list = []
         for skill in group:
-            key = skill.get("id")
-            skill_list.append((key, skill))
+            id = skill.get("id")
+            name = skill.get("name")
+            skill_list.append((id,name, skill))
         skill_list.sort()
-        # overwriting the skills ... 
+        # overwriting the skills ...
         group[:] = [new_skill[-1] for new_skill in skill_list]
 
     # Writing parents based on the ID of a skill. 
