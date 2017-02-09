@@ -320,7 +320,7 @@ class CharScreen(tk.Frame):
         """ Opening a window to add character skills"""
 
         if self.open_windows["skill"] != 0:
-            self.open_windows["skill"].skill_editor.focus()
+            self.open_windows["skill"].focus()
         else:
             # first check if the character may be edited
             edit_mode = self.char.getEditMode()
