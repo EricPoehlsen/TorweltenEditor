@@ -31,7 +31,7 @@ class TraitInfo(tk.Toplevel):
 
         self.trait_xp = self.char_trait.get("xp")
 
-        self.config(relief=tk.RIDGE, borderwidth=3)
+        self.config(relief=tk.RIDGE, borderwidth=2)
         # preparing the canvas
         self.canvas = tk.Canvas(self, width=300, height=200)
         self.canvas.pack(side=tk.LEFT)

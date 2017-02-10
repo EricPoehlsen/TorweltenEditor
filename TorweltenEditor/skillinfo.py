@@ -64,12 +64,13 @@ class SkillInfo(tk.Toplevel):
         self.showParent()
 
         self.showChildren()
+        self.config(relief=tk.RIDGE, borderwidth=2)
 
         self.setScrollRegion()
 
-        self.bind("<Leave>", self.checkForDestruction)
-        self.bind("<Escape>", self.close)
         self.focus()
+        self.bind("<Escape>", self.close)
+        self.bind("<FocusOut>", self.close)
 
     def initialPosition(self):
         x, y = self.winfo_pointerxy()
@@ -167,21 +168,6 @@ class SkillInfo(tk.Toplevel):
             )
 
             y += label.winfo_reqheight()
-
-    def checkForDestruction(self, event=None):
-        def checkBoundary(self):
-            x1 = self.winfo_rootx()
-            y1 = self.winfo_rooty()
-            x2 = x1 + self.winfo_width()
-            y2 = y1 + self.winfo_height()
-            x, y = self.winfo_pointerxy()
-
-            if x1 < x < x2 and y1 < y < y2:
-                self.checkForDestruction()
-            else:
-                self.close()
-
-        self.after(1000, lambda: checkBoundary(self))
 
     def close(self, event=None):
         self.app.open_windows["skill"] = 0
