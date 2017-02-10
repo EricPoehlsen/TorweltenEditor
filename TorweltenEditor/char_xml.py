@@ -251,6 +251,12 @@ class Character(object):
         
         self.logEvent(trait, op=msg.CHAR_TRAIT_ADDED)
 
+
+
+
+
+
+
     def resetTraitIDs(self):
         """ Reset trait ids if necessary """
 

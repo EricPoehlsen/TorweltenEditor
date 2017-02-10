@@ -327,7 +327,7 @@ class TraitSelector(tk.Toplevel):
                     except ValueError:
                         selected = min
 
-                    self.info_subtrait_vars["rank_"+id].set(selected)
+                    self.info_subtrait_vars["rank_"+rank_id].set(selected)
                     if operand == "add":
                         trait_cost += selected * xp_factor
 

@@ -12,20 +12,15 @@ class TraitInfo(tk.Toplevel):
         self.char = app.char
         self.traits = app.traits
 
-        # build the window ...
-        width = 200
-        height = 50
         x = event.x_root
         y = event.y_root
         geometry = "+"+str(x)+"+"+str(y)
-        
         self.geometry(geometry)
-        self.frame = tk.Frame(
-            self,
-            borderwidth=3,
-            relief=tk.GROOVE,
-            background=config.Colors.LIGHT_YELLOW
-        )
+
+        self.overrideredirect(True)
+
+        # for positioning stuff on the widget
+        self.y = 0
 
         # get the information ...
         self.char_trait = self.getCharTrait(event)
@@ -35,84 +30,23 @@ class TraitInfo(tk.Toplevel):
         self.id = self.char_trait.get("id")
 
         self.trait_xp = self.char_trait.get("xp")
-        self.title_frame = tk.Frame(self.frame)
-        self.title = tk.Label(
-            self.title_frame,
-            font="Arial 12 bold",
-            text=self.trait_name
-        )
-        self.xp = tk.Label(
-            self.title_frame,
-            font="Arial 12 bold",
-            text="("+self.trait_xp+")"
-        )
 
-        if self.char.getEditMode() == "generation":
-            remove_button = tk.Button(
-                self.title_frame,
-                text="Entfernen",
-                command=self.removeTrait
-            )
-            remove_button.pack(side = tk.RIGHT, anchor = tk.E)
+        self.config(relief=tk.RIDGE, borderwidth=3)
+        # preparing the canvas
+        self.canvas = tk.Canvas(self, width=300, height=200)
+        self.canvas.pack(side=tk.LEFT)
+        self.scroll = tk.Scrollbar(self, orient=tk.VERTICAL)
+        self.scroll.pack(side=tk.LEFT, fill=tk.Y)
+        self.scroll.config(command=self.canvas.yview)
+        self.canvas.config(yscrollcommand=self.scroll.set)
 
-        if int(self.trait_xp) > 0:
-            self.xp.config(foreground=config.Colors.DARK_GREEN)
-        else:
-            self.xp.config(foreground=config.Colors.DARK_RED)
-        self.title.pack(side=tk.LEFT, anchor=tk.W)
-        self.xp.pack(side=tk.LEFT, anchor=tk.E)
-        self.title_frame.pack(fill = tk.X)
-
-        self.info_description = tk.Text(self.frame, wrap=tk.WORD)
-        self.trait_specification = ""
-        self.trait_ranks = ""
-        self.trait_variables = ""
-
-        specification = self.trait.find("./specification")
-        if specification is not None:
-            self.trait_specification = specification.get("name") + ": " + self.selected.get("spec") + "\n"
-            index_start = self.info_description.index(tk.CURRENT)
-            self.info_description.insert(tk.CURRENT, self.trait_specification)
-            index_end = self.info_description.index(tk.CURRENT)
-            self.info_description.tag_add("title",index_start,index_end)
-            self.info_description.tag_config("title", font="Arial 10 bold")
-        
-        description = self.char_trait.find("description")
-        if description is None: description = self.trait.find("./description")
-        self.setDescription(description)
-        
-        ranks = self.trait.findall("./rank")
-        if ranks is not None:
-            for rank in ranks:
-                rank_id = rank.get("id")
-                rank_name = rank.get("name")
-                rank_selected = self.selected.get("rank-"+rank_id)
-                rank_variable = "\n" + rank_name + ": " + rank_selected + "\n"
-                index_start = self.info_description.index(tk.CURRENT)
-                self.info_description.insert(tk.CURRENT, rank_variable)
-                index_end = self.info_description.index(tk.CURRENT)
-                self.info_description.tag_add("title",index_start,index_end)
-                self.info_description.tag_config("title", font = "Arial 10 bold")
-                
-        variables = self.trait.findall("./variable")
-        if variables is not None:
-            for variable in variables:
-                var_id = variable.get("id")
-                var_name = variable.get("name")
-                var_selected = self.selected.get("id-"+var_id)
-                selected_variable = "\n" + var_name + ": " + var_selected + "\n"
-                index_start = self.info_description.index(tk.CURRENT)
-                self.info_description.insert(tk.CURRENT, selected_variable)
-                index_end = self.info_description.index(tk.CURRENT)
-                self.info_description.tag_add("spec",index_start,index_end)
-                self.info_description.tag_config("spec", font = "Arial 10 bold")
-                description = variable.find("./description[@value='"+var_selected+"']")
-                self.setDescription(description)
-        
-        self.info_description.pack()
-        self.frame.pack()
-
-        self.focus()
+        # render content
+        self.drawTitle()
+        self.drawSpecification()
+        self.drawDescription()
+        self.drawRanks()
+        self.drawVariables()
+        self.finalize()
 
     # retrieve the character trait based on the id passed as text_tag
     def getCharTrait(self, event):
@@ -121,41 +55,161 @@ class TraitInfo(tk.Toplevel):
         tags = text.tag_names(index)
         trait = self.char.getTraitByID(tags[0])
         return trait
-        
-    def setDescription(self,section):
-        if section is not None:
-            if section.text is not None: 
-                self.info_description.insert(tk.END,section.text)
 
-            text_fragments = section.findall(".//text")
-            fragment_count = 0
-            for fragment in text_fragments:
-                old_index = self.info_description.index(tk.CURRENT)
-                self.info_description.insert(tk.END,fragment.text)
-                new_index = self.info_description.index(tk.CURRENT)
-                fragment_font = fragment.get("font")
-                fragment_size = fragment.get("size")
-                fragment_style = fragment.get("style")
-                format_string = ""
-                if fragment_font:
-                    format_string = fragment_font
-                else: 
-                    format_string = config.Style.FONT
+    def drawTitle(self):
+        """ Renders the title of the window """
 
-                if fragment_size:
-                    format_string = format_string + " " + fragment_size
-                else:
-                    format_string = format_string + " " + config.Style.SIZE
+        x = 5
+        title_width = 250
+        if self.char.getEditMode() == "generation":
+            remove_button = tk.Button(
+                self.canvas,
+                text="Entfernen",
+                command=self.removeTrait
+            )
+            self.canvas.create_window(
+                0,
+                0,
+                window=remove_button,
+                anchor=tk.NW
+            )
+            x += remove_button.winfo_reqwidth() + 5
+            title_width -= x
 
-                if fragment_style:
-                    format_string = format_string + " " + fragment_style
+        title = tk.Label(
+            self.canvas,
+            font="Arial 12 bold",
+            text=self.trait_name,
+            wraplength=title_width,
+            justify=tk.LEFT
+        )
 
-                fragment_id = "fragment" + str(fragment_count)
-                self.info_description.tag_add(fragment_id, old_index, new_index)
-                self.info_description.tag_config(fragment_id, font = format_string)
-                fragment_count += 1
+        xp = tk.Label(
+            self.canvas,
+            font="Arial 12 bold",
+            text="("+self.trait_xp+")",
+            justify=tk.RIGHT
+        )
+        if int(self.trait_xp) > 0:
+            xp.config(foreground=config.Colors.DARK_GREEN)
+        else:
+            xp.config(foreground=config.Colors.DARK_RED)
+
+        self.canvas.create_window(
+            x,
+            0,
+            window=title,
+            width=title_width,
+            anchor=tk.NW
+        )
+        self.y += title.winfo_reqheight()
+
+        self.canvas.create_window(
+            298,
+            0,
+            window=xp,
+            anchor=tk.NE
+        )
+
+    def drawSpecification(self):
+        """ Looks for specification and renders it """
+
+        specification = self.trait.find("./specification")
+        if specification is not None:
+            text = "{name}: {value}".format(
+                name=specification.get("name"),
+                value=self.selected.get("spec")
+            )
+            self.drawText(text, font="Arial 10 bold")
+
+    def drawDescription(self):
+        """ Finds the description and draws it """
+
+        description = self.char_trait.find("description")
+        if description is None:
+            description = self.trait.find("./description")
+        if description.text:
+            self.drawText(description.text)
+
+    def drawRanks(self):
+        """ Looks for ranks and renders them """
+        ranks = self.trait.findall("./rank")
+        if ranks is not None:
+            for rank in ranks:
+                rank_id = rank.get("id")
+                rank_name = rank.get("name")
+                rank_selected = self.selected.get("rank-"+rank_id)
+                text = "{rank}: {value}".format(
+                    rank=rank_name,
+                    value=rank_selected
+                )
+                self.drawText(text, font="Arial 10 bold")
+
+    def drawVariables(self):
+        """ Go through variables and add them (including description) """
+
+        variables = self.trait.findall("./variable")
+        if variables is not None:
+            for variable in variables:
+                var_id = variable.get("id")
+                var_name = variable.get("name")
+                var_selected = self.selected.get("id-"+var_id)
+                text = "{variable}: {value}".format(
+                    variable=var_name,
+                    value=var_selected
+                )
+                self.drawText(text, font="Arial 10 bold")
+
+                search = "./description[@value='"+var_selected+"']"
+                description = variable.find(search)
+                if description is not None:
+                    if description.text:
+                        self.drawText(description.text)
+
+    def drawText(self, text, font="Arial 9"):
+        """ Helper method to draw text to the canvas
+
+        Args:
+            text (str): the text to draw
+            font (str): the font used
+        """
+
+        label = tk.Label(
+            self.canvas,
+            text=text,
+            font=font,
+            wrap=290,
+            justify=tk.LEFT
+        )
+        self.canvas.create_window(
+            5,
+            self.y,
+            width=290,
+            window=label,
+            anchor=tk.NW,
+        )
+        self.y += label.winfo_reqheight()
+
+    def updateTraitRank(self, rank_id, delta):
+        rank_tag = self.trait.find("./rank[@id='"+rank_id+"']")
 
     def removeTrait(self):
+        """ Removing the trait """
+
         self.char.removeTraitByID(self.id)
         self.destroy()
         self.app.updateTraitList()
+
+    def finalize(self):
+        """ Called at the end of layout to set scroll area"""
+
+        x1, y1, x2, y2 = self.canvas.bbox(tk.ALL)
+        x1 = 0
+        x2 = 300
+        self.canvas.config(scrollregion=(x1, y1, x2, y2))
+        self.focus()
+        self.bind("<Escape>", self.close)
+        self.bind("<FocusOut>", self.close)
+
+    def close(self, event=None):
+        self.destroy()
