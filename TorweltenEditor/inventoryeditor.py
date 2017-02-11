@@ -89,7 +89,7 @@ class InventoryEditor(tk.Toplevel):
         )
         self.item_info_text.bind("<BackSpace>", self.descriptionEdited)
         self.item_info_text.bind("<Delete>", self.descriptionEdited)
-        self.item_info_text.bind("<Space>", self.descriptionEdited)
+        self.item_info_text.bind("<space>", self.descriptionEdited)
         self.item_info_text.pack()
         self.item_add_frame = tk.Frame(self.item_frame)
         
@@ -170,8 +170,6 @@ class InventoryEditor(tk.Toplevel):
         Args:
             event (unused): passed from the .bind()
         """
-
-        print(self.selector_list.focus_get())
 
         if self.selector_list.focus_get() == self.selector_list:
             self.displayItem()

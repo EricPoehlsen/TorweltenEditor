@@ -210,10 +210,10 @@ class EquipmentScreen(tk.Frame):
     # open the inventory editor and add it to the list of the open windows
     def displayInventoryEditor(self):
         if self.open_windows["inv"] != 0:
-            self.open_windows["inv"].inv_editor.focus()
+            self.open_windows["inv"].focus()
         else:
             self.open_windows["inv"] = InventoryEditor(self)
-            self.open_windows["inv"].inv_editor.focus()
+            self.open_windows["inv"].focus()
 
     # called when something has changed and the item lists need updating ...
     def updateItemList(self):
