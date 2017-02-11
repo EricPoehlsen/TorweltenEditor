@@ -1,4 +1,3 @@
-# coding=utf-8
 import tkinter as tk
 import xml.etree.ElementTree as et
 import config
@@ -13,6 +12,8 @@ class InventoryEditor:
         self.char = main.char
         self.itemlist = main.itemlist
         self.main = main
+
+        self.cur_selection = 0
         
         # prepare variables for the item
         self.item = 0
@@ -35,12 +36,13 @@ class InventoryEditor:
         
         self.selector_list_frame = tk.Frame(self.main_display)
         self.selector_list = tk.Listbox(self.selector_list_frame, width = 30)
-        self.selector_list.bind("<<ListboxSelect>>", self.displayItem)
+        self.selector_list.bind("<<ListboxSelect>>", self.selectionChanged)
         self.selector_scroll = tk.Scrollbar(self.selector_list_frame,orient = tk.VERTICAL,command = self.selector_list.yview)
         self.selector_list.config(yscrollcommand = self.selector_scroll.set)
         self.selector_scroll.pack(side = tk.RIGHT, fill = tk.Y, expand = 1)
         self.selector_list.pack(side = tk.LEFT, fill = tk.BOTH, expand = 1)
         self.selector_list_frame.pack(side = tk.LEFT, fill = tk.Y, expand = 1, anchor = tk.W)
+        self.selector_list.focus()
 
         self.item_frame = tk.Frame(self.main_display)
         self.item_title_frame = tk.Frame(self.item_frame)
@@ -66,7 +68,6 @@ class InventoryEditor:
         self.content_frame.pack(fill = tk.BOTH, expand = 1)
 
         self.displayGroups()
-        
 
     def displayGroups(self):
         # clear the current buttons
@@ -121,17 +122,24 @@ class InventoryEditor:
         for item in self.items:
             self.selector_list.insert(tk.END,item.get("name"))
 
+    def selectionChanged(self, event=None):
+
+        print(self.selector_list.focus_get())
+
+        if self.selector_list.focus_get() == self.selector_list:
+            self.displayItem(event)
+
     def displayItem(self,event = None):
+
         # clear the add item frame
         widgets = self.item_add_frame.winfo_children()
         for widget in widgets:
             widget.destroy()
 
-        self.item_desc_edited == False
-        # ####TODO CURRENTLY ERROR IF NOTHING IN THE LISTBOX IS SELECTED!
-        # if nothing is selected the display needs to be cleared!! # #
+        self.item_desc_edited = False
         selection_id = self.selector_list.curselection()
         selected_name = self.selector_list.get(selection_id)
+        self.cur_selection = selection_id
         
         for item in self.items:
             if item.get("name") == selected_name:
@@ -239,8 +247,11 @@ class InventoryEditor:
         self.new_item.set("quality",str(base_qual))
 
         # adding the button to add the item
-        button = tk.Button(self.item_add_frame,text = msg.IE_BUY)
-        button.bind("<Button-1>",self.addItem)
+        button = tk.Button(
+            self.item_add_frame,
+            text=msg.IE_BUY,
+            command=self.addItem
+        )
         button.pack(side = tk.LEFT)
         
     
@@ -518,13 +529,14 @@ class InventoryEditor:
     def descriptionEdited(self,event):
         self.item_desc_edited = True
 
-    def addItem(self,event):
+    def addItem(self):
         self.setText()
 
         # add the item
         self.char.addItem(self.new_item)
         self.main.updateItemList()
         # show again, to make sure a new item is generated ...
+        self.selector_list.selection_set(self.cur_selection)
         self.displayItem()
 
     def close(self):
