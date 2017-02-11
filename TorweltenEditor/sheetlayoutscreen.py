@@ -2,7 +2,7 @@
 
 import xml.etree.ElementTree as et
 import tkinter.filedialog as tkfd
-import moduleeditor as me
+from moduleeditor import ModuleEditor
 from PIL import ImageTk,Image,PngImagePlugin
 import tkinter as tk
 import config
@@ -294,7 +294,7 @@ class LayoutScreen(tk.Frame):
     def _editModule(self,position):
         if self.app.open_windows["mod_ed"] != 0: 
             self.app.open_windows["mod_ed"].close()
-        self.app.open_windows["mod_ed"] = me.ModuleEditor(self,position)
+        ModuleEditor(self,position)
 
     # retrieve the highest given module id ...     
     def getHighestModuleId(self):

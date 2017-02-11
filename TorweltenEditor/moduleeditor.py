@@ -7,21 +7,22 @@ page = config.Page()
 msg = config.Messages()
 it = config.ItemTypes()
 
-class ModuleEditor:
-    def __init__(self,main,location):
+
+class ModuleEditor(tk.Toplevel):
+    def __init__(self, main, location):
+        super().__init__()
         """ 
         main: parent window
         location: string "col row"
         """
         
         self.main = main
-        self.window = tk.Toplevel()
-        
+        main.open_windows["mod_ed"] = self
+
         location = location.split()
         self.col = int(location[0])
         self.row = int(location[1])
         self.size = ""
-
 
         # store widgets for access
         self.widgets = {}
@@ -33,12 +34,12 @@ class ModuleEditor:
 
         self.space = self._checkLocation()
         
-        self.frame = tk.Frame(self.window)
+        self.frame = tk.Frame(self)
         if self.module is None: self._newModule(self.frame)
         else: self._editModule(self.frame)
-        self.frame.pack(fill = tk.X, expand = 1)
+        self.frame.pack(fill=tk.X, expand=1)
 
-    
+        self.protocol("WM_DELETE_WINDOW", self.close)
 
     def _checkLocation(self):
         self.module = self._getModule()
@@ -58,11 +59,14 @@ class ModuleEditor:
 
         selected_type = tk.StringVar()
         
-        selected_type.trace("w",self._modTypeChanged)
+        selected_type.trace("w", self._modTypeChanged)
         self.vars[str(selected_type)] = selected_type
         self.var_names["module"] = str(selected_type)
-        # selected_type.set(mod_types[0])
-        select_button = apply(tk.OptionMenu, (frame, selected_type) + tuple(mod_types))
+        select_button = tk.OptionMenu(
+            frame,
+            selected_type,
+            *tuple(mod_types))
+        selected_type.set(mod_types[0])
         select_button.pack(fill = tk.X, expand = 1)
         row = str(self.row)
         col = str(self.col)
@@ -120,12 +124,8 @@ class ModuleEditor:
                       page.HALF:msg.PDF_HALF}
         cur_size = size_names[cur_size]
         
+        size_button = tk.OptionMenu(frame, size, *tuple(sizes))
         size.set(cur_size)
-
-
-
-
-        size_button = apply(tk.OptionMenu, (frame, size) + tuple(sizes))
         size_button.pack()
         if mod_type in [page.MOD_TRAITS,page.MOD_WEAPONS,page.MOD_EQUIPMENT,page.MOD_CONTACTS]:
             info_lines = tk.StringVar()
@@ -245,15 +245,19 @@ class ModuleEditor:
                 else: sizes = [""]
 
             if selected == msg.PDF_EWT:
-                if msg.PDF_SINGLE in sizes: sizes = [msg.PDF_SINGE]
+                if msg.PDF_SINGLE in sizes: sizes = [msg.PDF_SINGLE]
                 else: sizes = [""]
 
 
             size = tk.StringVar()
             self.vars[str(size)] = size
             self.var_names["size"] = str(size)
+            size_button = tk.OptionMenu(
+                frame,
+                size,
+                *tuple(sizes)
+            )
             size.set(sizes[0])
-            size_button = apply(tk.OptionMenu, (frame, size) + tuple(sizes))
             size_button.pack()
 
             if selected == msg.PDF_TRAITS: 
@@ -266,8 +270,8 @@ class ModuleEditor:
                 trait_type = tk.StringVar()
                 self.vars[str(trait_type)] = trait_type
                 self.var_names["trait_type"] = str(trait_type)
+                trait_type_button = tk.OptionMenu(frame, trait_type, *tuple(trait_types))
                 trait_type.set(trait_types[0])
-                trait_type_button = apply(tk.OptionMenu, (frame, trait_type) + tuple(trait_types))
                 trait_type_button.pack()
 
                 info_lines = tk.StringVar()
@@ -296,8 +300,8 @@ class ModuleEditor:
                 skill_type = tk.StringVar()
                 self.vars[str(skill_type)] = skill_type
                 self.var_names["skill_type"] = str(skill_type)
+                skill_type_button = tk.OptionMenu(frame, skill_type, *tuple(skill_types))
                 skill_type.set(skill_types[0])
-                skill_type_button = apply(tk.OptionMenu, (frame, skill_type) + tuple(skill_types))
                 skill_type_button.pack()
 
             if selected == msg.PDF_WEAPONS:
@@ -307,8 +311,8 @@ class ModuleEditor:
                 variant = tk.StringVar()
                 self.vars[str(variant)] = variant
                 self.var_names["variant"] = str(variant)
+                variant_button = tk.OptionMenu(frame, variant, *tuple(variants))
                 variant.set(variants[0])
-                variant_button = apply(tk.OptionMenu, (frame, variant) + tuple(variants))
                 variant_button.pack()
 
                 equipped = tk.IntVar()
@@ -399,8 +403,8 @@ class ModuleEditor:
                     bag_list = tk.StringVar()
                     self.vars[str(bag_list)] = bag_list
                     self.var_names["bag_list"] = str(bag_list)
+                    bag_list_button = tk.OptionMenu(frame, bag_list, *tuple(bag_lists))
                     bag_list.set(bag_lists[0])
-                    bag_list_button = apply(tk.OptionMenu, (frame, bag_list) + tuple(bag_lists))
                     bag_list_button.pack()
 
                 # how many info_lines
@@ -428,8 +432,8 @@ class ModuleEditor:
                 contact_type = tk.StringVar()
                 self.vars[str(contact_type)] = contact_type
                 self.var_names["contact_type"] = str(contact_type)
+                contact_type_button = tk.OptionMenu(frame, contact_type, *tuple(contact_types))
                 contact_type.set(contact_types[0])
-                contact_type_button = apply(tk.OptionMenu, (frame, contact_type) + tuple(contact_types))
                 contact_type_button.pack()
 
                 info_lines = tk.StringVar()
@@ -613,5 +617,5 @@ class ModuleEditor:
         
 
     def close(self):
-        self.window.destroy()
         self.main.open_windows["mod_ed"] = 0
+        self.destroy()

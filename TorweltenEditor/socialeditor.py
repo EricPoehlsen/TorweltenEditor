@@ -33,6 +33,8 @@ class SocialEditor(tk.Toplevel):
         self.main_screen.pack(fill=tk.BOTH, anchor=tk.NW)
         self.bottom_menu.pack(side=tk.BOTTOM, anchor=tk.S, fill=tk.X)
 
+        self.protocol("WM_DELETE_WINDOW", self.close)
+
     def showMenu(self,frame):
         widgets = frame.winfo_children()
         for widget in widgets: widget.destroy()
