@@ -107,7 +107,7 @@ class Messages:
     SS_REMOVE_SINGLE_SKILL = "Fertigkeit entfernen"
     SS_REMOVE_MULTIPLE_SKILLS = "{rem} Fertigkeiten entfernen"
     SS_ADD_REMOVE_MULTIPLE_SKILLS = "Fertigkeiten: {add} hinzufügen, {rem} entfernen"
-    SS_NEW_SKILL = "Neue Fertigkeit/Spezialisierung..."
+    SS_NEW_SKILL = "Eigene Fertigkeit hinzufügen ..."
     SS_SKILL_EXISTS = "Fertigkeit existiert bereits!"
     SS_ILLEGAL_CHARS = "Ungültige Zeichen im Namen!"
     SS_BASE = "[G]"
@@ -116,6 +116,12 @@ class Messages:
     SS_X = " [X]"
     SS_TT_SHOW_BASE = "Grundfertigkeiten ein-\nund ausblenden: "
     SS_TT_SHOW_SPEC = "Spezialisierungen ein-\nund ausblenden: "
+    SS_TT_SEARCH = "Fertigkeiten nach Name durchsuchen"
+    SS_TT_NEWSKILL = "Eine eigene Fertigkeit oder\n" \
+                     "Spezialisierung hinzufügen"
+    SS_TT_NEW_DISABLED = "Um dieses Feld freizuschalten,\n" \
+                         "zunächst eine Referenzfertigkeit\n" \
+                         "auswählen ..."
 
     # SKILL INFO
     SI_SPEC1 = "ist eine Grundfertigkeit"

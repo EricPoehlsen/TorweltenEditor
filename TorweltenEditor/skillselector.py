@@ -48,11 +48,13 @@ class SkillSelector(tk.Toplevel):
             relief=tk.SUNKEN,
             command=self.toggleMaxSpec
         )
+        self.search_sp.bind("<Enter>", self.tooltip)
         self.search_sp.pack(side=tk.LEFT)
         self.search_box = tk.Entry(
             self.search_frame,
             textvariable=self.search
         )
+        self.search_box.bind("<Enter>", self.tooltip)
         self.search_box.pack(side=tk.LEFT, fill=tk.X, expand=1)
         self.search_button = tk.Button(
             self.search_frame,
@@ -90,6 +92,7 @@ class SkillSelector(tk.Toplevel):
             textvariable=self.new_skill_name,
             state=tk.DISABLED
         )
+        self.new_skill_entry.bind("<Enter>", self.tooltip)
         self.new_skill_entry.bind("<FocusIn>", self._skillEntryFocus)
         self.new_skill_entry.bind("<FocusOut>", self._skillEntryNoFocus)
 
@@ -315,12 +318,24 @@ class SkillSelector(tk.Toplevel):
         widget = event.widget
 
         key = ""
-        if type(widget) == tk.Button:
-            key = widget.cget("text")
+        if widget == self.search_gf:
+            key = "base"
+        elif widget == self.search_sp:
+            key = "spec"
+        elif widget == self.search_box:
+            key = "search"
+        elif widget == self.new_skill_entry:
+            if widget.cget("state") == tk.NORMAL:
+                key = "new"
+            else:
+                key = "new_dis"
 
         messages = {
-            msg.SS_BASE: msg.SS_TT_SHOW_BASE,
-            msg.SS_SPEC: msg.SS_TT_SHOW_SPEC
+            "base": msg.SS_TT_SHOW_BASE,
+            "spec": msg.SS_TT_SHOW_SPEC,
+            "search": msg.SS_TT_SEARCH,
+            "new": msg.SS_TT_NEWSKILL,
+            "new_dis": msg.SS_TT_NEW_DISABLED
         }
 
         ToolTip(event=event, message=messages[key])

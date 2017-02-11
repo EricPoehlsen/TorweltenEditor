@@ -13,8 +13,6 @@ class ToolTip(tk.Toplevel):
     ):
         tk.Toplevel.__init__(self, *args, **kwargs)
 
-        print("Created ...")
-
         if message is None:
             self.destroy()
 
@@ -36,8 +34,6 @@ class ToolTip(tk.Toplevel):
     def _display(self):
         # current mouse position
         x, y = self.winfo_pointerxy()
-
-        print (x,y)
 
         # are we still on the widget?
         widget = self.event.widget
