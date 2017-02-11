@@ -4,6 +4,7 @@
 import config
 import tkinter as tk
 import re
+from tooltip import ToolTip
 
 msg = config.Messages()
 
@@ -39,6 +40,7 @@ class SkillSelector(tk.Toplevel):
             relief=tk.SUNKEN,
             command=self.toggleMinSpec
         )
+        self.search_gf.bind("<Enter>", self.tooltip)
         self.search_gf.pack(side=tk.LEFT)
         self.search_sp = tk.Button(
             self.search_frame,
@@ -89,6 +91,9 @@ class SkillSelector(tk.Toplevel):
             state=tk.DISABLED
         )
         self.new_skill_entry.bind("<FocusIn>", self._skillEntryFocus)
+        self.new_skill_entry.bind("<FocusOut>", self._skillEntryNoFocus)
+
+        self.new_skill_entry_focus = False
         self.new_skill_entry.pack(fill=tk.X)
 
         self.add_button_text = tk.StringVar()
@@ -223,7 +228,7 @@ class SkillSelector(tk.Toplevel):
         add = [item for item in selection if msg.SS_X not in self.list_box.get(item)]
         remove = [item for item in selection if msg.SS_X in self.list_box.get(item)]
            
-        if len(selection) == 0:
+        if len(selection) == 0 and not self.new_skill_entry_focus:
             self.new_skill_entry.config(state=tk.DISABLED)
             self.new_skill_name.set(msg.SS_NEW_SKILL)
             self.add_button.config(state=tk.NORMAL)
@@ -265,10 +270,17 @@ class SkillSelector(tk.Toplevel):
         """ This method clears the name entry field for a new skill once it gets
         focus. As selecting on it would clear the selection of the listbox
         """
+
+        self.new_skill_entry_focus = True
         new_name = self.new_skill_name.get()
         if new_name == msg.SS_NEW_SKILL:
             self.new_skill_name.set("")
         self.list_box.config(selectbackground="#00bb00")
+
+    def _skillEntryNoFocus(self, event):
+        self.new_skill_entry_focus = False
+        self.list_box.config(state=tk.NORMAL)
+
 
     # checks the name of a potential skill 
     def _newSkillName(self):
@@ -298,6 +310,20 @@ class SkillSelector(tk.Toplevel):
             self.new_skill_entry.config(foreground="#000000")
             self.add_button.config(state=tk.NORMAL)
             self.add_button_text.set(msg.SS_NEW_SKILL)
+
+    def tooltip(self, event):
+        widget = event.widget
+
+        key = ""
+        if type(widget) == tk.Button:
+            key = widget.cget("text")
+
+        messages = {
+            msg.SS_BASE: msg.SS_TT_SHOW_BASE,
+            msg.SS_SPEC: msg.SS_TT_SHOW_SPEC
+        }
+
+        ToolTip(event=event, message=messages[key])
 
     def close(self):
         self.destroy()

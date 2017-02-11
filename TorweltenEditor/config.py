@@ -114,6 +114,8 @@ class Messages:
     SS_SPEC = "[S]"
     SS_SEARCH = "Suche"
     SS_X = " [X]"
+    SS_TT_SHOW_BASE = "Grundfertigkeiten ein-\nund ausblenden: "
+    SS_TT_SHOW_SPEC = "Spezialisierungen ein-\nund ausblenden: "
 
     # SKILL INFO
     SI_SPEC1 = "ist eine Grundfertigkeit"
@@ -372,6 +374,7 @@ class Messages:
 
     # Tooltip messages
     TT_ADD_TRAITS = "Hier klicken zum hinzufügen\nneuer Eigenschaften."
+
 
     phy = "Physisch"
     men = "Mental"

@@ -1,4 +1,3 @@
-# coding=utf-8
 import tkinter as tk
 import xml.etree.ElementTree as et
 import config

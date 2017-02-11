@@ -1,7 +1,7 @@
 import tkinter as tk
 
 
-class ToolTip(tk.Canvas):
+class ToolTip(tk.Toplevel):
     def __init__(
             self,
             *args,
@@ -11,8 +11,9 @@ class ToolTip(tk.Canvas):
             screentime=250,
             **kwargs
     ):
-        tk.Canvas.__init__(self, *args, **kwargs)
-        self.__name__ = self.winfo_name()
+        tk.Toplevel.__init__(self, *args, **kwargs)
+
+        print("Created ...")
 
         if message is None:
             self.destroy()
@@ -21,6 +22,9 @@ class ToolTip(tk.Canvas):
         self.message = message
         self.delay = delay
         self.screentime = screentime
+
+        self.overrideredirect(True)
+        self.geometry("1x1+1+1")
 
         # initial mouse position
         self.x, self.y = self.winfo_pointerxy()
@@ -32,6 +36,8 @@ class ToolTip(tk.Canvas):
     def _display(self):
         # current mouse position
         x, y = self.winfo_pointerxy()
+
+        print (x,y)
 
         # are we still on the widget?
         widget = self.event.widget
@@ -52,14 +58,17 @@ class ToolTip(tk.Canvas):
             width = msg_label.winfo_reqwidth()
             height = msg_label.winfo_reqheight()
             
-            toplevel = self.winfo_toplevel()
-            top_x = toplevel.winfo_rootx()
-            top_y = toplevel.winfo_rooty()
+            x_pos = x - (width/2)
+            y_pos = y - height + 5
 
-            x_pos = x - top_x - (width/2)
-            y_pos = y - top_y - height + 5
+            placement = "{width}x{height}+{x}+{y}".format(
+                width=width,
+                height=height,
+                x=int(x_pos),
+                y=int(y_pos)
+            )
+            self.geometry(placement)
             
-            self.place(x=x_pos, y=y_pos)
             self.bind("<Leave>", lambda e: self.destroy())
         else:
             self.destroy()
