@@ -12,9 +12,11 @@ class SocialEditor(tk.Toplevel):
     contact (et.Element<contact>: the contact to edit
     """
 
-    def __init__(self,app,contact):
-        tk.Toplevel.__init__(self)
+    def __init__(self, app, contact):
+        tk.Toplevel.__init__(self, app)
         self.app = app
+        self.app.open_windows["contact"] = self
+
         self.char = app.char
         self.contact = contact
         self.vars = {}
@@ -408,7 +410,6 @@ class SocialEditor(tk.Toplevel):
             description = et.SubElement(self.contact, "description")
         description.text = self.vars["description"]
 
-
         self.app.showContacts(self.app.contact_canvas)
 
         self.char.updateAvailableXP(-int(self.xp_cost.get()))
@@ -463,5 +464,5 @@ class SocialEditor(tk.Toplevel):
             self.updateMenu(self.bottom_menu)
 
     def close(self):
-        self.app.app.open_windows["contact"] = 0
+        self.app.open_windows["contact"] = 0
         self.destroy()

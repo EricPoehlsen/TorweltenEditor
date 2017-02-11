@@ -18,6 +18,7 @@ class TraitSelector(tk.Toplevel):
         self.char = app.char
         self.all_traits = app.traits
         self.app = app
+        self.app.open_windows["trait"] = self
 
         # selected trait!
         self.trait = 0

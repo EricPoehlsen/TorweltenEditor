@@ -369,7 +369,10 @@ class Messages:
     LOG_CONTACT_DESC = "Beschreibung"
     LOG_CONTACT_DESC_CHANGED = " geändert"
     LOG_CONTACT_DESC_DELETED = " gelöscht"
-        
+
+    # Tooltip messages
+    TT_ADD_TRAITS = "Hier klicken zum hinzufügen\nneuer Eigenschaften."
+
     phy = "Physisch"
     men = "Mental"
     soz = "Sozial"

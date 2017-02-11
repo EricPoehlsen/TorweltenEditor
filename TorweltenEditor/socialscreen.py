@@ -11,11 +11,11 @@ class SocialScreen(tk.Frame):
     app (Application): the programs primary screen 
     """
 
-    def __init__(self,main,app):
+    def __init__(self, main, app):
         tk.Frame.__init__(self,main)
         self.app = app
         self.char = app.char
-
+        self.open_windows = app.open_windows
         # create canvas ... 
         self.contact_canvas = tk.Canvas(self,width = 770,height = 540)
         self.contact_canvas.pack(side = tk.LEFT)
@@ -48,7 +48,7 @@ class SocialScreen(tk.Frame):
         for contact in contacts:
             # automatically remove contacts that were created
             # but never stored ... 
-            if contact.get("xp") == None:
+            if contact.get("xp") is None:
                 id = contact.get("id")
                 self.char.removeContactById(id)
 
@@ -110,7 +110,6 @@ class SocialScreen(tk.Frame):
                              height = height, 
                              anchor = tk.NW)
 
-
     # add new contact to character and load it in editor ...
     def newContact(self):
         new_id = self.char.newContact("")
@@ -124,7 +123,7 @@ class SocialScreen(tk.Frame):
     # called to open a contact
     def displaySocialEditor(self,contact):
         if self.app.open_windows["contact"] == 0:
-            self.app.open_windows["contact"] = SocialEditor(self,contact)
+            SocialEditor(self, contact)
         else: 
             self.app.open_windows["contact"].close()
-            self.app.open_windows["contact"] = SocialEditor(self,contact)
+            SocialEditor(self, contact)

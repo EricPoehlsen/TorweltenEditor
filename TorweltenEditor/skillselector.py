@@ -18,6 +18,8 @@ class SkillSelector(tk.Toplevel):
         self.char = app.char
         self.all_skills = app.skills
         self.app = app
+        self.app.open_windows["skill"] = self
+
         self.minspec = 1
         self.maxspec = 3
         self.origin = ""

@@ -15,7 +15,7 @@ class ItemTree(object):
                            it.PISTOLS,it.REVOLVERS,it.RIFLES,it.SHOT_GUNS,it.RIFLES_SA,it.RIFLES_SA,it.AUTOMATIC_PISTOLS,
                            it.AUTOMATIC_RIFLES,it.MASCHINE_GUNS,it.TOOLS,it.NATURAL]
                            
-    def loadTree(self,filename = None):
+    def loadTree(self,filename=None):
         if filename is None:
             try: 
                 self.xml_items = et.parse('data/items.xml')
@@ -26,8 +26,6 @@ class ItemTree(object):
                 module = et.parse(filename)
             except (et.ParseError, IOError) as error:
                 print(error)
-                
-
 
     def getGroup(self,group_name):
         result = list()

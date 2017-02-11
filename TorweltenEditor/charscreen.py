@@ -37,12 +37,6 @@ class CharScreen(tk.Frame):
 
         self.widgets = {}
 
-        # close open windows from the inventory screen: 
-        if app.open_windows["inv"] != 0:
-            app.open_windows["inv"].close()
-        if app.open_windows["itemedit"] != 0:
-            app.open_windows["itemedit"].close()
-
         # from here on we are building the screen layout ...
 
         # column 1 ...
@@ -211,15 +205,7 @@ class CharScreen(tk.Frame):
         traits_frame.pack(fill=tk.BOTH, expand=1)
 
         # TODO (Eric): This is just a text for the tooltip
-        new_traits_button.bind(
-            "<Enter>",
-            lambda event: 
-                ToolTip(
-                    self.winfo_toplevel(),
-                    event=event,
-                    message="Test Tooltip Message"
-                )
-        )
+        new_traits_button.bind("<Enter>", self.showTooltip)
 
         frame_2.pack(side=tk.LEFT, anchor=tk.N, fill=tk.Y, expand=1)
 
@@ -316,30 +302,6 @@ class CharScreen(tk.Frame):
             id = self.widgets[skill_name+"_txt"]
             canvas.itemconfig(id, text=new_value)
 
-    def showSkillWindow(self):
-        """ Opening a window to add character skills"""
-
-        if self.open_windows["skill"] != 0:
-            self.open_windows["skill"].focus()
-        else:
-            # first check if the character may be edited
-            edit_mode = self.char.getEditMode()
-            if edit_mode in ["generation", "edit"]:
-                # open the skill selector
-                self.open_windows["skill"] = SkillSelector(self)
-
-    def showTraitWindow(self):
-        """ Opening a window to add character traits """
-
-        if self.open_windows["trait"] != 0:
-            self.open_windows["trait"].trait_editor.focus()
-        else:
-            # first check if the character may be edited
-            edit_mode = self.char.getEditMode()
-            if edit_mode != "view":
-                # open the skill selector
-                self.open_windows["trait"] = TraitSelector(self)
-    
     def dataUpdated(self, event):
         """ Passing modified character data to the character """
 
@@ -550,9 +512,46 @@ class CharScreen(tk.Frame):
         self.passive_skill_canvas.config(
             scrollregion=self.passive_skill_canvas.bbox("all")
         )
-                    
+
+    def showSkillWindow(self):
+        """ Opening a window to add character skills"""
+
+        if self.open_windows["skill"] != 0:
+            self.open_windows["skill"].focus()
+        else:
+            # first check if the character may be edited
+            edit_mode = self.char.getEditMode()
+            if edit_mode in ["generation", "edit"]:
+                SkillSelector(self)
+
+    def showTraitWindow(self):
+        """ Opening a window to add character traits """
+
+        if self.open_windows["trait"] != 0:
+            self.open_windows["trait"].trait_editor.focus()
+        else:
+            # first check if the character may be edited
+            edit_mode = self.char.getEditMode()
+            if edit_mode in ["generation", "edit"]:
+                # open the skill selector
+                TraitSelector(self)
+
     def showTraitInfo(self, event):
         window = TraitInfo(self, event)
 
     def showSkillInfo(self, name):
         window = SkillInfo(self, name)
+
+    def showTooltip(self, event):
+        widget = event.widget
+        buttontext = widget.cget("text")
+
+        infos = {
+            msg.CS_ADD_TRAIT: msg.TT_ADD_TRAITS
+        }
+
+        ToolTip(
+            self.winfo_toplevel(),
+            event=event,
+            message=infos[buttontext]
+        )

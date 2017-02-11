@@ -67,14 +67,14 @@ class ItemEditor(tk.Toplevel):
                 )
                 equip_button.pack(side=tk.LEFT)
 
-        if self.item_quantity > 1:
+        if int(self.item_quantity) > 1:
             
             split_scroller = tk.Spinbox(
                 self.bottom_menu,
                 textvariable=self.split_number,
                 width=2,
                 from_=1,
-                to=self.item_quantity - 1
+                to=int(self.item_quantity) - 1
             )
             split_scroller.pack(side=tk.LEFT, fill=tk.Y)
             split_button = tk.Button(

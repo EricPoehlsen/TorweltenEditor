@@ -170,6 +170,4 @@ class SkillInfo(tk.Toplevel):
             y += label.winfo_reqheight()
 
     def close(self, event=None):
-        self.app.open_windows["skill"] = 0
         self.destroy()
-

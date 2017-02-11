@@ -253,8 +253,15 @@ class Application(tk.Frame):
              label (str): text on the widget calling the command ...
         """
 
+        # make sure all open windows are closed ...
+        for mod_name in self.open_windows:
+            if self.open_windows[mod_name] != 0:
+                self.open_windows[mod_name].close()
+
+        # prepare the frame
         self._clearMainFrame()
         frame = self.main_frame
+
         # the program modules...
         ProgramModule = {
             msg.TOOLBAR_CHAR_DATA: CharScreen,
@@ -266,11 +273,9 @@ class Application(tk.Frame):
             msg.MENU_EWT: EWTScreen,
             msg.MENU_CHAR_LOG: LogScreen}
 
+        # display the new module
         window = ProgramModule[label](frame, app=self)
         window.pack()
-                    
-    def showTraitInfo(self, event):
-        window = TraitInfo(self, event)
 
     def _displayImprove(self):
         window = Improve(self)
