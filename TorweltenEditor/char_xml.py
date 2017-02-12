@@ -946,13 +946,13 @@ class Character(object):
         if space >= 1:
             # split 1 from the stack and add it to the clip ...
             if int(ammo.get("quantity")) > 1:
-                item_quantity_and_new_item_id = self.splitItemStack(ammo, 1)
-                new_id = item_quantity_and_new_item_id[1]
+                new_quantity, new_id = self.splitItemStack(ammo, 1)
                 new_ammo = self.getItemById(new_id)
                 self.packItem(new_ammo, clip)
+                success = True
             else: 
                 self.packItem(ammo, clip)
-            success = True
+                success = True
         return success
 
     def getContainers(self, equipped=True):
@@ -1502,7 +1502,6 @@ class Character(object):
                 event.set("frq", frequency)
             if "description" in mod:
                 desc = tag.find("description")
-                print(desc)
                 if desc is not None and desc.text:
                     length = len(desc.text)
                     event.set("desc", str(length))

@@ -312,6 +312,8 @@ class ItemEditor(tk.Toplevel):
         # or many
         while fill:
             fill = self.char.loadRoundInClip(item, self.item)
+            if item.get("quantity") == "1":
+                break
         
         self._showItemInfo()
         self.app.updateItemList()
