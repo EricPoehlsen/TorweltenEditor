@@ -251,12 +251,6 @@ class Character(object):
         
         self.logEvent(trait, op=msg.CHAR_TRAIT_ADDED)
 
-
-
-
-
-
-
     def resetTraitIDs(self):
         """ Reset trait ids if necessary """
 
@@ -386,7 +380,7 @@ class Character(object):
         
         # only increase if there is enough xp available
         if xp_avail >= xp_cost > 0:
-            self.setAttribute(attr, new_value)
+            self.setAttribute(attr, str(new_value))
             self.updateAvailableXP(-xp_cost)
 
     def increaseSkill(self, skill_name):

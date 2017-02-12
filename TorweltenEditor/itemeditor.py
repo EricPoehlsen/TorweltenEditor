@@ -183,6 +183,9 @@ class ItemEditor(tk.Toplevel):
             entry.pack(side=tk.RIGHT, anchor=tk.E)
             frame.pack()
 
+        # display stuff according to item type ...
+        self.showMore(item_body)
+
         # display the description Window ...
         description_text = tk.Text(
             item_body,
@@ -196,7 +199,8 @@ class ItemEditor(tk.Toplevel):
         description = self.item.find("description")
         if description is not None:
             description_text.insert(tk.END, description.text)
-        
+
+    def showMore(self, frame):
         # call the specialized information based on the item type ...
         item_type = self.item.get("type")
         containers = [
@@ -217,17 +221,26 @@ class ItemEditor(tk.Toplevel):
             it.AUTOMATIC_PISTOLS,
             it.AUTOMATIC_RIFLES
         ]
+        melee_weapons = [
+            it.CLUBS,
+            it.BLADES,
+            it.STAFFS,
+            it.OTHER_MELEE,
+            it.NATURAL
+        ]
 
         if item_type in containers:
-            self.showContent(item_body)
+            self.showContent(frame)
+        elif item_type in melee_weapons:
+            self.getMeleeInfo(frame)
         elif item_type == it.CLIP:
-            self.getClipInfo(item_body)
+            self.getClipInfo(frame)
         elif item_type in sa_weapons:
-            self.getRevolverInfo(item_body)
+            self.getRevolverInfo(frame)
         elif item_type in ha_weapons:
-            self.getPistolInfo(item_body)
+            self.getPistolInfo(frame)
         elif item_type == it.AMMO:
-            self.getAmmoInfo(item_body)
+            self.getAmmoInfo(frame)
 
     # try to set the active chamber of a multi chambered weapon
     def selectChamber(self, event, number):
@@ -537,6 +550,13 @@ class ItemEditor(tk.Toplevel):
                 unpack_button.pack(side=tk.RIGHT, anchor=tk.E)
                 line.pack(fill=tk.X, expand=1)
         content_frame.pack(fill=tk.X, expand=1)
+
+    def getMeleeInfo(self, frame):
+        damage_tag = self.item.find("damage")
+        if damage_tag is not None:
+            damage = damage_tag.get("value")
+            text = msg.IE_DAMAGE.format(value=damage)
+            tk.Label(frame,text=text).pack(fill=tk.X)
 
     # this method gets the revolver screen ... 
     def getRevolverInfo(self, frame):

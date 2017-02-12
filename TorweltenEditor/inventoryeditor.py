@@ -163,6 +163,7 @@ class InventoryEditor(tk.Toplevel):
 
         for item in self.items:
             self.selector_list.insert(tk.END, item.get("name"))
+        self.selector_list.focus()
 
     def selectionChanged(self, event=None):
         """ Checks if the selected item needs to be changed

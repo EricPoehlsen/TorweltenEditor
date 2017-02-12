@@ -198,6 +198,7 @@ class Messages:
     IE_QUANTITY = "Menge"
     IE_BUY = "Einkaufen"
     IE_PRICE = "Preis"
+    IE_DAMAGE = "Schaden: {value}"
 
     # IMPROVE WINDOW
     IW_TITLE = "Steigern ..."
@@ -456,7 +457,7 @@ class ItemTypes:
     #  melee weapons 
     NATURAL = "Natürlich"
     CLUBS = "Hiebwaffen"
-    BLADES = "Klingen"
+    BLADES = "Klingenwaffen"
     STAFFS = "Stabwaffen"
     OTHER_MELEE = "Andere Nahkampfwaffen"
 

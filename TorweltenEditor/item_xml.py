@@ -11,9 +11,29 @@ class ItemTree(object):
         # this is the xml interpretation of the available items
         self.xml_items = None
         self.loadTree()
-        self.EQUIPPABLE = [it.CLOTHING,it.BAG,it.CONTAINER,it.BOX,it.HARNESS,it.ARMOR,it.CLUBS,it.BLADES,it.STAFFS,it.OTHER_MELEE,
-                           it.PISTOLS,it.REVOLVERS,it.RIFLES,it.SHOT_GUNS,it.RIFLES_SA,it.RIFLES_SA,it.AUTOMATIC_PISTOLS,
-                           it.AUTOMATIC_RIFLES,it.MASCHINE_GUNS,it.TOOLS,it.NATURAL]
+        self.EQUIPPABLE = [
+            it.CLOTHING,
+            it.BAG,
+            it.CONTAINER,
+            it.BOX,
+            it.HARNESS,
+            it.ARMOR,
+            it.CLUBS,
+            it.BLADES,
+            it.STAFFS,
+            it.OTHER_MELEE,
+            it.PISTOLS,
+            it.REVOLVERS,
+            it.RIFLES,
+            it.SHOT_GUNS,
+            it.RIFLES_SA,
+            it.RIFLES_SA,
+            it.AUTOMATIC_PISTOLS,
+            it.AUTOMATIC_RIFLES,
+            it.MASCHINE_GUNS,
+            it.TOOLS,
+            it.NATURAL
+        ]
                            
     def loadTree(self,filename=None):
         if filename is None:
