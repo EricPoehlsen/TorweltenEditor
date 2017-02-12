@@ -871,10 +871,11 @@ class Character(object):
         ammo_id = "-1"
         if ammo is not None:
             quantity = int(ammo.get("quantity"))
+            ammo_id = int(ammo.get("id"))
             if quantity > 1:
                 rest, ammo_id = self.splitItemStack(ammo, 1)
-                print(ammo_id)
                 ammo = self.getItemById(ammo_id)
+
             self.unpackItem(ammo)
             self.packItem(ammo, weapon)
         ammo_tag.set("loaded", str(ammo_id))

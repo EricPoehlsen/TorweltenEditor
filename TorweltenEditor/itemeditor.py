@@ -696,7 +696,10 @@ class ItemEditor(tk.Toplevel):
             clip_capacity = clip.find("container").get("size")
             clip_contents = "0"
             content = clip.get("content", "-1").split()
-            first_round = self.char.getItemById(content[0])
+            try:
+                first_round = self.char.getItemById(content[0])
+            except IndexError:
+                first_round = None
             if first_round is not None:
                 clip_contents = str(len(content))
                 info = first_round.get("name") + " [" + first_round.find("damage").get("value") + "]"
