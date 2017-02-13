@@ -218,13 +218,98 @@
 			<description>Der Koffer (oder die Tasche) für den ausgebildeten Mdiziner enthält neben Verbandsmitteln und Operationsbesteck auch potente Medikamente und einen Diagnosecomputer. Häufig wird ein solcher Koffer in einem Fahrzeug mitgeführt oder in einer kleinen Krankenstation verstaut.&#10;Wird ein Notarztkoffer mit der Fertigkeit 'Erste-Hilfe' verwendet, modifiziert er den Regenerationswurf analog zur Sani-Tasche. Mit 'Medizin' oder 'Notfallmedizin' steigt der Wurf gegen die EWT um +2/-2.</description>
 		</item>
 	</group>
+	<group name = "Outdoorausrüstung">
+	
+		<item name = "Hüftgurt" price = "50" weight = "200" type = "Harnisch" avail = "-4">
+			<container name = "Klettergurt"/>
+			<description>Beim Hüftgurt handelt es sich um eine robuste Gurtkonstruktion mit der sich ein Kletterer an seinem Sicherungsseil verankert. An verschiedenen Schlaufen und Ösen kann man Ausrüstung und Karabinerhaken befestigen.</description>
+			<option name = "Farbe"/>
+		</item>
+		<item name = "Kombigurt" price = "150" weight = "500" type = "Harnisch" avail = "-4">
+			<container name = "Klettergurt"/>
+			<description>Der Kombigurt besteht aus einem Hüftgurt und einem Brustgurt und sichert damit auch den Oberkörper des Kletterers. Bei korrekter Anwendung schützt er auch bei Stürzen aus größerer Höhe.</description>
+			<option name = "Farbe"/>
+		</item>
+		<item name = "Zilk™ - Die Superfaser" price = "2" weight = "10" type = "Werkzeug" avail = "-4">
+			<description>Die Zilk™ Kunstfaser ist seit Jahrhunderten ein Garant für einwandfreie Seile. Seidenweich, dauerbelastbar bis 2 Tonnen, leicht, säurefest, UV- und röntgenbeständig, sollte dieses Seil in keiner Ausrüstung fehlen.</description>
+			<pack name = "10m" quantity = "10"/>
+			<pack name = "20m" quantity = "20"/>
+			<pack name = "50m" quantity = "50"/>
+			<option name = "Farbe"/>
+		</item>
+
+		<item name = "Seil!™ - Das Hochleistungsseil" price = "10" weight = "15" type = "Werkzeug" avail = "-4">
+			<description>Das NanoDyne Seil!™ ist die Königsklasse, geeignet nicht nur zum Klettern, sondern bei Bedarf auch zum Vertäuen von Schiffen an Orbitaleinrichtungen, gewebt aus demselben Material, das auch für Orbitallifte verwendet wird. Ein fingerdickes Seil!™ hält bis zu 2000 Tonnen Gewicht. Was muss man mehr dazu sagen? Ach ja: Man kann es mit einem Laserschneider und etwas Geduld in wenigen Minuten zerschneiden.</description>
+			<pack name = "10m" quantity = "10"/>
+			<pack name = "25m" quantity = "25"/>
+			<pack name = "50m" quantity = "50"/>
+			<option name = "Farbe"/>
+		</item>
+		<item name = "Karabinerhaken, klein" price = "2" weight = "15" type = "Werkzeug" avail = "-4">
+			<description>Karabinerhaken sollten grundsätzlich in keiner Abenteurerausrüstung fehlen, egal ob am Klettergurt oder am Raumanzug. Der kleine Karabinerhaken ist darauf ausgelegt einen oder mehrere Ausrüstungsgegenstände am Gürtel, Harnisch oder Rucksack zu befestigen. Ihre Belastbarkeit ist mit 20kg angegeben.</description>
+			<option name = "Farbe"/>
+			<option name = "Verschluss" values="einfach,Verschraubung,Einhandsicherung"/>
+		</item>
+		<item name = "Karabinerhaken, standard" price = "10" weight = "50" type = "Werkzeug" avail = "-3">
+			<description>Der bewährte Kletterhaken, darauf ausgelegt einen Menschen mit Ausrüstung zu halten und kurzfristige Belastungen von bis zu 5G zu überstehen. Die angegebene Dauerlast beträgt 500kg.</description>
+			<option name = "Farbe"/>
+			<option name = "Verschluss" values="Verschraubung,Einhandsicherung"/>
+		</item>
+		<item name = "Karabinerhaken, groß" price = "25" weight = "100" type = "Werkzeug" avail = "-2">
+			<description>Der robuste Karabinerhaken ist auf eine Dauerlast von 5.000kg bei einer Spitzenlast von 15G zertifiziert. Er kann somit auch zum Befestigen schwererer Lasten verwendet werden.</description>
+			<option name = "Farbe"/>
+			<option name = "Verschluss" values="Verschraubung,Einhandsicherung"/>
+		</item>
+
+		<item name = "Taschenlampe, klein" price = "10" weight = "25" type = "Werkzeug" avail = "-5">
+			<description>Klein, handlich, unauffällig und nahezu unkaputtbar. Mit nur 2 DLK I hat man Licht für gut 500 Stunden. Einfache Ausführungen haben einen schlichten Kunststoff- oder Metallkorpus. Qualitativ höherwertige Leuchten haben möglicherweise ein wasserdichtes Gehäuse oder Farbwechsler.</description>
+		</item>
+		<item name = "Taschenlampe, groß" price = "50" weight = "250" type = "Werkzeug" avail = "-4">
+			<description>Lässt sich nicht nur als Lampe verwenden, der robuste Aluminiumkorpus liegt gut in der Hand und eignet sich hervorragend als Schlagstock (gilt als Knüppel). Gefüllt mit 6x DLK III hat diese Lampe eine nahezu unbegrenzte Brenndauer</description>
+			<damage value = "2/+1"/>
+		</item>
+		<item name = "Stirnlampe" price = "25" weight = "50" type = "Werkzeug" avail = "-4">
+			<description>Entspricht rein technisch weitgehend der kleinen Taschenlampe, hat allerdings einen praktischen Gurt um das Ding nicht in der Hand zu halten, sondern am Kopf zu tragen.</description>
+		</item>
+		<item name = "Flutlicht, mobil" price = "50" weight = "1000" type = "Werkzeug" avail = "-3">
+			<description>Diese handlichen Scheinwerfer eignen sich hervorragend für den Einsatz bei Archäologischen Grabungen, Baumaßnahmen in der Dunkelheit, zur Ausleuchtung von Sportveranstaltungen oder bei Rettungsarbeiten. Zur Stromversorgung können DLK III eingesetzt werden, allerdings ist auch ein Anschluss an einen Generator möglich.</description>
+		</item>
+		<item name = "Notzelt" price = "100" weight = "250" avail = "-2" type = "Diverses">
+			<description>Diese Ein-Mann-Unterkunft ist sowohl als planetare Notunterkunft gedacht, wie auch als Rettungsballon im Vakuum. Es handelt sich um einen Schlauch von gut zwei Metern Länge und einem Durchmesser von etwas über achtzig Zentimetern, der aus einem reißfesten signalfarbene Thermoschutzpolymer gefertigt ist. Das Gerüst aus Luftkammern wird mittels einer integrierten Pumpe in wenigen Minuten aufgeblasen. Im Inneren des Zelts findet man zwei weitere Thermofolien als Decken. Wird das Notzelt bei Standardatmosphäre aufgerichtet und atmosphärenversiegelt, so reicht die darin enthaltene Luft für eine erwachsene Person ca. 6h. Der thermische Überlebensbereich beträgt dann -100°C bis +500°C (für 30 Minuten -200° bis 1000°C). Unversiegelt entspricht der Schutzbereich dem Thermoschlafsack.</description>
+		</item>
+		<item name = "Zwei-Mann-Zelt" price = "200" weight = "4000" avail = "-3" type = "Diverses">
+			<description>Offiziell mit ausreichend Platz für zwei Personen und ihre Ausrüstung, ist dieses Zelt eigentlich eher ein Ein-Mann-Zelt. Es gibt verschiedene Bauformen, als Igluzelt oder Dachzelt. In ihrer Handhabung sind diese Zelte relativ einfach und aufgrund des niedrigen Gewichts und der kompakten Packmaße, lassen sie sich als Teil des Marschgepäcks mitführen.</description>
+			<option name = "Ausführung" values="Igluzelt,Dreieckszelt" />
+		</item>
+		<item name = "Mannschaftszelt" price = "1000" weight = "20000" avail = "-2" type = "Diverses">
+			<description>Gerüstzelte bieten Platz für acht bis zehn Personen und ihre Ausrüstung. Sie sind hoch genug um darin zu stehen. Der Aufbau dieser Zelte ist zwar nicht besonders kompliziert, allerdings benötigt man mindestens zwei Personen, um diese Zelte aufzurichten. Das Packmaß und Gewicht lässt einen Transport nur mit Fahrzeugen zu.</description>
+		</item>
+		<item name = "Feldbett" price = "75" weight = "3000" avail = "-4" type = "Diverses">
+			<description>Faltbares Spannbett aus einem leichten Metallpolymerrahmen, belastbar bis 250kg. Aufgrund der Rahmenelemente auch eher für den Transport in einem Fahrzeug gedacht, denn als Marschgepäck.</description>
+			<option name = "Farbe" />
+		</item>
+		<item name = "Hängematte" price = "50" weight = "750" avail = "-4" type = "Diverses">
+			<description>Eine Hängematte eignet sich nicht nur für den Urlaub zwischen Palmen am Strand, sondern auch für Expeditionen und so mancher Raumfahrer schwört auf seien Hängematte als bessere Koje. Doch nicht jedem liegt der Schlaf in einer Hängematte.</description>
+		</item>
+		<item name = "Schlafsack" price = "100" weight = "250" avail = "-3" type = "Diverses">
+			<description>Ein Schlafsack mit einem Komfortbereich von -20°C bis +25°C.</description>
+			<option name = "Farbe" />
+		</item>
+		<item name = "Thermoschlafsack" price = "250" weight = "300" avail = "-2" type = "Diverses">
+			<description>Dieser Schlafsack ist auch für kältere Umgebungen geeignet und bietet einen Komfortbereich von -50°C bis +25°C.</description>
+			<option name = "Farbe" />
+		</item>
+		<item name = "Wolldecke" price = "50" weight = "1000" avail = "-4" type = "Diverses">
+			<description>Für denjenigen, der nicht so auf Schlafsäcke steht, ist die Wolldecke geeignet, nicht ganz so kompakt, dafür etwas günstiger.</description>
+			<option name = "Farbe" />
+		</item>
+	</group>
+	
 	<group name = "Kisten und Truhen">
 		<item name = "Kleine Transportkiste" price = "25" weight = "500" type = "Container">
 			<container name = "Transportkiste" limit = "20000" size = "2 big"/>
 			<description>Gefertigt aus einem nahezu unverwüstlichen Nano-Metallpolymer sind diese Kisten nicht nur sagenhaft leicht (solange sie leer sind), sondern auch wasserdicht, atmosphärenversiegelt und feuerfest.</description>
 		</item>
-		
-		
 		
 		<item name = "Box" price = "20" weight = "1000" type = "Container">
 		<container name = "Box" limit = "100000"/>

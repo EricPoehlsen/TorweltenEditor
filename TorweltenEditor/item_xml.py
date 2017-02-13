@@ -35,7 +35,7 @@ class ItemTree(object):
             it.NATURAL
         ]
                            
-    def loadTree(self,filename=None):
+    def loadTree(self, filename=None):
         if filename is None:
             try: 
                 self.xml_items = et.parse('data/items.xml')
