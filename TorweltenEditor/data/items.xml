@@ -533,48 +533,120 @@
 	<group name = "Wurfwaffen"/>
 
 	<group name = "Pistolen und Revolver">
-		<item name = "OMG Alpha 9mm" price = "400" weight = "800" type = "Pistolen">
+		<item name = "OMG Alpha 9mm" price = "350" weight = "1200" avail = "-3" type = "Pistolen">
 			<damage value = "2/0"/>
 			<option name = "Kaliber" values = "9x19 mm"/>
 			<ammo chambers = "1" />
 			<use skill = "Pistolen: OMG Alpha"/>
+			<description>Oft nur als Alpha bezeichnet, ist diese Waffe der Bestseller der Ordnance Manufacturing Group. Sie gilt als meistproduzierte Waffe in der Novaropäischen Allianz - wobei es schwer ist, an absolute Produktionszahlen zu kommen. Die Alpha wird in zahlreichen Lizenzversionen hergestellt. Das Design ist schlicht gehalten, es gibt praktisch keine Feinteile, die zu Defekten neigen.&#10;Durch die Entscheidung, die Kalibervarianten 9 x 19mm und .38 Special zu einer Waffe zu vereinen und mit der Bezeichnung universal 9mm zu vermarkten, wurde eine Pistole auf den Markt gebracht, für die man eigentlich überall Munition bekommt und die auch Selbstladepatronen ohne Murren schluckt.&#10;im wuchtigen Griff befindet sich das Magazin für bis zu 16 Schuss in einem Doppelstreifen. Die Pistole besitzt eine Unterlaufschiene (kurz) zur Aufnahme eine Lampe oder eines Lasermarkierers.&#10;Mit einer kleinen Modifikation am Magazinschacht, lässt sich die Alpha auf die 32-Schuss-Magazine für die Beta umrüsten. - Reichweite: 15/50m - Tarnung: 0</description>
 		</item>
-		
-		<item name = "Ein Revolver" price = "350" weight = "800" type = "Revolver">
+		<item name = "Furthmayr &amp; DeWal &apos;Söldner&apos; 9mm" price = "400" weight = "850" avail = "-2" type = "Pistolen">
+			<damage value = "2/0" />
+			<option name = "Kaliber" values = "9x19 mm" />
+			<ammo chambers = "1" />
+			<description> Trotz des Namens ist die &apos;Söldner&apos; von Furthmayr &amp; DeWal gerade bei den regulären Streitkräften der Häuser DeBeer und Habsburg-Möbius als Zweitwaffe für Offiziere beliebt. Die Waffe ist mindestens so unanfällig für Umwelteinflüsse wie die Alpha, jedoch um fast ein Drittel leichter. Mit dem kürzeren Lauf ist sie auch leichter zu verbergen. Auch die &apos;Söldner&apos; besitzt eine Unterlaufschiene zur Aufnahme von Anbauteilen. Besonders bei Söldnern findet man gelegentlich auch ein verlängertes Magazin mit einer Kapazität von 15 Schuss. Natürlich lässt sich die Waffe dann nicht mehr so gut verbergen. Reichweite: 10/40m - Tarnung: -1</description>
+		</item>
+		<item name = "ParaTec &apos;Vulpus&apos; .38 Special" price = "300" weight = "1250" avail = "-3" type = "Pistolen">
+			<damage value = "2/0" />
+			<option name = "Kaliber" values = ".38 Special" />
+			<ammo chambers = "1" />
+			<description>Die Vulpus von ParaTec ist der Liebling aller Abenteurer in den Grenzwelten.&#10;Mit dem verlängerten Lauf sind präzisere Schüsse möglich als mit anderen Waffen, Das Füchschen widersteht selbst widrigsten Umwelteinflüssen.&#10;Besonders aber das Laufgewinde ist für Viele ein Anreiz die Waffe zu erwerben. Andererseits auch ein Grund für Wächter, Besitzer dieser Waffe im Auge zu behalten. Reichweite: 20/60m - Tarnung: +1&#10;Auch wenn in der Bedienungsanleitung davon abgeraten wird, lässt sich die &apos;Vulpus&apos; problemlos mit Munition vom Kaliber 9 x 19 mm laden.</description>
+		</item>
+		<item name = "ParaTec Ursus .357" price = "500" weight = "1250" avail = "-3" type = "Revolver">
 			<damage value = "2/-1"/>
 			<option name = "Kaliber" values = ".357 ParaTec" />
+			<ammo chambers = "6"/>
+			<description>Wenn man den schweren Revolver von ParaTec in der Hand hat, könnte man auf den ersten Blick meinen, die Waffe aus den berühmten Marshal Art Filmen vor sich zu haben. Und damit liegt man nicht einmal daneben. Tatsächlich verwendete die Produktionsfirma für die beliebte Serie eine modifizierte ParaTec Ursus mit verlängertem Lauf. Mit dieser Waffe erwirbt man einen sechsschüssigen Revolver mit ordentlich Wumms, die nicht nur günstiger ist, als der Lizenznachbau von Insight Industries, sondern auch etwas leichter. Reichweiter 10/50m - Tarnung: +2</description>
+		</item>
+		<item name = "ParaTec Ursus .500" price = "800" weight = "1750" avail = "-2" type = "Revolver">
+			<damage value = "3/0"/>
+			<option name = "Kaliber" values = ".500 OMG" />
 			<ammo chambers = "5"/>
-			<description>Bei dieser Waffe handelt es sich um einen schweren Revolver.</description>
+			<description>Dieser schwere Revolver ist für den ganz großen Knall. Aber man muss ehrlich sein, diese Waffe ist nicht für jedermann geeignet. Vom grundsätzlichen Design, ähnelt sie dem Kaliber .357. Reichweite: 15/75m - Tarnung: +3</description>
+		</item>
+		<item name = "&apos;Famous-Series .357 Marshall Art&apos;" price = "750" weight = "1250" avail = "-1" type = "Revolver">
+			<damage value = "2/-1"/>
+			<option name = "Kaliber" values = ".357 ParaTec" />
+			<ammo chambers = "6"/>
+			<description>Schon als Kinder haben uns die Abenteuer des legendären Sheriffs &apos;Marshal Art&apos; in ihren Bann gezogen. Wer hat nicht geträumt, wie der Held aus der Serie durch das Universum zu ziehen, den Schurken das Handwerk zu legen und nach getaner Arbeit lässig mit seiner berühmten .357 ParaTec dazustehen?&#10;Dieser Traum kann dank Insight Industries in Erfüllung gehen!&#10;Insight Industries legt mit der Famous-Serie berühmte Waffen aus Filmen und Serien auf!&#10;Und was konnten die Jungs von Insight besseres tun, als uns zuerst die Waffe von Marshal Art zur Verfügung zu stellen?&#10;Der Clou: Für wahre Fans mit genügend dickem Geldbeutel kann man die originale .357 ParaTec erwerben.&#10;Nicht zuletzt gehört zu jeder Waffe eine Besitzurkunde, Mitgliedschaft im Marshal Art-Fanclub und ein handsigniertes Autogramm von Rick Rock!&#10;Bei der Waffe handelt es sich um einen Insight Industries Lizenznachbau der modifizierten ParaTec Ursus .357 Modell 1000, wie sie für die Marshall Art Serienproduktion geschaffen wurde. Gegenüber der Ursus, zeichnet sich die Filmversion durch einen den beeindruckenden 7,5" Lauf und die eleganten Gravuren. Reichweite: 10/50m - Tarnung: +3</description>
+		</item>
+		<item name = "&apos;Famous-Series Marshall Art .38 Special&apos;" price = "600" weight = "1000" avail = "-1" type = "Revolver">
+			<damage value = "2/0"/>
+			<option name = "Kaliber" values = ".38 Special" />
+			<ammo chambers = "6"/>
+			<description>Vom berühmten Filmrevolver kaum zu unterscheiden, ist die .38 Special der günstigere Bruder der .357 ParaTec. </description>
 		</item>
 	</group>
 
 	<group name = "Flinten und Gewehre">
-		<item name = "Jagdgewehr" price = "900" weight = "800" type = "Gewehre">
-			<damage value = "3/-1"/>
-			<option name = "Kaliber" values = "5.56x45mm NA,7.62x51mm NA" />
+		<item name = "OMG Gamma 7.62" price = "1050" weight = "3500" type = "Gewehre">
+			<damage value = "3/-2"/>
+			<option name = "Kaliber" values = "7.62x51mm NA" />
 			<ammo chambers = "1"/>
+			<description>OMG - Produzent für die größten Heere und Söldnereinheiten im Hyperion, stellt mit der Gamma eine Jagdwaffe für Siedler und Pioniere vor. Die halbautomatische Waffe ist bei Jägern äußerst begehrt. Das hohe Maß an Qualität macht es aber auch für Sportschützen interessant. Die verwendeten Materialien sind hochwertig und auch im Gelände behält die Gamma ihre Präzision. Reichweite: 50 / 250m - Modifikationen: Mit etwas handwerklichem Geschick und dem passenden Werkzeug lässt sich Gamma in ein vollautomatisches Sturmgewehr verwandeln, die Unterschiede zur Delta sind eher kosmetischer Natur.</description>
 		</item>
-		<item name = "Pump-Gun" price = "900" weight = "800" type = "Flinten">
-			<damage value = "2/+1" name = "20/70"/>
-			<damage value = "2/+1" name = "16/70"/>
-			<damage value = "3/+1" name = "12/70"/>
-			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
+		<item name = "Insight Industries &apos;Lupus&apos;" price = "950" weight = "3500" avail = "-1" type = "Gewehre">
+			<damage value = "2/-2"/>
+			<option name = "Kaliber" values = ".223 SMI" />
 			<ammo chambers = "1"/>
+			<description>Das selbstrepetierende Gewehr von Insight ist ein oft gesehener Begleiter vieler Pioniere. Die Präzession ist außerordentlich gut, die Verarbeitung sehr robust. Durch schlicht gehaltene Bauteile kann die Waffe leicht repariert werden und Ersatzteile sind praktisch überall zu finden. Jedoch bieten nur Originalbauteile von Insigth Industries Garantie für anhaltende Qualität.&#10;Überall dort, wo eine Pistole zu klein ist, eine MP oder gar ein Sturmgewehr jedoch zu viel des Guten darstellen, greift man gerne auf die Lupus zurück. Reichweite: 50 / 250m </description>
 		</item>
-		<item name = "Schwere doppelläufige Schrotflinte" price = "900" weight = "800" type = "Flinten-SA">
+		<item name = "ParaTec &apos;Ambassador&apos; .223" price = "1850" weight = "3400" avail = "+2" type = "Gewehre">
+			<damage value = "2/-2"/>
+			<option name = "Kaliber" values = ".223 SMI" />
+			<ammo chambers = "1"/>
+			<description>Offiziell als zivile Waffe definiert, kann das ParaTec Ambassador, ähnlich wie militärische Waffen ohne großen Werkzeugaufwand in sechs Baugruppen zerlegt werden. Praktisch für den Transport und platzsparend ist es vor allem bei Reisenden Beliebt. Die Gesamtlänge von unter 80cm erlaubt die problemlose Einfuhr dieser Waffe auf die meisten Welten der Novaropäischen Allianz - daher nennt man diese Waffe auch gerne das &apos;Diplomatengewehr&apos; welches eben die Genannten zu Jagdzwecken und anderen sportlichen Betätigungen verwenden. Reichweite: 50 / 250m </description>
+		</item>
+		<item name = "Furthmayr &amp; DeWal Musketier .308" price = "2150" weight = "3800" avail = "+1" type = "Gewehre">
+			<damage value = "3/-2"/>
+			<option name = "Kaliber" values = ".308FuDW" />
+			<ammo chambers = "1"/>
+			<description>Diese elegante Jagdwaffe wird auch von diversen Palastgarden als repräsentive und zugleich effiziente Waffe verwendet. Reichweite: 50 / 250m </description>
+		</item>
+		<item name = "Insight Industries &apos;Gulo&apos;" price = "900" weight = "4000" type = "Flinten">
+			<damage value = "3/+1" />
+			<option name = "Kaliber" values = "12/76" />
+			<ammo chambers = "1" />
+			<description>Einläufige Schrotflinte mit Schaftmagazin für fünf Patronen zur manuellen Repetierladung. Das charakteristische Geräusch der Waffe beim Durchladen schreckt einen Einbrecher meistens ab. Reichweite: 20 / 50m</description>
+		</item>
+		<item name = "Furthmayr &amp; DeWal &apos;Wildschütz&apos;" price = "900" weight = "4800" type = "Flinten-SA">
 			<damage value = "3/+1"/>
 			<option name = "Kaliber" values = "12/76"/>
 			<ammo chambers = "2"/>
+			<description>Diese doppelläufige Schrotflinte gehört zu den Waffen, die man nicht von der falschen Seite zu Gesicht bekommen möchte. Und auch wenn die Waffe kein Magazin besitzt, kann ein geübter Schütze eine ordentliche Schussfrequenz erreichen.&#10;Diese Waffe ist besonders bei Pionieren und Siedlern beliebt, da sie nahezu unzerstörbar ist.&#10;Modifikation: Besonders an Bord von Raumschiffen und Raumstationen findet man diese Waffe oft mit gekürztem Lauf. Bei einer Gesamtlänge von knapp 60 cm lässt sich die Waffe dann relativ gut unter einem Mantel verbergen (Tarnung: +4), das Ganze allerdings auf Kosten der Zielgenauigkeit (Reichweite 10 / 30m).</description>
 		</item>
-
 	</group>
 
 	<group name = "Automatikwaffen">
-		<item name = "Sturmgewehr" price = "900" weight = "800" type = "Automatikwaffe">
-			<damage value = "2/-2" name = "5.56x45mm NA"/>
-			<damage value = "3/-2" name = "7.62x51mm NA"/>
-			<option name = "Kaliber" values = "5.56x45mm NA,7.62x51mm NA" />
+		<item name = "OMG Beta 9mm" price = "750" weight = "2800" avail = "-2" type = "Automatikwaffe">
+			<damage value = "2/0"/>
+			<option name = "Kaliber" values = "9x19 mm" />
 			<ammo chambers = "1"/>
+			<description>Die Beta ist eine veritabele Maschinenpistole. Wie die Alpha handelt es sich auch bei dieser Waffe um ein Hybridkaliber, das mit 9x19mm und .38 Special geladen werden kann. Der deutlich längere Lauf und die ausklappbare Schulterstütze, lassen diese MP fast wie ein Gewehr wirken. Die Beta gehört zu den schwere Maschinenpistolen. Unauffälligkeit ist zwar nicht ihre Stärke, doch die deutlich höhere Schussfrequenz macht diesen &apos;Nachteil&apos; mehr als wett. Reichweite: 25 / 75m - Tarnung: +3</description>
+		</item>
+		<item name = "SMI Cadenca 9mm" price = "650" weight = "2400" avail = "-2" type = "Automatikwaffe">
+			<damage value = "2/0"/>
+			<option name = "Kaliber" values = "9x19 mm" />
+			<ammo chambers = "1"/>
+			<description>SMI - Garant für hochwertige militärische Ausrüstung bringt mit der Cadenca eine Maschinenpistole auf den Markt, die sowohl für Sicherheitstruppen, als auch militärische Einheiten geeignet ist. Robust, Zielgenau und günstig, ist sie in den Grenzwelten weit verbreitet. Die Cadenca erreicht eine hohe Durchschlagskraft bei relativ unauffälliger, kompakter Bauweise. Ein speziell gepolsterter Griff erleichtert Salvenfeuer, ohne unnötiges Gewicht für eine Schulterstütze auzuwenden. Reichweite: 25 / 75m - Tarnung: +2</description>
+		</item>
+		<item name = "Insight Industries Canis 9mm" price = "500" weight = "2400" avail = "-2" type = "Automatikwaffe">
+			<damage value = "2/0"/>
+			<option name = "Kaliber" values = "9x19 mm" />
+			<ammo chambers = "1"/>
+			<description>Insight Industries - ein Markenname für Glücksritter. Viele, die sich den Abenteuern der Grenzwelten stellen, vertrauen auf die Qualität der II-Ausrüstung. Die Canis - der größere Bruder der Vulpus - basiert auf dem gleichen Konzept der Unauffälligkeit. Klein und Kompakt bietet sie trotzdem ordentliche Feuerkraft. Sie bietet neben den Anbaumöglichkeiten an Lauf und Unterlauf auch ein Laufgewinde - serienmäßig mit einem Schallunterdrücker für Automatikwaffen ausgerüstet. Zwar kann man damit nicht lautlos arbeiten, doch kann man damit einen enervierenden Tinitus vermeiden. Reichweite: 25 / 75m - Tarnung: +2</description>
+		</item>
+		<item name = "OMG Delta 7.62" price = "1500" weight = "4500" avail = "0" type = "Automatikwaffe">
+			<damage value = "3/-2"/>
+			<option name = "Kaliber" values = "7.62x51mm NA" />
+			<ammo chambers = "1"/>
+			<description>Auch wenn sie die Waffen äußerlich geringfügig unterscheiden, handelt es sich hierbei tatsächlich um die militärische Variante der Gamma. Die Waffe ist robust und besitzt eine ordentliche und präzise Verarbeitung. Reichweite: 50 / 250m Tarnung: +6</description>
+		</item>
+		<item name = "AK47" price = "1000" weight = "4500" avail = "0" type = "Automatikwaffe">
+			<damage value = "3/-2"/>
+			<option name = "Kaliber" values = "7.62x51mm NA" />
+			<ammo chambers = "1"/>
+			<description>Ein echter Klassiker, seit gut eintausend Jahren nahezu unverändert in Produktion. Eine wichtige Anpassung der Millennia-Edition 2947 war eine Angleichung des Kalibers auf die 7.62 x 51 mm. Ein Waffe, wie es keine zweite gibt, geschmiedeter Stahl, Holzschaft. Unverwüstlich und wahrhaftig kinderleicht zu bedienen.  Reichweite: 50 / 250m Tarnung: +6</description>
 		</item>
 	</group>
 
