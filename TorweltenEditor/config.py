@@ -192,13 +192,36 @@ class Messages:
     IE_QUALITY_8 = "sehr gut"
     IE_QUALITY_9 = "überragend"
     IE_TITLE = "Inventareditor"
-    IE_AVAIL = "Verf."
+    IE_AVAIL_S = "Verf."
     IE_COST = "Kosten"
     IE_BACK = "zurück"
     IE_QUANTITY = "Menge"
     IE_BUY = "Einkaufen"
     IE_PRICE = "Preis"
     IE_DAMAGE = "Schaden: {value}"
+    IE_TYPE_CLOTHING = "Bekleidung oder Rüstung"
+    IE_TYPE_MELEE = "Nahkampfwaffe"
+    IE_TYPE_GUNS = "Fernkampfwaffe"
+    IE_TYPE_CONTAINER = "Behälter",
+    IE_TYPE_TOOLS = "Werkzeug",
+    IE_TYPE_AMMO = "Munition",
+    IE_TYPE_OTHER = "Sonstiges"
+    IE_TYPE_UNDEFINED = "Bitte Typ wählen ..."
+    IE_NAME = "Bezeichnung"
+    IE_QUALITY_S = "Qual."
+    IE_DAMAGE_HEADER = "Schadenswert: (benötigt für Waffen und Rüstung ...)"
+    IE_USE = "verwenden"
+    IE_CALIBER_HEAD = "Kaliber und Kammern (für Fernkampfwaffen ...)"
+    IE_CALIBER = "Kaliber: "
+    IE_CONTAINER = "Container (Taschen, Kisten, Behälter, ...)"
+    IE_DESCRIPTION = "Beschreibung"
+    IE_ADD_ITEM = "Gegenstand hinzufügen"
+    IE_VALUE = "WERT!"
+    IE_NUMBER = "ZAHL!"
+    IE_INVALID = "UNGÜLTIG!"
+    IE_NO_NAME = "NAME NOTWENDIG!"
+    IE_CUSTOM_ITEM = "Neu ..."
+
 
     # IMPROVE WINDOW
     IW_TITLE = "Steigern ..."

@@ -73,7 +73,7 @@ class InventoryEditor(tk.Toplevel):
         self.item_avail = tk.Label(
             self.item_title_frame,
             font="Arial 16 bold",
-            text=msg.IE_AVAIL
+            text=msg.IE_AVAIL_S
         )
         self.item_avail.pack(side=tk.RIGHT, anchor=tk.E)
         self.item_price = tk.Label(
@@ -101,6 +101,9 @@ class InventoryEditor(tk.Toplevel):
         
         self.content_frame.pack(fill=tk.BOTH, expand=1)
 
+        # reserved for sub_modules ...
+        self.sub_module = tk.Frame(self.main_display)
+
         self.displayGroups()
 
     def displayGroups(self):
@@ -118,8 +121,14 @@ class InventoryEditor(tk.Toplevel):
             button = tk.Button(self.group_frame, text=name, width=25)
             button.bind("<Button-1>", self.displaySubgroups)
             button.pack()
+        button = tk.Button(self.group_frame, text=msg.IE_CUSTOM_ITEM, width=25)
+        button.bind("<Button-1>", self.customItem)
+        button.pack()
     
     def displaySubgroups(self, event):
+        if not self.item_frame.winfo_ismapped():
+            self.displayItemFrame()
+
         clicked_button = event.widget
         group_name = clicked_button.cget("text")
         group = self.itemlist.getGroup(group_name)
@@ -184,6 +193,10 @@ class InventoryEditor(tk.Toplevel):
 
         self.item_desc_edited = False
         selection_id = self.selector_list.curselection()
+
+        if not selection_id:
+            return
+
         selected_name = self.selector_list.get(selection_id)
         self.cur_selection = selection_id
         
@@ -563,8 +576,9 @@ class InventoryEditor(tk.Toplevel):
     def descriptionEdited(self, event):
         self.item_desc_edited = True
 
-    def addItem(self):
-        self.setText()
+    def addItem(self, text=True):
+        if text:
+            self.setText()
 
         # add the item
         self.char.addItem(self.new_item)
@@ -573,6 +587,471 @@ class InventoryEditor(tk.Toplevel):
         self.selector_list.selection_set(self.cur_selection)
         self.displayItem()
 
+    def customItem(self, event):
+        """ Creating a new custom item 
+        
+        event (unused) called by a click event
+        
+        """
+        
+        # hiding the standard item frame 
+        self.item_frame.pack_forget()
+
+        # clear the sub_module frame
+        widgets = self.sub_module.winfo_children()
+        for widget in widgets:
+            widget.destroy()
+
+        self.item_data.clear()
+        self.item_data_trace.clear()
+
+        # building the screen an setting up variables to hold the 
+        # given data ... 
+        name_var = tk.StringVar()
+        self.item_data["name"] = name_var
+        top_frame = tk.Frame(self.sub_module)
+        name_frame = tk.LabelFrame(top_frame, text=msg.IE_NAME)
+        tk.Entry(
+            name_frame,
+            width=40,
+            textvariable=name_var
+        ).pack()
+        name_frame.pack(side=tk.LEFT)
+
+        quantity_var = tk.StringVar()
+        quantity_var.set("1")
+        self.item_data["quantity"] = quantity_var
+        quantity_frame = tk.LabelFrame(top_frame, text=msg.IE_QUANTITY)
+        tk.Entry(
+            quantity_frame,
+            width=7,
+            textvariable=quantity_var
+        ).pack(fill=tk.X)
+        quantity_frame.pack(side=tk.LEFT)
+
+        price_var = tk.StringVar()
+        self.item_data["price"] = price_var
+        price_frame = tk.LabelFrame(top_frame, text=msg.IE_PRICE)
+        tk.Entry(
+            price_frame,
+            width=7,
+            textvariable=price_var
+        ).pack(fill=tk.X)
+        price_frame.pack(side=tk.LEFT)
+
+        weight_var = tk.StringVar()
+        self.item_data["weight"] = weight_var
+        weight_frame = tk.LabelFrame(top_frame, text=msg.IE_WEIGHT)
+        tk.Entry(
+            weight_frame,
+            width=7,
+            textvariable=weight_var
+        ).pack(fill=tk.X)
+        weight_frame.pack(side=tk.LEFT)
+
+        quality_var = tk.StringVar()
+        quality_var.set("6")
+        self.item_data["quality"] = quality_var
+        quality_frame = tk.LabelFrame(top_frame, text=msg.IE_QUALITY_S)
+        tk.Entry(
+            quality_frame,
+            width=7,
+            textvariable=quality_var
+        ).pack(fill=tk.X)
+        quality_frame.pack(side=tk.LEFT)
+
+        avail_var = tk.StringVar()
+        avail_var.set("0")
+        self.item_data["avail"] = avail_var
+        avail_frame = tk.LabelFrame(top_frame, text=msg.IE_AVAIL_S)
+        tk.Entry(
+            avail_frame,
+            width=7,
+            textvariable=avail_var
+        ).pack(fill=tk.X)
+        avail_frame.pack(side=tk.LEFT)
+        top_frame.pack()
+
+        damage_frame = tk.LabelFrame(self.sub_module, text=msg.IE_DAMAGE_HEADER)
+        damage_var = tk.StringVar()
+        self.item_data["damage"] = damage_var
+        damage_entry = tk.Entry(damage_frame, textvariable=damage_var, width=10)
+        damage_entry.pack(side=tk.LEFT)
+        add_damage = tk.StringVar()
+        self.item_data["add_damage"] = add_damage
+        checkbox = tk.Checkbutton(
+            damage_frame,
+            text=msg.IE_USE,
+            variable=add_damage,
+            onvalue="1",
+            offvalue="0"
+        )
+        checkbox.pack(side=tk.RIGHT, anchor=tk.E)
+        add_damage.set("0")
+        damage_frame.pack(fill=tk.X)
+
+        caliber_frame = tk.LabelFrame(self.sub_module, text=msg.IE_CALIBER_HEAD)
+        tk.Label(
+            caliber_frame,
+            text=msg.IE_CALIBER
+        ).pack(side=tk.LEFT, anchor=tk.W)
+        caliber_var = tk.StringVar()
+        self.item_data["caliber"] = damage_var
+        caliber_entry = tk.Entry(
+            caliber_frame,
+            textvariable=caliber_var,
+            width=15
+        )
+        caliber_entry.pack(side=tk.LEFT)
+        tk.Label(
+            caliber_frame,
+            text=msg.IE_CHAMBERS
+        ).pack(side=tk.LEFT, anchor=tk.W)
+        chambers_var = tk.StringVar()
+        self.item_data["chambers"] = chambers_var
+        chambers_entry = tk.Entry(
+            caliber_frame,
+            textvariable=chambers_var,
+            width=5)
+        chambers_entry.pack(side=tk.LEFT)
+        add_caliber = tk.StringVar()
+        self.item_data["add_caliber"] = add_caliber
+        checkbox = tk.Checkbutton(
+            caliber_frame,
+            text=msg.IE_USE,
+            variable=add_caliber,
+            onvalue="1",
+            offvalue="0"
+        )
+        checkbox.pack(side=tk.RIGHT, anchor=tk.E)
+        add_caliber.set("0")
+        caliber_frame.pack(fill=tk.X)
+
+        container_frame = tk.LabelFrame(
+            self.sub_module,
+            text=msg.IE_CONTAINER
+        )
+        tk.Label(
+            container_frame,
+            text=msg.IE_NAME
+        ).pack(side=tk.LEFT, anchor=tk.W)
+        container_name = tk.StringVar()
+        self.item_data["container"] = container_name
+        container_entry = tk.Entry(
+            container_frame,
+            textvariable=container_name,
+            width=25
+        )
+        container_entry.pack(side=tk.LEFT)
+        add_container = tk.StringVar()
+        self.item_data["add_container"] = add_container
+        checkbox = tk.Checkbutton(
+            container_frame,
+            text=msg.IE_USE,
+            variable=add_container,
+            onvalue="1",
+            offvalue="0"
+        )
+        checkbox.pack(side=tk.RIGHT, anchor=tk.E)
+        add_container.set("0")
+        container_frame.pack(fill=tk.X)
+
+        text = msg.IE_DESCRIPTION
+        description_frame = tk.LabelFrame(self.sub_module, text=text)
+        description = tk.StringVar()
+        self.item_data["description"] = description
+        description_entry = tk.Entry(
+            description_frame,
+            textvariable=description,
+            width=40
+        )
+        description_entry.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        description_frame.pack(fill=tk.X)
+
+        itemtypes = [
+            msg.IE_TYPE_CLOTHING,
+            msg.IE_TYPE_MELEE,
+            msg.IE_TYPE_GUNS,
+            msg.IE_TYPE_CONTAINER,
+            msg.IE_TYPE_TOOLS,
+            msg.IE_TYPE_AMMO,
+            msg.IE_TYPE_OTHER,
+        ]
+
+        type_var = tk.StringVar()
+        type_var.set(msg.IE_TYPE_UNDEFINED)
+        self.item_data["type"] = type_var
+
+        tk.OptionMenu(
+            self.sub_module,
+            type_var,
+            *itemtypes
+        ).pack(fill=tk.X)
+
+        tk.Button(
+            self.sub_module,
+            text=msg.IE_ADD_ITEM,
+            command=self._addCustomItem
+        ).pack(fill=tk.X)
+
+        self.sub_module.pack(side=tk.RIGHT)
+
+    def _addCustomItem(self):
+        """ Building a custom item from input 
+        
+        called as command on the appropriate button ... 
+        
+        """
+
+        # The data
+        name = self.item_data["name"].get()
+        quantity = self.item_data["quantity"].get()
+        quality = self.item_data["quality"].get()
+        weight = self.item_data["weight"].get()
+        price = self.item_data["price"].get()
+        avail = self.item_data["avail"].get()
+        damage = self.item_data["damage"].get()
+        add_damage = self.item_data["add_damage"].get()
+        caliber = self.item_data["caliber"].get()
+        chambers = self.item_data["chambers"].get()
+        add_caliber = self.item_data["add_caliber"].get()
+        container = self.item_data["container"].get()
+        add_container = self.item_data["add_container"].get()
+        item_type = self.item_data["type"].get()
+        description = self.item_data["description"].get()
+
+        # validating the user imputs ...
+        valid = True
+
+        # An item needs a name
+        if len(name) < 1:
+            valid = False
+            self.item_data["name"].set(msg.IE_NO_NAME)
+
+        # Quality must be integer 1 - 9
+        try:
+            quality = int(quality)
+            if not 0 < quality <= 9:
+                valid = False
+                self.item_data["quality"].set(msg.IE_VALUE)
+        except ValueError:
+            valid = False
+            self.item_data["quality"].set(msg.IE_NUMBER)
+
+        # Quantity must be positive integer
+        try:
+            quantity = int(quantity)
+            if not quantity > 0:
+                valid = False
+                self.item_data["quantity"].set(msg.IE_VALUE)
+        except ValueError:
+            valid = False
+            self.item_data["quantity"].set(msg.IE_NUMBER)
+
+        # Weight must be a positive integer
+        try:
+            weight = int(weight)
+            if weight < 1:
+                valid = False
+                self.item_data["weight"].set(msg.IE_VALUE)
+        except ValueError:
+            valid = False
+            self.item_data["weight"].set(msg.IE_NUMBER)
+
+        # Price needs to be positive float
+        try:
+            price = price.replace(",", ".")
+            price = float(price)
+            if price <= 0:
+                valid = False
+                self.item_data["price"].set(msg.IE_VALUE)
+        except ValueError:
+            valid = False
+            self.item_data["price"].set(msg.IE_NUMBER)
+
+        # Availability must be integer -6 - +6
+        try:
+            avail = int(avail)
+            if not -6 <= avail <= 6:
+                valid = False
+                self.item_data["avail"].set(msg.IE_VALUE)
+        except ValueError:
+            valid = False
+            self.item_data["avail"].set(msg.IE_NUMBER)
+
+        # let's look deeper
+        # validating a damage entry
+        if valid and add_damage == "1":
+            try:
+                damage_val = damage.split("/")
+                if len(damage_val) == 2:
+                    s = int(damage_val[0])
+                    d = int(damage_val[1])
+
+                    if not -9 <= s <= 9 or not-7 <= d <= 7:
+                        valid = False
+                        self.item_data["damage"].set(msg.IE_INVALID)
+                else:
+                    valid = False
+                    self.item_data["damage"].set(msg.IE_INVALID)
+            except ValueError:
+                valid = False
+                self.item_data["damage"].set(msg.IE_INVALID)
+
+        # validating caliber entry
+        if valid and add_caliber == "1":
+            try:
+                chambers = int(chambers)
+                if not 1 <= chambers:
+                    valid = False
+                    self.item_data["chambers"].set(msg.IE_VALUE)
+            except ValueError:
+                valid = False
+                self.item_data["chambers"].set(msg.IE_NUMBER)
+
+        # making sure an item type was given
+        if item_type == msg.IE_TYPE_UNDEFINED:
+            valid = False
+
+        # constructing the item ...
+        if valid:
+            # basics
+            new_item = et.Element(
+                "item",
+                {"name": str(name),
+                 "weight": str(weight),
+                 "price": str(price),
+                 "quality": str(quality),
+                 "quantity": str(quantity)
+                 }
+            )
+            # clothing or armor
+            if item_type == msg.IE_TYPE_CLOTHING:
+                if add_damage == "1":
+                    et.SubElement(
+                        new_item,
+                        "damage",
+                        {"value": str(damage)}
+                    )
+                    new_item.set("type", it.ARMOR)
+                else:
+                    new_item.set("type", it.CLOTHING)
+                if add_container == "1":
+                    if container == "":
+                        container = name
+                    et.SubElement(
+                        new_item,
+                        "container",
+                        {"name": str(container)}
+                    )
+            # any melee weapon
+            elif item_type == msg.IE_TYPE_MELEE:
+                if add_damage == "1":
+                    et.SubElement(
+                        new_item,
+                        "damage",
+                        {"value": str(damage)}
+                    )
+                    new_item.set("type", it.CLUBS)
+            # any gun
+            elif item_type == msg.IE_TYPE_GUNS:
+                if add_damage == "1":
+                    et.SubElement(
+                        new_item,
+                        "damage",
+                        {"value": str(damage)}
+                    )
+                if add_caliber == "1":
+                    et.SubElement(
+                        new_item,
+                        "ammo",
+                        {"chambers": str(chambers)}
+                    )
+                    et.SubElement(
+                        new_item,
+                        "option",
+                        {"name": it.OPTION_CALIBER,
+                         "value": str(caliber)}
+                    )
+                    if chambers > 1:
+                        new_item.set("type", it.REVOLVERS)
+                    else:
+                        new_item.set("type", it.PISTOLS)
+            # any container
+            elif item_type == msg.IE_TYPE_CONTAINER:
+                if add_container == "1":
+                    if container == "":
+                        container = name
+                    et.SubElement(
+                        new_item,
+                        "container",
+                        {"name": str(container)}
+                    )
+                if add_caliber == "1":
+                    et.SubElement(
+                        new_item,
+                        "option",
+                        {"name": it.OPTION_CALIBER,
+                         "value": str(caliber)}
+                    )
+                    new_item.set("type", it.CLIP)
+                else:
+                    new_item.set("type", it.CONTAINER)
+            # any tool
+            elif item_type == msg.IE_TYPE_TOOLS:
+                if add_container == "1":
+                    if container == "":
+                        container = name
+                    et.SubElement(
+                        new_item,
+                        "container",
+                        {"name": str(container)}
+                    )
+                if add_damage == "1":
+                    et.SubElement(
+                        new_item,
+                        "damage",
+                        {"value": str(damage)}
+                    )
+                new_item.set("type", it.TOOLS)
+            # ammo item
+            elif item_type == msg.IE_TYPE_AMMO:
+                if add_damage == "1":
+                    et.SubElement(
+                        new_item,
+                        "damage",
+                        {"value": str(damage)}
+                    )
+                if add_caliber == "1":
+                    et.SubElement(
+                        new_item,
+                        "ammo",
+                        {"chambers": str(chambers)}
+                    )
+                    et.SubElement(
+                        new_item,
+                        "option",
+                        {"name": it.OPTION_CALIBER,
+                         "value": str(caliber)}
+                    )
+                new_item.set("type", it.AMMO)
+            # or generic item ...
+            elif item_type == msg.IE_TYPE_OTHER:
+                new_item.set("type", it.GENERIC)
+
+            # adding the description
+            desc = et.SubElement(new_item, "description")
+            if description == "":
+                description = " "
+            desc.text = description
+            self.new_item = new_item
+            self.addItem(text=False)
+
+    def displayItemFrame(self):
+        self.sub_module.pack_forget()
+        self.item_frame.pack(side=tk.RIGHT)
+
     def close(self):
-        self.destroy()
         self.main.open_windows["inv"] = 0
+        self.destroy()
+
