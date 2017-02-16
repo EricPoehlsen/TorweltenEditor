@@ -221,7 +221,15 @@ class Messages:
     IE_INVALID = "UNGÜLTIG!"
     IE_NO_NAME = "NAME NOTWENDIG!"
     IE_CUSTOM_ITEM = "Neu ..."
-
+    IE_TT_NAME = "Alles braucht einen Namen"
+    IE_TT_QUANTITY = "Anzahl\n(nur positive Zahlen)"
+    IE_TT_WEIGHT = "Gewicht\npro Stück\nin Gramm"
+    IE_TT_QUALITY = "Qualitätsstufe:\n1 - 9"
+    IE_TT_AVAIL = "Verfügbarkeit:\n-6 - +6"
+    IE_TT_PRICE = "Gesamtpreis\n(wird durch Anzahl geteilt!)"
+    IE_TT_DAMAGE = "Schaden im Format:\n±S/±D"
+    IE_TT_CALIBER = "Waffen, Magazine und Munition\npassen nur zusammen,\nwenn dieser Wert übereinstimmt."
+    IE_TT_CONTAINER = "Anzeigename der Taschen\nz.B. 'Hosentaschen'"
 
     # IMPROVE WINDOW
     IW_TITLE = "Steigern ..."

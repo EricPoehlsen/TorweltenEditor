@@ -1,6 +1,7 @@
 import tkinter as tk
 import xml.etree.ElementTree as et
 import config
+from tooltip import ToolTip
 
 msg = config.Messages()
 it = config.ItemTypes()
@@ -617,6 +618,7 @@ class InventoryEditor(tk.Toplevel):
             textvariable=name_var
         ).pack()
         name_frame.pack(side=tk.LEFT)
+        name_frame.bind("<Enter>", lambda e: self.showTooltip(e, "name"))
 
         quantity_var = tk.StringVar()
         quantity_var.set("1")
@@ -628,6 +630,7 @@ class InventoryEditor(tk.Toplevel):
             textvariable=quantity_var
         ).pack(fill=tk.X)
         quantity_frame.pack(side=tk.LEFT)
+        quantity_frame.bind("<Enter>", lambda e: self.showTooltip(e, "quantity"))
 
         price_var = tk.StringVar()
         self.item_data["price"] = price_var
@@ -638,6 +641,7 @@ class InventoryEditor(tk.Toplevel):
             textvariable=price_var
         ).pack(fill=tk.X)
         price_frame.pack(side=tk.LEFT)
+        price_frame.bind("<Enter>", lambda e: self.showTooltip(e, "price"))
 
         weight_var = tk.StringVar()
         self.item_data["weight"] = weight_var
@@ -648,6 +652,7 @@ class InventoryEditor(tk.Toplevel):
             textvariable=weight_var
         ).pack(fill=tk.X)
         weight_frame.pack(side=tk.LEFT)
+        weight_frame.bind("<Enter>", lambda e: self.showTooltip(e, "weight"))
 
         quality_var = tk.StringVar()
         quality_var.set("6")
@@ -659,6 +664,7 @@ class InventoryEditor(tk.Toplevel):
             textvariable=quality_var
         ).pack(fill=tk.X)
         quality_frame.pack(side=tk.LEFT)
+        quality_frame.bind("<Enter>", lambda e: self.showTooltip(e, "quality"))
 
         avail_var = tk.StringVar()
         avail_var.set("0")
@@ -670,6 +676,7 @@ class InventoryEditor(tk.Toplevel):
             textvariable=avail_var
         ).pack(fill=tk.X)
         avail_frame.pack(side=tk.LEFT)
+        avail_frame.bind("<Enter>", lambda e: self.showTooltip(e, "avail"))
         top_frame.pack()
 
         damage_frame = tk.LabelFrame(self.sub_module, text=msg.IE_DAMAGE_HEADER)
@@ -677,6 +684,11 @@ class InventoryEditor(tk.Toplevel):
         self.item_data["damage"] = damage_var
         damage_entry = tk.Entry(damage_frame, textvariable=damage_var, width=10)
         damage_entry.pack(side=tk.LEFT)
+        damage_entry.bind(
+            "<Enter>",
+            lambda e:
+            self.showTooltip(e, "damage")
+        )
         add_damage = tk.StringVar()
         self.item_data["add_damage"] = add_damage
         checkbox = tk.Checkbutton(
@@ -702,6 +714,11 @@ class InventoryEditor(tk.Toplevel):
             textvariable=caliber_var,
             width=15
         )
+        caliber_entry.bind(
+            "<Enter>",
+            lambda e:
+            self.showTooltip(e, "caliber")
+        )
         caliber_entry.pack(side=tk.LEFT)
         tk.Label(
             caliber_frame,
@@ -714,6 +731,7 @@ class InventoryEditor(tk.Toplevel):
             textvariable=chambers_var,
             width=5)
         chambers_entry.pack(side=tk.LEFT)
+
         add_caliber = tk.StringVar()
         self.item_data["add_caliber"] = add_caliber
         checkbox = tk.Checkbutton(
@@ -743,6 +761,11 @@ class InventoryEditor(tk.Toplevel):
             width=25
         )
         container_entry.pack(side=tk.LEFT)
+        container_entry.bind(
+            "<Enter>",
+            lambda e:
+            self.showTooltip(e, "container")
+        )
         add_container = tk.StringVar()
         self.item_data["add_container"] = add_container
         checkbox = tk.Checkbutton(
@@ -922,7 +945,8 @@ class InventoryEditor(tk.Toplevel):
                  "weight": str(weight),
                  "price": str(price),
                  "quality": str(quality),
-                 "quantity": str(quantity)
+                 "quantity": str(quantity),
+                 "custom": "yes"
                  }
             )
             # clothing or armor
@@ -1050,6 +1074,27 @@ class InventoryEditor(tk.Toplevel):
     def displayItemFrame(self):
         self.sub_module.pack_forget()
         self.item_frame.pack(side=tk.RIGHT)
+
+    def showTooltip(self, event, caller):
+
+        infos = {
+            "name": msg.IE_TT_NAME,
+            "quantity": msg.IE_TT_QUANTITY,
+            "quality": msg.IE_TT_QUALITY,
+            "price": msg.IE_TT_PRICE,
+            "weight": msg.IE_TT_WEIGHT,
+            "avail": msg.IE_TT_AVAIL,
+            "damage": msg.IE_TT_DAMAGE,
+            "caliber": msg.IE_TT_CALIBER,
+            "container": msg.IE_TT_CONTAINER
+        }
+
+        ToolTip(
+            self.winfo_toplevel(),
+            event=event,
+            message=infos[caller]
+        )
+
 
     def close(self):
         self.main.open_windows["inv"] = 0

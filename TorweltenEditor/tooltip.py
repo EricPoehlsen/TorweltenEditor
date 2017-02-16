@@ -27,13 +27,39 @@ class ToolTip(tk.Toplevel):
         # initial mouse position
         self.x, self.y = self.winfo_pointerxy()
 
+        self._initLocation()
+
         # start countdown
         self.active_call = self.after(delay, self._display)
+
+    def _initLocation(self):
+        """ Destroy tooltip if event originates deep inside widget
+
+        Note:
+            Leaving the tooltip on the calling widget creates a new
+            <Enter> event. This makes sure a tooltip is only shown if
+            the widget was entered from the 'outside'
+            """
+
+        x1 = self.event.widget.winfo_rootx()
+        y1 = self.event.widget.winfo_rooty()
+        x2 = x1 + self.event.widget.winfo_width()
+        y2 = y1 + self.event.widget.winfo_height()
+        x1 += 2
+        y1 += 2
+        x2 -= 2
+        y2 -= 2
+
+        if x1 <= self.x <= x2 and y1 <= self.y <= y2:
+            self.destroy()
 
     # show the tooltip
     def _display(self):
         # current mouse position
-        x, y = self.winfo_pointerxy()
+        try:
+            x, y = self.winfo_pointerxy()
+        except tk.TclError:
+            return
 
         # are we still on the widget?
         widget = self.event.widget
