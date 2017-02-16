@@ -1076,6 +1076,7 @@ class InventoryEditor(tk.Toplevel):
         self.item_frame.pack(side=tk.RIGHT)
 
     def showTooltip(self, event, caller):
+        """ Displaying tool tips"""
 
         infos = {
             "name": msg.IE_TT_NAME,
@@ -1094,7 +1095,6 @@ class InventoryEditor(tk.Toplevel):
             event=event,
             message=infos[caller]
         )
-
 
     def close(self):
         self.main.open_windows["inv"] = 0

@@ -448,7 +448,7 @@ class ItemEditor(tk.Toplevel):
         quantity = int(self.item.get("quantity", "1"))
         self.char.unpackItem(self.item)
 
-        sub_item_ids = self.item.get("content").split()
+        sub_item_ids = self.item.get("content", "").split()
         for sub_item_id in sub_item_ids:
             sub_item = self.char.getItemById(sub_item_id)
             if sub_item is not None:
