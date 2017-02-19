@@ -70,7 +70,7 @@
 		<item name = "Cargohose" price = "50" weight = "250" type = "Kleidung">
 			<option name = "Farbe"/>
 			<container name = "Hosentaschen" limit = "1000"/>
-			<description>Bei dieser Freizeit- und Arbeitshose handelt es sich um die 'zivile' Variante der klassischen Uniformhose mit seitlich aufgesetzten Taschen.</description>
+			<description>Bei dieser Freizeit- und Arbeitshose handelt es sich um die &apos;zivile&apos; Variante der klassischen Uniformhose mit seitlich aufgesetzten Taschen.</description>
 		</item>
 		
 		<item name = "Rock" price = "30" weight = "300" type = "Kleidung">
@@ -201,7 +201,7 @@
 		</item>
 		
 		<item name = "Medi-Kit" price = "25" weight = "200" type = "Werkzeug" avail = "-4">
-			<description>Ein Verbandspäckchen, eine Rettungsdecke, ein Paar Einweghandschuhe und vielleicht noch eine kleine Tube Wundkleber. Damit lässt sich zumindest verhindern, dass noch mehr Blut aus der Wunde sickert. Und es ist definitiv besser, als irgendein zerissenes, verschmutztes T-Shirt auf die Wunde zu pressen.&#10;Minikits gibt es in praktischen Gürteltaschen oder versiegelten Päckchen für den Rucksack oder die Hosentasche.&#10;Man kann sich damit an einer Erste-Hilfe-Probe versuchen ohne einen Modifikator für 'fehlendes Werkzeug' zu erleiden.</description>
+			<description>Ein Verbandspäckchen, eine Rettungsdecke, ein Paar Einweghandschuhe und vielleicht noch eine kleine Tube Wundkleber. Damit lässt sich zumindest verhindern, dass noch mehr Blut aus der Wunde sickert. Und es ist definitiv besser, als irgendein zerissenes, verschmutztes T-Shirt auf die Wunde zu pressen.&#10;Minikits gibt es in praktischen Gürteltaschen oder versiegelten Päckchen für den Rucksack oder die Hosentasche.&#10;Man kann sich damit an einer Erste-Hilfe-Probe versuchen ohne einen Modifikator für &apos;fehlendes Werkzeug&apos; zu erleiden.</description>
 		</item>
 		
 		<item name = "Erste-Hilfe-Set" price = "50" weight = "500" type = "Werkzeug" avail = "-2">
@@ -215,7 +215,7 @@
 		
 		<item name = "Notarztkoffer" price = "2500" weight = "9500" type = "Werkzeug" avail = "+2">
 			<container name = "Notarztkoffer" limit = "10500"/>
-			<description>Der Koffer (oder die Tasche) für den ausgebildeten Mdiziner enthält neben Verbandsmitteln und Operationsbesteck auch potente Medikamente und einen Diagnosecomputer. Häufig wird ein solcher Koffer in einem Fahrzeug mitgeführt oder in einer kleinen Krankenstation verstaut.&#10;Wird ein Notarztkoffer mit der Fertigkeit 'Erste-Hilfe' verwendet, modifiziert er den Regenerationswurf analog zur Sani-Tasche. Mit 'Medizin' oder 'Notfallmedizin' steigt der Wurf gegen die EWT um +2/-2.</description>
+			<description>Der Koffer (oder die Tasche) für den ausgebildeten Mdiziner enthält neben Verbandsmitteln und Operationsbesteck auch potente Medikamente und einen Diagnosecomputer. Häufig wird ein solcher Koffer in einem Fahrzeug mitgeführt oder in einer kleinen Krankenstation verstaut.&#10;Wird ein Notarztkoffer mit der Fertigkeit &apos;Erste-Hilfe&apos; verwendet, modifiziert er den Regenerationswurf analog zur Sani-Tasche. Mit 'Medizin' oder 'Notfallmedizin' steigt der Wurf gegen die EWT um +2/-2.</description>
 		</item>
 	</group>
 	<group name = "Outdoorausrüstung">
@@ -316,6 +316,7 @@
 		</item>
 	
 	</group>
+
 	<group name = "Geld und Wertgegenstände">
 		<item name = "Banknote 100 Rand" price = "100" weight = "2" type = "Geld">
 			<description>Polyesterbanknote herausgegeben vom DeBeer Bankenkonsortium, ein weithin anerkanntes Zahlungsmittel</description>
@@ -327,9 +328,8 @@
 		<item name = "Banknote 50 Rand" price = "50" weight = "2" type = "Geld">
 			<description>Eine Banknote herausgegeben vom DeBeer Handelskonsortium. Ein weithin anerkanntes Zahlungsmittel</description>
 		</item>
-	
 	</group>
-	
+
 </group>
 
 <group name = "Nahkampfwaffen">
@@ -678,8 +678,6 @@
 	</group>
 </group>
 
-
-
 <group name = "Munition">
 	<group name = "Pistolen- und Revolverpatronen">
 		<item name = "Kleinkaliberpatrone" price = "0.5" weight = "5" type = "Munition">
@@ -762,7 +760,6 @@
 			<damage value = "5/0"/>
 			<description>Diese Signalpatrone enthält einen kleinen Metallfallschirm, der durch die darunter brennende Pyroladung bis zu 15 Minuten in der Luft schwebt</description>
 		</item>
-		
 	</group>
 	
 	<group name = "Gewehrpatronen">
@@ -907,9 +904,151 @@
 
 	</group>
 </group>
-	
-	
-<group name = "Dienstleistungen"/>
 
-
+<group name = "Kybernetik und Biotech">
+	<group name = "MMS und Sensorik">
+	<item name = "Kranielle MMS" price = "2500" weight = "50" avail = "+2" type = "Kybernetik">
+		<description>Bei der Mensch-Maschine-Schnittstelle - kurz MMS - handelt es sich um einen kleinen Steuercomputer, der die Nervenimpulse in Steuersignale für kybernetische Implantate umsetzt und die Rückmeldungen aus den technischen Systemen an das Nervensystem übersetzt. Eine MMS ist Grundvoraussetzung für die Verwendung von kybernetischen Implantaten. Als kranielles System wird sie direkt im Schädelbereich eingesetzt und ist in der Lage sämtliche Arten kybernetischer Implantate zu kontrollieren, inklusive sensorischer Implantate, wie künstlicher Augen und Ohren.</description>
+	</item>
+	<item name = "Spinale MMS" price = "1000" weight = "50" avail = "+2" type = "Kybernetik">
+		<description>Die &apos;kleine&apos; Mensch-Maschine-Schnittstelle wird im oberen Bereich der Wirbelsäule eingesetzt und ist in der Lage künstliche Gliedmaßen und Ersatzorgane, wie künstliche Herzen oder Lungen zu versorgen.</description>
+	</item>
+	<item name = "Basissystem Augen" price = "12500" weight = "50" avail = "+3" type = "Kybernetik">
+		<description>Die visuelle Wahrnehmung ist ein hochkomplexes System und es nachzubilden oder zu ersetzen ist eine beachtliche technische und medizinische Herausforderung. Aber natürlich eine Herausforderung, die man im Laufe der Zeit gelöst hat.&#10;Für eine ordentliche Wahrnehmung ist es notwendig, dass beide Augen durch kybernetische Systeme ersetzt werden. So wie es Leute gibt, die sich für ein Schönheitsideal unter das Messer legen, gibt es Personen, die sich freiwillig entscheiden, künstliche Augen einsetzen zu lassen.&#10;Vorraussetzung für künstliche Augen ist eine kranielle MMS.</description>
+	</item>
+	<item name = "&apos;natürliche&apos; Augen" price = "2000" weight = "10" avail = "1" type = "Kybernetik">
+		<description>Mit dieser Modifikation sind die künstlichen Augen von natürlichen Augen äußerlich nicht zu unterscheiden</description>
+	</item>
+	<item name = "Dämmerungssicht" price = "3000" weight = "10" avail = "3" type = "Kybernetik">
+		<description>Dieses Modul erhöht die Lichtempfindlichkeit künstlicher Augen über das übliche Niveau. Bereits das Licht der Sterne reicht damit aus um zu lesen. Bei deutlichen Helligkeitsschwankungen benötigen die Augen einige Sekunden um sich an das neue Lichtlevel anzupassen.</description>
+	</item>
+	<item name = "IR-Sensorik" price = "6000" weight = "10" avail = "3" type = "Kypernetik">
+		<description>Mit diesem Modul ist ein kybernetisches Augensystem in der Lage das Infrarotspektrum aktiv wahrzunehmen.</description>
+	</item>
+	<item name = "UV-Sensorik" price = "6000" weight = "10" avail = "3" type = "Kybernetik">
+		<description>Dieses Modul erweitert das wahrnehmbare Spektrum eines kybernetischen Augensystems in den Ultravioletten Bereich.</description>
+	</item>
+	<item name = "aktiver Filter" price = "3000" weight = "10" avail = "3" type = "Kybernetik">
+		<description>Ein aktiver Filter kann sich in Sekundenbruchteilen an wechselnde Helligkeitsverhältnisse anpassen.</description>
+	</item>
+	<item name = "Kamerasystem" price = "1000" weight = "20" avail = "3" type = "Kybernetik">
+		<description>Genau genommen ist das eher eine Verbesserung der Mensch-Maschine-Schnittstelle als der Augen selbst. Es ist möglich Bilder oder Videos abzuspeichern und auf Computer zu übertragen.</description>
+	</item>
+	<item name = "Vergrößerung" price = "1000" weight = "10" avail = "2" type = "Kybernetik">
+		<description>Eine Optik, die bis zu zehnfache Vergrößerung erlaubt</description>
+	</item>
+	<item name = "Basismodul künstliches Gehör" price = "6500" weight = "50" avail = "2" type = "Kybernetik">
+		<description>Künstliche Hörorgane gibt es bereits seit vielen Jahrhunderten und sie sind wirklich ausgereift. Wie künstliche Augen, erfordert auch ein künstliches Gehör die Implantation einer universellen kraniellen MMS. Dieses kybernetische Implantat ersetzt Teile des Mittel- und Innenohrs. In seiner Basisausstattung stellt es das normale menschliche Hörvermögen her.</description>
+	</item>
+	<item name = "Infraschallmodul" price = "3000" weight = "20" avail = "2" type = "Kybernetik">
+		<description>Dieses Erweiterungsmodul enthält Sensorik für die akustische Verarbeitunge von Frequenzen unterhalb des normalerweise hörbaren menschlichen Spektrums</description>
+	</item>
+	<item name = "Ultraschallmodul" price = "3000" weight = "20" avail = "2" type = "Kybernetik">
+		<description>Dieses Erweiterungsmodul erlaubt es Frequenzen oberhalb des üblichen Frequenzspektrums wahrzunehmen.</description>
+	</item>
+	<item name = "Schallfilter" price = "3000" weight = "20" avail = "2" type = "Kybernetik">
+		<description>Mit diesem Modul kann der Träger des Systems bestimmte Frequenzbänder ausfiltern und sich so auf bestimmte Geräusche fokussieren.</description>
+	</item>
+	<item name = "Schallverstärker" price = "6000" weight = "20" avail = "2" type = "Kybernetik">
+		<description>Mit dem Schallverstärker ist es möglich, sehr leise Geräusche zu verstärken</description>
+	</item>
+	<item name = "Audiorekorder" price = "500" weight = "20" avail = "2" type = "Kybernetik">
+		<description>Ähnlich dem Videorekorder handelt es sich bei dem Audiorekorder streng genommen nicht um eine Erweiterung des Ohrensystems, sondern der MMS. Der Träger der synthetischen Ohren kann entscheiden seine Wahrnehmung mitzuschneiden und zu einem späteren Zeitpunkt auf einen Computer zu übertragen.</description>
+	</item>
+	<item name = "Augen (gezüchtet)" price = "18000" weight = "50" avail = "4" type = "Kybernetik">
+		<description>Die fortgeschrittene Biotechnologie erlaubt es Augen nachzuzüchten und auch gegebenenfalls vorhandene genetische Anlagen wie Farbfehlsichtigkeit zu kompensieren. Mittels Splicing ist es auch möglich Eigenschaften anderer Spezies mit einfließen zu lassen: Dämmerungssicht, Infrarotwahrnehmung oder UV-Sicht. Verwende einfach die oben aufgeführten Module für künstliche Augen. Wie alle biologischen Implantate, funktionieren auch nachgezüchtete Augen ohne eine Mensch-Maschine-Schnittstelle. Eine Kamerafunktion steht für biologisch gezüchtete Augen natürlich nicht zur Verfügung.</description>
+	</item>
+	<item name = "Gehör (gezüchtet)" price = "9000" weight = "80" avail = "4" type = "Kybernetik">
+		<description>Analog zu den künstlichen Augen und anderen biologischen Ersatzorganen lassen sich auch Mittel- und Innenohr nachzüchten. Auch diese können mit entsprechenden Fertigkeiten nichtmenschlicher Spezies verbessert werden. Wie bei den Augen dafür einfach die entsprechenden Module für künstliche Ohren erwerben. Auch hier steht kein Rekorder zur Verfügung.</description>
+	</item>
+	</group>
+	
+	<group name = "Künstliche Gliedmaßen">
+	<item name = "Gliedmaßenadapter" price = "2000" weight = "500" avail = "+2" type = "Kybernetik">
+		<description>Der Adapter ist der fest implantierte Teil einer Gliedmaßenprothese und stellt die Verbindung zum Skelett und der Ansteuerung durch die MMS dar. Ein Gliedmaßenadapter bildet das Fundament einer Prothese.</description>
+	</item>
+	<item name = "Oberarm mit Ellbogengelenk" price = "2000" weight = "3000" avail = "+2" type = "Kybernetik">
+		<description>Bildet den oberen Teil einer vollständigen Armprothese.</description>
+	</item>
+	<item name = "Hand (vollfunktional)" price = "4000" weight = "2000" avail = "+3" type = "Kybernetik">
+		<description>Dies enthält die Hand, Handgelenk und Unterarm (so weit nötig). Es gibt rein funktionell keinen Unterschied zu einer echten Hand, selbst thermische und taktile Sensoren sind verbaut. Es ist ein technisches Meisterwerk und das macht sich auch im Preis dafür bemerkbar.</description>
+	</item>
+	<item name = "einfache Greifhand" price = "750" weight = "1500" avail = "+2" type = "Kybernetik">
+		<description>Die verbaute Motorik ist deutlich einfacher als in der vollfunktionalen Hand und damit entsprechend günstiger, natürlich ist die Fingerfertigkeit mit so einer Hand deutlich eingeschränkt und auf die Sensorik wurde auch weitgehend verzichtet</description>
+	</item>
+	<item name = "Kosmetische Modifikation" price = "1000" weight = "100" avail = "+1" type = "Kybernetik">
+		<description>Diese Anpassung sorgt dafür, dass ein Arm aus den oben aufgeführten Komponenten erst beim zweiten oder gar dritten Blick auffällt.</description>
+	</item>
+	<item name = "Greifhaken" price = "500" weight = "750" avail = "0" type = "Kybernetik">
+		<description>Keine Sensorik, keine Feinmotorik, aber unter einigen Freibeutern durchaus als Statussymbol angesehen - und immer noch besser als ein Armstumpf.</description>
+	</item>
+	<item name = "Kraftverstärkung" price = "3000" weight = "2000" avail = "2" type = "Kybernetik">
+		<description>Die Servos und Motoren in der Prothese sind sind etwas größer dimensioniert als notwendig. Man sollte aber nicht vergessen, dass am anderen Ende des Arms oder Beins eine Verbindung zu einem lebenden Körper besteht, wahrhaft übermenschliche Kräfte sind also nicht zu erwarten.</description>
+	</item>
+	<item name = "Werkzeugadapter" price = "500" weight = "750" avail = "-1" type = "Kybernetik">
+		<description>Dieses Modul lässt sich anstelle der Hand an den Unterarm anstecken und kann mit verschiedenen Werkzeugen bestückt werden.</description>
+	</item>
+	<item name = "Geheimfach" price = "500" weight = "50" avail = "+2" type = "Kybernetik">
+		<description>In der Prothese ist ein kleines, verborgenes Fach eingebaut in dem sich Schmuggelgut, Werkzeug oder eine kleine Waffe verstecken lässt. Dieses Fach sollte sich jenseits des ersten Prothesengelenks befinden (bei einem kompletten Arm z.B. im Unterarm).</description>
+	</item>
+	<item name = "Oberschenkel mit Kniegelenk" price = "1000" weight = "4000" avail = "1" type = "Kybernetik">
+		<description>Bildet einen Teil einer vollen Beinprothese. Zusammen mit einem entsprechenden Fußmodul kann der Nachteil &apos;fehlendes Bein&apos; vollständig ausgeglichen werden.</description>
+	</item>
+	<item name = "Fuß mit Sprungelenk" price = "3000" weight = "3000" avail = "1" type = "Kybernetik">
+		<description>Künstliche Beine sind in ihrer Finessé natürlich etwas einfacher und damit auch günstiger, als künstliche Arme. Ein Charakter mit einem vollfunktionellen künstlichen Bein, kann genausogut laufen, klettern oder tanzen, wie ein Charakter mit einem natürlichen Bein.</description>
+	</item>
+	<item name = "&apos;Holzbein&apos;" price = "500" weight = "3000" avail = "-1" type = "Kybernetik">
+		<description>Diese eher schlichte, aber durchaus stylische Prothese, die unter Piraten nicht unbeliebt ist, reduziert den Nachteil für fehlendes Bein auf die Auswirkungen eines steifen Knie. Vielleicht etwas hochtrabend hier von &apos;Kybernetik&apos; zu sprechen ...</description>
+	</item>
+	<item name = "Magnetischer Anker" price = "1000" weight = "1000" avail = "+1" type = "Kybernetik">
+		<description>Dieses Modul integriert einen starken Elektromagneten, mit dem sich der Charakter beispielsweise auf der Außenseite eines Raumschiffs verankern kann.</description>
+	</item>
+	<item name = "Hand (gezüchtet)" price = "9000" weight = "3000" avail = "+3" type = "Kybernetik">
+		<description>Eine nachgezüchtete Hand mit Unterarm, genetisch angepasst an die Physiologie des Patienten. Vollständig auskuriert nicht vom Original zu unterscheiden. Für gezüchtete Gliedmaßen ist keine MMS notwendig.</description>
+	</item>
+	<item name = "Arm (gezüchtet)" price = "12000" weight = "7000" avail = "+3" type = "Kybernetik">
+		<description>Das ist einfach der komplette Arm bis hoch zur Schulter also wie die Hand nur zusätzlich noch mit Ellbogengelenk und Oberarm. Für gezüchtete Gliedmaßen ist keine MMS notwendig.</description>
+	</item>
+	<item name = "Fuß (gezüchtet)" price = "6000" weight = "5000" avail = "+3" type = "Kybernetik">
+		<description>Fuß, Sprungelenk und Unterschenkel. Nachzüchtung nach dem genetischen Code des Empfängers</description>
+	</item>
+	<item name = "Bein (gezüchtet)" price = "9000" weight = "10000" avail = "+3" type = "Kybernetik">
+		<description>Wie der Arm für die Hand, ist das Bein einfach ein vollständiger Gliedmaßenersatz, also inklusive Kniegelenk und Oberschenkel.</description>
+	</item>
+	</group>
+	
+	<group name = "Ersatzorgane">
+	<item name = "Künstliches Herz" price = "100000" weight = "500" avail = "+4" type = "Kybernetik">
+		<description>Niemand lässt sich freiwillig ein künstliches Herz einsetzen, aber immer noch besser als tot zu sein. Die Leistung der meisten künstlichen Herzen kommt mit der eines echten Herzen nicht mit und wer es sich leisten kann, nimmt ein künstliches Herz nur als temporäre Lösung, bis ein organisches Herz nachgezüchtet ist. Ein künstliches Herz ist einem echten Herzen also nicht überlegen und noch dazu ist es verdammt teuer!</description>
+	</item>
+	<item name = "Synthetische Lungen" price = "50000" weight = "500" avail = "+4" type = "Kypernetik">
+		<description>Mit Ausnahme einiger Terraformer findet man üblicherweise niemeanden, der sich ohne Not die Lungen durch ein synthetisches System ersetzen lässt. Überdies sind die meisten &apos;handelsüblichen&apos; künstlichen Lungen eher als Übergangslösung gedacht.</description>
+	</item>
+	<item name = "Geschlossenes Herz-Lungen-System" price = "200000" weight = "5000" avail = "+6" type = "Kybernetik">
+		<description>Dieses äußerst seltene Stück Technologie verbindet das künstliche Herz mit einer künstlichen Lunge, einem Luftregenerationssystem und einem integrierten drei Liter Sauerstofftank. Ein Charakter mit diesem System kann seine Trachea verschließen und mit dem integrierten System etwa 60 Minuten autark überleben, sowohl unter Wasser, wie auch im Vakuum oder in potentiell giftigen Atmosphären.&#10;Ja, es gibt Leute, die haben für ein derartiges System entschieden, sie gehören allesamt ganz speziellen militärischen Einheiten an.</description>
+	</item>
+	<item name = "Künstliche Nieren" price = "15000" weight = "500" avail = "+4" type = "Kybernetik">
+		<description>Wie bei den meisten lebenswichtigen Organen, lässt man auch hier üblicherweise die Finger von. In den meisten Fällen greift man zunächst einmal zur Dialyse, falls die Nieren aufgeben und wartet, bis biologische Organe nachgewachsen sind. Es gibt implantierbare, temporäre Dialysegeräte, welche die Nieren für einige Monate ersetzen können. Diese Geräte müssen aber spätestens nach einem Jahr ausgetauscht werden.</description>
+	</item>
+	<item name = "Herz (gezüchtet)" price = "150000" weight = "500" avail = "6" type = "Kybernetik">
+		<description>Das Herz gehört zu den eher komplexeren Organen und die Zucht eines funktionstüchtigen Exemplars ist fast mehr Kunst, denn reine Wissenschaft.&#10;Neben den exorbitanten Kosten für das Organ selbst, fallen natürlich die Unterbringung in einem entsprechend ausgestatteten Klinikum und die Operation selbst an - dazu kommen einige Wochen Rehaaufenthalt. Aber besser als tot sein ist es auf jeden Fall.</description>
+	</item>
+	<item name = "Lunge (gezüchtet)" price = "75000" weight = "500" avail = "6" type = "Kybernetik">
+		<description>In der Zucht nicht ganz so komplex wie die Erschaffung eines neuen Herzen, ist es doch durchaus keine alltägliche Standardprozedur. Die Operation ist anspruchsvoll und eine längerer Reha-Aufenthalt in der Klinik sind notwendig.</description>
+	</item>
+	<item name = "Leber (gezüchtet)" price = "50000" weight = "1000" avail = "5" type = "Kybernetik">
+		<description>Tatsächlich ist die Aufzucht einer künstlichen Leber deutlich weniger aufwändig, als die anderer lebenswichtiger Organe und für den Preis eines Herzen kann man sich gleich drei neue Lebern einsetzen lassen. Nicht dass man das irgendwie bräuchte.</description>
+	</item>
+	<item name = "Nieren (gezüchtet)" price = "25000" weight = "600" avail = "4" type = "Kybernetik">
+		<description>Von den Lebenswichtigen Organen, die man sich so nachzüchten lassen kann, gehört die Niere zu den günstigeren. Und noch dazu gilt der Preis für ein Paar.</description>
+	</item>
+	</group>
+</group>
+<group name = "Dienstleistungen">
+	<group name = "Lebenshaltung" />
+	<group name = "Reisen" />
+	<group name = "Reparaturen" />
+	<group name = "Medizinische Behandlung" />
+	
+</group>
 </items>
