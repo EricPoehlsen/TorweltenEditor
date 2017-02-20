@@ -1024,11 +1024,12 @@ class Character(object):
             container.set("content", new_content)
            
             item.set("inside", "-1")
-            if equip:
-                item.set("equipped", "1")
-
-            self.logEvent(item, mod=container_id, op=msg.CHAR_ITEM_UNPACKED)
             self.logEvent(container, op=msg.CHAR_ITEM_BAG)
+
+        if equip:
+            item.set("equipped", "1")
+
+        self.logEvent(item, mod=container_id, op=msg.CHAR_ITEM_UNPACKED)
 
     def getWeight(self, item):
         """ Retrieving the weight of an item and all packed sub items

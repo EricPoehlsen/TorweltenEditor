@@ -319,20 +319,36 @@ class EquipmentScreen(tk.Frame):
         armor_frame = tk.LabelFrame(
             canvas,
             text=msg.ES_CLOTHING_ARMOR,
-            width=200
-        )
-        self.showEquippedClothing(armor_frame)
-        armor = canvas.create_window(
-            0, y,  # x, y
-            window=armor_frame,
-            anchor=tk.NW,
             width=250
         )
-        self.update_idletasks()
+        lines = self.showEquippedClothing(armor_frame)
+        if lines > 1:
+            armor = canvas.create_window(
+                0, y,  # x, y
+                window=armor_frame,
+                anchor=tk.NW,
+                width=250
+            )
+            self.update_idletasks()
+            y += armor_frame.winfo_height()
 
-        y += armor_frame.winfo_height()
-        
-        # carried bags 
+        cyber_frame = tk.LabelFrame(
+            canvas,
+            text=msg.ES_BIOTECH,
+            width=250
+        )
+        lines = self.showEquippedBiotech(cyber_frame)
+        if lines > 1:
+            armor = canvas.create_window(
+                0, y,  # x, y
+                window=cyber_frame,
+                anchor=tk.NW,
+                width=250
+            )
+            self.update_idletasks()
+            y += cyber_frame.winfo_height()
+
+        # carried bags
         bags = self.char.getContainers()
         for bag in bags:
             bag_frame = tk.Frame(canvas)
@@ -446,6 +462,33 @@ class EquipmentScreen(tk.Frame):
                 )
                 unequip_button.grid(row=row, column=5, sticky=tk.EW)
                 row += 1
+        return row
+
+    def showEquippedBiotech(self, frame):
+        frame.columnconfigure(0, weight=100)
+        items = self.char.getItems(item_type=it.IMPLANT)
+        row = 0
+        name_label = tk.Label(frame, text=msg.ES_ITEMNAME)
+        name_label.grid(row=row, column=0, sticky=tk.W)
+        qual_label = tk.Label(frame, text=msg.ES_QUALITY_S)
+        qual_label.grid(row=row, column=1, sticky=tk.EW)
+        row = 1
+        for item in items:
+            if item.get("equipped", "0") == "1":
+                item_id = item.get("id")
+                name = item.get("name")
+                name_label = tk.Label(frame, text=name)
+                name_label.grid(row=row, column=0, sticky=tk.W)
+                name_label.bind(
+                    "<Button-1>",
+                    lambda event, item_id=item_id:
+                        self.displayItemEditor(event, item_id)
+                )
+                quality = item.get("quality")
+                qual_label = tk.Label(frame, text=quality)
+                qual_label.grid(row=row, column=1, sticky=tk.EW)
+                row += 1
+        return row
 
     # display equipped melee weapons
     def showEquippedMelee(self,canvas):

@@ -240,13 +240,15 @@ class LogScreen(tk.Frame):
                 container=bag_name
             )
         elif op == msg.CHAR_ITEM_UNPACKED:
+            event_string = ""
             bag_id = event.get("mod")
             bag_item = self.char.getItemById(bag_id)
-            bag_name = bag_item.get("name")
-            event_string = msg.LOG_ITEM_UNPACKED.format(
-                name=name,
-                container=bag_name
-            )
+            if bag_item is not None:
+                bag_name = bag_item.get("name")
+                event_string = msg.LOG_ITEM_UNPACKED.format(
+                    name=name,
+                    container=bag_name
+                )
         else:
             event_string = name + " " + str(quantity) + " " + str(op)
         # for the integrity check ...

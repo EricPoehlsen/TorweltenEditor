@@ -32,7 +32,7 @@ class ItemTree(object):
             it.AUTOMATIC_RIFLES,
             it.MASCHINE_GUNS,
             it.TOOLS,
-            it.NATURAL
+            it.NATURAL,
         ]
                            
     def loadTree(self, filename=None):

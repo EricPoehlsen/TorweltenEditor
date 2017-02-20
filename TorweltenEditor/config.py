@@ -141,6 +141,7 @@ class Messages:
     ES_UNASSIGNED = "Nicht zugewiesen"
     ES_INITIAL_FUNDS = "Startkapital: {amount},00 Rand"
     ES_CLOTHING_ARMOR = "Kleidung und Rüstung"
+    ES_BIOTECH = "Kybernetik"
     ES_UNEQUIP = "Ablegen"
     ES_ITEMNAME = "Bezeichnung"
     ES_DAMAGE_S = "S / D"
@@ -221,6 +222,10 @@ class Messages:
     IE_INVALID = "UNGÜLTIG!"
     IE_NO_NAME = "NAME NOTWENDIG!"
     IE_CUSTOM_ITEM = "Neu ..."
+    IE_IMPLANT = "Implantieren ..."
+    IE_IMPLANT_ADDONS = "Einbauten: "
+    IE_ATTACHED_TO = "angesetzt an: "
+    IE_BUILT_INTO = "eingebaut in: "
     IE_TT_NAME = "Alles braucht einen Namen"
     IE_TT_QUANTITY = "Anzahl\n(nur positive Zahlen)"
     IE_TT_WEIGHT = "Gewicht\npro Stück\nin Gramm"
@@ -509,6 +514,7 @@ class ItemTypes:
     CLIP = "Clip"
     AMMO = "Munition"
     MONEY = "Geld"
+    GENERIC = "Diverses"
 
     #  containers
     BAG = "Tasche"
@@ -517,8 +523,11 @@ class ItemTypes:
 
     #  other stuff
     SERVICES = "Dienstleistungen"
-    MONEY = "Geld"
-    GENERIC = "Diverses"
+
+    #biotech
+    IMPLANT = "Implantat"
+    PROSTHESIS = "Prothese"
+    IMPLANT_PART = "Einbau"
 
     OPTION_CALIBER = "Kaliber"
     OPTION_COLOR = "Farbe"

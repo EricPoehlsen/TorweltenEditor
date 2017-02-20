@@ -4,6 +4,7 @@ import re
 
 it = config.ItemTypes()
 msg = config.Messages()
+# TODO: Something in the handling of biotech breaks the log!
 
 
 class ItemEditor(tk.Toplevel):
@@ -57,7 +58,8 @@ class ItemEditor(tk.Toplevel):
                 text=msg.IE_UNEQUIP,
                 command=self.unequipItem
             )
-            unequip_button.pack(side=tk.LEFT)
+            if self.item.get("type") != it.IMPLANT:
+                unequip_button.pack(side=tk.LEFT)
         else: 
             if self.item.get("type", "") in self.app.itemlist.EQUIPPABLE:
                 equip_button = tk.Button(
@@ -228,6 +230,11 @@ class ItemEditor(tk.Toplevel):
             it.OTHER_MELEE,
             it.NATURAL
         ]
+        biotech = [
+            it.IMPLANT,
+            it.IMPLANT_PART,
+            it.PROSTHESIS
+        ]
 
         if item_type in containers:
             self.showContent(frame)
@@ -241,6 +248,8 @@ class ItemEditor(tk.Toplevel):
             self.getPistolInfo(frame)
         elif item_type == it.AMMO:
             self.getAmmoInfo(frame)
+        elif item_type in biotech:
+            self.getBiotechInfo(frame, item_type)
 
     # try to set the active chamber of a multi chambered weapon
     def selectChamber(self, event, number):
@@ -463,13 +472,13 @@ class ItemEditor(tk.Toplevel):
     def unequipItem(self):
         self.char.unequipItem(self.item)
         self.app.updateItemList()
-        self.addMenuIcons()
+        self.close(load=self.item)
 
     # equip an item: called by equip_button
     def equipItem(self):
         self.char.unpackItem(self.item, equip=True)
         self.app.updateItemList()
-        self.addMenuIcons()
+        self.close(load=self.item)
 
     def destroyItem(self):
         if self.destroy_check == 0: 
@@ -509,6 +518,15 @@ class ItemEditor(tk.Toplevel):
         self.char.unpackItem(sub_item)
         line_widget.destroy()
         self.app.updateItemList()
+
+    def unpackProsthesis(self, sub_item):
+        self.char.unpackItem(sub_item),
+        self.close(load=self.item)
+
+    def packItem(self, sub_item):
+        self.char.packItem(sub_item, self.item)
+        self.app.updateItemList()
+        self.close(load=self.item)
 
     # retrieve weight of an item with all sub_items recursivly  ... 
     def getWeight(self):
@@ -797,6 +815,107 @@ class ItemEditor(tk.Toplevel):
                     self.reloadChamber(event, item, variant="bullet")
             )
 
+    # display information for implants
+    def getBiotechInfo(self, frame, item_type):
+
+        implanted = int(self.item.get("equipped", "0"))
+
+        inside = self.item.get("inside", "-1")
+        if inside != -1:
+            parent = self.char.getItemById(inside)
+            if parent is not None:
+                name = parent.get("name")
+                parent_type = parent.get("type")
+                if parent_type in [it.IMPLANT, it.PROSTHESIS]:
+                    if item_type == it.PROSTHESIS:
+                        status = msg.IE_ATTACHED_TO
+                    else:
+                        status = msg.IE_BUILT_INTO
+                    label = tk.Label(
+                        frame,
+                        text=status+name
+                    )
+                    label.bind(
+                        "<Button-1>",
+                        lambda item=parent:
+                            self.close(load=parent)
+                    )
+                    label.pack()
+
+        content = self.item.get("content", "")
+        if content != "":
+            content_list = content.split()
+        else:
+            content_list = []
+        content_frame = tk.LabelFrame(frame, text=msg.IE_IMPLANT_ADDONS)
+        for item_id in content_list:
+            sub_item = self.char.getItemById(item_id)
+            if sub_item is not None:
+                item_frame = tk.Frame(content_frame)
+                sub_name = sub_item.get("name")
+                sub_type = sub_item.get("type")
+                label = tk.Label(
+                    item_frame,
+                    text=sub_name
+                )
+                label.bind(
+                    "<Button-1>",
+                    lambda event, sub_item=sub_item:
+                        self.close(load=sub_item)
+                )
+                label.pack(side=tk.LEFT, anchor=tk.W)
+                button = tk.Button(
+                    item_frame,
+                    text=msg.IE_UNEQUIP,
+                    command=lambda sub_item=sub_item:
+                        self.unpackProsthesis(sub_item)
+                )
+                if sub_type == it.PROSTHESIS:
+                    button.pack(side=tk.RIGHT, anchor=tk.E)
+                item_frame.pack(fill=tk.X)
+
+        if content_list:
+            content_frame.pack(fill=tk.X)
+
+        add_ons = (self.char.getItems(item_type=it.IMPLANT_PART)
+                + self.char.getItems(item_type=it.PROSTHESIS))
+        for sub_item in add_ons:
+            inside = sub_item.get("inside", "-1")
+            sub_id = sub_item.get("id")
+            if (inside != "-1"
+                or self.item.get("id") in sub_item.get("content", "").split()
+                or sub_id == self.item.get("id")
+            ):
+                continue
+            sub_name = sub_item.get("name")
+            if sub_id not in content_list:
+                sub_frame = tk.Frame(frame)
+                label = tk.Label(
+                    sub_frame,
+                    text=sub_name
+                )
+                label.pack(side=tk.LEFT, anchor=tk.W)
+                button = tk.Button(
+                    sub_frame,
+                    text="einbauen",
+                    command=lambda sub_item=sub_item:
+                        self.packItem(sub_item)
+                )
+                button.pack(side=tk.RIGHT,anchor=tk.E)
+                sub_frame.pack(fill=tk.X)
+
+        if item_type == it.IMPLANT and not implanted:
+            tk.Button(
+                frame,
+                text=msg.IE_IMPLANT,
+                command=self.equipItem
+            ).pack(fill=tk.X)
+
+        items = self.char.getItems(item_type=it.IMPLANT_PART)
+        for item in items:
+            pass
+
+
     # find matching ammo in inventory ...
     def getMatchingAmmo(self, caliber, search_type=it.AMMO):
         items = self.char.getItems()
@@ -832,6 +951,7 @@ class ItemEditor(tk.Toplevel):
         # create new window if a subitem is called
         if load is not None:
             self.app.open_windows["itemedit"] = ItemEditor(self.app, load)
+            self.app.updateItemList()
 
     # activate the entry field ...
     @staticmethod
