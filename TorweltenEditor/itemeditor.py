@@ -94,14 +94,12 @@ class ItemEditor(tk.Toplevel):
             )
             condense_button.pack(side=tk.LEFT)
 
-        content_list = self.item.get("content", "").split()
-        if not content_list:
-            sell_button = tk.Button(
-                self.bottom_menu,
-                text=msg.IE_SELL,
-                command=self.sellItem
-            )
-            sell_button.pack(side=tk.LEFT)
+        sell_button = tk.Button(
+            self.bottom_menu,
+            text=msg.IE_SELL,
+            command=self.sellItem
+        )
+        sell_button.pack(side=tk.LEFT)
 
         destroy_button = tk.Button(
             self.bottom_menu,
