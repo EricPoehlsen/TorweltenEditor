@@ -877,32 +877,33 @@ class ItemEditor(tk.Toplevel):
         if content_list:
             content_frame.pack(fill=tk.X)
 
-        add_ons = (self.char.getItems(item_type=it.IMPLANT_PART)
-                + self.char.getItems(item_type=it.PROSTHESIS))
-        for sub_item in add_ons:
-            inside = sub_item.get("inside", "-1")
-            sub_id = sub_item.get("id")
-            if (inside != "-1"
-                or self.item.get("id") in sub_item.get("content", "").split()
-                or sub_id == self.item.get("id")
-            ):
-                continue
-            sub_name = sub_item.get("name")
-            if sub_id not in content_list:
-                sub_frame = tk.Frame(frame)
-                label = tk.Label(
-                    sub_frame,
-                    text=sub_name
-                )
-                label.pack(side=tk.LEFT, anchor=tk.W)
-                button = tk.Button(
-                    sub_frame,
-                    text="einbauen",
-                    command=lambda sub_item=sub_item:
-                        self.packItem(sub_item)
-                )
-                button.pack(side=tk.RIGHT,anchor=tk.E)
-                sub_frame.pack(fill=tk.X)
+        if item_type != it.IMPLANT_PART:
+            add_ons = (self.char.getItems(item_type=it.IMPLANT_PART)
+                    + self.char.getItems(item_type=it.PROSTHESIS))
+            for sub_item in add_ons:
+                inside = sub_item.get("inside", "-1")
+                sub_id = sub_item.get("id")
+                if (inside != "-1"
+                    or self.item.get("id") in sub_item.get("content", "").split()
+                    or sub_id == self.item.get("id")
+                ):
+                    continue
+                sub_name = sub_item.get("name")
+                if sub_id not in content_list:
+                    sub_frame = tk.Frame(frame)
+                    label = tk.Label(
+                        sub_frame,
+                        text=sub_name
+                    )
+                    label.pack(side=tk.LEFT, anchor=tk.W)
+                    button = tk.Button(
+                        sub_frame,
+                        text="einbauen",
+                        command=lambda sub_item=sub_item:
+                            self.packItem(sub_item)
+                    )
+                    button.pack(side=tk.RIGHT,anchor=tk.E)
+                    sub_frame.pack(fill=tk.X)
 
         if item_type == it.IMPLANT and not implanted:
             tk.Button(

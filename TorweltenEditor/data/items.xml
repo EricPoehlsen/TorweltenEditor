@@ -1001,7 +1001,7 @@
 	<item name = "Holzbein" price = "500" weight = "3000" avail = "-1" type = "Prothese">
 		<description>Diese eher schlichte, aber durchaus stylische Prothese, die unter Piraten nicht unbeliebt ist, reduziert den Nachteil für fehlendes Bein auf die Auswirkungen eines steifen Knie. Vielleicht etwas hochtrabend hier von &apos;Kybernetik&apos; zu sprechen ...</description>
 	</item>
-	<item name = "Magnetischer Anker" price = "1000" weight = "1000" avail = "+1" type = "Prothese">
+	<item name = "Magnetischer Anker" price = "1000" weight = "1000" avail = "+1" type = "Einbau">
 		<description>Dieses Modul integriert einen starken Elektromagneten, mit dem sich der Charakter beispielsweise auf der Außenseite eines Raumschiffs verankern kann.</description>
 	</item>
 	<item name = "Hand (gezüchtet)" price = "9000" weight = "3000" avail = "+3" type = "Implantat">
