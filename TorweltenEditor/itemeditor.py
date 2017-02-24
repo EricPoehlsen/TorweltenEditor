@@ -916,7 +916,6 @@ class ItemEditor(tk.Toplevel):
         for item in items:
             pass
 
-
     # find matching ammo in inventory ...
     def getMatchingAmmo(self, caliber, search_type=it.AMMO):
         items = self.char.getItems()
