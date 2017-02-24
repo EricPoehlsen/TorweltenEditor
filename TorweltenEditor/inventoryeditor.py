@@ -1011,6 +1011,7 @@ class InventoryEditor(tk.Toplevel):
                         "container",
                         {"name": str(container)}
                     )
+                    new_item.set("type", it.CONTAINER)
                 if add_caliber == "1":
                     et.SubElement(
                         new_item,
@@ -1019,8 +1020,6 @@ class InventoryEditor(tk.Toplevel):
                          "value": str(caliber)}
                     )
                     new_item.set("type", it.CLIP)
-                else:
-                    new_item.set("type", it.CONTAINER)
             # any tool
             elif item_type == msg.IE_TYPE_TOOLS:
                 if add_container == "1":

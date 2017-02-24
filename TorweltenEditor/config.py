@@ -203,9 +203,9 @@ class Messages:
     IE_TYPE_CLOTHING = "Bekleidung oder Rüstung"
     IE_TYPE_MELEE = "Nahkampfwaffe"
     IE_TYPE_GUNS = "Fernkampfwaffe"
-    IE_TYPE_CONTAINER = "Behälter",
-    IE_TYPE_TOOLS = "Werkzeug",
-    IE_TYPE_AMMO = "Munition",
+    IE_TYPE_CONTAINER = "Behälter"
+    IE_TYPE_TOOLS = "Werkzeug"
+    IE_TYPE_AMMO = "Munition"
     IE_TYPE_OTHER = "Sonstiges"
     IE_TYPE_UNDEFINED = "Bitte Typ wählen ..."
     IE_NAME = "Bezeichnung"
