@@ -9,10 +9,10 @@
 	<skill id="110102" name="Freiklettern" parent="110100" spec="3" type="active" />
 	<skill id="110103" name="Fassadenklettern" parent="110100" spec="3" type="active" />
 	<skill id="110104" name="Höhenrettung" parent="110100" spec="3" type="active" />
-	<skill id="110200" name="Reiten" parent="110000" spec="2" type="active" />
+	<skill id="110105" name="Bouldern" parent="110100" spec="3" type="active" /><skill id="110200" name="Reiten" parent="110000" spec="2" type="active" />
 	<skill id="110201" name="Pferde" parent="110200" spec="3" type="active" />
 	<skill id="110202" name="Oliphanten" parent="110200" spec="3" type="active" />
-	<skill id="110203" name="Katzen" parent="110200" spec="3" type="active" /><skill id="110300" name="Schwimmen" parent="110000" spec="2" type="active" />
+	<skill id="110300" name="Schwimmen" parent="110000" spec="2" type="active" />
 	<skill id="110301" name="Langstreckenschwimmen" parent="110300" spec="3" type="active" />
 	<skill id="110302" name="Rettungsschwimmen" parent="110300" spec="3" type="active" />
 	<skill id="110303" name="Freitauchen" parent="110300" spec="3" type="active" />

@@ -234,7 +234,10 @@ class LogScreen(tk.Frame):
         elif op == msg.CHAR_ITEM_PACKED:
             bag_id = event.get("mod")
             bag_item = self.char.getItemById(bag_id)
-            bag_name = bag_item.get("name")
+            if bag_item is not None:
+                bag_name = bag_item.get("name")
+            else:
+                bag_name = msg.LOG_ITEM_UNKNOWN
             event_string = msg.LOG_ITEM_PACKED.format(
                 name=name,
                 container=bag_name

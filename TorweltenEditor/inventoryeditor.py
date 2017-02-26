@@ -1098,4 +1098,3 @@ class InventoryEditor(tk.Toplevel):
     def close(self):
         self.main.open_windows["inv"] = 0
         self.destroy()
-

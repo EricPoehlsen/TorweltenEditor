@@ -4,7 +4,6 @@ import re
 
 it = config.ItemTypes()
 msg = config.Messages()
-# TODO: Something in the handling of biotech breaks the log!
 
 
 class ItemEditor(tk.Toplevel):
@@ -519,6 +518,7 @@ class ItemEditor(tk.Toplevel):
 
     def unpackProsthesis(self, sub_item):
         self.char.unpackItem(sub_item),
+
         self.close(load=self.item)
 
     def packItem(self, sub_item):

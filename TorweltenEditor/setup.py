@@ -21,6 +21,6 @@ for dir in dirs:
     data_files.append((dir,file_list))
 
 
-data_files.append(("",["LICENSE.txt","README.txt"]))
+data_files.append(("",["LICENSE_DE","README_DE"]))
     
-setup(windows=['tw_chargen.py'],data_files = data_files)
+setup(windows=['TorweltenEditor.py'],data_files = data_files)

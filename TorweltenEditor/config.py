@@ -405,6 +405,7 @@ class Messages:
     LOG_ITEM_RENAMED = "%s in %s umbenannt."
     LOG_ITEM_PACKED = "{name} in {container} eingelegt."
     LOG_ITEM_UNPACKED = "{name} aus {container} entnommen."
+    LOG_ITEM_UNKNOWN = "[UNBEKANNT]"
     LOG_CONTACT_CHANGED = "ID: {id} - {name} {diff}"
     LOG_CONTACT_RENAMED = "umbenannt in: "
     LOG_CONTACT_COMPETENCY = "Kompetenz: "
