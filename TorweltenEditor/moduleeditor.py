@@ -8,13 +8,16 @@ it = config.ItemTypes()
 
 
 class ModuleEditor(tk.Toplevel):
+    """
+    main: parent window
+    location: string "col row"
+    """
+
     def __init__(self, main, location):
         super().__init__()
-        """ 
-        main: parent window
-        location: string "col row"
-        """
-        
+
+        self.minsize(250, 1)
+
         self.main = main
         main.open_windows["mod_ed"] = self
 
@@ -38,7 +41,7 @@ class ModuleEditor(tk.Toplevel):
             self._newModule(self.frame)
         else:
             self._editModule(self.frame)
-        self.frame.pack(fill=tk.X, expand=1)
+        self.frame.pack(fill=tk.BOTH, anchor=tk.N)
 
         self.protocol("WM_DELETE_WINDOW", self.close)
 
@@ -73,7 +76,7 @@ class ModuleEditor(tk.Toplevel):
         select_button = tk.OptionMenu(
             frame,
             selected_type,
-            *tuple(mod_types))
+            *mod_types)
         selected_type.set(mod_types[0])
         select_button.pack(fill=tk.X, expand=1)
         row = str(self.row)
@@ -83,18 +86,13 @@ class ModuleEditor(tk.Toplevel):
         sub_frame = tk.Frame(frame)
         self.widgets["options"] = option_frame = tk.Frame(sub_frame)
         
-        option_frame.pack(side=tk.LEFT)
+        option_frame.pack(fill=tk.X)
 
         selected_type.set(mod_types[0])
-        
-        # make sure the 
-        tk.Label(sub_frame, width=1, height=15, text="").pack(side=tk.LEFT)
 
         sub_frame.pack(fill=tk.BOTH, expand=1)
-
-        tk.Button(frame, text=msg.ME_ADD, command=self._addModule).pack()
-        
-        pass
+        add_button = tk.Button(frame, text=msg.ME_ADD, command=self._addModule)
+        add_button.pack(fill=tk.X, anchor=tk.S)
 
     # edit or delete a module ...
     def _editModule(self, frame):
@@ -138,7 +136,7 @@ class ModuleEditor(tk.Toplevel):
         
         size_button = tk.OptionMenu(frame, size, *tuple(sizes))
         size.set(cur_size)
-        size_button.pack()
+        size_button.pack(fill=tk.X)
         if mod_type in [
             page.MOD_TRAITS,
             page.MOD_WEAPONS,
@@ -298,7 +296,7 @@ class ModuleEditor(tk.Toplevel):
                 *tuple(sizes)
             )
             size.set(sizes[0])
-            size_button.pack()
+            size_button.pack(fill=tk.X)
 
             if selected == msg.PDF_TRAITS: 
                 """
@@ -425,6 +423,21 @@ class ModuleEditor(tk.Toplevel):
                 info_lines_frame.pack(fill=tk.X, expand=1)
 
             if selected == msg.PDF_EQUIPMENT:
+
+                item_group = tk.StringVar()
+                groups = [
+                    msg.PDF_EQUIPMENT_ALL,
+                    msg.PDF_EQUIPMENT_CLOTHING,
+                    msg.PDF_EQUIPMENT_TOOLS,
+                    msg.PDF_EQUIPMENT_BIOTECH,
+                    msg.PDF_EQUIPMENT_MONEY
+                ]
+                self.vars[str(item_group)] = item_group
+                self.var_names["item_group"] = str(item_group)
+                item_group.set(groups[0])
+                labelframe = tk.LabelFrame(frame, text="Gruppe wählen")
+                tk.OptionMenu(labelframe, item_group, *groups).pack(fill=tk.X)
+                labelframe.pack(fill=tk.X)
 
                 # condense items selection ... 
                 condensed = tk.IntVar()
@@ -752,7 +765,8 @@ class ModuleEditor(tk.Toplevel):
             equipped_var = self.vars[self.var_names["equipped"]].get()
             content_var = self.vars[self.var_names["content"]].get()
             show_weapons_var = self.vars[self.var_names["display_weapons"]].get()
-            
+            groups_var = self.vars[self.var_names["item_group"]].get()
+
             info_lines_var = self.vars[self.var_names["info_lines"]].get()
             et.SubElement(
                 self.module,
@@ -761,6 +775,34 @@ class ModuleEditor(tk.Toplevel):
                  "value": str(info_lines_var)
                  }
             )
+
+            if groups_var != msg.PDF_EQUIPMENT_ALL:
+                if groups_var == msg.PDF_EQUIPMENT_TOOLS:
+                    item_type = it.TOOLS
+                elif groups_var == msg.PDF_EQUIPMENT_CLOTHING:
+                    item_type = [
+                        it.CLOTHING,
+                        it.ARMOR,
+                        it.HARNESS
+                    ]
+                elif groups_var == msg.PDF_EQUIPMENT_BIOTECH:
+                    item_type = [
+                        it.IMPLANT,
+                        it.PROSTHESIS,
+                        it.IMPLANT_PART
+                    ]
+                else:
+                    item_type = it.MONEY
+
+                item_type = ",".join(item_type)
+
+                et.SubElement(
+                    self.module,
+                    "param",
+                    {"name": "item_type",
+                     "value": item_type
+                     }
+                )
 
             if use_item_id_var == 1:
                 bag_var = self.vars[self.var_names["bag_list"]].get() 
@@ -818,6 +860,7 @@ class ModuleEditor(tk.Toplevel):
                          "value": weapons_string
                          }
                     )
+
 
         elif mod_type == page.MOD_CONTACTS:
             contact_var = self.vars[self.var_names["contact_type"]].get()

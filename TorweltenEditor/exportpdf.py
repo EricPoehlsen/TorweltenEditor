@@ -1447,16 +1447,12 @@ class ExportPdf:
                     title = container.get("name").upper()
         # based on item_type
         elif item_type is not None:
-            if it.CLOTHING in item_type:
-                title = msg.PDF_CLOTHING_AND_MORE.upper()
-            melee_weapons = [
+            melee = [
                 it.CLUBS,
                 it.NATURAL,
                 it.STAFFS,
                 it.BLADES
             ]
-            if any(melee_weapons, item_type) and len(item_type) > 1:
-                title = msg.PDF_MELEE.upper()
             guns = [
                 it.PISTOLS,
                 it.REVOLVERS,
@@ -1469,11 +1465,15 @@ class ExportPdf:
                 it.AUTOMATIC_RIFLES,
                 it.BLASTER
             ]
-            if any(guns, item_type) and len(item_type) > 1:
-                if title == msg.PDF_MELEE:
-                    title = msg.PDF_WEAPONS.upper()
-                else:
-                    title = msg.PDF_GUNS.upper()
+
+            if it.MONEY in item_type:
+                title = msg.PDF_EQUIPMENT_MONEY
+            if it.IMPLANT in item_type:
+                title = msg.PDF_EQUIPMENT_BIOTECH
+            if it.TOOLS in item_type:
+                title = msg.PDF_EQUIPMENT_TOOLS
+            if it.CLOTHING in item_type:
+                title = msg.PDF_CLOTHING_AND_MORE.upper()
 
         self.drawTitle(canvas, x, y, height, title)
 

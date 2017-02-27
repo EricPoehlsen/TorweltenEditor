@@ -886,6 +886,7 @@
 			<damage value = "2/+1" name = "16/70"/>
 			<damage value = "3/+1" name = "12/76"/>
 			<pack name = "Schachtel (25)" quantity = "25"/>
+			<description>Die klassische Schrotpatrone</description>
 		</item>
 
 		<item name = "Buckshot" weight = "75" price = "2.5" type = "Munition">
@@ -915,7 +916,7 @@
 			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
 			<damage value = "3/-1" name = "20/70"/>
 			<damage value = "3/-1" name = "16/70"/>
-			<damage value = "4/-1" name = "12/76"/>
+            <damage value = "4/-1" name = "12/76"/>
 			<pack name = "Schachtel (10)" quantity = "10"/>
 		</item>
 

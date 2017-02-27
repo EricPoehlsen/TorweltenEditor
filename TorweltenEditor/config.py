@@ -323,6 +323,11 @@ class Messages:
     PDF_SKILLS_KNOWLEDGE = "Wissensfertigkeiten"
     PDF_SKILLS_LANGUAGE = "Sprachfertigkeiten"
     PDF_EQUIPMENT = "Ausrüstung"
+    PDF_EQUIPMENT_ALL = "Alle"
+    PDF_EQUIPMENT_TOOLS = "Werkzeug"
+    PDF_EQUIPMENT_BIOTECH = "Biotech"
+    PDF_EQUIPMENT_MONEY = "Geld und Wertsachen"
+    PDF_EQUIPMENT_CLOTHING = "Kleidung und Rüstung"
     PDF_WEAPONS = "Waffen"
     PDF_ALL_WEAPONS = "Alle Waffen"
     PDF_MELEE = "Nahkampfwaffen"
@@ -418,7 +423,6 @@ class Messages:
 
     # Tooltip messages
     TT_ADD_TRAITS = "Hier klicken zum hinzufügen\nneuer Eigenschaften."
-
 
     phy = "Physisch"
     men = "Mental"
