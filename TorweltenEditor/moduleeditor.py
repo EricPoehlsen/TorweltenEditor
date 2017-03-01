@@ -818,7 +818,7 @@ class ModuleEditor(tk.Toplevel):
                 et.SubElement(
                     self.module,
                     "param",
-                    {"name": "item_id",
+                    {"name": "condensed",
                      "value": "True"
                      }
                 )

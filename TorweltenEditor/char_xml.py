@@ -1063,7 +1063,7 @@ class Character(object):
 
         return weight
 
-    def getIdenticalItem(self, item):
+    def getIdenticalItem(self, item, exclude=None):
         """ Looking for an identical item in the inventory
 
         This will try to find an item that is so similar that it can
@@ -1075,13 +1075,15 @@ class Character(object):
 
         Args:
             item (Element<item>): the item we want to find siblings of
+            exclude [str, ...]: list of item id,s
 
         Returns
             Element<item>: another item that is so similar, they
                 can securly stacked into one item stack
                 None: if not identical item is found.
         """
-
+        if not exclude:
+            exclude = []
         identical_item = None
         item_name = item.get("name")
         item_options = item.findall("option")
@@ -1096,54 +1098,53 @@ class Character(object):
 
             current_items = self.getItems(item_name)
             for current_item in current_items:
-                # our hypothesis ...
-                identical = True
-
+                cur_id = current_item.get("id")
+                # filter exclude list
+                if cur_id in exclude:
+                    continue
                 # first layer of check:
                 # compare quality and item location.
                 # make sure it is not actually the same item!!
-                cur_id = current_item.get("id")
                 cur_equipped = current_item.get("equipped", "0")
                 cur_inside = current_item.get("inside", "-1")
                 cur_quality = current_item.get("quality")
-                if (int(cur_quality) == int(item_quality) and
-                    int(cur_inside) == int(item_inside) and 
-                    int(cur_equipped) != 1 and
-                    cur_id != item_id
+                if (int(cur_quality) == int(item_quality)
+                    and int(cur_inside) == int(item_inside)
+                    and int(cur_equipped) != 1
+                    and cur_id != item_id
                 ):
                     # next step - comparing item options
                     cur_options = current_item.findall("option")
                     for cur_option in cur_options:
                         for item_option in item_options:
+                            # to next item on differences ...
                             if (item_option.get("name")
                                     == cur_option.get("name")
                                 and item_option.get("value")
                                     != cur_option.get("value")
                             ):
-                                identical = False
+                                continue
                 # definitly different (or literally the same)
                 else:
-                    identical = False
-            
+                    continue
                 # this is probably another instance of this item ...
-                if identical: 
-                    # let's check the description
-                    cur_description = current_item.find("description")
-                    if cur_description is not None:
-                        cur_description = cur_description.text
-                    new_description = item.find("description")
-                    if new_description is not None:
-                        new_description = new_description.text
-                    if cur_description is None:
-                        cur_description = " "
-                    if new_description is None:
-                        new_description = " "
-                    if cur_description != new_description:
-                        identical = False
+                # let's check the description
+                cur_description = current_item.find("description")
+                if cur_description is not None:
+                    cur_description = cur_description.text
+                new_description = item.find("description")
+                if new_description is not None:
+                    new_description = new_description.text
+                if cur_description is None:
+                    cur_description = " "
+                if new_description is None:
+                    new_description = " "
+                # foreplay is done - check ...
+                if cur_description != new_description:
+                    continue
                 # yes we are sure they are identical
-                if identical:
-                    identical_item = current_item
-                    break
+                identical_item = current_item
+                break
             
         return identical_item
     

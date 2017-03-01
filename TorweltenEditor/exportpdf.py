@@ -1479,6 +1479,7 @@ class ExportPdf:
 
         # construct the appropriate itemlist ...
         item_list = []
+        virtual_quantities = {}
         # for item_id ... 
         if item_id >= 0: 
             item = self.char.getItemById(item_id)
@@ -1492,113 +1493,54 @@ class ExportPdf:
         else:
             # get the full list ... 
             items = self.char.getItems()
-            
-            # create the condensed list ... 
+
             if condensed:
+                condensed_items = []
                 for item in items:
-                    name = item.get("name")
                     i_type = item.get("type")
-                    
-                    valid_item = False
-                    # check item_type ... 
+                    i_id = item.get("id")
+                    if i_id in condensed_items:
+                        continue
                     if item_type is None:
-                        valid_item = True
-                    elif i_type in item_type:
-                        valid_item = True
-                    # check exclude
-                    if valid_item and i_type in exclude:
-                        valid_item = False
-                    
-                    if valid_item: 
-                        item_added = False
-                        for some_item in item_list:
-                            some_name = some_item.get("name")
-                    
-                            # check for name
-                            if some_name == name:
-                                # retrieve additional information
-                                options = item.findall("option")
-                                some_options = some_item.findall("option")
-                                identical = True
-                                # further comparison
-                                for option in options: 
-                                    option_name = option.get("name")
-                                    option_value = option.get("value")
-                                    for some_option in some_options:
-                                        s_option_name = some_option.get("name")
-                                        s_option_value = some_option.get("value")
-                                        if (option_name == s_option_name
-                                            and option_value != s_option_value
-                                        ):
-                                            identical = False
-                                            break
-                                    if not identical:
-                                        break
-                                if identical: 
-                                    quantity = int(item.get("quantity"))
-                                    some_quantity = int(some_item.get("quantity"))
-                                    some_item.set(
-                                        "quantity",
-                                        str(quantity+some_quantity)
-                                    )
-                                    item_added = True
-                        # ... or add the item to the list ... 
-                        if item_added is False:
-                            item_list.append(item)
+                        pass
+                    elif i_type not in item_type:
+                        continue
+                    if i_type in exclude:
+                        continue
+                    virtual_quantities[i_id] = int(item.get("quantity"))
+                    while self.char.getIdenticalItem(
+                            item,
+                            exclude=condensed_items
+                    ) is not None:
+                        other = self.char.getIdenticalItem(
+                            item,
+                            exclude=condensed_items
+                        )
+                        other_id = other.get("id")
+                        other_quant = int(other.get("quantity"))
+                        virtual_quantities[i_id] += other_quant
+                        condensed_items.append(other_id)
+                    item_list.append(item)
+            else:
+                for item in items:
+                    if item.get("equipped", "0") == "0" and equipped:
+                        continue
+                    if item_type is not None:
+                        if item.get("type") not in item_type:
+                            continue
+                    if item.get("type") in exclude:
+                        continue
+                    if not content and item.get("inside", "-1") == "-1":
+                        continue
 
-            else: 
-                # list of unequipped items ... 
-                if equipped is False:
-                    for item in items: 
-                        # check for item_list and exclude ... 
-                        if item_type is None and item.get("type") not in exclude:
-                            item_list.append(item)
-                        if item_type is not None: 
-                            if item.get("type") in item_type:
-                                item_list.append(item)
-                
-                # equipped items, show no contents ... 
-                elif equipped is True and content is False:
-                    for item in items: 
-                        if item.get("equipped", "0") == "1":
-                            # check for item_list and exclude ... 
-                            if (item_type is None
-                                and item.get("type") not in exclude
-                            ):
-                                item_list.append(item)
-                            if item_type is not None: 
-                                if item.get("type") in item_type:
-                                    item_list.append(item)
-
-                # equipped items, show their contents ... 
-                elif equipped is True and content == True:
-                    for item in items: 
-                        if item.get("equipped", "0") == "1":
-                            # check for item_list and exclude ... 
-                            item_included = False
-                            if (item_type is None
-                                and item.get("type") not in exclude
-                            ):
-                                    item_list.append(item)
-                                    item_included = True
-                            if item_type is not None: 
-                                if item.get("type") in item_type: 
-                                    item_list.append(item)
-                                    item_included = True
-
-                            # add sub_items if the item is included in the list
-                            # and the type not listed in the
-                            # exclude_content list ...
-                            
-                            if (item_included
-                                and item.get("type") not in content_exclude
-                            ):
-                                item_ids = item.get("content", "")
-                                item_ids = item_ids.split()
-                                for id in item_ids:
-                                    sub_item = self.char.getItemById(str(id))
-                                    if sub_item is not None:
-                                        item_list.append(sub_item)
+                    item_list.append(item)
+                    if content:
+                        item_ids = item.get("content", "")
+                        item_ids = item_ids.split()
+                        for id in item_ids:
+                            sub_item = self.char.getItemById(str(id))
+                            if sub_item is not None:
+                                item_list.append(sub_item)
 
         # this creates the appropriate header bar
         info_y = y - padding - info_line
@@ -1693,7 +1635,16 @@ class ExportPdf:
                 item_name = item.get("name", "")
                 item_quality = item.get("quality", "6")
                 item_quantity = item.get("quantity", "1")
-                item_weight = item.get("weight", "-")
+
+                item_weight = int(item.get("weight", "0"))
+                item_weight *= int(item_quantity)
+                item_weight = str(item_weight)
+                if not content:
+                    item_weight = str(self.char.getWeight(item))
+
+                if condensed:
+                    i_id = item.get("id")
+                    item_quantity = str(virtual_quantities[i_id])
 
                 # line 1
                 canvas.setFillColorRGB(0, 0, 0)
