@@ -24,12 +24,6 @@ class LogScreen(tk.Frame):
         self.log_scroll.config(command=self.log_canvas.yview)
         self.log_canvas.config(yscrollcommand=self.log_scroll.set)
 
-        # for integrity checking ...
-        self.skills = {}
-        self.attributes = {}
-        self.items = {}
-        self.contacts = {}
-
         self.renderLog()
 
     def renderLog(self):
@@ -57,6 +51,7 @@ class LogScreen(tk.Frame):
             element = event.get("element")
             date = event.get("date")
 
+            event_string = ""
             linebreak = True
             display = True
             x = 40
@@ -73,17 +68,22 @@ class LogScreen(tk.Frame):
             elif element == "data":
                 event_string = self.displayData(event)
             elif element == "item":
-                event_string = self.displayItem(event)
-                if op == msg.CHAR_ITEM_BAG or op is None:
-                    display = False
+                event_string, display = self.displayItem(event)
             elif element == "account":
                 event_string = self.displayAccount(event)
             elif element == "contact":
                 event_string = self.displayContact(event)
+            elif element == "modified":
+                event_string = msg.LOG_CORRUPT_FILE
             else:
                 op = event.get("op", "")
                 mod = event.get("mod", "")
-                event_string = op + ": " + mod
+                if op:
+                    event_string += op
+                if op and mod:
+                    event_string += ": "
+                if mod:
+                    event_string += mod
 
             # show the logline on screen ...
             if linebreak:
@@ -94,76 +94,12 @@ class LogScreen(tk.Frame):
                 if linebreak:
                     y += label.winfo_reqheight()
  
-        # checking the log file integrity ... 
+        # display the result of the integrity checks ...
         data_integrity = tk.LabelFrame(
             self.log_canvas,
-            text="Datenintegrität"
-            )
-        check_frame = Checkresults(
-            data_integrity,
-            text="Ereignisliste",
-            relief=tk.RIDGE,
-            borderwidth=2
-            )
-        stored_hash = int(events_tag.get("hash"))
-        if stored_hash == current_hash:
-            check_frame.setStatus("okay")
-        else: 
-            check_frame.setStatus("error")
-        check_frame.pack(side=tk.LEFT)
-
-        # checking the attributes integrity ...
-        check_frame = Checkresults(
-            data_integrity,
-            text="Attribute",
-            relief=tk.RIDGE,
-            borderwidth=2
-            )
-        check_frame.setStatus("okay")
-        for name in self.attributes:
-            char_value = self.char.getAttributeValue(name)
-            event_value = self.attributes[name]
-            if char_value != event_value:
-                check_frame.setStatus("error")
-        check_frame.pack(side=tk.LEFT)
-
-        # checking the skills for integrity
-        check_frame = Checkresults(
-            data_integrity,
-            text="Fertigkeiten",
-            relief=tk.RIDGE,
-            borderwidth=2
-            )
-        check_frame.setStatus("okay")
-        for skill in self.skills:
-            id = skill
-            char_skill = self.char.getSkillById(id)
-            char_value = int(char_skill.get("value"))
-            event_value = int(self.skills[id])
-
-            if event_value != char_value:
-                check_frame.setStatus("error")
-        check_frame.pack(side=tk.LEFT)
-
-        # inventory integrity check
-        check_frame = Checkresults(
-            data_integrity,
-            text="Inventar",
-            relief=tk.RIDGE,
-            borderwidth=2
-            )
-        check_frame.setStatus("okay")
-        current_items = self.char.getItems()
-        for item in current_items:
-            id = int(item.get("id"))
-            hash_value = self.char.hashElement(item)
-            logged_hash = self.items[id]
-            print(item.get("name"), hash_value, logged_hash)
-            if hash_value != logged_hash:
-                check_frame.setStatus("error")
-        check_frame.pack(side=tk.LEFT)
-
-        # display the result of the integrity checks ... 
+            text=msg.LOG_INTEGRITY
+        )
+        self.checkIntegrity(data_integrity)
         self.log_canvas.create_window(0, 0, window=data_integrity, anchor=tk.NW)
 
         # ... finally set the canvas scrollbox ... 
@@ -182,8 +118,6 @@ class LogScreen(tk.Frame):
         name = event.get("name")
         value = int(event.get("value"))
         event_string = "Attribut geändert" + " (" + name.upper() + "): " + str(value)
-        # add data to integrity check
-        self.attributes[name] = value
         return event_string
 
     def displaySkill(self, event):
@@ -192,8 +126,6 @@ class LogScreen(tk.Frame):
         value = int(event.get("value", "0"))
         skill_name = self.char.getSkillById(str(id)).get("name")
         event_string = op + ": " + skill_name + " - " + str(value)
-        # storing data for the integrity check
-        self.skills[id] = value
         return event_string
 
     @staticmethod
@@ -220,12 +152,13 @@ class LogScreen(tk.Frame):
         return event_string
 
     def displayItem(self, event):
+        display = True
         op = event.get("op")
-
         name = event.get("name")
         id = int(str(event.get("id")))
         quantity = int(event.get("quantity"))
         hash_value = int(event.get("hash"))
+        event_string = ""
         if op == msg.CHAR_ITEM_ADDED:
             event_string = msg.LOG_ITEM_ADDED % (name, quantity)
         elif op == msg.CHAR_ITEM_RENAMED:
@@ -243,7 +176,6 @@ class LogScreen(tk.Frame):
                 container=bag_name
             )
         elif op == msg.CHAR_ITEM_UNPACKED:
-            event_string = ""
             bag_id = event.get("mod")
             bag_item = self.char.getItemById(bag_id)
             if bag_item is not None:
@@ -252,11 +184,17 @@ class LogScreen(tk.Frame):
                     name=name,
                     container=bag_name
                 )
+            else:
+                display = False
+        elif op == msg.CHAR_ITEM_EQUIP:
+            event_string = msg.LOG_ITEM_EQUIPPED.format(
+                name=name
+            )
+        elif op == msg.CHAR_ITEM_BAG or op is None:
+            display = False
         else:
             event_string = name + " " + str(quantity) + " " + str(op)
-        # for the integrity check ...
-        self.items[id] = hash_value
-        return event_string
+        return event_string, display
 
     @staticmethod
     def displayAccount(event):
@@ -328,38 +266,31 @@ class LogScreen(tk.Frame):
             name=name,
             diff=info)
 
-        # for the integrity check ...
-        hash_value = int(event.get("hash"))
-        self.contacts[id] = hash_value
         return event_string
 
+    def checkIntegrity(self, frame):
+        tick = ImageTk.PhotoImage(file="ui_img/tick.png")
+        cross = ImageTk.PhotoImage(file="ui_img/cross.png")
 
-class Checkresults(tk.Frame):
-    """ A two-state status display
+        icon = tk.Label(frame)
+        icon.pack(side=tk.LEFT)
 
-    it adds two kwargs: 
-    status (string): "okay" or "error" 
-    text (string): some kind of descriptive text ...
-    """
-    def __init__(self, *args, status=None, text=None, **kwargs):
-        tk.Frame.__init__(self, *args, **kwargs)
-        self.tick = ImageTk.PhotoImage(file="ui_img/tick.png")
-        self.cross = ImageTk.PhotoImage(file="ui_img/cross.png")
+        text = tk.Label(frame)
+        text.pack(side=tk.LEFT)
 
-        self.status = None
-        self.icon = tk.Label(self)
-        self.icon.pack(side=tk.LEFT)
-        self.label = tk.Label(self, text=text)
-        self.label.pack(side=tk.RIGHT) 
-
-        if status: 
-            self.setStatus(status)
-
-    def setStatus(self, status=None):
-        if status == "okay":
-            self.icon.config(image=self.tick)
-            self.status = status
-        elif status == "error":
-            self.icon.config(image=self.cross)
-            self.status = status
-        return self.status
+        hash_element = self.char.getHashes()
+        if hash_element is None:
+            icon.config(image=tick)
+            icon.image = tick
+            text.config(text=msg.LOG_UNSAVED)
+        else:
+            check = hash_element.get("check")
+            modified = self.char.getModified()
+            if check == "1" and modified is None:
+                icon.config(image=tick)
+                icon.image = tick
+                text.config(text=msg.LOG_OKAY)
+            else:
+                icon.config(image=cross)
+                icon.image = cross
+                text.config(text=msg.LOG_WARN)

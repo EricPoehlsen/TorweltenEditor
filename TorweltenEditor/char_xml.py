@@ -85,6 +85,7 @@ class Character(object):
 
         with open(filename, mode="rb") as file:
             self.xml_char = et.parse(file)
+            self.checkHashes()
             self.logEvent(self.xml_char.getroot(), op=msg.CHAR_LOADED)
 
     def save(self, filename):
@@ -95,8 +96,10 @@ class Character(object):
         """
 
         with open(filename, mode="wb") as file:
+            self.createHashes()
             self.logEvent(self.xml_char.getroot(), op=msg.CHAR_SAVED)
             self.xml_char.write(file, encoding="utf-8", xml_declaration=True)
+            self.checkHashes()
 
     def addXP(self, amount, reason=None):
         """ Adding experience points to character
@@ -1028,8 +1031,9 @@ class Character(object):
 
         if equip:
             item.set("equipped", "1")
-
-        self.logEvent(item, mod=container_id, op=msg.CHAR_ITEM_UNPACKED)
+            self.logEvent(item, mod=container_id, op=msg.CHAR_ITEM_EQUIP)
+        else:
+            self.logEvent(item, mod=container_id, op=msg.CHAR_ITEM_UNPACKED)
 
     def getWeight(self, item):
         """ Retrieving the weight of an item and all packed sub items
@@ -1537,3 +1541,57 @@ class Character(object):
         """
 
         return self.xml_char.find("events")
+
+    def createHashes(self):
+        """ Storing hashes for the data blocks """
+        basics_hash = self.hashElement(self.xml_char.find("basics"))
+        attribute_hash = self.hashElement(self.xml_char.find("attributes"))
+        skill_hash = self.hashElement(self.xml_char.find("skills"))
+        inventory_hash = self.hashElement(self.xml_char.find("inventory"))
+        contacts_hash = self.hashElement(self.xml_char.find("contacts"))
+
+        hash_element = self.xml_char.find("hash")
+        if hash_element is None:
+            root = self.xml_char.getroot()
+            hash_element = et.SubElement(root, "hash")
+
+        hash_element.set("basics", str(basics_hash))
+        hash_element.set("attributes", str(attribute_hash))
+        hash_element.set("skills", str(skill_hash))
+        hash_element.set("inventory", str(inventory_hash))
+        hash_element.set("contacts", str(contacts_hash))
+
+    def checkHashes(self):
+        """ Check the hashes when the character is loaded """
+
+        hashes = {
+            "basics": self.hashElement(self.xml_char.find("basics")),
+            "attributes": self.hashElement(self.xml_char.find("attributes")),
+            "skills": self.hashElement(self.xml_char.find("skills")),
+            "inventory": self.hashElement(self.xml_char.find("inventory")),
+            "contacts": self.hashElement(self.xml_char.find("contacts"))
+        }
+        hash_element = self.xml_char.find("hash")
+        stored = {
+            "basics": int(hash_element.get("basics")),
+            "attributes": int(hash_element.get("attributes")),
+            "skills": int(hash_element.get("skills")),
+            "inventory": int(hash_element.get("inventory")),
+            "contacts": int(hash_element.get("contacts"))
+        }
+
+        for key in stored:
+            if stored[key] == hashes[key]:
+                hash_element.set("check", "1")
+            else:
+                hash_element.set("check", "0")
+                basics = self.xml_char.find("basics")
+                bad_file = et.SubElement(basics, "modified")
+                self.logEvent(bad_file)
+                break
+
+    def getHashes(self):
+        return self.xml_char.find("hash")
+
+    def getModified(self):
+        return self.xml_char.find("basics/modified")
