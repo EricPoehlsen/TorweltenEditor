@@ -308,6 +308,9 @@ class Messages:
     ME_EQUIPPED_STUFF = "nur mitgeführte Ausrüstung"
     ME_BAG_CONTENTS = "Tascheninhalt anzeigen"
     ME_SHOW_WEAPONS = "Waffen anzeigen"
+    ME_SHOW_WEIGHT = "Gewicht"
+    ME_SHOW_VALUE = "Wert"
+
     ME_ONLY_BAG = "Nur den Inhalt der nachfolgend\n gewählten Tasche zeigen:"
 
     # for the pdf export - exportpdf.py and moduleeditor.py
@@ -326,7 +329,7 @@ class Messages:
     PDF_EQUIPMENT_ALL = "Alle"
     PDF_EQUIPMENT_TOOLS = "Werkzeug"
     PDF_EQUIPMENT_BIOTECH = "Biotech"
-    PDF_EQUIPMENT_MONEY = "Geld und Wertsachen"
+    PDF_EQUIPMENT_MONEY = "GELD & WERTSACHEN"
     PDF_EQUIPMENT_CLOTHING = "Kleidung und Rüstung"
     PDF_WEAPONS = "Waffen"
     PDF_ALL_WEAPONS = "Alle Waffen"
@@ -345,6 +348,7 @@ class Messages:
     PDF_CLOTHING_AND_MORE = "Kleidung & mehr"
     PDF_QUANTITY = "Menge"
     PDF_WEIGHT = "Gewicht"
+    PDF_VALUE = "Wert"
     PDF_ITEMNAME = "Bezeichnung"
     PDF_DAMAGE = "S / D"
     PDF_CHAMBERS = "Kammern"

@@ -1544,44 +1544,40 @@ class Character(object):
 
     def createHashes(self):
         """ Storing hashes for the data blocks """
-        basics_hash = self.hashElement(self.xml_char.find("basics"))
-        attribute_hash = self.hashElement(self.xml_char.find("attributes"))
-        skill_hash = self.hashElement(self.xml_char.find("skills"))
-        inventory_hash = self.hashElement(self.xml_char.find("inventory"))
-        contacts_hash = self.hashElement(self.xml_char.find("contacts"))
 
         hash_element = self.xml_char.find("hash")
         if hash_element is None:
             root = self.xml_char.getroot()
             hash_element = et.SubElement(root, "hash")
 
-        hash_element.set("basics", str(basics_hash))
-        hash_element.set("attributes", str(attribute_hash))
-        hash_element.set("skills", str(skill_hash))
-        hash_element.set("inventory", str(inventory_hash))
-        hash_element.set("contacts", str(contacts_hash))
+        tags = [
+            "basics",
+            "attributes",
+            "skills",
+            "inventory",
+            "contacts"
+        ]
+
+        for tag in tags:
+            tag_hash = self.hashElement(self.xml_char.find(tag))
+            hash_element.set(tag, str(tag_hash))
 
     def checkHashes(self):
         """ Check the hashes when the character is loaded """
 
-        hashes = {
-            "basics": self.hashElement(self.xml_char.find("basics")),
-            "attributes": self.hashElement(self.xml_char.find("attributes")),
-            "skills": self.hashElement(self.xml_char.find("skills")),
-            "inventory": self.hashElement(self.xml_char.find("inventory")),
-            "contacts": self.hashElement(self.xml_char.find("contacts"))
-        }
-        hash_element = self.xml_char.find("hash")
-        stored = {
-            "basics": int(hash_element.get("basics")),
-            "attributes": int(hash_element.get("attributes")),
-            "skills": int(hash_element.get("skills")),
-            "inventory": int(hash_element.get("inventory")),
-            "contacts": int(hash_element.get("contacts"))
-        }
+        tags = [
+            "basics",
+            "attributes",
+            "skills",
+            "inventory",
+            "contacts"
+        ]
 
-        for key in stored:
-            if stored[key] == hashes[key]:
+        hash_element = self.xml_char.find("hash")
+        for tag in tags:
+            tag_hash = self.hashElement(self.xml_char.find(tag))
+            stored_hash = int(hash_element.get(tag))
+            if tag_hash == stored_hash:
                 hash_element.set("check", "1")
             else:
                 hash_element.set("check", "0")

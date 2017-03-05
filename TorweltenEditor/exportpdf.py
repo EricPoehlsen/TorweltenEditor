@@ -1362,32 +1362,44 @@ class ExportPdf:
         item_type=None,
         exclude=None,
         content_exclude=None,
+        show_weight=False,
+        show_value=False,
         info_lines=0
     ):
 
-        """ This module is used to render a wide range of inventory related elements on the character sheet
-        for this reason please refer to the notes on which variables to combine ... 
-            canvas: reportlab pdf canvas
-            x,y: int - top left corner in points
-            size: string - "single", "double", "triple", "full"
-            item_id: int > 0 - this creates a specific bag or container inventory displaying all items packed into that item
-            condensed: bool - condense items for display
-            equipped: bool - only list equipped items 
-            content: bool - list content of displayed items
-            item_type: comma separated string => list
-            exclude: comma separated string => list
-            content_exclude: comma separated string => list
-            info_lines: int - number of info lines ... 
+        """ Rendering an inventory module
 
-            How to combine the variabls ...
-            item_id - use it to display the contents of a single container
-                        all other variables will be ignored!
-            condensed - the list will condense identical items that are scattered
-                        among different containers, like bullets in clips or chambers ...   
-            equipped - the list will only contain equipped items
-                        + content (show packed items inside those)
-            item_type - limits selection to items of these types
-            exclude - if you want to just exclude a few types from the "all" list ...         
+        This can create a wide variety of modules for inventory
+        Args:
+            canvas: reportlab pdf canvas
+            x, y (int): top left corner in points
+            size (str): valid size name
+            item_id (int) > 0 : this creates a specific bag or container
+                inventory displaying all items packed into that item
+            condensed (bool): condense items for display
+            equipped (bool): only list equipped items
+            content (bool): show packed content
+            item_type (str): comma separated string of item types => list
+            exclude (str): comma separated string of item tyoe => list
+            content_exclude (str): comma separated string => list
+            show_weight (bool): display weight
+            show_value (bool): display value
+            info_lines (int) >=0 : number of info lines
+
+            Note:
+            item_id:
+                use it to display the contents of a single container
+                the other selection parameters will be ignored
+            condensed:
+                the list will condense identical items that are scattered
+                among different containers, like bullets in clips or chambers
+            equipped:
+                the list will only contain equipped items
+                    + content (show packed items inside those)
+            item_type:
+                limits selection to items of these types
+            exclude:
+                if you want to just exclude a few types from the "all" list ...
             """
 
         # localize variables for easy use ... 
@@ -1465,7 +1477,7 @@ class ExportPdf:
                 it.AUTOMATIC_RIFLES,
                 it.BLASTER
             ]
-
+            print(item_type)
             if it.MONEY in item_type:
                 title = msg.PDF_EQUIPMENT_MONEY
             if it.IMPLANT in item_type:
@@ -1493,7 +1505,6 @@ class ExportPdf:
         else:
             # get the full list ... 
             items = self.char.getItems()
-
             if condensed:
                 condensed_items = []
                 for item in items:
@@ -1530,7 +1541,7 @@ class ExportPdf:
                             continue
                     if item.get("type") in exclude:
                         continue
-                    if not content and item.get("inside", "-1") == "-1":
+                    if not content and item.get("inside", "-1") != "-1":
                         continue
 
                     item_list.append(item)
@@ -1546,16 +1557,36 @@ class ExportPdf:
         info_y = y - padding - info_line
         info_x = x + bar
         quality_width = 0.75*line_height
-        amount_width = 1.25*line_height
-        weight_width = 2.0*line_height
-        text_width = width - bar - 4.0 * line_height
+        quantity_width = 1.25*line_height
+        weight_width = 0
+        value_width = 0
+
+        if show_value and show_weight:
+            factor = 1.5
+        else:
+            factor = 2.5
+
+        if show_weight:
+            weight_width = factor * line_height
+        if show_value:
+            value_width = factor * line_height
+
+        text_width = (width
+                      - bar
+                      - quality_width
+                      - quantity_width
+                      - weight_width
+                      - value_width)
 
         columns = [
             quality_width,
-            amount_width,
+            quantity_width,
             text_width,
-            weight_width
         ]
+        if show_weight:
+            columns.append(weight_width)
+        if show_value:
+            columns.append(value_width)
 
         self.drawLineBackground(
             canvas,
@@ -1578,22 +1609,30 @@ class ExportPdf:
         )
         info_x += quality_width
         canvas.drawCentredString(
-            info_x + amount_width/2,
+            info_x + quantity_width/2,
             info_y+offset,
             msg.PDF_QUANTITY
         )
-        info_x += amount_width
+        info_x += quantity_width
         canvas.drawString(
             info_x + offset,
             info_y+offset,
             msg.PDF_ITEMNAME
         )
         info_x += text_width
-        canvas.drawCentredString(
-            info_x + weight_width / 2,
-            info_y+offset,
-            msg.PDF_WEIGHT
-        )
+        if show_weight:
+            canvas.drawCentredString(
+                info_x + weight_width / 2,
+                info_y+offset,
+                msg.PDF_WEIGHT
+            )
+            info_x += weight_width
+        if show_value:
+            canvas.drawCentredString(
+                info_x + value_width / 2,
+                info_y+offset,
+                msg.PDF_VALUE
+            )
 
         # draw the lines (and fill in skills if they exist ...                     
         canvas.setFont(FONT_NAME, 10)
@@ -1646,6 +1685,13 @@ class ExportPdf:
                     i_id = item.get("id")
                     item_quantity = str(virtual_quantities[i_id])
 
+                item_value = float(item.get("price"))
+                item_value *= int(item_quantity)
+                if item_value > 1000:
+                    item_value = str(item_value/1000)+"k"
+                else:
+                    item_value = str(int(item_value))
+
                 # line 1
                 canvas.setFillColorRGB(0, 0, 0)
                 local_x = x + bar
@@ -1656,24 +1702,32 @@ class ExportPdf:
                 )
                 local_x += quality_width
                 canvas.drawRightString(
-                    local_x + amount_width - 3,
+                    local_x + quantity_width - 3,
                     local_y + 3,
                     item_quantity
                 )
-                local_x += amount_width
+                local_x += quantity_width
                 canvas.drawString(
                     local_x + 3,
                     local_y + 3,
                     item_name
                 )
                 local_x += text_width
-                canvas.drawRightString(
-                    local_x + weight_width - 3,
-                    local_y + 3,
-                    item_weight
-                )
+                if show_weight:
+                    canvas.drawRightString(
+                        local_x + weight_width - 3,
+                        local_y + 3,
+                        item_weight
+                    )
+                    local_x += weight_width
+                if show_value:
+                    canvas.drawRightString(
+                        local_x + value_width - 3,
+                        local_y + 3,
+                        item_value
+                    )
 
-                # info lines : 
+                # info lines :
                 if info_lines > 0: 
                     cur_line = 0
                     local_x = x + bar

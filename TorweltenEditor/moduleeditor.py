@@ -449,8 +449,9 @@ class ModuleEditor(tk.Toplevel):
                     text=msg.ME_CONDENSE,
                     variable=condensed,
                     offvalue=0,
-                    onvalue=1
-                ).pack()
+                    onvalue=1,
+                    anchor=tk.W
+                ).pack(fill=tk.X, expand=1)
 
                 # show only equipped stuff selection
                 equipped = tk.IntVar()
@@ -462,8 +463,9 @@ class ModuleEditor(tk.Toplevel):
                     text=msg.ME_EQUIPPED_STUFF,
                     variable=equipped,
                     offvalue=0,
-                    onvalue=1
-                ).pack()
+                    onvalue=1,
+                    anchor=tk.W
+                ).pack(fill=tk.X, expand=1)
 
                 # display content selection
                 content = tk.IntVar()
@@ -475,8 +477,9 @@ class ModuleEditor(tk.Toplevel):
                     text=msg.ME_BAG_CONTENTS,
                     variable=content,
                     offvalue=0,
-                    onvalue=1
-                ).pack()
+                    onvalue=1,
+                    anchor=tk.W
+                ).pack(fill=tk.X, expand=1)
 
                 # display weapons selection
                 display_weapons = tk.IntVar()
@@ -488,8 +491,9 @@ class ModuleEditor(tk.Toplevel):
                     text=msg.ME_SHOW_WEAPONS,
                     variable=display_weapons,
                     offvalue=0,
-                    onvalue=1
-                ).pack()
+                    onvalue=1,
+                    anchor=tk.W
+                ).pack(fill=tk.X, expand=1)
 
                 # use item_id selector
                 use_item_id = tk.IntVar()
@@ -501,9 +505,11 @@ class ModuleEditor(tk.Toplevel):
                     text=msg.ME_ONLY_BAG,
                     variable=use_item_id,
                     offvalue=0,
-                    onvalue=1
+                    onvalue=1,
+                    anchor=tk.NW,
+                    justify=tk.LEFT
                 )
-                use_item_id_button.pack()
+                use_item_id_button.pack(fill=tk.X, expand=1)
 
                 # select items that are bags/containers ... 
                 items = self.main.char.getItems()
@@ -557,6 +563,33 @@ class ModuleEditor(tk.Toplevel):
                     width=2
                 )
                 info_lines_spinner.pack(side=tk.LEFT)
+
+                # show weight
+                show_weight = tk.IntVar()
+                self.vars[str(show_weight)] = show_weight
+                self.var_names["show_weight"] = str(show_weight)
+                show_weight.set(0)
+                tk.Checkbutton(
+                    info_lines_frame,
+                    text=msg.ME_SHOW_WEIGHT,
+                    variable=show_weight,
+                    offvalue=0,
+                    onvalue=1
+                ).pack(side=tk.LEFT)
+
+                # show value
+                show_value = tk.IntVar()
+                self.vars[str(show_value)] = show_value
+                self.var_names["show_value"] = str(show_value)
+                show_value.set(0)
+                tk.Checkbutton(
+                    info_lines_frame,
+                    text=msg.ME_SHOW_VALUE,
+                    variable=show_value,
+                    offvalue=0,
+                    onvalue=1
+                ).pack(side=tk.LEFT)
+
                 info_lines_frame.pack(fill=tk.X, expand=1)
 
                 # add traces (when everything exists) ...
@@ -765,6 +798,8 @@ class ModuleEditor(tk.Toplevel):
             equipped_var = self.vars[self.var_names["equipped"]].get()
             content_var = self.vars[self.var_names["content"]].get()
             show_weapons_var = self.vars[self.var_names["display_weapons"]].get()
+            show_weight_var = self.vars[self.var_names["show_weight"]].get()
+            show_value_var = self.vars[self.var_names["show_value"]].get()
             groups_var = self.vars[self.var_names["item_group"]].get()
 
             info_lines_var = self.vars[self.var_names["info_lines"]].get()
@@ -792,7 +827,7 @@ class ModuleEditor(tk.Toplevel):
                         it.IMPLANT_PART
                     ]
                 else:
-                    item_type = it.MONEY
+                    item_type = [it.MONEY]
 
                 item_type = ",".join(item_type)
 
@@ -801,6 +836,23 @@ class ModuleEditor(tk.Toplevel):
                     "param",
                     {"name": "item_type",
                      "value": item_type
+                     }
+                )
+
+            if show_weight_var == 1:
+                et.SubElement(
+                    self.module,
+                    "param",
+                    {"name": "show_weight",
+                     "value": "True"
+                     }
+                )
+            if show_value_var == 1:
+                et.SubElement(
+                    self.module,
+                    "param",
+                    {"name": "show_value",
+                     "value": "True"
                      }
                 )
 
