@@ -476,6 +476,7 @@ class ItemEditor(tk.Toplevel):
         self.char.unpackItem(self.item, equip=True)
         self.app.updateItemList()
         self.close(load=self.item)
+        # test
 
     def destroyItem(self):
         if self.destroy_check == 0: 
