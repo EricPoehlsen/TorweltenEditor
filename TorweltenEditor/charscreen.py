@@ -374,7 +374,6 @@ class CharScreen(tk.Frame):
         self.traits_text.config(state=tk.DISABLED)
 
     def updateSkillList(self):
-
         """ Render the contents of the skill lists """
 
         # retrieve edit mode once ... 

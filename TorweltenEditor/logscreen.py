@@ -4,6 +4,9 @@ import config
 msg = config.Messages()
 
 
+# TODO: According to 'Horrorcat' hash() is not persistent and the tostring()
+# of ElementTree might do bad stuff ...
+
 class LogScreen(tk.Frame):
     """ The log screen displays the character edit history 
 
