@@ -1,4 +1,5 @@
 import tkinter as tk
+from PIL import ImageTk
 import xml.etree.ElementTree as et
 import config
 from tooltip import ToolTip
@@ -145,7 +146,16 @@ class InventoryEditor(tk.Toplevel):
             width=25,
             command=self.displayGroups
         )
-        back_button.pack()
+        back_button.pack(fill=tk.X)
+        if group_name == msg.IE_CLOTHING_GROUP:
+            editor_button = tk.Button(
+                self.group_frame,
+                text=msg.IE_CLOTHING_EDITOR,
+                width=25,
+                command=self.customClothing
+            )
+            editor_button.pack(fill=tk.X)
+
         for subgroup in group:
             button = tk.Button(
                 self.group_frame,
@@ -1070,6 +1080,25 @@ class InventoryEditor(tk.Toplevel):
             self.new_item = new_item
             self.addItem(text=False)
 
+    def customClothing(self):
+        """ Creating a new custom clothing item
+
+        event (unused) called by a click event
+
+        """
+
+        # hiding the standard item frame
+        self.item_frame.pack_forget()
+
+        # clear the sub_module frame
+        widgets = self.sub_module.winfo_children()
+        for widget in widgets:
+            widget.destroy()
+
+        custom_clothing = CustomClothing(self.sub_module, self.main)
+        custom_clothing.pack(fill=tk.BOTH)
+        self.sub_module.pack(side=tk.RIGHT)
+
     def displayItemFrame(self):
         self.sub_module.pack_forget()
         self.item_frame.pack(side=tk.RIGHT)
@@ -1098,3 +1127,522 @@ class InventoryEditor(tk.Toplevel):
     def close(self):
         self.main.open_windows["inv"] = 0
         self.destroy()
+
+
+class CustomClothing(tk.Frame):
+    """ A submodule to generate custom clothing items
+
+    Args:
+        parent(tk.Frame): where to display
+    """
+
+    def __init__(self, parent, main):
+        super().__init__(parent)
+
+        self.char = main.char
+        self.main = main
+
+        self.item_data = {}
+        self.item_data_trace = {}
+
+        # we need to access some widgets
+        self.buy = None
+        self.description = None
+        self.trousers = None
+
+        # core variables
+        self.weight = 0
+        self.avail = 0
+
+
+        # building the screen an setting up variables to hold the
+        # given data ...
+        top_frame = self._topView(self)
+        top_frame.pack(fill=tk.X, expand=1)
+        middle_frame = tk.Frame(self)
+        selection = self._selectionView(middle_frame)
+        selection.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        right_frame = tk.Frame(middle_frame)
+        options = self._optionsView(right_frame)
+        options.pack(fill=tk.X, anchor=tk.N)
+        self.buy = tk.Button(
+            right_frame,
+            text=msg.IE_BUY,
+            state=tk.DISABLED,
+            command=self._createItem
+        )
+        self.buy.pack(fill=tk.BOTH, expand=1)
+        right_frame.pack(side=tk.LEFT, fill=tk.Y)
+        middle_frame.pack(fill=tk.X)
+        descripton_frame = self._descriptionView(self)
+        descripton_frame.pack(fill=tk.X)
+
+    def _topView(self,parent):
+        name_var = tk.StringVar()
+        self.item_data["name"] = name_var
+        name_var.trace("w", self._calculateCost)
+        frame = tk.Frame(parent)
+        name_frame = tk.LabelFrame(frame, text=msg.IE_NAME)
+        tk.Entry(
+            name_frame,
+            width=40,
+            textvariable=name_var
+        ).pack(fill=tk.X)
+        name_frame.pack(side=tk.LEFT)
+        # name_frame.bind("<Enter>", lambda e: self.showTooltip(e, "name"))
+        return frame
+
+    def _selectionView(self, parent):
+        """ creates a frame with option selection for customClothing
+
+        Args:
+            parent (tk.Frame): frame to display it in
+
+        Note:
+            uses .grid() layout
+        """
+        body_parts = [
+            (msg.IE_CE_HEAD, msg.IE_BASE_PRICE1),
+            (msg.IE_CE_TORSO, msg.IE_BASE_PRICE1),
+            (msg.IE_CE_UPPERARMS, msg.IE_BASE_PRICE2),
+            (msg.IE_CE_FOREARMS, msg.IE_BASE_PRICE2),
+            (msg.IE_CE_HANDS, msg.IE_BASE_PRICE1),
+            (msg.IE_CE_HIPS, msg.IE_BASE_PRICE1),
+            (msg.IE_CE_UPPERLEGS, msg.IE_BASE_PRICE2),
+            (msg.IE_CE_LOWERLEGS, msg.IE_BASE_PRICE2),
+            (msg.IE_CE_FEET, msg.IE_BASE_PRICE1)
+        ]
+        elements = [
+            [msg.IE_CE_CHOSEN, 0, -1],
+            [msg.IE_CE_ARMOR1, 1, 10],
+            [msg.IE_CE_ARMOR2, 1, 10],
+            [msg.IE_CE_CLOSURE, 0, 1],
+            [msg.IE_CE_COMPLEX, 0, 1],
+            [msg.IE_CE_CANVAS, 0, 1],
+            [msg.IE_CE_TRIMMINGS, 0, 1]
+        ]
+
+        frame = tk.LabelFrame(parent, text=msg.IE_CE_SELECTION)
+        frame.columnconfigure(0, weight=20)
+
+        self._selectionHeaders(frame)
+
+        for row, part in enumerate(body_parts, start=1):
+            label = tk.Label(frame, text=part[0])
+            label.grid(row=row, column=0, sticky=tk.W)
+
+            for col, el in enumerate(elements, start=1):
+                if el[2] == -1:
+                    el[2] = part[1]
+                var = tk.IntVar()
+                var.trace("w", self._calculateCost)
+                if part[0] == msg.IE_CE_UPPERLEGS and col == 1:
+                    var.trace(
+                        "w",
+                        lambda n, e, v, var=var:
+                            self._trousersToggle(var))
+                if col == 2 or col == 3:
+                    var.trace("w", self._armorToggle)
+                self.item_data[part[0]+"_"+el[0]] = var
+                self.item_data_trace[str(var)] = part[0]+"_"+el[0]
+                var.set(el[1])
+                cb = tk.Checkbutton(
+                    frame,
+                    var=var,
+                    offvalue=el[1],
+                    onvalue=el[2],
+                )
+                if col == 1:
+                    cb.bind("<Button-1>", self._toggleCheckbuttons)
+                if col > 1:
+                    cb.config(state=tk.DISABLED)
+                cb.grid(row=row, column=col)
+
+            var = tk.StringVar()
+            var.trace("w", self._calculateCost)
+            handle = part[0] + "_" + msg.IE_CE_POCKETS
+            self.item_data[handle] = var
+            self.item_data_trace[str(var)] = handle
+
+            pockets = tk.Spinbox(
+                frame,
+                textvariable=var,
+                from_=0,
+                to=10,
+                width=2,
+                state=tk.DISABLED
+            )
+            pockets.grid(row=row, column=col+1)
+        return frame
+
+    def _selectionHeaders(self, parent):
+        images = [
+            ImageTk.PhotoImage(file="images/ie_tick.png"),
+            ImageTk.PhotoImage(file="images/ie_armor1.png"),
+            ImageTk.PhotoImage(file="images/ie_armor2.png"),
+            ImageTk.PhotoImage(file="images/ie_closure.png"),
+            ImageTk.PhotoImage(file="images/ie_complex.png"),
+            ImageTk.PhotoImage(file="images/ie_fabric.png"),
+            ImageTk.PhotoImage(file="images/ie_trimmings.png"),
+            ImageTk.PhotoImage(file="images/ie_pockets.png")
+        ]
+        for col, image in enumerate(images, start=1):
+            icon = tk.Label(parent, image=image)
+            icon.image = image
+            icon.grid(row=0, column=col)
+
+    def _optionsView(self, parent):
+        frame = tk.Frame(parent)
+        self._qualityButton(frame)
+        self._fabricButton(frame)
+        return frame
+
+    def _qualityButton(self, parent):
+        frame = tk.LabelFrame(parent, text=msg.IE_QUALITY)
+        qualities = (
+            msg.IE_QUALITY_3,
+            msg.IE_QUALITY_4,
+            msg.IE_QUALITY_5,
+            msg.IE_QUALITY_6,
+            msg.IE_QUALITY_7,
+            msg.IE_QUALITY_8,
+            msg.IE_QUALITY_9,
+        )
+        var = tk.StringVar()
+        var.trace("w", lambda n, e, m: self._quality(var))
+        var.set(qualities[3])
+        button = tk.OptionMenu(
+            frame,
+            var,
+            *qualities
+        )
+        button.pack(fill=tk.X, expand=1)
+        frame.pack(fill=tk.X, expand=1)
+
+    def _fabricButton(self, parent):
+        # single layer or multi layer fabric ...
+        frame = tk.LabelFrame(parent, text=msg.IE_CE_FABRIC)
+        layers = (
+            msg.IE_CE_SINGLE_LAYER,
+            msg.IE_CE_MULTI_LAYER,
+        )
+        l_var = tk.StringVar()
+        l_var.set(layers[0])
+        l_var.trace("w", lambda n, e, m: self._layers(l_var))
+        button = tk.OptionMenu(
+            frame,
+            l_var,
+            *layers
+        )
+        button.pack(fill=tk.X, expand=1)
+        # cloth quality
+        fabric_group = (
+            msg.IE_CE_SIMPLE,
+            msg.IE_CE_ELEGANT,
+            msg.IE_CE_RARE
+        )
+        var = tk.StringVar()
+        var.set(fabric_group[0])
+        var.trace("w", lambda n, e, m: self._fabric(var))
+        button = tk.OptionMenu(
+            frame,
+            var,
+            *fabric_group
+        )
+        button.pack(fill=tk.X, expand=1)
+        # name of material
+        subframe = tk.Frame(frame)
+        tk.Label(subframe, text=msg.IE_CE_FABRIC_NAME).pack(
+            side=tk.LEFT,
+            expand=1,
+            anchor=tk.W
+        )
+        self.item_data["material"] = m_var = tk.StringVar()
+        tk.Entry(subframe, width=20, textvariable=m_var).pack(
+            side=tk.LEFT,
+            fill=tk.X,
+            expand=1
+        )
+        subframe.pack(fill=tk.X)
+        # color of clothing
+        subframe = tk.Frame(frame)
+        tk.Label(subframe, text=msg.IE_CE_FABRIC_COLOR).pack(
+            side=tk.LEFT,
+            expand=1,
+            anchor=tk.W
+        )
+        self.item_data["color"] = c_var = tk.StringVar()
+        tk.Entry(subframe, textvariable=c_var).pack(
+            side=tk.LEFT,
+            fill=tk.X,
+            expand=1
+        )
+        subframe.pack(fill=tk.X)
+        # are this trousers or not?
+        self.item_data["trousers"] = t_var = tk.IntVar()
+        t_var.set(0)
+        self.trousers = tk.Checkbutton(
+            frame,
+            text=msg.IE_CE_TROUSERS,
+            var=t_var,
+            onvalue=1,
+            offvalue=0,
+            state=tk.DISABLED,
+            anchor=tk.W
+        )
+        self.trousers.pack(
+            fill=tk.X,
+            expand=1
+        )
+
+        frame.pack(fill=tk.X, expand=1)
+
+    def _descriptionView(self, parent):
+        # TODO: Implement an autodescription
+        self.item_data["description"] = tk.StringVar()
+        frame = tk.LabelFrame(parent, text=msg.IE_DESCRIPTION)
+        self.description = tk.Text(frame, width=20, height=5, wrap=tk.WORD)
+        self.description.pack(fill=tk.BOTH, expand=1)
+        return frame
+
+    def _armorToggle(self, name, empty, mode):
+        """ .trace() for armor checkboxes in customClothing
+
+        makes sure that armor level 1 is selected when armor level 2 is
+        chosen and deselects armor level 2 once armor level 1 is deselected
+
+        Args:
+            name (str): tcl name of variable
+            empty (unused)
+            mode (unused)
+        """
+
+        trace = self.item_data_trace.get(name)
+        clicked = self.item_data.get(trace)
+        part = trace.split("_")[0]
+        armor1 = self.item_data.get(part + "_" + msg.IE_CE_ARMOR1)
+        armor2 = self.item_data.get(part + "_" + msg.IE_CE_ARMOR2)
+        if armor1 and armor2:
+            if armor1 is clicked:
+                if armor1.get() == 1 and armor2.get() == 10:
+                    armor2.set(1)
+            if armor2 is clicked:
+                if armor2.get() == 10 and armor1.get() == 1:
+                    armor1.set(10)
+
+    def _trousersToggle(self, var):
+        if not self.trousers: return
+        selected = var.get()
+        print(selected)
+        if selected > 0:
+            self.trousers.config(state=tk.NORMAL)
+        else:
+            self.trousers.config(state=tk.DISABLED)
+
+    def _getSelectedOptions(self):
+        body_parts = [
+            msg.IE_CE_HEAD,
+            msg.IE_CE_TORSO,
+            msg.IE_CE_UPPERARMS,
+            msg.IE_CE_FOREARMS,
+            msg.IE_CE_HANDS,
+            msg.IE_CE_HIPS,
+            msg.IE_CE_UPPERLEGS,
+            msg.IE_CE_LOWERLEGS,
+            msg.IE_CE_FEET
+        ]
+        elements = [
+            msg.IE_CE_CHOSEN,
+            msg.IE_CE_ARMOR1,
+            msg.IE_CE_ARMOR2,
+            msg.IE_CE_CLOSURE,
+            msg.IE_CE_COMPLEX,
+            msg.IE_CE_CANVAS,
+            msg.IE_CE_TRIMMINGS,
+            msg.IE_CE_POCKETS
+        ]
+        
+        selection = {}
+        price = 0
+        for part in body_parts:
+            sel = elements[0]
+            v_name = part + "_" + sel
+            var = self.item_data.get(v_name)
+            if var:
+                base_price = var.get()
+                if base_price > 0:
+                    # construct names
+                    armor1_name = part + "_" + elements[1]
+                    armor2_name = part + "_" + elements[2]
+                    closure_name = part + "_" + elements[3]
+                    complex_name = part + "_" + elements[4]
+                    canvas_name = part + "_" + elements[5]
+                    trimmings_name = part + "_" + elements[6]
+                    pockets_name = part + "_" + elements[7]
+                    # get variables
+                    selection[part] = {
+                        elements[0]: base_price,
+                        elements[1]: self.item_data.get(armor1_name).get(),
+                        elements[2]: self.item_data.get(armor2_name).get(),
+                        elements[3]: self.item_data.get(closure_name).get(),
+                        elements[4]: self.item_data.get(complex_name).get(),
+                        elements[5]: self.item_data.get(canvas_name).get(),
+                        elements[6]: self.item_data.get(trimmings_name).get(),
+                        elements[7]: self.item_data.get(pockets_name).get()
+                    }
+        return selection
+
+    def _calculateCost(self, name=None, empty=None, mode=None):
+        selection = self._getSelectedOptions()
+        price = 0
+        for part in selection:
+            base_price = selection[part][msg.IE_CE_CHOSEN]
+            armor1 = selection[part][msg.IE_CE_ARMOR1]
+            armor2 = selection[part][msg.IE_CE_ARMOR2]
+            closure = selection[part][msg.IE_CE_CLOSURE]
+            complex = selection[part][msg.IE_CE_COMPLEX]
+            canvas = selection[part][msg.IE_CE_CANVAS]
+            trimmings = selection[part][msg.IE_CE_TRIMMINGS]
+            pockets = selection[part][msg.IE_CE_POCKETS]
+            if pockets in ["", " ", "0"]:
+                pockets = 0
+            else:
+                pockets = 1
+            # calculate price
+            armor = base_price * armor1 * armor2
+            addon = 1 + closure + complex + canvas + trimmings + pockets
+            partial_price = armor * addon
+            price += partial_price
+
+        qualities = {
+            3: 0.1,
+            4: 0.25,
+            5: 0.5,
+            6: 1.0,
+            7: 1.5,
+            8: 2.5,
+            9: 5.0,
+        }
+        quality = self.item_data.get(msg.IE_QUALITY, 6)
+        quality_factor = qualities[quality]
+        price *= quality_factor
+
+        fabric_factor = self.item_data.get(msg.IE_CE_FABRIC, 1)
+        price *= fabric_factor
+
+        layers_factor = self.item_data.get(msg.IE_CE_SINGLE_LAYER, 1)
+        price *= layers_factor
+
+        self.item_data[msg.IE_PRICE] = price
+
+        if self.buy:
+            text = msg.IE_BUY + "\n" + str(price)
+            if price > 0 and len(self.item_data["name"].get()) >= 1:
+                state = tk.NORMAL
+            else:
+                state = tk.DISABLED
+            self.buy.config(text=text, state=state)
+
+    def _quality(self, var):
+        qualities = {
+            msg.IE_QUALITY_3: 3,
+            msg.IE_QUALITY_4: 4,
+            msg.IE_QUALITY_5: 5,
+            msg.IE_QUALITY_6: 6,
+            msg.IE_QUALITY_7: 7,
+            msg.IE_QUALITY_8: 8,
+            msg.IE_QUALITY_9: 9,
+        }
+        self.item_data[msg.IE_QUALITY] = qualities[var.get()]
+        self._calculateCost()
+
+    def _fabric(self, var):
+        fabric_qualities = {
+            msg.IE_CE_SIMPLE: 1,
+            msg.IE_CE_ELEGANT: 2,
+            msg.IE_CE_RARE: 4,
+        }
+        self.item_data[msg.IE_CE_FABRIC] = fabric_qualities[var.get()]
+        self._calculateCost()
+
+    def _layers(self, var):
+        layers = {
+            msg.IE_CE_SINGLE_LAYER: 1,
+            msg.IE_CE_MULTI_LAYER: 2
+        }
+        self.item_data[msg.IE_CE_SINGLE_LAYER] = layers[var.get()]
+        self._calculateCost()
+
+    def _toggleCheckbuttons(self, event):
+        """ (De)activate option checkbuttons for clothing elements
+
+        All option checkbuttons will be disabled for any given body part
+        line when the select checkbutton is unchecked
+
+        Args:
+            event (tk.Event): the click on the checkbutton
+        """
+
+        row = event.widget.grid_info()["row"]
+        parent_name = event.widget.winfo_parent()
+        toplevel = event.widget.winfo_toplevel()
+        parent = toplevel.nametowidget(parent_name)
+        var_name = event.widget.cget("variable")
+        var_trace = self.item_data_trace[str(var_name)]
+        var = self.item_data[var_trace]
+
+        widgets = parent.winfo_children()
+        for widget in widgets:
+            w_row = widget.grid_info()["row"]
+            w_col = widget.grid_info()["column"]
+            if w_row == row and w_col in range(2, 9):
+                if var.get() == 0:
+                    widget.config(state=tk.NORMAL)
+                else:
+                    widget.config(state=tk.DISABLED)
+
+    def _getArmor(self):
+        selection = self._getSelectedOptions()
+        armor1 = 0
+        armor2 = 0
+        for key in selection:
+            part_data = selection[key]
+            for sub in part_data:
+                if msg.IE_CE_ARMOR2 in sub:
+                    armor2 += int(part_data[sub] / 10)
+                elif msg.IE_CE_ARMOR1 in sub:
+                    armor1 += int(part_data[sub] / 10)
+        return armor1, armor2
+
+    def _createItem(self):
+        # TODO: implement weight and quantity
+        item = et.Element("item")
+        name = self.item_data["name"].get()
+        price = self.item_data[msg.IE_PRICE]
+        quality = self.item_data[msg.IE_QUALITY]
+        item.set("name", name)
+        item.set("price", str(price))
+        item.set("quality", str(quality))
+        item.set("quantity", "1")
+        item.set("type", it.CLOTHING)
+
+        armor = None
+        armor1, armor2 = self._getArmor()
+        if armor1 > 0:
+            armor = "1/0"
+        if armor2 > 0:
+            armor = "2/0"
+        if armor:
+            item.set("type", it.ARMOR)
+            et.SubElement(item, "damage", {"value": armor})
+
+        description = self.description.get("0.0", tk.END)
+        if description:
+            desc_tag = et.SubElement(item, "description")
+            desc_tag.text = description
+
+        self.char.addItem(item)
+        self.main.updateItemList()
+
+
+        pass
