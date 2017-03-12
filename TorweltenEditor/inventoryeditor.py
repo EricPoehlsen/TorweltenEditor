@@ -5,6 +5,7 @@ import config
 from tooltip import ToolTip
 
 msg = config.Messages()
+val = config.Values()
 it = config.ItemTypes()
 
 
@@ -1136,6 +1137,31 @@ class CustomClothing(tk.Frame):
         parent(tk.Frame): where to display
     """
 
+    # [name, base price, area factor]
+    body_parts = [
+        [msg.IE_CE_HEAD, val.IE_BASE_PRICE1, val.IE_AREA_MEDIUM],
+        [msg.IE_CE_NECK, val.IE_BASE_PRICE2, val.IE_AREA_SMALL],
+        [msg.IE_CE_TORSO, val.IE_BASE_PRICE1, val.IE_AREA_LARGE],
+        [msg.IE_CE_UPPERARMS, val.IE_BASE_PRICE2, val.IE_AREA_MEDIUM],
+        [msg.IE_CE_FOREARMS, val.IE_BASE_PRICE2, val.IE_AREA_MEDIUM],
+        [msg.IE_CE_HANDS, val.IE_BASE_PRICE1,val.IE_AREA_SMALL],
+        [msg.IE_CE_HIPS, val.IE_BASE_PRICE1, val.IE_AREA_LARGE],
+        [msg.IE_CE_UPPERLEGS, val.IE_BASE_PRICE2, val.IE_AREA_LARGE],
+        [msg.IE_CE_LOWERLEGS, val.IE_BASE_PRICE2, val.IE_AREA_MEDIUM],
+        [msg.IE_CE_FEET, val.IE_BASE_PRICE1, val.IE_AREA_SMALL]
+    ]
+
+    # [ name, unselected factor, selected factor, weight factor]
+    elements = [
+        [msg.IE_CE_CHOSEN, 0, -1, 1.0],
+        [msg.IE_CE_ARMOR1, 1, val.IE_PRICE_ARMOR, 2],
+        [msg.IE_CE_ARMOR2, 1, val.IE_PRICE_ARMOR, 2.5],
+        [msg.IE_CE_CLOSURE, 0, 1, 1.05],
+        [msg.IE_CE_COMPLEX, 0, 1, 1.25],
+        [msg.IE_CE_CANVAS, 0, 1, 2.0],
+        [msg.IE_CE_TRIMMINGS, 0, 1, 1.5]
+    ]
+
     def __init__(self, parent, main):
         super().__init__(parent)
 
@@ -1153,7 +1179,6 @@ class CustomClothing(tk.Frame):
         # core variables
         self.weight = 0
         self.avail = 0
-
 
         # building the screen an setting up variables to hold the
         # given data ...
@@ -1201,42 +1226,23 @@ class CustomClothing(tk.Frame):
         Note:
             uses .grid() layout
         """
-        body_parts = [
-            (msg.IE_CE_HEAD, msg.IE_BASE_PRICE1),
-            (msg.IE_CE_TORSO, msg.IE_BASE_PRICE1),
-            (msg.IE_CE_UPPERARMS, msg.IE_BASE_PRICE2),
-            (msg.IE_CE_FOREARMS, msg.IE_BASE_PRICE2),
-            (msg.IE_CE_HANDS, msg.IE_BASE_PRICE1),
-            (msg.IE_CE_HIPS, msg.IE_BASE_PRICE1),
-            (msg.IE_CE_UPPERLEGS, msg.IE_BASE_PRICE2),
-            (msg.IE_CE_LOWERLEGS, msg.IE_BASE_PRICE2),
-            (msg.IE_CE_FEET, msg.IE_BASE_PRICE1)
-        ]
-        elements = [
-            [msg.IE_CE_CHOSEN, 0, -1],
-            [msg.IE_CE_ARMOR1, 1, 10],
-            [msg.IE_CE_ARMOR2, 1, 10],
-            [msg.IE_CE_CLOSURE, 0, 1],
-            [msg.IE_CE_COMPLEX, 0, 1],
-            [msg.IE_CE_CANVAS, 0, 1],
-            [msg.IE_CE_TRIMMINGS, 0, 1]
-        ]
 
         frame = tk.LabelFrame(parent, text=msg.IE_CE_SELECTION)
         frame.columnconfigure(0, weight=20)
 
         self._selectionHeaders(frame)
 
-        for row, part in enumerate(body_parts, start=1):
+        for row, part in enumerate(self.body_parts, start=1):
             label = tk.Label(frame, text=part[0])
             label.grid(row=row, column=0, sticky=tk.W)
 
-            for col, el in enumerate(elements, start=1):
+            for col, el in enumerate(self.elements, start=1):
                 if el[2] == -1:
                     el[2] = part[1]
                 var = tk.IntVar()
                 var.trace("w", self._calculateCost)
-                if part[0] == msg.IE_CE_UPPERLEGS and col == 1:
+                legs = [msg.IE_CE_UPPERLEGS, msg.IE_CE_HIPS]
+                if part[0] in legs and col == 1:
                     var.trace(
                         "w",
                         lambda n, e, v, var=var:
@@ -1325,10 +1331,12 @@ class CustomClothing(tk.Frame):
         layers = (
             msg.IE_CE_SINGLE_LAYER,
             msg.IE_CE_MULTI_LAYER,
+            msg.IE_CE_MULTI_HEAVY
+
         )
         l_var = tk.StringVar()
-        l_var.set(layers[0])
         l_var.trace("w", lambda n, e, m: self._layers(l_var))
+        l_var.set(layers[0])
         button = tk.OptionMenu(
             frame,
             l_var,
@@ -1401,8 +1409,19 @@ class CustomClothing(tk.Frame):
         # TODO: Implement an autodescription
         self.item_data["description"] = tk.StringVar()
         frame = tk.LabelFrame(parent, text=msg.IE_DESCRIPTION)
+        icon = ImageTk.PhotoImage(file="ui_img/text_signature.png"),
+
+        auto_describe = tk.Button(
+            frame,
+            image = icon,
+            text = "Auto",
+            compound=tk.TOP,
+            command=self._autoDescription
+        )
+        auto_describe.image = icon
+        auto_describe.pack(side=tk.LEFT, fill = tk.Y)
         self.description = tk.Text(frame, width=20, height=5, wrap=tk.WORD)
-        self.description.pack(fill=tk.BOTH, expand=1)
+        self.description.pack(side = tk.LEFT, fill=tk.BOTH, expand=1)
         return frame
 
     def _armorToggle(self, name, empty, mode):
@@ -1440,56 +1459,23 @@ class CustomClothing(tk.Frame):
             self.trousers.config(state=tk.DISABLED)
 
     def _getSelectedOptions(self):
-        body_parts = [
-            msg.IE_CE_HEAD,
-            msg.IE_CE_TORSO,
-            msg.IE_CE_UPPERARMS,
-            msg.IE_CE_FOREARMS,
-            msg.IE_CE_HANDS,
-            msg.IE_CE_HIPS,
-            msg.IE_CE_UPPERLEGS,
-            msg.IE_CE_LOWERLEGS,
-            msg.IE_CE_FEET
-        ]
-        elements = [
-            msg.IE_CE_CHOSEN,
-            msg.IE_CE_ARMOR1,
-            msg.IE_CE_ARMOR2,
-            msg.IE_CE_CLOSURE,
-            msg.IE_CE_COMPLEX,
-            msg.IE_CE_CANVAS,
-            msg.IE_CE_TRIMMINGS,
-            msg.IE_CE_POCKETS
-        ]
+        body_parts = [part[0] for part in self.body_parts]
+        elements = [element[0] for element in self.elements]
+        elements.append(msg.IE_CE_POCKETS)
         
         selection = {}
-        price = 0
         for part in body_parts:
             sel = elements[0]
             v_name = part + "_" + sel
             var = self.item_data.get(v_name)
             if var:
-                base_price = var.get()
-                if base_price > 0:
-                    # construct names
-                    armor1_name = part + "_" + elements[1]
-                    armor2_name = part + "_" + elements[2]
-                    closure_name = part + "_" + elements[3]
-                    complex_name = part + "_" + elements[4]
-                    canvas_name = part + "_" + elements[5]
-                    trimmings_name = part + "_" + elements[6]
-                    pockets_name = part + "_" + elements[7]
-                    # get variables
-                    selection[part] = {
-                        elements[0]: base_price,
-                        elements[1]: self.item_data.get(armor1_name).get(),
-                        elements[2]: self.item_data.get(armor2_name).get(),
-                        elements[3]: self.item_data.get(closure_name).get(),
-                        elements[4]: self.item_data.get(complex_name).get(),
-                        elements[5]: self.item_data.get(canvas_name).get(),
-                        elements[6]: self.item_data.get(trimmings_name).get(),
-                        elements[7]: self.item_data.get(pockets_name).get()
-                    }
+                selected = var.get()
+                if selected > 0:
+                    selection[part] = {}
+                    for element in elements:
+                        option_name = part + "_" + element
+                        value = self.item_data.get(option_name).get()
+                        selection[part][element] = value
         return selection
 
     def _calculateCost(self, name=None, empty=None, mode=None):
@@ -1543,6 +1529,30 @@ class CustomClothing(tk.Frame):
                 state = tk.DISABLED
             self.buy.config(text=text, state=state)
 
+    def _calculateWeight(self):
+        selected = self._getSelectedOptions()
+
+        armor = [msg.IE_CE_ARMOR1, msg.IE_CE_ARMOR2]
+        weight_factor = 0
+        for body_part in self.body_parts:
+            if body_part[0] in selected.keys():
+                area_factor = body_part[2]
+                body_part = selected[body_part[0]]
+                element_factors = 1
+                for element in self.elements:
+                    if ((body_part.get(element[0]) >= 1
+                        and element[0] not in armor)
+                        or (body_part.get(element[0]) > 1
+                        and element[0] in armor)
+                    ):
+                        element_factors *= element[3]
+                part_factor = element_factors * area_factor
+                weight_factor += part_factor
+
+        material_factor = self.item_data[msg.IE_CE_SINGLE_LAYER]
+        weight = weight_factor * material_factor
+        return int(weight)
+
     def _quality(self, var):
         qualities = {
             msg.IE_QUALITY_3: 3,
@@ -1560,7 +1570,7 @@ class CustomClothing(tk.Frame):
         fabric_qualities = {
             msg.IE_CE_SIMPLE: 1,
             msg.IE_CE_ELEGANT: 2,
-            msg.IE_CE_RARE: 4,
+            msg.IE_CE_RARE: 5,
         }
         self.item_data[msg.IE_CE_FABRIC] = fabric_qualities[var.get()]
         self._calculateCost()
@@ -1568,10 +1578,13 @@ class CustomClothing(tk.Frame):
     def _layers(self, var):
         layers = {
             msg.IE_CE_SINGLE_LAYER: 1,
-            msg.IE_CE_MULTI_LAYER: 2
+            msg.IE_CE_MULTI_LAYER: 2,
+            msg.IE_CE_MULTI_HEAVY: 2.5
+
         }
         self.item_data[msg.IE_CE_SINGLE_LAYER] = layers[var.get()]
         self._calculateCost()
+        self._calculateWeight()
 
     def _toggleCheckbuttons(self, event):
         """ (De)activate option checkbuttons for clothing elements
@@ -1602,6 +1615,8 @@ class CustomClothing(tk.Frame):
                     widget.config(state=tk.DISABLED)
 
     def _getArmor(self):
+        """ retrieve the armor selections """
+
         selection = self._getSelectedOptions()
         armor1 = 0
         armor2 = 0
@@ -1614,14 +1629,59 @@ class CustomClothing(tk.Frame):
                     armor1 += int(part_data[sub] / 10)
         return armor1, armor2
 
+    def _autoDescription(self):
+        """ Generate a description for the item based on the selections """
+        selection = self._getSelectedOptions()
+        body_parts = selection.keys()
+        layers = self.item_data[msg.IE_CE_SINGLE_LAYER]
+
+        all_parts = [part[0] for part in self.body_parts]
+
+        clothing_key = ""
+        for part in all_parts:
+            body_part = selection.get(part, "0")
+            if body_part != "0":
+                value = 1
+                if (body_part.get(msg.IE_CE_COMPLEX, 0) == 1
+                    and part in [msg.IE_CE_HEAD]
+                ):
+                    value = 2
+                if body_part.get(msg.IE_CE_FABRIC, 0) == 1:
+                    value = "F"
+                if body_part.get(msg.IE_CE_CLOSURE, 0) == 1:
+                    value = "C"
+                if (self.item_data["trousers"].get() == 1
+                    and part == msg.IE_CE_HIPS
+                ):
+                    value = "T"
+                if (body_part.get(msg.IE_CE_ARMOR2, 0) == 10
+                    and part == msg.IE_CE_HEAD
+                ):
+                    value = "H"
+
+                body_part = str(value)
+            clothing_key += body_part
+
+        clothing_names = msg.IE_CLOTHING_NAMES
+
+        self.description.delete("0.0",tk.END)
+        name = clothing_names.get(clothing_key, "unknown")
+        if name == "unknown":
+            print(clothing_key)
+        self.description.insert(tk.END, name)
+
     def _createItem(self):
-        # TODO: implement weight and quantity
+        """ create the item """
+
+        # TODO: implement quantity
         item = et.Element("item")
         name = self.item_data["name"].get()
         price = self.item_data[msg.IE_PRICE]
         quality = self.item_data[msg.IE_QUALITY]
+        weight = self._calculateWeight()
         item.set("name", name)
         item.set("price", str(price))
+        item.set("weight", str(weight))
         item.set("quality", str(quality))
         item.set("quantity", "1")
         item.set("type", it.CLOTHING)

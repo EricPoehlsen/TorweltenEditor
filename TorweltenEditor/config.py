@@ -228,10 +228,9 @@ class Messages:
     IE_BUILT_INTO = "eingebaut in: "
     IE_CLOTHING_GROUP = "Kleidung und Taschen"  # group in items.xml
     IE_CLOTHING_EDITOR = "Bekleidungsbaukasten"
-    IE_BASE_PRICE1 = 10
-    IE_BASE_PRICE2 = 5
-    IE_CE_HEAD = "Kopf"
     IE_CE_SELECTION = "Optionen wählen"
+    IE_CE_HEAD = "Kopf"
+    IE_CE_NECK = "Hals"
     IE_CE_TORSO = "Oberkörper"
     IE_CE_UPPERARMS = "Oberarme"
     IE_CE_FOREARMS = "Unterarme"
@@ -255,8 +254,64 @@ class Messages:
     IE_CE_SIMPLE = "einfach / schlicht"
     IE_CE_ELEGANT = "elegant / hochwertig"
     IE_CE_RARE = "exquisit / selten"
-    IE_CE_SINGLE_LAYER = "einlagig"
-    IE_CE_MULTI_LAYER = "mehrlagig / gefüttert"
+    IE_CE_SINGLE_LAYER = "leicht, einlagig"
+    IE_CE_MULTI_LAYER = "gefüttert, mehrlagig"
+    IE_CE_MULTI_HEAVY = "robust, schwer"
+
+    IE_CE_UNDER = "Unter"
+    IE_CE_PANTS = "Hosen"
+    IE_CE_SKIRT = "Rock"
+    IE_CE_DRESS = "Kleid"
+    IE_CE_SHIRT = "Hemd"
+    IE_CE_WEST = "Weste"
+    IE_CE_T_SHIRT = "T-Shirt"
+    IE_CE_POLOSHIRT = "Poloshirt"
+    IE_CE_SWEATER = "Pullover"
+    IE_CE_JACKET = "Jacke"
+    IE_CE_COAT = "Mantel"
+    IE_CE_SOCKS = "Socken"
+    IE_CE_GLOVES = "Handschuhe"
+    IE_CE_HOOD = "Kapuze"
+    IE_CE_HAT = "Hut"
+    IE_CE_CAP = "Mütze"
+    IE_CE_TURBAN = "Turban"
+    IE_CE_HELMET = "Helm"
+    IE_CE_SCARF = "Schal"
+    IE_CE_TIE = "Krawatte"
+
+    IE_CE_LONG = "lang"
+    IE_CE_SHORT = "kurz"
+    IE_CE_ARMLY = "ärmlig"
+    IE_CE_LEGLY = "beinig"
+    # grammaticals ...
+    IE_CE_LENGTH_JOIN = "e"
+    IE_CE_MALE = "r"
+    IE_CE_FEMALE = ""
+    IE_CE_NEUTRAL = "s"
+
+    # this is used for the name lookup ...
+    
+    IE_CLOTHING_NAMES = {
+        "1000000000": IE_CE_CAP,
+        "2000000000": IE_CE_HAT,
+        "F000000000": IE_CE_TURBAN,
+        "H000000000": IE_CE_HELMET,
+        "0100000000": IE_CE_TIE,
+        "0300000000": IE_CE_SCARF,
+        "0010000000": IE_CE_UNDER + IE_CE_SHIRT.lower(),
+        "00C0000000": IE_CE_WEST,
+        "0011000000": IE_CE_T_SHIRT,
+        "00C1000000": IE_CE_SHIRT,
+        "0011100000": IE_CE_SWEATER,
+        "00C1100000": IE_CE_JACKET,
+        "00C1101000": IE_CE_COAT,
+        "00C110F000": IE_CE_COAT,
+        "00C1101100": IE_CE_COAT,
+        "00C110FF00": IE_CE_COAT,
+        "0000110000": IE_CE_LONG+" "+IE_CE_GLOVES,
+        "0000010000": IE_CE_GLOVES,
+    }
+
     IE_TT_NAME = "Alles braucht einen Namen"
     IE_TT_QUANTITY = "Anzahl\n(nur positive Zahlen)"
     IE_TT_WEIGHT = "Gewicht\npro Stück\nin Gramm"
@@ -473,6 +528,18 @@ class Messages:
     lp = "Lebenspunkte"
     ep = "Energiepunkte"
     mp = "Moralpunkte"
+
+
+class Values:
+    """ Values that are needed somewhere ..."""
+
+    # InventoryEditor and ItemEditor
+    IE_BASE_PRICE1 = 5
+    IE_BASE_PRICE2 = 2.5
+    IE_PRICE_ARMOR = 10  # factor for each armor level
+    IE_AREA_SMALL = 25
+    IE_AREA_MEDIUM = 50
+    IE_AREA_LARGE = 100
 
 
 # THIS CLASS DEFINES VALUES CONCERNING PDF EXPORTS
