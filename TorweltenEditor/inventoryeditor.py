@@ -2,9 +2,11 @@ import tkinter as tk
 from PIL import ImageTk
 import xml.etree.ElementTree as et
 import config
+import random
 from tooltip import ToolTip
 
 msg = config.Messages()
+val = config.Values()
 it = config.ItemTypes()
 
 
@@ -1136,6 +1138,31 @@ class CustomClothing(tk.Frame):
         parent(tk.Frame): where to display
     """
 
+    # [name, base price, area factor]
+    body_parts = [
+        [msg.IE_CE_HEAD, val.IE_BASE_PRICE1, val.IE_AREA_MEDIUM],
+        [msg.IE_CE_NECK, val.IE_BASE_PRICE2, val.IE_AREA_SMALL],
+        [msg.IE_CE_TORSO, val.IE_BASE_PRICE1, val.IE_AREA_LARGE],
+        [msg.IE_CE_UPPERARMS, val.IE_BASE_PRICE2, val.IE_AREA_MEDIUM],
+        [msg.IE_CE_FOREARMS, val.IE_BASE_PRICE2, val.IE_AREA_MEDIUM],
+        [msg.IE_CE_HANDS, val.IE_BASE_PRICE1,val.IE_AREA_SMALL],
+        [msg.IE_CE_HIPS, val.IE_BASE_PRICE1, val.IE_AREA_LARGE],
+        [msg.IE_CE_UPPERLEGS, val.IE_BASE_PRICE2, val.IE_AREA_LARGE],
+        [msg.IE_CE_LOWERLEGS, val.IE_BASE_PRICE2, val.IE_AREA_MEDIUM],
+        [msg.IE_CE_FEET, val.IE_BASE_PRICE1, val.IE_AREA_SMALL]
+    ]
+
+    # [ name, unselected factor, selected factor, weight factor]
+    elements = [
+        [msg.IE_CE_CHOSEN, 0, -1, 1.0],
+        [msg.IE_CE_ARMOR1, 1, val.IE_PRICE_ARMOR, 2],
+        [msg.IE_CE_ARMOR2, 1, val.IE_PRICE_ARMOR, 2.5],
+        [msg.IE_CE_CLOSURE, 0, 1, 1.05],
+        [msg.IE_CE_COMPLEX, 0, 1, 1.25],
+        [msg.IE_CE_CANVAS, 0, 1, 2.0],
+        [msg.IE_CE_TRIMMINGS, 0, 1, 1.5]
+    ]
+
     def __init__(self, parent, main):
         super().__init__(parent)
 
@@ -1147,13 +1174,14 @@ class CustomClothing(tk.Frame):
 
         # we need to access some widgets
         self.buy = None
+        self.select = None
         self.description = None
         self.trousers = None
+        self.closures = None
 
         # core variables
         self.weight = 0
         self.avail = 0
-
 
         # building the screen an setting up variables to hold the
         # given data ...
@@ -1177,7 +1205,9 @@ class CustomClothing(tk.Frame):
         descripton_frame = self._descriptionView(self)
         descripton_frame.pack(fill=tk.X)
 
-    def _topView(self,parent):
+    def _topView(self, parent):
+        """ Creating a frame with the name of the item """
+
         name_var = tk.StringVar()
         self.item_data["name"] = name_var
         name_var.trace("w", self._calculateCost)
@@ -1187,8 +1217,17 @@ class CustomClothing(tk.Frame):
             name_frame,
             width=40,
             textvariable=name_var
-        ).pack(fill=tk.X)
-        name_frame.pack(side=tk.LEFT)
+        ).pack(fill=tk.BOTH, expand=1)
+        name_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+        random_frame = tk.LabelFrame(frame, text=msg.IE_CE_RANDOM)
+        random_button = tk.Button(
+            random_frame,
+            text=msg.IE_CE_GENERATE,
+            command=self._generateRandom
+        )
+        random_button.pack(fill=tk.X)
+        random_frame.pack(side=tk.LEFT)
+
         # name_frame.bind("<Enter>", lambda e: self.showTooltip(e, "name"))
         return frame
 
@@ -1201,48 +1240,43 @@ class CustomClothing(tk.Frame):
         Note:
             uses .grid() layout
         """
-        body_parts = [
-            (msg.IE_CE_HEAD, msg.IE_BASE_PRICE1),
-            (msg.IE_CE_TORSO, msg.IE_BASE_PRICE1),
-            (msg.IE_CE_UPPERARMS, msg.IE_BASE_PRICE2),
-            (msg.IE_CE_FOREARMS, msg.IE_BASE_PRICE2),
-            (msg.IE_CE_HANDS, msg.IE_BASE_PRICE1),
-            (msg.IE_CE_HIPS, msg.IE_BASE_PRICE1),
-            (msg.IE_CE_UPPERLEGS, msg.IE_BASE_PRICE2),
-            (msg.IE_CE_LOWERLEGS, msg.IE_BASE_PRICE2),
-            (msg.IE_CE_FEET, msg.IE_BASE_PRICE1)
-        ]
-        elements = [
-            [msg.IE_CE_CHOSEN, 0, -1],
-            [msg.IE_CE_ARMOR1, 1, 10],
-            [msg.IE_CE_ARMOR2, 1, 10],
-            [msg.IE_CE_CLOSURE, 0, 1],
-            [msg.IE_CE_COMPLEX, 0, 1],
-            [msg.IE_CE_CANVAS, 0, 1],
-            [msg.IE_CE_TRIMMINGS, 0, 1]
-        ]
 
-        frame = tk.LabelFrame(parent, text=msg.IE_CE_SELECTION)
+        self.select = frame = tk.LabelFrame(parent, text=msg.IE_CE_SELECTION)
         frame.columnconfigure(0, weight=20)
 
         self._selectionHeaders(frame)
 
-        for row, part in enumerate(body_parts, start=1):
+        # adding a checkbox grid for the selected options
+        for row, part in enumerate(self.body_parts, start=1):
             label = tk.Label(frame, text=part[0])
             label.grid(row=row, column=0, sticky=tk.W)
 
-            for col, el in enumerate(elements, start=1):
+            for col, el in enumerate(self.elements, start=1):
+                on_value = el[2]
                 if el[2] == -1:
-                    el[2] = part[1]
-                var = tk.IntVar()
+                    on_value = part[1]
+                var = tk.DoubleVar()
                 var.trace("w", self._calculateCost)
-                if part[0] == msg.IE_CE_UPPERLEGS and col == 1:
+
+                # conditional trace for trousers toggle
+                legs = [msg.IE_CE_UPPERLEGS, msg.IE_CE_HIPS]
+                if part[0] in legs and col == 1:
                     var.trace(
                         "w",
                         lambda n, e, v, var=var:
                             self._trousersToggle(var))
+
+                # conditional trace for closures toggle
+                core = [msg.IE_CE_TORSO, msg.IE_CE_HIPS]
+                if part[0] in core and (col == 1 or col == 4):
+                    var.trace("w", lambda n, e, v: self._toggleClosures())
+
+                # conditional trace for armor toggle
                 if col == 2 or col == 3:
                     var.trace("w", self._armorToggle)
+
+
+                # generic variable storage for access ...
                 self.item_data[part[0]+"_"+el[0]] = var
                 self.item_data_trace[str(var)] = part[0]+"_"+el[0]
                 var.set(el[1])
@@ -1250,20 +1284,22 @@ class CustomClothing(tk.Frame):
                     frame,
                     var=var,
                     offvalue=el[1],
-                    onvalue=el[2],
+                    onvalue=on_value,
                 )
+
+                # setting the line toggle
                 if col == 1:
                     cb.bind("<Button-1>", self._toggleCheckbuttons)
                 if col > 1:
                     cb.config(state=tk.DISABLED)
                 cb.grid(row=row, column=col)
 
+            # adding the pockets spinboxes ...
             var = tk.StringVar()
             var.trace("w", self._calculateCost)
             handle = part[0] + "_" + msg.IE_CE_POCKETS
             self.item_data[handle] = var
             self.item_data_trace[str(var)] = handle
-
             pockets = tk.Spinbox(
                 frame,
                 textvariable=var,
@@ -1273,9 +1309,13 @@ class CustomClothing(tk.Frame):
                 state=tk.DISABLED
             )
             pockets.grid(row=row, column=col+1)
+
         return frame
 
-    def _selectionHeaders(self, parent):
+    @staticmethod
+    def _selectionHeaders(parent):
+        """ adds option icons above the selection grid """
+
         images = [
             ImageTk.PhotoImage(file="images/ie_tick.png"),
             ImageTk.PhotoImage(file="images/ie_armor1.png"),
@@ -1308,7 +1348,7 @@ class CustomClothing(tk.Frame):
             msg.IE_QUALITY_8,
             msg.IE_QUALITY_9,
         )
-        var = tk.StringVar()
+        self.item_data["Q"] = var = tk.StringVar()
         var.trace("w", lambda n, e, m: self._quality(var))
         var.set(qualities[3])
         button = tk.OptionMenu(
@@ -1325,31 +1365,54 @@ class CustomClothing(tk.Frame):
         layers = (
             msg.IE_CE_SINGLE_LAYER,
             msg.IE_CE_MULTI_LAYER,
+            msg.IE_CE_MULTI_HEAVY
         )
-        l_var = tk.StringVar()
+        self.item_data["L"] = l_var = tk.StringVar()
+        l_var.trace("w", lambda n, e, m, var=l_var: self._layers(var))
         l_var.set(layers[0])
-        l_var.trace("w", lambda n, e, m: self._layers(l_var))
         button = tk.OptionMenu(
             frame,
             l_var,
             *layers
         )
         button.pack(fill=tk.X, expand=1)
+
         # cloth quality
         fabric_group = (
             msg.IE_CE_SIMPLE,
             msg.IE_CE_ELEGANT,
             msg.IE_CE_RARE
         )
-        var = tk.StringVar()
-        var.set(fabric_group[0])
-        var.trace("w", lambda n, e, m: self._fabric(var))
+        self.item_data["F"] = f_var = tk.StringVar()
+        f_var.trace("w", lambda n, e, m, var=f_var: self._fabric(var))
+        f_var.set(fabric_group[0])
         button = tk.OptionMenu(
             frame,
-            var,
+            f_var,
             *fabric_group
         )
         button.pack(fill=tk.X, expand=1)
+
+        # closures
+        closures = (
+            msg.IE_CE_NO_CLOSURE,
+            msg.IE_CE_BUTTONS,
+            msg.IE_CE_ZIPPER,
+            msg.IE_CE_VELCRO,
+            msg.IE_CE_LACING,
+            msg.IE_CE_BUCKLES,
+        )
+        self.item_data["C"] = c_var = tk.StringVar()
+        c_var.trace("w", lambda n, e, m, var=c_var: self._closures(var))
+        c_var.set(closures[0])
+        self.closures = tk.OptionMenu(
+            frame,
+            c_var,
+            *closures
+        )
+        self.closures.config(state=tk.DISABLED)
+        self.closures.pack(fill=tk.X, expand=1)
+
         # name of material
         subframe = tk.Frame(frame)
         tk.Label(subframe, text=msg.IE_CE_FABRIC_NAME).pack(
@@ -1398,11 +1461,21 @@ class CustomClothing(tk.Frame):
         frame.pack(fill=tk.X, expand=1)
 
     def _descriptionView(self, parent):
-        # TODO: Implement an autodescription
         self.item_data["description"] = tk.StringVar()
         frame = tk.LabelFrame(parent, text=msg.IE_DESCRIPTION)
+        icon = ImageTk.PhotoImage(file="ui_img/text_signature.png"),
+
+        auto_describe = tk.Button(
+            frame,
+            image = icon,
+            text = "Auto",
+            compound=tk.TOP,
+            command=self._autoDescription
+        )
+        auto_describe.image = icon
+        auto_describe.pack(side=tk.LEFT, fill = tk.Y)
         self.description = tk.Text(frame, width=20, height=5, wrap=tk.WORD)
-        self.description.pack(fill=tk.BOTH, expand=1)
+        self.description.pack(side = tk.LEFT, fill=tk.BOTH, expand=1)
         return frame
 
     def _armorToggle(self, name, empty, mode):
@@ -1433,64 +1506,39 @@ class CustomClothing(tk.Frame):
     def _trousersToggle(self, var):
         if not self.trousers: return
         selected = var.get()
-        print(selected)
         if selected > 0:
             self.trousers.config(state=tk.NORMAL)
         else:
             self.trousers.config(state=tk.DISABLED)
 
     def _getSelectedOptions(self):
-        body_parts = [
-            msg.IE_CE_HEAD,
-            msg.IE_CE_TORSO,
-            msg.IE_CE_UPPERARMS,
-            msg.IE_CE_FOREARMS,
-            msg.IE_CE_HANDS,
-            msg.IE_CE_HIPS,
-            msg.IE_CE_UPPERLEGS,
-            msg.IE_CE_LOWERLEGS,
-            msg.IE_CE_FEET
-        ]
-        elements = [
-            msg.IE_CE_CHOSEN,
-            msg.IE_CE_ARMOR1,
-            msg.IE_CE_ARMOR2,
-            msg.IE_CE_CLOSURE,
-            msg.IE_CE_COMPLEX,
-            msg.IE_CE_CANVAS,
-            msg.IE_CE_TRIMMINGS,
-            msg.IE_CE_POCKETS
-        ]
+        body_parts = [part[0] for part in self.body_parts]
+        elements = [element[0] for element in self.elements]
+        elements.append(msg.IE_CE_POCKETS)
         
         selection = {}
-        price = 0
         for part in body_parts:
             sel = elements[0]
             v_name = part + "_" + sel
             var = self.item_data.get(v_name)
             if var:
-                base_price = var.get()
-                if base_price > 0:
-                    # construct names
-                    armor1_name = part + "_" + elements[1]
-                    armor2_name = part + "_" + elements[2]
-                    closure_name = part + "_" + elements[3]
-                    complex_name = part + "_" + elements[4]
-                    canvas_name = part + "_" + elements[5]
-                    trimmings_name = part + "_" + elements[6]
-                    pockets_name = part + "_" + elements[7]
-                    # get variables
-                    selection[part] = {
-                        elements[0]: base_price,
-                        elements[1]: self.item_data.get(armor1_name).get(),
-                        elements[2]: self.item_data.get(armor2_name).get(),
-                        elements[3]: self.item_data.get(closure_name).get(),
-                        elements[4]: self.item_data.get(complex_name).get(),
-                        elements[5]: self.item_data.get(canvas_name).get(),
-                        elements[6]: self.item_data.get(trimmings_name).get(),
-                        elements[7]: self.item_data.get(pockets_name).get()
-                    }
+                selected = var.get()
+                if selected > 0:
+                    selection[part] = {}
+                    for element in elements:
+                        option_name = part + "_" + element
+                        value = self.item_data.get(option_name).get()
+                        selection[part][element] = value
         return selection
+
+    def _selectionIterator(self, name):
+        """ iterates over a specific option """
+        selection = self._getSelectedOptions()
+        for key in selection:
+            part_data = selection[key]
+            for element in part_data:
+                if name in element:
+                    yield part_data[element]
 
     def _calculateCost(self, name=None, empty=None, mode=None):
         selection = self._getSelectedOptions()
@@ -1543,6 +1591,30 @@ class CustomClothing(tk.Frame):
                 state = tk.DISABLED
             self.buy.config(text=text, state=state)
 
+    def _calculateWeight(self):
+        selected = self._getSelectedOptions()
+
+        armor = [msg.IE_CE_ARMOR1, msg.IE_CE_ARMOR2]
+        weight_factor = 0
+        for body_part in self.body_parts:
+            if body_part[0] in selected.keys():
+                area_factor = body_part[2]
+                body_part = selected[body_part[0]]
+                element_factors = 1
+                for element in self.elements:
+                    if ((body_part.get(element[0]) >= 1
+                        and element[0] not in armor)
+                        or (body_part.get(element[0]) > 1
+                        and element[0] in armor)
+                    ):
+                        element_factors *= element[3]
+                part_factor = element_factors * area_factor
+                weight_factor += part_factor
+
+        material_factor = self.item_data[msg.IE_CE_SINGLE_LAYER]
+        weight = weight_factor * material_factor
+        return int(weight)
+
     def _quality(self, var):
         qualities = {
             msg.IE_QUALITY_3: 3,
@@ -1560,18 +1632,34 @@ class CustomClothing(tk.Frame):
         fabric_qualities = {
             msg.IE_CE_SIMPLE: 1,
             msg.IE_CE_ELEGANT: 2,
-            msg.IE_CE_RARE: 4,
+            msg.IE_CE_RARE: 5,
         }
         self.item_data[msg.IE_CE_FABRIC] = fabric_qualities[var.get()]
         self._calculateCost()
 
+    def _closures(self, var):
+        self.item_data[msg.IE_CE_CLOSURE] = var.get()
+
+    def _toggleClosures(self):
+        selection = self._getSelectedOptions()
+        core = {msg.IE_CE_TORSO, msg.IE_CE_HIPS}.intersection(selection.keys())
+        state = tk.DISABLED
+        for part in core:
+            if selection[part].get(msg.IE_CE_CLOSURE):
+                state = tk.NORMAL
+        if self.closures:
+            self.closures.config(state=state)
+
     def _layers(self, var):
         layers = {
             msg.IE_CE_SINGLE_LAYER: 1,
-            msg.IE_CE_MULTI_LAYER: 2
+            msg.IE_CE_MULTI_LAYER: 2,
+            msg.IE_CE_MULTI_HEAVY: 2.5
+
         }
         self.item_data[msg.IE_CE_SINGLE_LAYER] = layers[var.get()]
         self._calculateCost()
+        self._calculateWeight()
 
     def _toggleCheckbuttons(self, event):
         """ (De)activate option checkbuttons for clothing elements
@@ -1584,14 +1672,11 @@ class CustomClothing(tk.Frame):
         """
 
         row = event.widget.grid_info()["row"]
-        parent_name = event.widget.winfo_parent()
-        toplevel = event.widget.winfo_toplevel()
-        parent = toplevel.nametowidget(parent_name)
         var_name = event.widget.cget("variable")
         var_trace = self.item_data_trace[str(var_name)]
         var = self.item_data[var_trace]
 
-        widgets = parent.winfo_children()
+        widgets = self.select.winfo_children()
         for widget in widgets:
             w_row = widget.grid_info()["row"]
             w_col = widget.grid_info()["column"]
@@ -1602,26 +1687,806 @@ class CustomClothing(tk.Frame):
                     widget.config(state=tk.DISABLED)
 
     def _getArmor(self):
-        selection = self._getSelectedOptions()
+        """ retrieve the armor selections """
+
         armor1 = 0
         armor2 = 0
-        for key in selection:
-            part_data = selection[key]
-            for sub in part_data:
-                if msg.IE_CE_ARMOR2 in sub:
-                    armor2 += int(part_data[sub] / 10)
-                elif msg.IE_CE_ARMOR1 in sub:
-                    armor1 += int(part_data[sub] / 10)
+        for armor in self._selectionIterator(msg.IE_CE_ARMOR1):
+            armor1 += int(armor / 10)
+
+        for armor in self._selectionIterator(msg.IE_CE_ARMOR2):
+            armor2 += int(armor / 10)
+
         return armor1, armor2
 
+    def _autoDescription(self):
+        """ This generates an automatic description based on the selection"""
+
+        text_elements = []
+
+        clothing_names = msg.IE_CLOTHING_NAMES
+
+        key = self._getClothingKey(lookup=True)
+
+        print(key)
+
+        name, gender = clothing_names.get(key, msg.IE_CE_UNKNOWN)
+
+        gi = ""
+        if gender == msg.M: gi = "M"
+        if gender == msg.F: gi = "F"
+        if gender == msg.N: gi = "N"
+
+        text_elements.append(msg.N_ART[gi])
+
+        # start with the length / cut
+        arms, legs = self._getClothingLength()
+        if arms:
+            arms += gender
+        if legs:
+            if arms: arms += ", "
+            legs += gender
+        if arms+legs:
+            text_elements.append(arms+legs)
+
+        # append armor
+        armor = self._getClothingArmor()
+        if armor:
+            armor += gender
+            text_elements.append(armor)
+
+        # check for the color
+        color = self.item_data.get("color")
+        if color:
+            color = color.get().lower()
+            if len(color) > 0:
+                if color[-1] in ["a", "e"]:
+                    color += msg.COLOR
+                color += msg.IE_CE_LJOIN + gender
+                text_elements.append(color)
+
+        hoodies = [
+            msg.IE_CE_SWEATER[0],
+            msg.IE_CE_JACKET[0],
+            msg.IE_CE_COAT[0],
+            msg.IE_CE_OVERALL[0],
+            msg.IE_CE_SHIRT[0],
+            msg.IE_CE_DRESS[0]
+        ]
+        if name in hoodies and key[0] in ["1", "2", "F"]:
+            name = msg.IE_CE_HOOD[0] + name.lower()
+
+        display_name = name
+
+        # set the material
+        material = self.item_data.get("material")
+        if material:
+            material = material.get()
+            for ending in msg.IE_CE_DELE:
+                if material.endswith(ending):
+                    material = material[:-1]
+            for ending in msg.IE_CE_ADDN:
+                if material.endswith(ending):
+                    material += "n"
+            if len(material) > 0:
+                if msg.IE_CE_NAMESPLIT in display_name:
+                    s = name.split()
+                    display_name = s[0] + " " + material + s[1].lower()
+                elif "-" in name:
+                    s = name.split("-")
+                    display_name = material + s[-1].lower()
+                else:
+                    display_name = material+name.lower()
+
+        text_elements.append(display_name)
+
+        # adding pockets ...
+        pockets = self._getClothingPockets()
+        if pockets:
+            text_elements.append(pockets)
+
+        text_elements.append(".")
+
+        addons = self._getClothingAddOns(name, gender)
+        if len(addons) > 0:
+            text_elements.append(addons)
+
+        closure = self._getClothingClosure()
+        if closure:
+            text_elements.append(closure)
+
+        quality = self._getClothingQuality()
+        if quality:
+            text_elements.append(quality)
+
+        text = " ".join(text_elements)
+        text = text.replace(" .", ".")
+        self.description.delete("0.0", tk.END)
+        self.description.insert(tk.END, text)
+
+        if msg.IE_CE_NAMESPLIT in display_name:
+            display_name = display_name.split()
+            display_name = display_name[-1]
+        self.item_data["name"].set(display_name)
+
+    def _getClothingArmor(self):
+        armor1, armor2 = self._getArmor()
+        if armor2:
+            return msg.IE_CE_ARMOR2
+        if armor1:
+            return msg.IE_CE_ARMOR1
+        return ""
+
+    def _getClothingAddOns(self, name, gender):
+        gi = ""
+        if gender == msg.M: gi = "M"
+        if gender == msg.F: gi = "F"
+        if gender == msg.N: gi = "N"
+
+        text = ""
+
+        selection = self._getSelectedOptions()
+        trimmings = 0
+        complex = 0
+        fabric = 0
+
+        for part in selection:
+            options = selection[part]
+            complex += options.get(msg.IE_CE_COMPLEX)
+            trimmings += options.get(msg.IE_CE_TRIMMINGS)
+            fabric += options.get(msg.IE_CE_CANVAS)
+
+        # basic cut and leg length ...
+        core = [msg.IE_CE_TORSO, msg.IE_CE_HIPS]
+        legs = [msg.IE_CE_UPPERLEGS, msg.IE_CE_LOWERLEGS]
+        core_fabric = 0
+        leg_fabric = 0
+        for el in core+legs:
+            if el in selection.keys():
+                if el in core:
+                    core_fabric += selection.get(el).get(msg.IE_CE_CANVAS)
+                else:
+                    leg_fabric += selection.get(el).get(msg.IE_CE_CANVAS)
+
+        leg_count = len(set(legs).intersection(selection.keys()))
+        core_count = len(set(core).intersection(selection.keys()))
+        leg_div = leg_count or 1
+        core_div = core_count or 1
+        leg_factor = int(2 * leg_fabric / leg_div)
+        core_factor = int(2 * core_fabric / core_div)
+        body = ""
+        if core_count:
+            cut = [
+                msg.IE_CE_CONFORMING,
+                msg.IE_CE_COMFY,
+                msg.IE_CE_WIDE,
+            ]
+            body = cut[core_factor] + " " + msg.IE_CE_CUTLY
+
+        # getting info about trimmings
+        trimmings_factor = trimmings / len(selection)
+        trimmings = ""
+        if trimmings_factor > 0.5:
+            if len(selection) > 3 and trimmings_factor > 0.75:
+                trimmings = msg.IE_CE_RICH
+            trimmings += msg.IE_CE_TRIMMED + msg.IE_CE_LJOIN + ", "
+        body = trimmings + body
+
+        # adding info concerning the legs
+        if leg_count:
+            dresses = [msg.IE_CE_DRESS[0], msg.IE_CE_SKIRT[0]]
+            trousers = [msg.IE_CE_PANTS[0], msg.IE_CE_OVERALL[0]]
+            coat = msg.IE_CE_COAT[0]
+            cut = ["", "", ""]
+            if name in coat:
+                cut = [
+                    msg.IE_CE_COAT_LEG_0,
+                    msg.IE_CE_COAT_LEG_1,
+                    msg.IE_CE_COAT_LEG_2,
+                ]
+            elif name in dresses:
+                cut = [
+                    msg.IE_CE_DRESS_LEG_0,
+                    msg.IE_CE_DRESS_LEG_1,
+                    msg.IE_CE_DRESS_LEG_2,
+                ]
+            elif name in trousers:
+                cut = [
+                    msg.IE_CE_PANTS_LEG_0,
+                    msg.IE_CE_PANTS_LEG_1,
+                    msg.IE_CE_PANTS_LEG_2,
+                ]
+            leg = cut[leg_factor]
+            if len(leg) > 0:
+                if len(body) > 0:
+                    body = body+", "+leg
+
+        # get information about the arms
+        arms = {msg.IE_CE_UPPERARMS, msg.IE_CE_FOREARMS}
+        index = ""
+        for el in arms:
+            if el in selection.keys():
+                index += str(selection.get(el).get(msg.IE_CE_CANVAS) + 1)
+            else:
+                index += "0"
+        arm_cut = msg.IE_CE_SLEEVE_DICT.get(index, "")
+
+        # dealing with the intricacy of the cut
+        complexity = ""
+        if arm_cut:
+            complexity = "und "
+        complexity += msg.N_ART_ACC + " "
+        complex_factor = complex / len(selection)
+        if complex_factor < 0.5:
+            if len(selection) > 3 and complex_factor < 0.25:
+                complexity += msg.IE_CE_VERY + " "
+            complexity += msg.IE_CE_PRIMITIVE + " "
+        elif complex_factor >= 0.5:
+            if len(selection) > 3 and complex_factor > 0.75:
+                complexity += msg.IE_CE_VERY + " "
+            complexity += msg.IE_CE_INTRICATE + " "
+        complexity += msg.IE_CE_CUT
+
+        description = msg.IE_CE_ADD_DESC1.format(
+            art=msg.G_ART.get(gi)+" ",
+            cut=body+" ",
+            name=name+" ",
+            has=random.choice(msg.IE_CE_HAS) + " ",
+            arms=arm_cut+" ",
+            style=complexity+"."
+        )
+
+        return description.replace("  ", " ")
+
+    def _getClothingQuality(self):
+        specials = 0
+        for i in self._selectionIterator(msg.IE_CE_COMPLEX):
+            specials += i * 1.5
+        for i in self._selectionIterator(msg.IE_CE_CLOSURE):
+            specials += i * 0.75
+        for i in self._selectionIterator(msg.IE_CE_FABRIC):
+            specials += i * 1.5
+        for c, i in enumerate(self._selectionIterator(msg.IE_CE_TRIMMINGS),1):
+            specials += i * 2.0
+
+        layers_val = self.item_data[msg.IE_CE_SINGLE_LAYER]
+        fabric_val = self.item_data[msg.IE_CE_FABRIC]
+
+        assumed_qual = int((layers_val + fabric_val) * specials / c)
+        if assumed_qual > 9: assumed_qual = 9
+        quality_val = self.item_data[msg.IE_QUALITY]
+        if assumed_qual > quality_val:
+            cur_qual = msg.IE_CE_USED_QUAL[quality_val]
+            orig_qual = msg.IE_CE_NEW_QUAL[assumed_qual] + " " + msg.IE_QUALITY
+            quality = msg.IE_CE_USED.format(
+                part=random.choice(msg.IE_CE_PART),
+                state=cur_qual,
+                quality=orig_qual
+            )
+        else:
+            qual = msg.IE_CE_NEW_QUAL.get(quality_val) + " " + msg.IE_QUALITY
+            quality = msg.IE_CE_NEW.format(
+                part=random.choice(msg.IE_CE_PART),
+                quality=qual
+            )
+
+        return quality
+
+    def _getClothingPockets(self):
+        pockets = 0
+        for pocket in self._selectionIterator(msg.IE_CE_POCKETS):
+            pockets += int(pocket)
+
+        if pockets >= 3:
+            if pockets >= 6:
+                pockets = 4
+            else:
+                pockets = 3
+
+        pocket_list = [
+            msg.IE_CE_POCKETS_0,
+            msg.IE_CE_POCKETS_1,
+            msg.IE_CE_POCKETS_2,
+            msg.IE_CE_POCKETS_3,
+            msg.IE_CE_POCKETS_4
+        ]
+
+        key = self._getClothingKey()
+        if key[2] == "0" and key[6] == "0":
+            pockets = 0
+        return pocket_list[pockets]
+
+    def _getClothingLength(self):
+        """ create descriptive strings for arm and leg length """
+
+        key = self._getClothingKey()
+        arms = ""
+        legs = ""
+        # arm length
+        if key[2] != "0":
+            if key[3] != "0":
+                arms = msg.IE_CE_SHORT
+            if key[4] != "0":
+                arms = msg.IE_CE_LONG
+            if arms:
+                arms += msg.IE_CE_ARMLY
+        # glove length
+        elif key[5] != "0":
+            if key[3] != "0":
+                arms = msg.IE_CE_VERY + " "
+            if key[4] != "0":
+                arms += msg.IE_CE_LONG + msg.IE_CE_LJOIN
+
+        # leg length
+        if key[6] != "0":
+            legs = msg.IE_CE_SHORT + msg.IE_CE_LJOIN
+            if key[7] == "0":
+                legs = msg.IE_CE_VERY + " " + legs
+            if key[8] != "0":
+                legs = msg.IE_CE_LONG + msg.IE_CE_LJOIN
+            if key[9] != "0":
+                legs = ""
+        # socks / shoe length
+        elif key[9] == "1":
+            material_qualitity = self.item_data.get(msg.IE_CE_SINGLE_LAYER, 1)
+            if material_qualitity == 1:
+                variant = msg.IE_CE_LONG + msg.IE_CE_LJOIN
+            else:
+                variant = msg.IE_CE_HIGH
+            if key[8] != "0":
+                legs = variant
+            if key[7] != "0":
+                legs = msg.IE_CE_VERY + " " + legs
+
+        return arms, legs
+
+    def _getClothingClosure(self):
+        value = self.item_data[msg.IE_CE_CLOSURE]
+        closure = ""
+        variants = {
+            msg.IE_CE_BUTTONS: msg.IE_CE_BUTS,
+            msg.IE_CE_ZIPPER: msg.IE_CE_ZIPS,
+            msg.IE_CE_VELCRO: msg.IE_CE_VELCS,
+            msg.IE_CE_LACING: msg.IE_CE_LACES,
+            msg.IE_CE_BUCKLES: msg.IE_CE_BUCKS,
+        }
+
+        if value != msg.IE_CE_NO_CLOSURE:
+            gendered = msg.IE_CE_CLOSURE_GENDERS[value]
+            variant = random.choice(variants[value])
+            closure = msg.IE_CE_CLOSURE_DESC.format(
+                gendered=gendered,
+                variant=variant,
+                closure=value
+            )
+
+        return closure
+
+    def _getClothingKey(self, lookup=False):
+        """ Generate a description for the item based on the selections
+
+        Args:
+            lookup(bool): rewrites the key for a fine graded lookup
+                in the names dictionary
+
+        Returns:
+            string: selected bodyparts
+        """
+
+        selection = self._getSelectedOptions()
+        body_parts = selection.keys()
+        layers = self.item_data[msg.IE_CE_SINGLE_LAYER]
+
+        all_parts = [part[0] for part in self.body_parts]
+        key = ""
+
+        head = msg.IE_CE_HEAD
+        neck = msg.IE_CE_NECK
+        torso = msg.IE_CE_TORSO
+        hips = msg.IE_CE_HIPS
+        feet = msg.IE_CE_FEET
+
+        material_qualitity = self.item_data.get(msg.IE_CE_SINGLE_LAYER, 1)
+
+        for part in all_parts:
+            key_element = "0"
+
+            if part in body_parts:
+                key_element = "1"
+
+                if lookup:
+                    options = selection[part]
+
+                    if part == head:
+                        if options.get(msg.IE_CE_COMPLEX) > 0:
+                            key_element = "2"
+                        if options.get(msg.IE_CE_CANVAS) > 0:
+                            key_element = "F"
+                        if options.get(msg.IE_CE_ARMOR2) > 1:
+                            key_element = "A"
+
+                    if part == neck:
+                        if options.get(msg.IE_CE_COMPLEX) > 0:
+                            key_element = "2"
+                        if options.get(msg.IE_CE_CANVAS) > 0:
+                            key_element = "F"
+
+                    if part == torso:
+                        # rewriting the neck key!
+                        if not key.endswith("0"):
+                            key = key[:-1] + "1"
+
+                        if options.get(msg.IE_CE_CLOSURE) > 0:
+                            key_element = "C"
+                        if material_qualitity > 1:
+                            key_element = "H"
+
+                    if part == feet and material_qualitity > 1:
+                        key_element = "H"
+
+                if part == hips and self.item_data["trousers"].get() == 1:
+                    key_element = "T"
+
+            key += key_element
+
+        if not lookup:
+            return key
+
+        # rewriting some keys ...
+        arms = [3, 4]
+        legs = [7, 8]
+
+        # neck
+        if key[2] not in ["0", "1"]:
+            key = [e if i != 1 else "X" for i, e in enumerate(key)]
+            key = "".join(key)
+        # pants and skirts
+        if key[6] in ["1", "T"]:
+            key = [e if i not in legs else "X" for i, e in enumerate(key)]
+            key = "".join(key)
+        # for dress
+        if key[2] not in ["0", "H"] and key[6] == "1":
+            key = [e if i not in arms+legs else "X" for i, e in enumerate(key)]
+            key = "".join(key)
+        """
+        if key[2] != "0":
+            start = ""
+            if key[0] == "0":
+                start += "0"
+            else:
+                start += "1"
+            if key[1] == "0":
+                start += "0"
+            else:
+                start += "1"
+            key = start + key[2:]
+        """
+        return key
+
+    def _generateClothingKey(self):
+        """ generates a 'coverage key' """
+        core = ["0 0", "1 0", "0 1", "1 1"]
+        legs = ["000", "100", "110", "111", "011", "001"]
+        arms = ["000", "100", "110", "011", "001"]
+        head = ["00", "01", "10", "11"]
+
+        core = random.choice(core)
+        if core.startswith("1"):
+            arms = arms[0:3]
+        if core.endswith("1"):
+            legs = legs[0:4]
+        if core == "0 0":
+            part = random.choice(["head", "legs", "arms"])
+            if part == "head":
+                head = head[2:4]
+                legs = legs[0:1]
+                arms = arms[0:1]
+            elif part == "legs":
+                head = head[0:1]
+                legs = legs[3:6]
+                arms = arms[0:1]
+            elif part == "arms":
+                head = head[0:1]
+                legs = legs[0:1]
+                arms = arms[3:5]
+        if core == "0 1":
+            head = head[0:1]
+            arms = arms[0:1]
+            legs = legs[0:3]
+        if core == "1 0":
+            head = head
+            arms = arms[0:4]
+            legs = legs[0:1]
+        if core == "1 1":
+            head = head[0:3]
+            arms = arms[0:3]
+            legs = legs[0:3]
+
+        head = random.choice(head)
+        arms = random.choice(arms)
+        legs = random.choice(legs)
+        core = core.split()
+
+        key = head + core[0] + arms + core[1] + legs
+        return key
+
+    def _generateRandom(self):
+        """ generating a random piece of clothing ..."""
+
+        # clear out the data ...
+        for part in self.body_parts:
+            for element in self.elements:
+                var_name = part[0] + "_" + element[0]
+                value = 0
+                if element[0] in [msg.IE_CE_ARMOR1, msg.IE_CE_ARMOR2]:
+                    value = 1
+                var = self.item_data[var_name]
+                var.set(value)
+        self.item_data["trousers"].set(0)
+
+        # next we need a key for a valid piece
+        select = self._generateClothingKey()
+        if select[6] == "1":
+            trousers = random.choice([0, 1])
+            self.item_data["trousers"].set(trousers)
+            if not trousers:
+                if (select.endswith("1")
+                    and select[6] == "0"
+                    and select[7] == "1"
+                ):
+                    select = "0000000" + select[7:]
+
+        cheap = [fabric for fabric in msg.IE_CE_FABRICS if fabric[3] == 0]
+        normal = [fabric for fabric in msg.IE_CE_FABRICS if fabric[3] == 1]
+        expensive = [fabric for fabric in msg.IE_CE_FABRICS if fabric[3] == 2]
+
+        price_ranges = {
+            0.25: cheap,
+            0.75: normal,
+            1.0: expensive
+        }
+        rnd = random.random()
+        for i, p_range in enumerate(price_ranges):
+            if rnd <= p_range:
+                fabrics = price_ranges[p_range]
+                break
+
+        fabric_qualities = [
+            msg.IE_CE_SIMPLE,
+            msg.IE_CE_ELEGANT,
+            msg.IE_CE_RARE,
+        ]
+        self.item_data["F"].set(fabric_qualities[i])
+
+        fabric, l_min, l_max, p = random.choice(fabrics)
+        layers = [
+            msg.IE_CE_SINGLE_LAYER,
+            msg.IE_CE_MULTI_LAYER,
+            msg.IE_CE_MULTI_HEAVY
+        ]
+        self.item_data["material"].set(fabric)
+        self.item_data["L"].set(random.choice(layers[l_min:l_max+1]))
+
+        qualities = {
+            0.1: msg.IE_QUALITY_3,
+            0.25: msg.IE_QUALITY_4,
+            0.33: msg.IE_QUALITY_5,
+            0.66: msg.IE_QUALITY_6,
+            0.75: msg.IE_QUALITY_7,
+            0.9: msg.IE_QUALITY_8,
+            1: msg.IE_QUALITY_9,
+        }
+        rnd = random.random()
+        for qual in qualities:
+            if rnd < qual:
+                self.item_data["Q"].set(qualities[qual])
+                break
+
+        # color
+        self._generateRandomColor()
+
+        closure_count = 0
+        for i, value in enumerate(select):
+            if value != "0":
+                # basic selection
+                body_part = self.body_parts[i]
+                selected = self.elements[0]
+                var_name = body_part[0] + "_" + selected[0]
+                var = self.item_data[var_name]
+                var.set(body_part[1])
+
+                # armor
+                armor1_name = body_part[0] + "_" + msg.IE_CE_ARMOR1
+                armor2_name = body_part[0] + "_" + msg.IE_CE_ARMOR2
+                armor1 = self.item_data[armor1_name]
+                armor2 = self.item_data[armor2_name]
+                if value == "A":
+                    armor1.set(10)
+                    armor2.set(10)
+                else:
+                    a1 = random.random()
+                    if a1 <= 0.25:
+                        armor1.set(10)
+                        a2 = random.random()
+                        if a2 <= 0.25:
+                            armor2.set(10)
+                        else:
+                            armor2.set(1)
+                    else:
+                        armor1.set(1)
+                        armor2.set(1)
+
+                # closure
+                closure_name = body_part[0] + "_" + msg.IE_CE_CLOSURE
+                closure = self.item_data[closure_name]
+                has_closure = {
+                    msg.IE_CE_NECK: .9,
+                    msg.IE_CE_TORSO: .5,
+                    msg.IE_CE_UPPERARMS: .2,
+                    msg.IE_CE_FOREARMS: .5,
+                    msg.IE_CE_HIPS: .5,
+                    msg.IE_CE_UPPERLEGS: .1,
+                    msg.IE_CE_LOWERLEGS: .5,
+                    msg.IE_CE_FEET: .5
+                }
+                if value == "C":
+                    closure.set(1)
+                    closure_count += 1
+                else:
+                    rnd = random.random()
+                    if rnd <= has_closure.get(body_part[0], 0):
+                        closure.set(1)
+                        closure_count += 1
+                    else:
+                        closure.set(0)
+
+                # complex cut
+                complex_name = body_part[0] + "_" + msg.IE_CE_COMPLEX
+                complex = self.item_data[complex_name]
+                has_complex = {
+                    msg.IE_CE_HEAD: .1,
+                    msg.IE_CE_NECK: .5,
+                    msg.IE_CE_TORSO: .5,
+                    msg.IE_CE_UPPERARMS: .25,
+                    msg.IE_CE_FOREARMS: .25,
+                    msg.IE_CE_HANDS: .25,
+                    msg.IE_CE_HIPS: .5,
+                    msg.IE_CE_UPPERLEGS: .25,
+                    msg.IE_CE_LOWERLEGS: .5,
+                    msg.IE_CE_FEET: .25
+                }
+                if value == "2":
+                    complex.set(1)
+                else:
+                    rnd = random.random()
+                    if rnd <= has_complex.get(body_part[0], 0):
+                        complex.set(1)
+                    else:
+                        complex.set(0)
+
+                # a lot of fabric
+                fabric_name = body_part[0] + "_" + msg.IE_CE_CANVAS
+                fabric = self.item_data[fabric_name]
+                has_fabric = {
+                    msg.IE_CE_HEAD: .1,
+                    msg.IE_CE_NECK: .1,
+                    msg.IE_CE_TORSO: .33,
+                    msg.IE_CE_UPPERARMS: .33,
+                    msg.IE_CE_FOREARMS: .33,
+                    msg.IE_CE_HANDS: .1,
+                    msg.IE_CE_HIPS: .33,
+                    msg.IE_CE_UPPERLEGS: .33,
+                    msg.IE_CE_LOWERLEGS: .5,
+                    msg.IE_CE_FEET: .1
+                }
+                if value == "F":
+                    fabric.set(1)
+                else:
+                    rnd = random.random()
+                    if rnd <= has_fabric.get(body_part[0], 0):
+                        fabric.set(1)
+                    else:
+                        fabric.set(0)
+
+                # trimmings
+                trimmings_name = body_part[0] + "_" + msg.IE_CE_TRIMMINGS
+                trimmings = self.item_data[trimmings_name]
+                has_trimmings = {
+                    msg.IE_CE_HEAD: .1,
+                    msg.IE_CE_NECK: .25,
+                    msg.IE_CE_TORSO: .25,
+                    msg.IE_CE_UPPERARMS: .1,
+                    msg.IE_CE_FOREARMS: .25,
+                    msg.IE_CE_HANDS: .25,
+                    msg.IE_CE_HIPS: .25,
+                    msg.IE_CE_UPPERLEGS: .25,
+                    msg.IE_CE_LOWERLEGS: .25,
+                    msg.IE_CE_FEET: .25
+                }
+                rnd = random.random()
+                if rnd <= has_trimmings.get(body_part[0], 0):
+                    trimmings.set(1)
+                else:
+                    trimmings.set(0)
+
+                # pockets
+                pockets_name = body_part[0] + "_" + msg.IE_CE_POCKETS
+                pockets = self.item_data[pockets_name]
+                has_pockets = {
+                    msg.IE_CE_HEAD: [0, 0, 0, 0, 0, 0, 1],
+                    msg.IE_CE_NECK: [0, 0, 0, 0, 0, 0, 1],
+                    msg.IE_CE_TORSO: [0, 0, 0, 0, 1, 1, 2, 4],
+                    msg.IE_CE_UPPERARMS: [0, 0, 0, 0, 2],
+                    msg.IE_CE_FOREARMS: [0, 0, 0, 0, 2],
+                    msg.IE_CE_HANDS: [0],
+                    msg.IE_CE_HIPS: [0, 0, 0, 0, 1, 2, 2, 4],
+                    msg.IE_CE_UPPERLEGS: [0, 0, 0, 0, 0, 1, 2, 2],
+                    msg.IE_CE_LOWERLEGS: [0],
+                    msg.IE_CE_FEET: [0]
+                }
+                pockets.set(random.choice(has_pockets[body_part[0]]))
+
+        if closure_count:
+            closures = [
+                msg.IE_CE_BUCKLES,
+                msg.IE_CE_BUTTONS,
+                msg.IE_CE_VELCRO,
+                msg.IE_CE_ZIPPER,
+                msg.IE_CE_LACING
+            ]
+            self.item_data["C"].set(random.choice(closures))
+        else:
+            self.item_data["C"].set(msg.IE_CE_NO_CLOSURE)
+
+        self._autoDescription()
+
+    def _generateRandomColor(self):
+        def modify(color):
+            modificators = [""]
+            if color not in msg.NOT_DARK:
+                modificators.append(msg.DARK)
+            if color not in msg.NOT_LIGHT:
+                modificators.append(msg.LIGHT)
+            if color not in msg.NOT_NEON:
+                modificators.append(msg.NEON)
+            modificators += (len(modificators)//2) * [""]
+            return random.choice(modificators) + color
+
+        base_color = random.choice(msg.ALL_COLORS)
+        pattern_select = [msg.PLAIN, msg.PLAIN, msg.PLAIN, msg.PATTERNS, [""]]
+        pattern = random.choice(pattern_select)
+        if pattern == msg.PLAIN:
+            color = modify(base_color)
+            if color == base_color or color.startswith(msg.DARK):
+                color += random.choice(["", "", " "+msg.SHIMMERING])
+        else:
+            pattern = random.choice(pattern)
+            second_color = random.choice(msg.COLOR_COMBO.get(base_color))
+            color = (modify(base_color)
+                     + msg.COLOR_JOIN
+                     + modify(second_color))
+            if not pattern:
+                if msg.NEON not in color and msg.LIGHT not in color:
+                    color += msg.SHIMMERING
+            else:
+                color += " " + pattern
+
+        color = color.strip()
+
+        self.item_data["color"].set(color)
+
     def _createItem(self):
-        # TODO: implement weight and quantity
+        """ create the item """
+
+        # TODO: implement quantity
         item = et.Element("item")
         name = self.item_data["name"].get()
         price = self.item_data[msg.IE_PRICE]
         quality = self.item_data[msg.IE_QUALITY]
+        weight = self._calculateWeight()
         item.set("name", name)
         item.set("price", str(price))
+        item.set("weight", str(weight))
         item.set("quality", str(quality))
         item.set("quantity", "1")
         item.set("type", it.CLOTHING)
@@ -1629,12 +2494,36 @@ class CustomClothing(tk.Frame):
         armor = None
         armor1, armor2 = self._getArmor()
         if armor1 > 0:
-            armor = "1/0"
+            armor = "0/1"
         if armor2 > 0:
-            armor = "2/0"
+            armor = "0/2"
         if armor:
             item.set("type", it.ARMOR)
             et.SubElement(item, "damage", {"value": armor})
+
+        color = self.item_data["color"].get()
+        if color:
+            et.SubElement(
+                item,
+                "option",
+                {"name": msg.IE_CE_FABRIC_COLOR, "value": color}
+            )
+
+        material = self.item_data["material"].get()
+        if material:
+            et.SubElement(
+                item,
+                "option",
+                {"name": msg.IE_CE_FABRIC_NAME, "value": material}
+            )
+
+        pockets = [int(i) for i in self._selectionIterator(msg.IE_CE_POCKETS)]
+        if sum(pockets):
+            et.SubElement(
+                item,
+                "container",
+                {"name": name}
+            )
 
         description = self.description.get("0.0", tk.END)
         if description:
@@ -1643,6 +2532,3 @@ class CustomClothing(tk.Frame):
 
         self.char.addItem(item)
         self.main.updateItemList()
-
-
-        pass
