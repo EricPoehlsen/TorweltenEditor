@@ -638,7 +638,7 @@ class ExportPdf:
         )
 
         # get the image ...
-        image = self._loadImage(size, img_width, img_height)
+        image = self._loadImage("attrimg", img_width, img_height)
 
         # draw image ...
         if image is not None: 
@@ -2582,6 +2582,7 @@ class ExportPdf:
         elif size == TRIPLE:
             height = TRIPLE_HEIGHT
         elif size == FULL:
+            height = FULL_HEIGHT
             width = SINGLE_WIDTH
         elif size == WIDE:
             height = SINGLE_HEIGHT
