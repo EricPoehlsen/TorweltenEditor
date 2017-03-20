@@ -47,7 +47,8 @@ class Messages:
     ITEMNAME = "Bezeichnung"
 
     MULTIPLY = "x"
-    MONEYFORMAT = "%s,%s"
+    MONEYFORMAT = "%.2f R"
+    MONEYSPLIT = ","
     DATEFORMAT = "%d.%m.%Y %H:%M:%S"
 
     # ##### MENU 
@@ -289,6 +290,7 @@ class Messages:
     IE_CE_HELMET = "Helm", M
     IE_CE_HEAD_SCARF = "Kopftuch", N
     IE_CE_SCARF = "Halstuch", N
+    IE_CE_COLLAR = "Kragen"
     IE_CE_TIE = "Krawatte", F
     IE_CE_MUFFLER = "Schal", M
     IE_CE_SHIRT = "Hemd", N
@@ -299,11 +301,13 @@ class Messages:
     IE_CE_SWEATER = "Pullover", M
     IE_CE_JACKET = "Jacke", F
     IE_CE_COAT = "Mantel", M
+    IE_CE_CAPE = "Cape", N
     IE_CE_BODY = "Body", M
     IE_CE_VAMBRACE = "Paar Armschienen", N
     IE_CE_GLOVES = "Paar Handschuhe", N
     IE_CE_BRIEFS = "Unterhose", F
     IE_CE_PANTS = "Hose", F
+    IE_CE_DUNGAREES = "Latzhose", F
     IE_CE_TIGHTS = "Strumpfhose", F
     IE_CE_JAMBART = "Paar Beinschienen", F
     IE_CE_OVERALL = "Overall", M
@@ -313,6 +317,118 @@ class Messages:
     IE_CE_SHOES = "Paar Schuhe", N
     IE_CE_BOOTS = "Paar Stiefel", N
     IE_CE_NAMESPLIT = "Paar"
+
+
+    # this is used for the name lookup ...
+    IE_CLOTHING_NAMES = {
+        "10000000001": IE_CE_CAP,
+        "20000000001": IE_CE_HAT,
+        "X000000000H": IE_CE_HAT,
+        "F0000000001": IE_CE_TURBAN,
+        "1000000000A": IE_CE_HELMET,
+        "11000000001": IE_CE_MASK,
+        "12000000001": IE_CE_GUGEL,
+        "1F000000001": IE_CE_GUGEL,
+        "XC00000000X": IE_CE_GUGEL,
+        "FF000000001": IE_CE_HEAD_SCARF,
+        "F1000000001": IE_CE_HEAD_SCARF,
+        "XX00000000X": IE_CE_GUGEL,
+        "01000000001": IE_CE_SCARF,
+        "02000000001": IE_CE_SCARF,
+        "0C00000000X": IE_CE_TIE,
+        "0F00000000X": IE_CE_MUFFLER,
+        "01100000001": IE_CE_SHIRT,
+        "00100000001": IE_CE_UNDERSHIRT,
+        "0XC0000000X": IE_CE_WEST,
+        "00X0000000X": IE_CE_WEST,
+        "0XC000C000X": IE_CE_WEST,
+        "00C0000000X": IE_CE_WEST,
+        "00C000C000X": IE_CE_WEST,
+        "XXC0000000X": IE_CE_WEST,
+        "XXC000C000X": IE_CE_WEST,
+        "XXC000CXX0X": IE_CE_WEST,
+        "0XX0000000X": IE_CE_WEST,
+        "00C000CX00H": IE_CE_WEST,
+        "00110000001": IE_CE_T_SHIRT,
+        "1010000000X": IE_CE_T_SHIRT,
+        "01110000001": IE_CE_POLOSHIRT,
+        "02110000001": IE_CE_POLOSHIRT,
+        "00XXX00000X": IE_CE_SWEATER,
+        "0XXXX00000X": IE_CE_SWEATER,
+        "XXXXX00000X": IE_CE_SWEATER,
+        "00CX0000001": IE_CE_SHIRT,
+        "00CXX000001": IE_CE_SHIRT,
+        "0XCX0000001": IE_CE_SHIRT,
+        "0XCXX000001": IE_CE_SHIRT,
+        "00CXX00000X": IE_CE_JACKET,
+        "0XCXX00000X": IE_CE_JACKET,
+        "XXCXX00000X": IE_CE_JACKET,
+        "00CXX0C000A": IE_CE_COAT,
+        "00CXX0CXX0A": IE_CE_COAT,
+        "0XCXX0C000A": IE_CE_COAT,
+        "0XCXX0CXX0A": IE_CE_COAT,
+        "XXCXX0C000A": IE_CE_COAT,
+        "XXCXX0CXX0A": IE_CE_COAT,
+        "0XCXX0CXX0X": IE_CE_COAT,
+        "XXCXX0XXX0X": IE_CE_COAT,
+        "XXCXX0CXX0X": IE_CE_COAT,
+        "0XCXX0XXX0X": IE_CE_COAT,
+        "0XCXX0CXX0H": IE_CE_COAT,
+        "00CXX0XXX0X": IE_CE_COAT,
+        "00C000C0001": IE_CE_DRESS,
+        "00C000CXX01": IE_CE_DRESS,
+        "00C000C000H": IE_CE_DRESS,
+        "00C000CXX0H": IE_CE_DRESS,
+        "00CXX0CXX01": IE_CE_DRESS,
+        "0XX000X000X": IE_CE_DRESS,
+        "0XCXX0CXX01": IE_CE_DRESS,
+        "00CXX0XXX01": IE_CE_DRESS,
+        "00CX00C000H": IE_CE_DRESS,
+        "00CX00CX00H": IE_CE_DRESS,
+        "00CX00CXX0H": IE_CE_DRESS,
+        "XXCXX0XXX01": IE_CE_DRESS,
+        "XXCXX0CXX01": IE_CE_DRESS,
+        "XXXXX0CXX01": IE_CE_DRESS,
+        "XXXXX0XXX0X": IE_CE_DRESS,
+        "00XXX0CXX0X": IE_CE_DRESS,
+        "00XXX0XXX0X": IE_CE_DRESS,
+        "0XXXX0CXX0X": IE_CE_DRESS,
+        "XXXXX0XXX01": IE_CE_DRESS,
+        "XXXXX0CXX0X": IE_CE_DRESS,
+        "0XXXX0XXX0X": IE_CE_DRESS,
+        "02F000F0001": IE_CE_CAPE,
+        "02F000FF001": IE_CE_CAPE,
+        "02F000FFF01": IE_CE_CAPE,
+        "22F000F0001": IE_CE_CAPE,
+        "22F000FF001": IE_CE_CAPE,
+        "22F000FFF01": IE_CE_CAPE,
+        "XXX000XXX0X": IE_CE_CAPE,
+        "XXCXX0TXX0X": IE_CE_OVERALL,
+        "0XCXX0TXX0X": IE_CE_OVERALL,
+        "00CXX0TXX0X": IE_CE_OVERALL,
+        "XXXXX0TXX0X": IE_CE_BODY,
+        "0XXXX0TXX0X": IE_CE_BODY,
+        "00XXX0TXX0X": IE_CE_BODY,
+        "000XXX0000X": IE_CE_GLOVES,
+        "0000XX0000X": IE_CE_GLOVES,
+        "00000X0000X": IE_CE_GLOVES,
+        "0000X00000X": IE_CE_VAMBRACE,
+        "000000CXX0X": IE_CE_SKIRT,
+        "000000XXX0X": IE_CE_SKIRT,
+        "00C000T000X": IE_CE_DUNGAREES,
+        "00C000TX00X": IE_CE_DUNGAREES,
+        "00C000TXX0X": IE_CE_DUNGAREES,
+        "000000TXX0X": IE_CE_PANTS,
+        "00000000X0X": IE_CE_JAMBART,
+        "000000000X1": IE_CE_SOCKS,
+        "00000000XX1": IE_CE_SOCKS,
+        "0000000XXX1": IE_CE_SOCKS,
+        "000000TXXX1": IE_CE_TIGHTS,
+        "000000000XX": IE_CE_SHOES,
+        "00000000XXX": IE_CE_BOOTS,
+        "0000000XXXX": IE_CE_BOOTS,
+    }
+
 
     # size options
     IE_CE_VERY = "sehr"
@@ -515,6 +631,8 @@ class Messages:
     IE_CE_NYLON = "Nylon", 0, 1, 0
     IE_CE_FIBRES = "Kunstfaser", 0, 1, 1
     IE_CE_PELT = "Pelz", 1, 2, 2
+    IE_CE_SYNTH_PELT = "Kunstfell", 1, 2, 0
+    IE_CE_LATEX = "Latex", 0, 0, 1
     IE_CE_POLYESTER = "Polyester", 0, 1, 1
     IE_CE_SILK = "Seide", 0, 1, 2
     IE_CE_SYNTH_SILK = "Synthseide", 0, 1, 1
@@ -527,8 +645,11 @@ class Messages:
     IE_CE_FLEECE = "Fleece", 0, 1, 0
     IE_CE_JAQUARD = "Jaquard", 1, 2, 2
     IE_CE_FROTTEE = "Frottee", 0, 1, 0
+    IE_CE_JEANS = "Jeans", 0, 1, 1
+    IE_CE_CORD = "Cord", 0, 1, 1
     IE_CE_LODEN = "Loden", 1, 2, 2
     IE_CE_TWEED = "Tweed", 1, 2, 2
+    IE_CE_RUBBER = "Gummi", 0, 2, 0
     IE_CE_ADDN = ["eide"]
     IE_CE_DELE = ["olle"]
 
@@ -554,6 +675,43 @@ class Messages:
         IE_CE_FROTTEE,
         IE_CE_LODEN,
         IE_CE_TWEED,
+        IE_CE_LATEX,
+        IE_CE_SYNTH_PELT,
+        IE_CE_JEANS,
+        IE_CE_CORD,
+        IE_CE_RUBBER,
+    ]
+
+    IE_CE_NOT_GLOVES = [
+        IE_CE_LINEN,
+        IE_CE_FLANELL,
+        IE_CE_JAQUARD,
+        IE_CE_FROTTEE,
+        IE_CE_LODEN,
+        IE_CE_TWEED,
+        IE_CE_JEANS,
+        IE_CE_CORD,
+    ]
+
+    IE_CE_NOT_SOCKS = [
+        IE_CE_LEATHER,
+        IE_CE_SYNTH_LEATHER,
+        IE_CE_PELT,
+        IE_CE_FLANELL,
+        IE_CE_SATIN,
+        IE_CE_VELVET,
+        IE_CE_SYNTH_VELVET,
+        IE_CE_LINEN,
+        IE_CE_JAQUARD,
+        IE_CE_FROTTEE,
+    ]
+
+    IE_CE_NOT_SHOES = [
+        IE_CE_LEATHER,
+        IE_CE_SYNTH_LEATHER,
+        IE_CE_PELT,
+        IE_CE_LATEX,
+        IE_CE_SYNTH_PELT,
     ]
 
     # pockets
@@ -562,106 +720,6 @@ class Messages:
     IE_CE_POCKETS_2 = "mit zwei Taschen"
     IE_CE_POCKETS_3 = "mit einigen Taschen"
     IE_CE_POCKETS_4 = "mit vielen Taschen"
-
-    # this is used for the name lookup ...
-    IE_CLOTHING_NAMES = {
-        "1000000000": IE_CE_CAP,
-        "2000000000": IE_CE_HAT,
-        "F000000000": IE_CE_TURBAN,
-        "A000000000": IE_CE_HELMET,
-        "1100000000": IE_CE_MASK,
-        "1200000000": IE_CE_GUGEL,
-        "FF00000000": IE_CE_HEAD_SCARF,
-        "F100000000": IE_CE_HEAD_SCARF,
-        "11H0000000": IE_CE_GUGEL,
-        "1110000000": IE_CE_GUGEL,
-        "0100000000": IE_CE_SCARF,
-        "0200000000": IE_CE_TIE,
-        "0F00000000": IE_CE_MUFFLER,
-        "0110000000": IE_CE_SHIRT,
-        "0010000000": IE_CE_UNDERSHIRT,
-        "0XC0000000": IE_CE_WEST,
-        "0XH0000000": IE_CE_WEST,
-        "1XC0000000": IE_CE_WEST,
-        "FXC0000000": IE_CE_WEST,
-        "2XC0000000": IE_CE_WEST,
-        "FXH0000000": IE_CE_WEST,
-        "2XH0000000": IE_CE_WEST,
-        "10C0000000": IE_CE_WEST,
-        "1011000000": IE_CE_SWEATER,
-        "0111000000": IE_CE_POLOSHIRT,
-        "0011000000": IE_CE_T_SHIRT,
-        "0XC1000000": IE_CE_SHIRT,
-        "01H1000000": IE_CE_SHIRT,
-        "1111000000": IE_CE_SHIRT,
-        "1XC1100000": IE_CE_SHIRT,
-        "2XC1100000": IE_CE_SHIRT,
-        "FXC1100000": IE_CE_SHIRT,
-        "0011100000": IE_CE_SWEATER,
-        "1011100000": IE_CE_SWEATER,
-        "1111100000": IE_CE_SWEATER,
-        "11H1100000": IE_CE_SWEATER,
-        "11H1000000": IE_CE_SWEATER,
-        "0111100000": IE_CE_SWEATER,
-        "01H1100000": IE_CE_SWEATER,
-        "1XH1000000": IE_CE_JACKET,
-        "0XC1100000": IE_CE_SHIRT,
-        "1XHXX00000": IE_CE_JACKET,
-        "1XCXX00000": IE_CE_SWEATER,
-        "1XH0001XX0": IE_CE_COAT,
-        "1XHXX01XX0": IE_CE_COAT,
-        "01H1001XX0": IE_CE_DRESS,
-        "01H0001XX0": IE_CE_DRESS,
-        "1XH1100000": IE_CE_JACKET,
-        "2XH1100000": IE_CE_JACKET,
-        "FXH1100000": IE_CE_JACKET,
-        "0XH1100000": IE_CE_JACKET,
-        "0XH1000000": IE_CE_JACKET,
-        "0XH1101XX0": IE_CE_COAT,
-        "1XH1101XX0": IE_CE_COAT,
-        "0XH110TXX0": IE_CE_OVERALL,
-        "1XH110TXX0": IE_CE_OVERALL,
-        "2XH110TXX0": IE_CE_OVERALL,
-        "FXH110TXX0": IE_CE_OVERALL,
-        "011110TXX0": IE_CE_OVERALL,
-        "11C100TXX0": IE_CE_OVERALL,
-        "0XH100TXX0": IE_CE_OVERALL,
-        "11H110TXX0": IE_CE_OVERALL,
-        "01H100TXX0": IE_CE_OVERALL,
-        "01C100TXX0": IE_CE_OVERALL,
-        "00H100TXX0": IE_CE_OVERALL,
-        "0XC110TXX0": IE_CE_OVERALL,
-        "11H100TXX0": IE_CE_OVERALL,
-        "101XX01XX0": IE_CE_DRESS,
-        "011XX01XX0": IE_CE_DRESS,
-        "11H1001XX0": IE_CE_DRESS,
-        "01H1101XX0": IE_CE_DRESS,
-        "0XCXX01XX0": IE_CE_DRESS,
-        "0XH0001XX0": IE_CE_DRESS,
-        "001XX01XX0": IE_CE_DRESS,
-        "01CXX01XX0": IE_CE_DRESS,
-        "111XX01XX0": IE_CE_DRESS,
-        "001000TXX0": IE_CE_BODY,
-        "001100TXX0": IE_CE_BODY,
-        "001110TXX0": IE_CE_BODY,
-        "0XH000TXX0": IE_CE_BODY,
-        "0001110000": IE_CE_GLOVES,
-        "0000110000": IE_CE_GLOVES,
-        "0000010000": IE_CE_GLOVES,
-        "0000100000": IE_CE_VAMBRACE,
-        "0000001XX0": IE_CE_SKIRT,
-        "0XC000TXX0": IE_CE_PANTS,
-        "000000TXX0": IE_CE_PANTS,
-        "0000000010": IE_CE_JAMBART,
-        "0000000001": IE_CE_SOCKS,
-        "0000000011": IE_CE_SOCKS,
-        "0000000111": IE_CE_SOCKS,
-        "000000TXX1": IE_CE_TIGHTS,
-        "000000TXXH": IE_CE_TIGHTS,
-        "000000000H": IE_CE_SHOES,
-        "000000001H": IE_CE_BOOTS,
-        "000000011H": IE_CE_BOOTS,
-    }
 
     IE_TT_NAME = "Alles braucht einen Namen"
     IE_TT_QUANTITY = "Anzahl\n(nur positive Zahlen)"

@@ -556,14 +556,14 @@
 			<description>Oft nur als Alpha bezeichnet, ist diese Waffe der Bestseller der Ordnance Manufacturing Group. Sie gilt als meistproduzierte Waffe in der Novaropäischen Allianz - wobei es schwer ist, an absolute Produktionszahlen zu kommen. Die Alpha wird in zahlreichen Lizenzversionen hergestellt. Das Design ist schlicht gehalten, es gibt praktisch keine Feinteile, die zu Defekten neigen.&#10;Durch die Entscheidung, die Kalibervarianten 9 x 19mm und .38 Special zu einer Waffe zu vereinen und mit der Bezeichnung universal 9mm zu vermarkten, wurde eine Pistole auf den Markt gebracht, für die man eigentlich überall Munition bekommt und die auch Selbstladepatronen ohne Murren schluckt.&#10;im wuchtigen Griff befindet sich das Magazin für bis zu 16 Schuss in einem Doppelstreifen. Die Pistole besitzt eine Unterlaufschiene (kurz) zur Aufnahme eine Lampe oder eines Lasermarkierers.&#10;Mit einer kleinen Modifikation am Magazinschacht, lässt sich die Alpha auf die 32-Schuss-Magazine für die Beta umrüsten. - Reichweite: 15/50m - Tarnung: 0</description>
 		</item>
 
-		<item name = "Furthmayr &amp; DeWal &apos;Söldner&apos; 9mm" price = "400" weight = "850" avail = "-2" type = "Pistolen">
+		<item name = "Furthmayr &amp; DeWal Söldner 9mm" price = "400" weight = "850" avail = "-2" type = "Pistolen">
 			<damage value = "2/0" />
 			<option name = "Kaliber" values = "9x19 mm" />
 			<ammo chambers = "1" />
 			<description> Trotz des Namens ist die &apos;Söldner&apos; von Furthmayr &amp; DeWal gerade bei den regulären Streitkräften der Häuser DeBeer und Habsburg-Möbius als Zweitwaffe für Offiziere beliebt. Die Waffe ist mindestens so unanfällig für Umwelteinflüsse wie die Alpha, jedoch um fast ein Drittel leichter. Mit dem kürzeren Lauf ist sie auch leichter zu verbergen. Auch die &apos;Söldner&apos; besitzt eine Unterlaufschiene zur Aufnahme von Anbauteilen. Besonders bei Söldnern findet man gelegentlich auch ein verlängertes Magazin mit einer Kapazität von 15 Schuss. Natürlich lässt sich die Waffe dann nicht mehr so gut verbergen. Reichweite: 10/40m - Tarnung: -1</description>
 		</item>
 
-		<item name = "ParaTec &apos;Vulpus&apos; .38 Special" price = "300" weight = "1250" avail = "-3" type = "Pistolen">
+		<item name = "ParaTec Vulpus .38 Special" price = "300" weight = "1250" avail = "-3" type = "Pistolen">
 			<damage value = "2/0" />
 			<option name = "Kaliber" values = ".38 Special" />
 			<ammo chambers = "1" />
@@ -584,14 +584,14 @@
 			<description>Dieser schwere Revolver ist für den ganz großen Knall. Aber man muss ehrlich sein, diese Waffe ist nicht für jedermann geeignet. Vom grundsätzlichen Design, ähnelt sie dem Kaliber .357. Reichweite: 15/75m - Tarnung: +3</description>
 		</item>
 
-		<item name = "&apos;Famous-Series .357 Marshall Art&apos;" price = "750" weight = "1250" avail = "-1" type = "Revolver">
+		<item name = "Famous-Series .357 Marshall Art" price = "750" weight = "1250" avail = "-1" type = "Revolver">
 			<damage value = "2/-1"/>
 			<option name = "Kaliber" values = ".357 ParaTec" />
 			<ammo chambers = "6"/>
 			<description>Schon als Kinder haben uns die Abenteuer des legendären Sheriffs &apos;Marshal Art&apos; in ihren Bann gezogen. Wer hat nicht geträumt, wie der Held aus der Serie durch das Universum zu ziehen, den Schurken das Handwerk zu legen und nach getaner Arbeit lässig mit seiner berühmten .357 ParaTec dazustehen?&#10;Dieser Traum kann dank Insight Industries in Erfüllung gehen!&#10;Insight Industries legt mit der Famous-Serie berühmte Waffen aus Filmen und Serien auf!&#10;Und was konnten die Jungs von Insight besseres tun, als uns zuerst die Waffe von Marshal Art zur Verfügung zu stellen?&#10;Der Clou: Für wahre Fans mit genügend dickem Geldbeutel kann man die originale .357 ParaTec erwerben.&#10;Nicht zuletzt gehört zu jeder Waffe eine Besitzurkunde, Mitgliedschaft im Marshal Art-Fanclub und ein handsigniertes Autogramm von Rick Rock!&#10;Bei der Waffe handelt es sich um einen Insight Industries Lizenznachbau der modifizierten ParaTec Ursus .357 Modell 1000, wie sie für die Marshall Art Serienproduktion geschaffen wurde. Gegenüber der Ursus, zeichnet sich die Filmversion durch einen den beeindruckenden 7,5" Lauf und die eleganten Gravuren. Reichweite: 10/50m - Tarnung: +3</description>
 		</item>
 
-		<item name = "&apos;Famous-Series Marshall Art .38 Special&apos;" price = "600" weight = "1000" avail = "-1" type = "Revolver">
+		<item name = "Famous-Series Marshall Art .38 Special" price = "600" weight = "1000" avail = "-1" type = "Revolver">
 			<damage value = "2/0"/>
 			<option name = "Kaliber" values = ".38 Special" />
 			<ammo chambers = "6"/>
@@ -607,14 +607,14 @@
 			<description>OMG - Produzent für die größten Heere und Söldnereinheiten im Hyperion, stellt mit der Gamma eine Jagdwaffe für Siedler und Pioniere vor. Die halbautomatische Waffe ist bei Jägern äußerst begehrt. Das hohe Maß an Qualität macht es aber auch für Sportschützen interessant. Die verwendeten Materialien sind hochwertig und auch im Gelände behält die Gamma ihre Präzision. Reichweite: 50 / 250m - Modifikationen: Mit etwas handwerklichem Geschick und dem passenden Werkzeug lässt sich Gamma in ein vollautomatisches Sturmgewehr verwandeln, die Unterschiede zur Delta sind eher kosmetischer Natur.</description>
 		</item>
 
-		<item name = "Insight Industries &apos;Lupus&apos;" price = "950" weight = "3500" avail = "-1" type = "Gewehre">
+		<item name = "Insight Industries Lupus" price = "950" weight = "3500" avail = "-1" type = "Gewehre">
 			<damage value = "2/-2"/>
 			<option name = "Kaliber" values = ".223 SMI" />
 			<ammo chambers = "1"/>
 			<description>Das selbstrepetierende Gewehr von Insight ist ein oft gesehener Begleiter vieler Pioniere. Die Präzession ist außerordentlich gut, die Verarbeitung sehr robust. Durch schlicht gehaltene Bauteile kann die Waffe leicht repariert werden und Ersatzteile sind praktisch überall zu finden. Jedoch bieten nur Originalbauteile von Insigth Industries Garantie für anhaltende Qualität.&#10;Überall dort, wo eine Pistole zu klein ist, eine MP oder gar ein Sturmgewehr jedoch zu viel des Guten darstellen, greift man gerne auf die Lupus zurück. Reichweite: 50 / 250m </description>
 		</item>
 
-		<item name = "ParaTec &apos;Ambassador&apos; .223" price = "1850" weight = "3400" avail = "+2" type = "Gewehre">
+		<item name = "ParaTec Ambassador .223" price = "1850" weight = "3400" avail = "+2" type = "Gewehre">
 			<damage value = "2/-2"/>
 			<option name = "Kaliber" values = ".223 SMI" />
 			<ammo chambers = "1"/>
@@ -628,14 +628,14 @@
 			<description>Diese elegante Jagdwaffe wird auch von diversen Palastgarden als repräsentive und zugleich effiziente Waffe verwendet. Reichweite: 50 / 250m </description>
 		</item>
 
-		<item name = "Insight Industries &apos;Gulo&apos;" price = "900" weight = "4000" type = "Flinten">
+		<item name = "Insight Industries Gulo" price = "900" weight = "4000" type = "Flinten">
 			<damage value = "3/+1" />
 			<option name = "Kaliber" values = "12/76" />
 			<ammo chambers = "1" />
 			<description>Einläufige Schrotflinte mit Schaftmagazin für fünf Patronen zur manuellen Repetierladung. Das charakteristische Geräusch der Waffe beim Durchladen schreckt einen Einbrecher meistens ab. Reichweite: 20 / 50m</description>
 		</item>
 
-		<item name = "Furthmayr &amp; DeWal &apos;Wildschütz&apos;" price = "900" weight = "4800" type = "Flinten-SA">
+		<item name = "Furthmayr &amp; DeWal Wildschütz" price = "900" weight = "4800" type = "Flinten-SA">
 			<damage value = "3/+1"/>
 			<option name = "Kaliber" values = "12/76"/>
 			<ammo chambers = "2"/>
@@ -886,6 +886,7 @@
 			<damage value = "2/+1" name = "16/70"/>
 			<damage value = "3/+1" name = "12/76"/>
 			<pack name = "Schachtel (25)" quantity = "25"/>
+			<description>Die klassische Schrotpatrone</description>
 		</item>
 
 		<item name = "Buckshot" weight = "75" price = "2.5" type = "Munition">
@@ -915,7 +916,7 @@
 			<option name = "Kaliber" values = "20/70,16/70,12/76" tag = "damage"/>
 			<damage value = "3/-1" name = "20/70"/>
 			<damage value = "3/-1" name = "16/70"/>
-			<damage value = "4/-1" name = "12/76"/>
+            <damage value = "4/-1" name = "12/76"/>
 			<pack name = "Schachtel (10)" quantity = "10"/>
 		</item>
 

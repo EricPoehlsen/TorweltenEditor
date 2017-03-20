@@ -1584,7 +1584,10 @@ class CustomClothing(tk.Frame):
         self.item_data[msg.IE_PRICE] = price
 
         if self.buy:
-            text = msg.IE_BUY + "\n" + str(price)
+            price_text = msg.MONEYFORMAT % price
+            price_text = price_text.replace(".", msg.MONEYSPLIT)
+
+            text = msg.IE_BUY + "\n" + price_text
             if price > 0 and len(self.item_data["name"].get()) >= 1:
                 state = tk.NORMAL
             else:
@@ -1706,11 +1709,16 @@ class CustomClothing(tk.Frame):
 
         clothing_names = msg.IE_CLOTHING_NAMES
 
-        key = self._getClothingKey(lookup=True)
+        debug = ""
+        for i in range(1, 8):
+            key = self._getClothingKey(lookup=i)
+            name, gender = clothing_names.get(key, msg.IE_CE_UNKNOWN)
+            debug += "KEY: " + key + "\n"
+            if name != msg.IE_CE_UNKNOWN[0]:
+                break
 
-        print(key)
-
-        name, gender = clothing_names.get(key, msg.IE_CE_UNKNOWN)
+        if name == msg.IE_CE_UNKNOWN[0]:
+            print(debug + name)
 
         gi = ""
         if gender == msg.M: gi = "M"
@@ -1753,7 +1761,7 @@ class CustomClothing(tk.Frame):
             msg.IE_CE_SHIRT[0],
             msg.IE_CE_DRESS[0]
         ]
-        if name in hoodies and key[0] in ["1", "2", "F"]:
+        if name in hoodies and key[0] in ["1", "2", "F", "X"]:
             name = msg.IE_CE_HOOD[0] + name.lower()
 
         display_name = name
@@ -2062,33 +2070,37 @@ class CustomClothing(tk.Frame):
 
         return closure
 
-    def _getClothingKey(self, lookup=False):
+    def _getClothingKey(self, lookup=0):
         """ Generate a description for the item based on the selections
 
         Args:
-            lookup(bool): rewrites the key for a fine graded lookup
-                in the names dictionary
+            lookup(int): rewrites the key for a fine graded lookup
+                in the names dictionary - simplifies on pass 2 and 3
 
         Returns:
             string: selected bodyparts
         """
-
         selection = self._getSelectedOptions()
         body_parts = selection.keys()
-        layers = self.item_data[msg.IE_CE_SINGLE_LAYER]
 
         all_parts = [part[0] for part in self.body_parts]
         key = ""
 
-        head = msg.IE_CE_HEAD
-        neck = msg.IE_CE_NECK
-        torso = msg.IE_CE_TORSO
         hips = msg.IE_CE_HIPS
-        feet = msg.IE_CE_FEET
 
-        material_qualitity = self.item_data.get(msg.IE_CE_SINGLE_LAYER, 1)
+        layers = self.item_data.get(msg.IE_CE_SINGLE_LAYER, 1)
+        it = self._selectionIterator
+        armor1 = sum([1 if i > 1 else 0 for i in it(msg.IE_CE_ARMOR1)])
+        armor2 = sum([1 if i > 1 else 0 for i in it(msg.IE_CE_ARMOR2)])
+        armor = armor1 + 2*armor2
+        if armor > layers: layers = armor
+        material = "1"
+        if layers >= 2:
+            material = "H"
+        if layers >= 4:
+            material = "A"
 
-        for part in all_parts:
+        for i, part in enumerate(all_parts):
             key_element = "0"
 
             if part in body_parts:
@@ -2096,71 +2108,66 @@ class CustomClothing(tk.Frame):
 
                 if lookup:
                     options = selection[part]
-
-                    if part == head:
-                        if options.get(msg.IE_CE_COMPLEX) > 0:
-                            key_element = "2"
-                        if options.get(msg.IE_CE_CANVAS) > 0:
-                            key_element = "F"
-                        if options.get(msg.IE_CE_ARMOR2) > 1:
-                            key_element = "A"
-
-                    if part == neck:
-                        if options.get(msg.IE_CE_COMPLEX) > 0:
-                            key_element = "2"
-                        if options.get(msg.IE_CE_CANVAS) > 0:
-                            key_element = "F"
-
-                    if part == torso:
-                        # rewriting the neck key!
-                        if not key.endswith("0"):
-                            key = key[:-1] + "1"
-
-                        if options.get(msg.IE_CE_CLOSURE) > 0:
+                    if options.get(msg.IE_CE_COMPLEX) > 0:
+                        key_element = "2"
+                    if options.get(msg.IE_CE_CANVAS) > 0:
+                        key_element = "F"
+                    if options.get(msg.IE_CE_CLOSURE) > 0:
+                        if i in [1, 2, 6]:
                             key_element = "C"
-                        if material_qualitity > 1:
-                            key_element = "H"
-
-                    if part == feet and material_qualitity > 1:
-                        key_element = "H"
-
-                if part == hips and self.item_data["trousers"].get() == 1:
-                    key_element = "T"
+                        else:
+                            key_element = "2"
+                    if part == hips and self.item_data["trousers"].get() == 1:
+                        key_element = "T"
 
             key += key_element
 
-        if not lookup:
-            return key
+        if key[1] == "C" and key[2] != "0":
+            key = [i if c != 1 else "2" for c, i in enumerate(key)]
+            key = "".join(key)
 
-        # rewriting some keys ...
-        arms = [3, 4]
-        legs = [7, 8]
+        if lookup >= 3:
+            key = ["X" if i in ["1", "2", "F"] else i for i in key]
+            key = "".join(key)
 
-        # neck
-        if key[2] not in ["0", "1"]:
-            key = [e if i != 1 else "X" for i, e in enumerate(key)]
-            key = "".join(key)
-        # pants and skirts
-        if key[6] in ["1", "T"]:
-            key = [e if i not in legs else "X" for i, e in enumerate(key)]
-            key = "".join(key)
-        # for dress
-        if key[2] not in ["0", "H"] and key[6] == "1":
-            key = [e if i not in arms+legs else "X" for i, e in enumerate(key)]
-            key = "".join(key)
-        """
-        if key[2] != "0":
-            start = ""
-            if key[0] == "0":
-                start += "0"
+        if lookup >= 4:
+            long = []
+            if key[2] != "0" and key[0] == "X":
+                long += [1, 1]
             else:
-                start += "1"
-            if key[1] == "0":
-                start += "0"
+                long += [0, 0]
+            if key[3] == "X":
+                long += [0, 0, 1, 0]
             else:
-                start += "1"
-            key = start + key[2:]
-        """
+                long += [0, 0, 0, 0]
+            if key[7] == "X":
+                long += [0, 0, 1, 0]
+            else:
+                long += [0, 0, 0, 0]
+            key = ["X" if l else i for i, l in zip(key, long)]
+            key = "".join(key)
+
+        if lookup >= 5:
+            if key[2] != "0" and key[0] == "X":
+                long = [1, 1]
+            else:
+                long = [0, 0]
+            if key[2] != "0":
+                long += [0, 1, 1, 0]
+            else:
+                long += [0, 0, 0, 0]
+            if key[6] != "0":
+                long += [0, 1, 1, 0]
+            else:
+                long += [0, 0, 0, 0]
+            key = ["X" if l else i for i, l in zip(key, long)]
+            key = "".join(key)
+
+        if lookup in [2, 4, 6]:
+            key += "X"
+        else:
+            key += material
+
         return key
 
     def _generateClothingKey(self):
@@ -2224,8 +2231,10 @@ class CustomClothing(tk.Frame):
                 var.set(value)
         self.item_data["trousers"].set(0)
 
-        # next we need a key for a valid piece
+        # next we need a coverage key for a valid piece
         select = self._generateClothingKey()
+
+        # are these trousers?
         if select[6] == "1":
             trousers = random.choice([0, 1])
             self.item_data["trousers"].set(trousers)
@@ -2236,9 +2245,27 @@ class CustomClothing(tk.Frame):
                 ):
                     select = "0000000" + select[7:]
 
-        cheap = [fabric for fabric in msg.IE_CE_FABRICS if fabric[3] == 0]
-        normal = [fabric for fabric in msg.IE_CE_FABRICS if fabric[3] == 1]
-        expensive = [fabric for fabric in msg.IE_CE_FABRICS if fabric[3] == 2]
+        # selecting the fabric and quality for the whole piece ...
+        # removing unfitting materials for gloves, shoes and socks first ...
+        unused = []
+        if select[5] != "0":
+            unused = msg.IE_CE_NOT_GLOVES
+        feet = False
+        if select[9] != "0":
+            if select[6] == "0":
+                feet = random.choice(["shoes", "socks"])
+            else:
+                feet = "socks"
+            if feet == "shoes":
+                unused = msg.IE_CE_NOT_SHOES
+            else:
+                unused = msg.IE_CE_NOT_SOCKS
+        fabrics = msg.IE_CE_FABRICS
+        fabrics = [f for f in fabrics if f not in unused]
+
+        cheap = [fabric for fabric in fabrics if fabric[3] == 0]
+        normal = [fabric for fabric in fabrics if fabric[3] == 1]
+        expensive = [fabric for fabric in fabrics if fabric[3] == 2]
 
         price_ranges = {
             0.25: cheap,
@@ -2259,6 +2286,11 @@ class CustomClothing(tk.Frame):
         self.item_data["F"].set(fabric_qualities[i])
 
         fabric, l_min, l_max, p = random.choice(fabrics)
+        if feet == "shoes":
+            l_min = 1
+        if feet == "socks":
+            l_min = 0
+            l_may = 0
         layers = [
             msg.IE_CE_SINGLE_LAYER,
             msg.IE_CE_MULTI_LAYER,
@@ -2282,9 +2314,10 @@ class CustomClothing(tk.Frame):
                 self.item_data["Q"].set(qualities[qual])
                 break
 
-        # color
+        # chose a color
         self._generateRandomColor()
 
+        # randomize per body part options
         closure_count = 0
         for i, value in enumerate(select):
             if value != "0":
@@ -2305,10 +2338,10 @@ class CustomClothing(tk.Frame):
                     armor2.set(10)
                 else:
                     a1 = random.random()
-                    if a1 <= 0.25:
+                    if a1 <= 0.15:
                         armor1.set(10)
                         a2 = random.random()
-                        if a2 <= 0.25:
+                        if a2 <= 0.65:
                             armor2.set(10)
                         else:
                             armor2.set(1)
@@ -2364,7 +2397,7 @@ class CustomClothing(tk.Frame):
                     else:
                         complex.set(0)
 
-                # a lot of fabric
+                # lots of fabric
                 fabric_name = body_part[0] + "_" + msg.IE_CE_CANVAS
                 fabric = self.item_data[fabric_name]
                 has_fabric = {
@@ -2438,9 +2471,12 @@ class CustomClothing(tk.Frame):
         else:
             self.item_data["C"].set(msg.IE_CE_NO_CLOSURE)
 
+        # finally write a description
         self._autoDescription()
 
     def _generateRandomColor(self):
+        """ Generating a pseudo-random color """
+
         def modify(color):
             modificators = [""]
             if color not in msg.NOT_DARK:

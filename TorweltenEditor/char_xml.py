@@ -1565,6 +1565,12 @@ class Character(object):
     def checkHashes(self):
         """ Check the hashes when the character is loaded """
 
+        def modified():
+            """ store 'illegal' modifications """
+            basics = self.xml_char.find("basics")
+            bad_file = et.SubElement(basics, "modified")
+            self.logEvent(bad_file)
+
         tags = [
             "basics",
             "attributes",
@@ -1574,6 +1580,11 @@ class Character(object):
         ]
 
         hash_element = self.xml_char.find("hash")
+
+        if hash_element is None:
+            modified()
+            return
+
         for tag in tags:
             tag_hash = self.hashElement(self.xml_char.find(tag))
             stored_hash = int(hash_element.get(tag))
@@ -1581,9 +1592,7 @@ class Character(object):
                 hash_element.set("check", "1")
             else:
                 hash_element.set("check", "0")
-                basics = self.xml_char.find("basics")
-                bad_file = et.SubElement(basics, "modified")
-                self.logEvent(bad_file)
+                modified()
                 break
 
     def getHashes(self):
