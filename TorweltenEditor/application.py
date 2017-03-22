@@ -15,6 +15,7 @@ from logscreen import LogScreen
 from sheetlayoutscreen import LayoutScreen
 from exportpdf import ExportPdf
 from imagescreen import ImageScreen
+from notesscreen import NotesScreen
 from improvewindow import Improve
 from PIL import ImageTk, Image, PngImagePlugin
 import tkinter as tk
@@ -153,6 +154,7 @@ class Application(tk.Frame):
             msg.TOOLBAR_CHAR_DATA,
             msg.TOOLBAR_CHAR_EQUIP,
             msg.TOOLBAR_CHAR_CONTACTS,
+            msg.TOOLBAR_CHAR_NOTES,
             msg.TOOLBAR_CHAR_IMAGE,
             msg.TOOLBAR_CHAR_LAYOUT
         ]
@@ -269,9 +271,11 @@ class Application(tk.Frame):
             msg.TOOLBAR_CHAR_CONTACTS: SocialScreen,
             msg.TOOLBAR_CHAR_IMAGE: ImageScreen,
             msg.TOOLBAR_CHAR_LAYOUT: LayoutScreen,
+            msg.TOOLBAR_CHAR_NOTES: NotesScreen,
             msg.MENU_SETTINGS: SettingScreen,
             msg.MENU_EWT: EWTScreen,
-            msg.MENU_CHAR_LOG: LogScreen}
+            msg.MENU_CHAR_LOG: LogScreen,
+        }
 
         # display the new module
         window = ProgramModule[label](frame, app=self)

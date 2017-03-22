@@ -664,6 +664,7 @@ class ExportPdf:
         x,
         y,
         size=SINGLE,
+        note_id=None,
         lines_per_entry=1,
         title="NOTIZEN",
         info_title=None
@@ -673,7 +674,8 @@ class ExportPdf:
         x,y: int - top left corner in points
         size: string - "single", "wide, "double", "quart", "triple", "big", "full", "half"
         trait_type: string - "all", "positive", "negative"
-        lines_per_entry: int - 0 (no lines) 
+        note_id (str): id string of note to display
+        lines_per_entry: int - 0 (no lines)
         title: string - name of box ... 
         info_title: String - Header Bar ...
         """
@@ -716,36 +718,67 @@ class ExportPdf:
             stroke,
             1
         )
-        
+
+        # prepare the text ...
+        text = []
+        if note_id:
+            note = self.char.findNoteById(note_id)
+            if note is not None:
+                title = note.get("name", "")
+                if note.text:
+                    words = note.text
+                    words = words.replace("\n", "|| ")
+                    words = words.split()
+                    line = ""
+                    for word in words:
+                        linebreak = False
+                        if "||" in word:
+                            linebreak = True
+                            word = word.replace("||", "")
+                        if len(line) + len(word) <= limit:
+                            line += " " + word
+                        else:
+                            text.append(line.strip())
+                            line = word
+                        if linebreak:
+                            text.append(line.strip())
+                            line = ""
+                    if line:
+                        text.append(line.strip())
+
         title = title.upper()
         self.drawTitle(canvas, x, y, height, title)
+
+        columns = [width - bar]
 
         # the header line ...
         if info_title: 
             canvas.setFillColorRGB(1, 1, 1)
             local_x = x + bar
             local_y = y - padding - info_line
-            canvas.roundRect(
+
+            self.drawLineBackground(
+                canvas,
                 local_x,
                 local_y,
-                width-bar,
+                columns,
                 info_line,
-                i_rad,
-                stroke,
-                1
+                i_rad
             )
-            offset = 2
+
+            offset = 3
+
             canvas.setFillColorRGB(0, 0, 0)
             canvas.setFont(FONT_NAME, 7)
             canvas.drawString(local_x + offset, local_y+offset, info_title)
         
         canvas.setFillColorRGB(1, 1, 1)
-
         canvas.setFont(FONT_NAME, 10)
 
         offset = 3
 
         i = line_count - 1
+        l = 0
 
         while i >= 0:
             # construct the line ... 
@@ -755,15 +788,20 @@ class ExportPdf:
 
             # boxes
             canvas.setFillColorRGB(1, 1, 1)
-            canvas.roundRect(
+
+            self.drawLineBackground(
+                canvas,
                 local_x,
                 local_y,
-                width-bar,
-                line_height*lines_per_entry,
+                columns,
+                line_height,
                 i_rad,
-                stroke,
-                1
             )
+
+            if text and l < len(text):
+                canvas.setFillColorRGB(0, 0, 0)
+                canvas.drawString(local_x + offset, local_y+offset, text[l])
+                l += 1
 
     def moduleImage(self, canvas, x, y, size=SINGLE):
         """ this module draws a image box ...
@@ -1477,7 +1515,6 @@ class ExportPdf:
                 it.AUTOMATIC_RIFLES,
                 it.BLASTER
             ]
-            print(item_type)
             if it.MONEY in item_type:
                 title = msg.PDF_EQUIPMENT_MONEY
             if it.IMPLANT in item_type:

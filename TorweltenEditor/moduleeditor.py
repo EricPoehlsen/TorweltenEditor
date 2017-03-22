@@ -637,7 +637,37 @@ class ModuleEditor(tk.Toplevel):
                 info_lines_frame.pack(fill=tk.X, expand=1)
 
             if selected == msg.PDF_NOTES:
-                pass
+                notes = self.main.char.getNotes()
+                entries = []
+                for note in notes:
+                    id = note.get("id", "")
+                    name = note.get("name", "")
+
+                    entries.append(id+": "+name)
+
+                if entries:
+                    var = tk.StringVar()
+                    var.set(msg.ME_NOT_SELECTED)
+                    var.trace("w", self._notesEdited)
+                    self.vars["id"] = var
+
+                    sub_frame = tk.LabelFrame(frame, text=msg.ME_NOTES)
+
+                    button = tk.OptionMenu(
+                        sub_frame,
+                        var,
+                        *entries
+                    )
+                    button.pack(fill=tk.X)
+                    sub_frame.pack(fill=tk.X)
+
+                title = tk.StringVar()
+                self.vars["title"] = title
+                title_frame = tk.LabelFrame(frame, text=msg.ME_TITLE)
+                entry = tk.Entry(title_frame, textvariable=title)
+                entry.pack(fill=tk.X)
+                title_frame.pack(fill=tk.X)
+                title.trace("w", self._notesEdited)
 
             if selected == msg.PDF_IMAGE:
                 pass
@@ -687,6 +717,17 @@ class ModuleEditor(tk.Toplevel):
                 self.vars[self.var_names["condensed"]].set(0)
                 self.vars[self.var_names["equipped"]].set(0)
                 self.vars[self.var_names["content"]].set(0)
+
+    def _notesEdited(self, n, e, m):
+        title = self.vars.get("title")
+        id = self.vars.get("id")
+        if title and id:
+            if str(title) == n:
+                if title.get() != "":
+                    id.set(msg.ME_NOT_SELECTED)
+            else:
+                if id.get() != msg.ME_NOT_SELECTED:
+                    title.set("")
 
     # this creates the et.Element for one module based on the current selection
     def _defineModule(self):
@@ -913,7 +954,6 @@ class ModuleEditor(tk.Toplevel):
                          }
                     )
 
-
         elif mod_type == page.MOD_CONTACTS:
             contact_var = self.vars[self.var_names["contact_type"]].get()
             contact_type = contact_dict[contact_var]
@@ -939,7 +979,30 @@ class ModuleEditor(tk.Toplevel):
             )
 
         elif mod_type == page.MOD_NOTES:
-            pass
+            selected_note = self.vars.get("id")
+            title = self.vars.get("title")
+            note_id = ""
+            if selected_note:
+                id_value = selected_note.get()
+                if id_value != msg.ME_NOT_SELECTED:
+                    note_id = id_value.split(":")[0]
+                    et.SubElement(
+                        self.module,
+                        "param",
+                        {"name": "note_id",
+                         "value": note_id
+                         }
+                    )
+            if title:
+                title = title.get()
+                if title:
+                    et.SubElement(
+                        self.module,
+                        "param",
+                        {"name": "title",
+                         "value": title
+                         }
+                    )
 
     def close(self):
         self.main.open_windows["mod_ed"] = 0

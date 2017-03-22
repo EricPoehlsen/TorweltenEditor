@@ -1370,6 +1370,35 @@ class Character(object):
                 highest_id = id
         return highest_id
 
+    def getNotes(self):
+        notes = self.xml_char.find(".//notes")
+        if notes is None:
+            basics = self.xml_char.find("basics")
+            notes = et.SubElement(basics, "notes")
+        return notes
+
+    def findNoteById(self, id):
+        id = str(id)
+        return self.xml_char.find(".//note[@id='"+id+"']")
+
+    def getHighestNoteId(self):
+        notes = self.getNotes()
+        highest_id = 0
+        for note in notes:
+            id = int(note.get("id", "0"))
+            if id > highest_id:
+                highest_id = id
+        return highest_id
+
+    def addNote(self):
+        notes = self.xml_char.find(".//notes")
+        id = str(self.getHighestNoteId() + 1)
+        note = et.SubElement(
+            notes,
+            "note",
+            {"id": id}
+        )
+
     def setImage(self, filename):
         """ Setting the reference to a character image
 
