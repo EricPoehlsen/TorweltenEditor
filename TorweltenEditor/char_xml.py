@@ -221,32 +221,50 @@ class Character(object):
         xp = xp[1:-1]
         trait.set("xp", str(xp))
         trait.set("name", str(full_trait.get("name")))
-        selected = et.SubElement(trait, "selected")
 
         # get the specification
         specification = full_trait.find("specification")
         if specification is not None:
-            selected.set("spec", str(variables["spec"].get()))
+            spec_name = specification.get("name", "")
+            spec_value = str(variables["spec"].get())
+            spec = et.SubElement(trait, "specification")
+            spec.set("name", spec_name)
+            spec.set("value", spec_value)
 
         # get the ranks
         ranks = full_trait.findall("rank")
         if ranks:
             for rank in ranks:
                 rank_id = rank.get("id")
+                rank_name = rank.get("name")
                 id_tag = "rank-"+rank_id
-                selected.set(id_tag, str(variables["rank_"+rank_id].get()))
-        
+                rank_value = str(variables["rank_"+rank_id].get())
+                rank_tag = et.SubElement(trait, "rank")
+                rank_tag.set("name", rank_name)
+                rank_tag.set("id", rank_id)
+                rank_tag.set("value", rank_value)
+
         # get the variables
         variable_tags = full_trait.findall("variable")
         if variable_tags:
             for variable in variable_tags:
                 var_id = variable.get("id")
-                id_tag = "id-"+var_id
-                selected.set(id_tag, str(variables["var_"+var_id].get()))
-        
-        if len(description) > 1:
-            description_tag = et.SubElement(trait, "description")
-            description_tag.text = description
+                var_name = variable.get("name")
+                var_value = str(variables["var_"+var_id].get())
+                var_tag = et.SubElement(trait, "variable")
+                var_tag.set("id", var_id)
+                var_tag.set("name", var_name)
+                var_tag.set("value", var_value)
+
+        if len(description) <= 1:
+            full_desc = full_trait.find("description")
+            if full_desc is not None:
+                text = full_desc.text
+                if text:
+                    description = text
+
+        description_tag = et.SubElement(trait, "description")
+        description_tag.text = description
 
         char_traits = self.xml_char.find('traits')
         char_traits.append(trait)

@@ -329,14 +329,17 @@ class CharScreen(tk.Frame):
             # get the specification if there is one
             trait_specification = ""
             selected = trait.find("selected")
-            specification = selected.get("spec")
+
+            specification = trait.find("specification")
             if specification is not None:
-                trait_specification = " ["+specification+"]"
+                value = specification.get("value")
+                trait_specification = " ["+value+"]"
             
             # get the xp
             trait_xp = trait.get("xp")
             
-            # insert the name of the trait and the specification. Bind text to the TraitInfoBaloon  
+            # insert the name of the trait and the specification.
+            # Bind text to the TraitInfoBaloon
             index_start = self.traits_text.index(tk.CURRENT)
             self.traits_text.insert(tk.END, trait_name)
             self.traits_text.insert(tk.END, trait_specification)

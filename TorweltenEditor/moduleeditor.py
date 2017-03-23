@@ -188,14 +188,14 @@ class ModuleEditor(tk.Toplevel):
         if "size" in self.var_names.keys():
             size_name = self.vars[self.var_names["size"]].get()
             size_dict = {
-                msg.PDF_SINGLE, page.SINGLE,
-                msg.PDF_WIDE, page.WIDE,
-                msg.PDF_DOUBLE, page.DOUBLE,
-                msg.PDF_QUART, page.QUART,
-                msg.PDF_TRIPLE, page.TRIPLE,
-                msg.PDF_BIG, page.BIG,
-                msg.PDF_FULL, page.FULL,
-                msg.PDF_HALF, page.HALF
+                msg.PDF_SINGLE: page.SINGLE,
+                msg.PDF_WIDE: page.WIDE,
+                msg.PDF_DOUBLE: page.DOUBLE,
+                msg.PDF_QUART: page.QUART,
+                msg.PDF_TRIPLE: page.TRIPLE,
+                msg.PDF_BIG: page.BIG,
+                msg.PDF_FULL: page.FULL,
+                msg.PDF_HALF: page.HALF
             }
 
             size = size_dict[size_name]

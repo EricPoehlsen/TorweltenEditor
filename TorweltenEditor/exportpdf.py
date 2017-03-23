@@ -1031,44 +1031,33 @@ class ExportPdf:
                 trait = trait_list[trait_count]
                 trait_xp = trait.get("xp", "0")
                 trait_name = trait.get("name", "")
-                trait_spec = ""
-                trait_vars = []
-                trait_rank = ""
+                trait_spec = trait.findall("./specification")
+                trait_vars = trait.findall("./variable")
+                trait_rank = trait.findall("./ranke")
 
-                full_trait = self.traits.getTrait(trait_name)
-                
-                selected = trait.find("selected")
-                if (full_trait is not None) and (selected is not None): 
-                    # add specification
-                    spec = selected.get("spec", "")
-                    if spec:
-                        trait_spec = "("+spec+")"
-                    
-                    # add rank    
-                    full_ranks = full_trait.findall("rank")
-                    if full_ranks:
-                        rank_id = "rank-"+full_ranks[0].get("id")
-                        rank = selected.get(rank_id, "")
-                        if rank:
-                            trait_rank = "["+rank+"]"
+                spec = ""
+                rank = ""
+                variables = []
 
-                    # description (base)
-                    description = [
-                        trait.find("description"),
-                        full_trait.find("description")
-                    ]
+                # add specification
+                for spec in trait_spec:
+                    spec = "(" + spec.get("value") + ")"
 
-                    # variables
-                    full_variables = full_trait.findall("variable")
-                    for variable in full_variables:
-                        var_id = "id-"+variable.get("id", "")
-                        var_name = variable.get("name", "")
-                        if var_name:
-                            value = selected.get(var_id, "")
-                            trait_vars.append((var_name, value))
-                            search = "description[@value='"+value+"']"
-                            description.append(variable.find(search))
-                
+                # add rank
+                for rank in trait_rank:
+                    rank = "[" + rank.get("value") + "]"
+
+                # description (base)
+                description = [trait.find("description")]
+
+                # variables
+                for variable in trait_vars:
+                    var_name = variable.get("name", "")
+                    var_value = variable.get("value", "")
+                    search = "description[@value='"+var_value+"']"
+                    description.append(variable.find(search))
+                    variables.append((var_name, var_value))
+
                 canvas.setFillColorRGB(0, 0, 0)
                 local_x = x + bar
 
@@ -1077,7 +1066,7 @@ class ExportPdf:
                         description.remove(desc)
                 
                 # add specification and rank to name ... 
-                trait_name += " " + trait_spec + trait_rank
+                trait_name += " " + spec + rank
 
                 # add variables (for one liners ...)
                 if info_lines == 0:
@@ -1119,8 +1108,8 @@ class ExportPdf:
                     v_count = 0
                     while v_count < len(trait_vars) and cur_line < info_lines:
                         var_text = "{name}: {value}".format(
-                            name=trait_vars[v_count][0],
-                            value=trait_vars[v_count][1]
+                            name=variables[v_count][0],
+                            value=variables[v_count][1]
                         )
                         if len(text) + len(var_text) > info_limit: 
                             local_y -= line_height
