@@ -220,7 +220,8 @@ class Character(object):
         xp = xp_var.get()
         xp = xp[1:-1]
         trait.set("xp", str(xp))
-        trait.set("name", str(full_trait.get("name")))
+        trait_name = str(full_trait.get("name"))
+        trait.set("name", trait_name)
 
         # get the specification
         specification = full_trait.find("specification")
@@ -270,7 +271,7 @@ class Character(object):
         char_traits.append(trait)
         self.updateAvailableXP(-int(xp))
         
-        self.logEvent(trait, op=msg.CHAR_TRAIT_ADDED)
+        self.logEvent(trait, op=msg.CHAR_TRAIT_ADDED, mod=trait_name)
 
     def resetTraitIDs(self):
         """ Reset trait ids if necessary """
@@ -1416,6 +1417,12 @@ class Character(object):
             "note",
             {"id": id}
         )
+
+    def delNote(self, id):
+        notes = self.xml_char.find(".//notes")
+        note = notes.find("note[@id='"+id+"']")
+        if note is not None:
+            notes.remove(note)
 
     def setImage(self, filename):
         """ Setting the reference to a character image

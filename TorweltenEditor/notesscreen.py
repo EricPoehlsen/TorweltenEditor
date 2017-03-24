@@ -1,5 +1,6 @@
 # coding=utf-8
 import tkinter as tk
+from PIL import ImageTk
 import config
 
 
@@ -68,7 +69,14 @@ class NotesScreen(tk.Frame):
 
         x = col * (width + 4) + 4
         y = row * height
-        new_note = tk.Button(canvas, text="+", command=self.addNote)
+
+        new_icon = ImageTk.PhotoImage(file="ui_img/note_add.png")
+        new_note = tk.Button(
+            canvas,
+            image=new_icon,
+            command=self.addNote
+        )
+        new_note.image = new_icon
         canvas.create_window(
             x,
             y,
@@ -94,13 +102,27 @@ class NotesScreen(tk.Frame):
         if not text:
             text = ""
         frame = tk.Frame(self.notes_canvas)
-        title = tk.Entry(frame, width=20, font="Arial 14 bold")
+        title_frame = tk.Frame(frame)
+        title = tk.Entry(title_frame, width=15, font="Arial 14 bold")
         title.insert("0", name)
         title.bind("<FocusOut>", update)
         title.bind("<Return>", update)
         title.bind("<Tab>", update)
 
-        title.pack(fill=tk.X)
+        title.pack(fill=tk.BOTH, expand=1, side=tk.LEFT)
+
+        del_icon = ImageTk.PhotoImage(file="ui_img/cross_small.png")
+        delete_button = tk.Button(
+            title_frame,
+            image=del_icon,
+            command=lambda id=id: self._delNote(id),
+            state=tk.DISABLED
+        )
+        delete_button.bind("<Button-1>", self._unlockDelete)
+        delete_button.image = del_icon
+        delete_button.pack(side=tk.LEFT)
+
+        title_frame.pack(fill=tk.X, expand=1)
 
         text_widget = tk.Text(
             frame,
@@ -120,6 +142,17 @@ class NotesScreen(tk.Frame):
         height = title.winfo_reqheight() + text_widget.winfo_reqheight()
 
         return frame, height
+
+    def _unlockDelete(self, event):
+        widget = event.widget
+        def unlock(widget):
+            widget.config(state=tk.NORMAL)
+
+        widget.after(500, lambda widget=widget: unlock(widget))
+
+    def _delNote(self, id):
+        self.char.delNote(id)
+        self.showNotes(self.notes_canvas)
 
     def _update(self, event=None, id=""):
         text = ""
