@@ -806,10 +806,14 @@ class Messages:
     ME_SHOW_WEAPONS = "Waffen anzeigen"
     ME_SHOW_WEIGHT = "Gewicht"
     ME_SHOW_VALUE = "Wert"
+    ME_CONTENTS = "Inhalt von:"
+    ME_CONDENSED = "(zusammengefasst)"
+    ME_EQUIPPED = "angelegte"
+    ME_JUST_EQUIPPED = "(nur angelegte)"
     ME_ONLY_BAG = "Nur den Inhalt der nachfolgend\n gewählten Tasche zeigen:"
     ME_NOTES = "Die folgende Notiz verwenden ..."
     ME_NOT_SELECTED = "nichts gewählt"
-    ME_TITLE = "Erstelle ein leeres Feld mit folgendem Titel:"
+    ME_NOTES_TITLE = "Erstelle ein leeres Feld mit folgendem Titel:"
 
     # for the pdf export - exportpdf.py and moduleeditor.py
     PDF_ATTRIBUTES = "Attribute"

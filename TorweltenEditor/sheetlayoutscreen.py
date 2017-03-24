@@ -115,7 +115,6 @@ class LayoutScreen(tk.Frame):
 
                 # display module ... 
                 if module is not None:
-                    mod_type = module.get("type")
 
                     # coordinates for a small module poly ... 
                     x1 = 4
@@ -144,7 +143,7 @@ class LayoutScreen(tk.Frame):
                         x2 += 20
 
                     if row == m_row and col == m_col:
-                        text = self.mod_types[mod_type]
+                        text = self._text(module)
                         text_col = "#000000"
                         
                     else:
@@ -160,7 +159,13 @@ class LayoutScreen(tk.Frame):
                 slot.create_line(0, 95, 0, 100, fill="#dddddd")
 
                 # render text ... 
-                slot.create_text(75, 50, text=text, fill=text_col)
+                slot.create_text(
+                    75,
+                    50,
+                    text=text,
+                    justify=tk.CENTER,
+                    fill=text_col
+                )
 
                 # place canvas ...                 
                 slot.grid(row=row, column=col)
@@ -330,6 +335,7 @@ class LayoutScreen(tk.Frame):
             self.pages = len(self.template.findall("page"))
             self._refactorTemplate()
             self._switchPage(0)
+
         else:
             self.pages = len(self.template.findall("page"))
             self._switchPage(-1)
@@ -357,6 +363,102 @@ class LayoutScreen(tk.Frame):
     # call the PDF exporter (file selector)
     def _exportPDF(self):
         self.app.exportCharWindow(self.template)
+
+    def _text(self, module):
+        """ create the descriptive text """
+        mod_type = module.get("type")
+        text = self.mod_types[mod_type]
+
+        params = module.findall("param")
+
+        if mod_type == page.MOD_TRAITS:
+            trait_type = None
+            for param in params:
+                if param.get("name", "") == "trait_type":
+                    trait_type = param.get("value")
+            if trait_type:
+                trait_dict = {
+                    "all": msg.PDF_ALL_TRAITS,
+                    "positive": msg.PDF_POSITIVE_TRAITS,
+                    "negative": msg.PDF_NEGATIVE_TRAITS
+                }
+                text = trait_dict.get(trait_type)
+
+        if mod_type == page.MOD_SKILLS:
+            skill_type = None
+            for param in params:
+                if param.get("name", "") == "skill_type":
+                    skill_type = param.get("value")
+            if skill_type:
+                skill_dict = {
+                    "all": msg.PDF_SKILLS_ALL,
+                    "active": msg.PDF_SKILLS_ACTIVE,
+                    "passive": msg.PDF_SKILLS_PASSIVE,
+                    "knowledge": msg.PDF_SKILLS_KNOWLEDGE,
+                    "lang": msg.PDF_SKILLS_LANGUAGE
+                }
+
+                text = skill_dict[skill_type]
+
+        if mod_type == page.MOD_EQUIPMENT:
+            item_id = None
+            condensed = None
+            equipped = None
+            content = None
+
+            for param in params:
+                if param.get("name", "") == "item_id":
+                    item_id = param.get("value", "")
+                if param.get("name", "") == "condensed":
+                    condensed = True
+                if param.get("name", "") == "equipped":
+                    equipped = True
+                if param.get("name", "") == "content":
+                    content = True
+
+            if item_id:
+                item = self.char.getItemById(item_id)
+                if item is not None:
+                    text = msg.ME_CONTENTS + "\n" + item.get("name")
+            elif condensed:
+                text += "\n" + msg.ME_CONDENSED
+            if equipped:
+                text = msg.ME_EQUIPPED + "\n" + text
+            if content:
+                text += "\n" + msg.ME_BAG_CONTENTS
+
+        if mod_type == page.MOD_WEAPONS:
+            variant = None
+            equipped = None
+            for param in params:
+                if param.get("name", "") == "variant":
+                    variant = param.get("value")
+                if param.get("name", "") == "equipped":
+                    equipped = True
+
+            if variant:
+                weapons_dict = {
+                    "all": msg.PDF_ALL_WEAPONS,
+                    "melee": msg.PDF_MELEE,
+                    "guns": msg.PDF_GUNS,
+                    "ammo": msg.PDF_AMMO
+                }
+                text = weapons_dict[variant]
+
+            if equipped:
+                text += "\n" + msg.ME_JUST_EQUIPPED
+
+        if mod_type == page.MOD_NOTES:
+            id = None
+            for param in params:
+                if param.get("name", "") == "note_id":
+                    id = param.get("value")
+            if id:
+                note = self.char.findNoteById(id)
+                if note is not None:
+                    text += ":\n" + note.get("name")
+
+        return text
 
     # open an edit window
     def _editModule(self, position):

@@ -2024,7 +2024,7 @@ class ExportPdf:
         info_x = x + bar
         info_y += offset
         if amount:
-            _x = + quantity_width/2
+            _x = info_x + quantity_width/2
             canvas.drawCentredString(_x, info_y, msg.PDF_QUANTITY)
             info_x += quantity_width
         info_x += offset

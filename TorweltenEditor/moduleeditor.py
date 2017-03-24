@@ -663,7 +663,7 @@ class ModuleEditor(tk.Toplevel):
 
                 title = tk.StringVar()
                 self.vars["title"] = title
-                title_frame = tk.LabelFrame(frame, text=msg.ME_TITLE)
+                title_frame = tk.LabelFrame(frame, text=msg.ME_NOTES_TITLE)
                 entry = tk.Entry(title_frame, textvariable=title)
                 entry.pack(fill=tk.X)
                 title_frame.pack(fill=tk.X)
@@ -962,12 +962,31 @@ class ModuleEditor(tk.Toplevel):
         elif mod_type == page.MOD_WEAPONS:
             variant_var = self.vars[self.var_names["variant"]].get()
             variant = weapons_dict[variant_var]
-            et.SubElement(self.module,
-                          "param",
-                          {"name": "variant",
-                           "value": str(variant)
-                           }
-                          )
+            et.SubElement(
+                self.module,
+                "param",
+                {"name": "variant",
+                 "value": str(variant)}
+            )
+
+            amount = self.vars[self.var_names["amount"]].get()
+            if amount:
+                et.SubElement(
+                    self.module,
+                    "param",
+                    {"name": "amount",
+                     "value": "True"}
+                )
+
+            equipped = self.vars[self.var_names["equipped"]].get()
+            if equipped:
+                et.SubElement(
+                    self.module,
+                    "param",
+                    {"name": "equipped",
+                     "value": "True"}
+               )
+
 
             info_lines_var = self.vars[self.var_names["info_lines"]].get()
             et.SubElement(
