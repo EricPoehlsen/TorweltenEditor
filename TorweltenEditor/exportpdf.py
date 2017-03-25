@@ -1499,9 +1499,7 @@ class ExportPdf:
                 it.RIFLES_SA,
                 it.SHOT_GUNS,
                 it.SHOT_GUNS_SA,
-                it.AUTOMATIC_PISTOLS,
-                it.MASCHINE_GUNS,
-                it.AUTOMATIC_RIFLES,
+                it.AUTOMATIC_WEAPON,
                 it.BLASTER
             ]
             if it.MONEY in item_type:
@@ -1906,9 +1904,7 @@ class ExportPdf:
                     it.RIFLES_SA,
                     it.SHOT_GUNS,
                     it.SHOT_GUNS_SA,
-                    it.AUTOMATIC_PISTOLS,
-                    it.MASCHINE_GUNS,
-                    it.AUTOMATIC_RIFLES,
+                    it.AUTOMATIC_WEAPON,
                     it.BLASTER
                 ]
             elif variant == "ammo": 

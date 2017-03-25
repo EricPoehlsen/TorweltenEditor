@@ -562,9 +562,7 @@ class EquipmentScreen(tk.Frame):
                     it.SHOT_GUNS,
                     it.RIFLES_SA,
                     it.SHOT_GUNS_SA,
-                    it.AUTOMATIC_PISTOLS,
-                    it.AUTOMATIC_RIFLES,
-                    it.MASCHINE_GUNS
+                    it.AUTOMATIC_WEAPON,
                 ]
                 if item_type in weapons:
                     item_name = item.get("name")

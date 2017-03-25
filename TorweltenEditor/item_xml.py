@@ -27,10 +27,7 @@ class ItemTree(object):
             it.RIFLES,
             it.SHOT_GUNS,
             it.RIFLES_SA,
-            it.RIFLES_SA,
-            it.AUTOMATIC_PISTOLS,
-            it.AUTOMATIC_RIFLES,
-            it.MASCHINE_GUNS,
+            it.AUTOMATIC_WEAPON,
             it.TOOLS,
             it.NATURAL,
         ]

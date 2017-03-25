@@ -1015,48 +1015,46 @@ class Page:
 # this class handles the names of item types that are imported via xml
 class ItemTypes:
     #  clothing and armor
-    CLOTHING = "Kleidung"
-    HARNESS = "Harnisch"
-    ARMOR = "Rüstung"
+    CLOTHING = "clothing"
+    HARNESS = "harness"
+    ARMOR = "armor"
 
     #  melee weapons 
-    NATURAL = "Natürlich"
-    CLUBS = "Hiebwaffen"
-    BLADES = "Klingenwaffen"
-    STAFFS = "Stabwaffen"
-    OTHER_MELEE = "Andere Nahkampfwaffen"
+    NATURAL = "natural"
+    CLUBS = "club"
+    BLADES = "blade"
+    STAFFS = "staff"
+    OTHER_MELEE = "other_melee"
 
     #  guns 
-    REVOLVERS = "Revolver"
-    PISTOLS = "Pistolen"
-    RIFLES = "Gewehre"
-    SHOT_GUNS = "Flinten"
-    RIFLES_SA = "Gewehre-SA"
-    SHOT_GUNS_SA = "Flinten-SA"
-    AUTOMATIC_RIFLES = "Sturmgewehre"
-    AUTOMATIC_PISTOLS = "Maschinenpistolen"
-    MASCHINE_GUNS = "Maschinengewehre"
-    BLASTER = "Blaster"
+    REVOLVERS = "revolver"
+    PISTOLS = "pistol"
+    RIFLES = "rifle"
+    SHOT_GUNS = "shotgun"
+    RIFLES_SA = "rifle_sa"
+    SHOT_GUNS_SA = "shotgun_sa"
+    AUTOMATIC_WEAPON = "automatic_weapon"
+    BLASTER = "blaster"
 
     #  various
-    TOOLS = "Werkzeug"
-    CLIP = "Clip"
-    AMMO = "Munition"
+    TOOLS = "tool"
+    CLIP = "clip"
+    AMMO = "ammo"
     MONEY = "Geld"
-    GENERIC = "Diverses"
+    GENERIC = "generic"
 
     #  containers
-    BAG = "Tasche"
-    BOX = "Kiste"
-    CONTAINER = "Container"
+    BAG = "bag"
+    BOX = "box"
+    CONTAINER = "container"
 
     #  other stuff
-    SERVICES = "Dienstleistungen"
+    SERVICES = "service"
 
     #biotech
-    IMPLANT = "Implantat"
-    PROSTHESIS = "Prothese"
-    IMPLANT_PART = "Einbau"
+    IMPLANT = "implant"
+    PROSTHESIS = "prosthesis"
+    IMPLANT_PART = "implant_part"
 
     OPTION_CALIBER = "Kaliber"
     OPTION_COLOR = "Farbe"
