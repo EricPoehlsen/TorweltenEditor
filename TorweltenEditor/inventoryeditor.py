@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from PIL import ImageTk
 import xml.etree.ElementTree as et
 import config
@@ -25,7 +26,7 @@ class InventoryEditor(tk.Toplevel):
         self.itemlist = main.itemlist
         self.main = main
 
-        self.items = None
+        self.items = self.itemlist.getAllItems()
         self.cur_selection = 0
         
         # prepare variables for the item
@@ -38,17 +39,22 @@ class InventoryEditor(tk.Toplevel):
         # costruct the window
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.title(msg.IE_TITLE)
-        self.content_frame = tk.Frame(self)
+        self.frame = tk.Frame(self)
+
+        self.selection_frame = tk.Frame(self.frame)
+        self.selection_frame.pack(side=tk.LEFT, fill=tk.Y, expand=1)
         
-        self.group_frame = tk.Frame(self.content_frame)
-        self.group_frame.pack(side=tk.LEFT, fill=tk.Y, expand=1)
-        
-        self.right_frame = tk.Frame(self.content_frame)
-        self.main_display = tk.Frame(self.right_frame)
-        
+        self.main_display = tk.Frame(self.frame)
+
+        self.selector_toolbar = tk.Frame(self.selection_frame)
+        self.selector_toolbar.pack(fill=tk.X, expand=1)
+
         self.selector_list_frame = tk.Frame(self.main_display)
-        self.selector_list = tk.Listbox(self.selector_list_frame, width=30)
-        self.selector_list.bind("<<ListboxSelect>>", self.selectionChanged)
+        self.selector_list = ttk.Treeview(
+            self.selector_list_frame,
+            selectmode = tk.BROWSE
+        )
+        self.selector_list.bind("<<TreeviewSelect>>", self.selectionChanged)
         self.selector_scroll = tk.Scrollbar(
             self.selector_list_frame,
             orient=tk.VERTICAL,
@@ -101,91 +107,36 @@ class InventoryEditor(tk.Toplevel):
         self.item_frame.pack(side=tk.LEFT)
 
         self.main_display.pack(fill=tk.BOTH, expand=1, anchor=tk.W)
-        self.right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
-        
-        self.content_frame.pack(fill=tk.BOTH, expand=1)
+
+        self.frame.pack(fill=tk.BOTH, expand=1)
 
         # reserved for sub_modules ...
         self.sub_module = tk.Frame(self.main_display)
 
-        self.displayGroups()
+        self.displayItems()
 
-    def displayGroups(self):
-        # clear the current buttons
-        current_group_buttons = self.group_frame.winfo_children()
-        for widget in current_group_buttons:
-            widget.destroy()
-
-        #  clear the itemlist
-        self.selector_list.delete(0, tk.END)
-
+    def displayItems(self):
+        nodes = {}
         groups = self.itemlist.getGroups()
+
         for group in groups:
-            name = group.get("name")
-            button = tk.Button(self.group_frame, text=name, width=25)
-            button.bind("<Button-1>", self.displaySubgroups)
-            button.pack()
-        button = tk.Button(self.group_frame, text=msg.IE_CUSTOM_ITEM, width=25)
-        button.bind("<Button-1>", self.customItem)
-        button.pack()
-    
-    def displaySubgroups(self, event):
-        if not self.item_frame.winfo_ismapped():
-            self.displayItemFrame()
-
-        clicked_button = event.widget
-        group_name = clicked_button.cget("text")
-        group = self.itemlist.getGroup(group_name)
-
-        # clear the current buttons
-        current_group_buttons = self.group_frame.winfo_children()
-        for widget in current_group_buttons:
-            widget.destroy()
-
-        back_button = tk.Button(
-            self.group_frame,
-            text=msg.IE_BACK,
-            width=25,
-            command=self.displayGroups
-        )
-        back_button.pack(fill=tk.X)
-        if group_name == msg.IE_CLOTHING_GROUP:
-            editor_button = tk.Button(
-                self.group_frame,
-                text=msg.IE_CLOTHING_EDITOR,
-                width=25,
-                command=self.customClothing
+            group_id = group.get("id", "0")
+            parent_id = group.get("parent", "")
+            parent = nodes.get(parent_id, "")
+            nodes[group_id] = self.selector_list.insert(
+                parent,
+                1000,
+                text=group.get("name","...")
             )
-            editor_button.pack(fill=tk.X)
-
-        for subgroup in group:
-            button = tk.Button(
-                self.group_frame,
-                text=subgroup.get("name"),
-                width=25
-            )
-            button.bind("<Button-1>", self.displayItems)
-            button.pack()
-
-    def displayItems(self, event):
-        clicked = event.widget
-
-        buttons = self.group_frame.winfo_children()
-        for button in buttons:
-            button.config(background="#eeeeee")
-
-        clicked.config(background="#666666")
-
-        # clear the list ...
-        self.selector_list.delete(0, tk.END)
-
-        # fill the list
-        subgroup_name = clicked.cget("text")
-        self.items = self.itemlist.getItems(subgroup_name)
 
         for item in self.items:
-            self.selector_list.insert(tk.END, item.get("name"))
-        self.selector_list.focus()
+            parent_id = item.get("parent", "")
+            parent = nodes.get(parent_id, "")
+            self.selector_list.insert(
+                parent,
+                1000,
+                text=item.get("name")
+            )
 
     def selectionChanged(self, event=None):
         """ Checks if the selected item needs to be changed
@@ -194,10 +145,24 @@ class InventoryEditor(tk.Toplevel):
             event (unused): passed from the .bind()
         """
 
-        if self.selector_list.focus_get() == self.selector_list:
+        selection = self.selector_list.selection()
+        if self.cur_selection != self.selector_list.item(selection):
             self.displayItem()
 
     def displayItem(self):
+        selection = self.selector_list.selection()
+        # do not remove item if selection is just unselected ...
+        if not selection:
+            return
+
+        selected_name = self.selector_list.item(selection).get("text")
+
+        # is it an item or a group`?
+        for item in self.items:
+            if item.get("name") == selected_name:
+                break
+        else:
+            return
 
         # clear the add item frame
         widgets = self.item_add_frame.winfo_children()
@@ -205,17 +170,8 @@ class InventoryEditor(tk.Toplevel):
             widget.destroy()
 
         self.item_desc_edited = False
-        selection_id = self.selector_list.curselection()
 
-        if not selection_id:
-            return
-
-        selected_name = self.selector_list.get(selection_id)
-        self.cur_selection = selection_id
-        
-        for item in self.items:
-            if item.get("name") == selected_name:
-                break
+        self.cur_selection = selection
 
         # create the new item (as we do not want to change our item list)
         new_item = et.Element("item")

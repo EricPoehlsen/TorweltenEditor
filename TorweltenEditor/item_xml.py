@@ -56,13 +56,12 @@ class ItemTree(object):
         return result
 
     def getGroups(self):
-        result = list()
-        groups = self.xml_items.findall("./group")
-        for group in groups:
-            result.append(group)
-        return result
+        return self.xml_items.findall(".//group")
 
-    def getItems(self,group_name):
+    def getAllItems(self):
+        return self.xml_items.findall(".//item")
+
+    def getItems(self, group_name):
         group = self.xml_items.find(".//group[@name='"+group_name+"']")
         items = group.findall("./item")
         return items
