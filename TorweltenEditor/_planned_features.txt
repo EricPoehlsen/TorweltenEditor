@@ -1,5 +1,3 @@
-### CANVAS THE ITEM EDITOR ...
-
 ### SKILLBASIERTE ITEMS
 
 	Natürliche Waffen ... hinzufügen wenn ein entsprechender Vorteil gewählt wird

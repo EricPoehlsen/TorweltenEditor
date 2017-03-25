@@ -681,7 +681,7 @@ class ExportPdf:
         """
 
         # localize variables for easy use ... 
-        limit = 52
+        limit = 49
         width, height = self.sizeHandler(size)
         if width == DOUBLE_WIDTH:
             limit = 100
