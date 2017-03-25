@@ -28,8 +28,8 @@ class SkillSelector(tk.Toplevel):
         self.complete_list = [skill[0] for skill in self.all_skills.getList()]
 
         # icons:
-        self.unsel_icon = ImageTk.PhotoImage(file="images/unsel.png")
-        self.sel_icon = ImageTk.PhotoImage(file="images/sel.png")
+        self.unsel_icon = ImageTk.PhotoImage(file="img/unsel.png")
+        self.sel_icon = ImageTk.PhotoImage(file="img/sel.png")
 
 
         #  build the window

@@ -272,8 +272,8 @@ class LogScreen(tk.Frame):
         return event_string
 
     def checkIntegrity(self, frame):
-        tick = ImageTk.PhotoImage(file="ui_img/tick.png")
-        cross = ImageTk.PhotoImage(file="ui_img/cross.png")
+        tick = ImageTk.PhotoImage(file="img/tick.png")
+        cross = ImageTk.PhotoImage(file="img/cross.png")
 
         icon = tk.Label(frame)
         icon.pack(side=tk.LEFT)

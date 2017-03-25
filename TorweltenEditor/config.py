@@ -1040,7 +1040,7 @@ class ItemTypes:
     TOOLS = "tool"
     CLIP = "clip"
     AMMO = "ammo"
-    MONEY = "Geld"
+    MONEY = "money"
     GENERIC = "generic"
 
     #  containers

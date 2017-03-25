@@ -16,8 +16,7 @@ folders:
 chars/      character directory
 data/       basic data
 fonts/      included fonts
-images/     images
-ui_img/     UI images [ONLY FatCow FarmFresh!]
+ui_img/     UI images
 templates/  template files for PDF export
 
 the program is coded in python 3 (3.6 - should run fine 3.4+)

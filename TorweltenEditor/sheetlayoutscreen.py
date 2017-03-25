@@ -177,7 +177,7 @@ class LayoutScreen(tk.Frame):
 
     def showControl(self, frame):
         sub_frame = tk.Frame(frame)
-        icon = ImageTk.PhotoImage(file="ui_img/book_previous.png")
+        icon = ImageTk.PhotoImage(file="img/book_previous.png")
         self.widgets["last_page"] = tk.Button(
             sub_frame,
             image=icon,
@@ -193,7 +193,7 @@ class LayoutScreen(tk.Frame):
         )
         self.widgets["cur_page"].pack(side=tk.LEFT, fill=tk.X)
 
-        icon = ImageTk.PhotoImage(file="ui_img/book_next.png")
+        icon = ImageTk.PhotoImage(file="img/book_next.png")
         self.widgets["next_page"] = tk.Button(
             sub_frame,
             image=icon,
@@ -203,7 +203,7 @@ class LayoutScreen(tk.Frame):
         self.widgets["next_page"].image = icon
         self.widgets["next_page"].pack(side=tk.LEFT, fill=tk.X)
 
-        icon = ImageTk.PhotoImage(file="ui_img/page_new.png")
+        icon = ImageTk.PhotoImage(file="img/page_new.png")
         self.widgets["new_page"] = tk.Button(
             sub_frame,
             image=icon,
@@ -212,7 +212,7 @@ class LayoutScreen(tk.Frame):
         self.widgets["new_page"].image = icon
         self.widgets["new_page"].pack(side=tk.LEFT)
 
-        icon = ImageTk.PhotoImage(file="ui_img/page_up.png")
+        icon = ImageTk.PhotoImage(file="img/page_up.png")
         self.widgets["page_up"] = tk.Button(
             sub_frame,
             image=icon,
@@ -222,7 +222,7 @@ class LayoutScreen(tk.Frame):
         self.widgets["page_up"].image = icon
         self.widgets["page_up"].pack(side=tk.LEFT)
 
-        icon = ImageTk.PhotoImage(file="ui_img/page_down.png")
+        icon = ImageTk.PhotoImage(file="img/page_down.png")
         self.widgets["page_down"] = tk.Button(
             sub_frame,
             image=icon,
@@ -232,7 +232,7 @@ class LayoutScreen(tk.Frame):
         self.widgets["page_down"].image = icon
         self.widgets["page_down"].pack(side=tk.LEFT)
 
-        icon = ImageTk.PhotoImage(file="ui_img/page_del.png")
+        icon = ImageTk.PhotoImage(file="img/page_del.png")
         self.widgets["del_page"] = tk.Button(
             sub_frame,
             image=icon,

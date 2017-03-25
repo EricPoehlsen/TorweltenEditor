@@ -70,7 +70,7 @@ class NotesScreen(tk.Frame):
         x = col * (width + 4) + 4
         y = row * height
 
-        new_icon = ImageTk.PhotoImage(file="ui_img/note_add.png")
+        new_icon = ImageTk.PhotoImage(file="img/note_add.png")
         new_note = tk.Button(
             canvas,
             image=new_icon,
@@ -111,7 +111,7 @@ class NotesScreen(tk.Frame):
 
         title.pack(fill=tk.BOTH, expand=1, side=tk.LEFT)
 
-        del_icon = ImageTk.PhotoImage(file="ui_img/cross_small.png")
+        del_icon = ImageTk.PhotoImage(file="img/cross_small.png")
         delete_button = tk.Button(
             title_frame,
             image=del_icon,

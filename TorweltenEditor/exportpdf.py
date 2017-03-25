@@ -2540,10 +2540,10 @@ class ExportPdf:
         # draw the lines (and fill in skills if they exist ...                     
         ewt = config.EWT
         
-        ewt_20 = ImageReader("images/ewt_20.png")
-        ewt_10 = ImageReader("images/ewt_10.png")
-        ewt_05 = ImageReader("images/ewt_05.png")
-        ewt_00 = ImageReader("images/ewt_00.png")
+        ewt_20 = ImageReader("img/ewt_20.png")
+        ewt_10 = ImageReader("img/ewt_10.png")
+        ewt_05 = ImageReader("img/ewt_05.png")
+        ewt_00 = ImageReader("img/ewt_00.png")
 
         roll_width = 10
         inner_width = width - bar

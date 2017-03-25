@@ -290,7 +290,7 @@ class Application(tk.Frame):
     # TODO this is a currently unused
     def startScreenImage(self):
 
-        photo = ImageTk.PhotoImage(file="images/logo.png")
+        photo = ImageTk.PhotoImage(file="img/logo.png")
         label = tk.Label(self.main_frame, image=photo)
         label.image = photo
         label.pack()

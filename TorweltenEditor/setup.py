@@ -10,7 +10,7 @@ import os
 
 
 #building data_files lists ... 
-dirs = ['images','ui_img','data','fonts','templates','chars']
+dirs = ['images','img','data','fonts','templates','chars']
 data_files = []
 
 for dir in dirs:

@@ -104,7 +104,7 @@ class ImageScreen(tk.Frame):
     def imageError(self, filename):
         window = tk.Toplevel()
         window.title(msg.IS_ERROR)
-        img = ImageTk.PhotoImage(file="ui_img/exclamation.png")
+        img = ImageTk.PhotoImage(file="img/exclamation.png")
         icon = tk.Label(window, image=img)
         icon.image = img
         icon.grid(row=0, column=0)

@@ -1,3 +1,15 @@
+### EIGENSCHAFTEN WEGKAUFEN
+    Eine Möglichkeit XP auszugeben, um Charaktereigenschaften im Bearbeitungsmodus
+    wieder zu entfernen ...
+    
+### GEWÄHLTES LAYOUT IM CHARAKTER SPEICHERN ...
+    
+
+
+
+
+
+
 ### SKILLBASIERTE ITEMS
 
 	Natürliche Waffen ... hinzufügen wenn ein entsprechender Vorteil gewählt wird
