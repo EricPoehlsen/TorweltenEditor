@@ -777,11 +777,17 @@ class Messages:
     IS_LOAD_MIME = "Bilddateien ..."
 
     # for the sheetlayoutscreen
-    SL_NEW = "Neu ..."
-    SL_LOAD = "Laden ..."
-    SL_SAVE = "Speichern ..."
     SL_EMPTY = "[ L E E R ]"
     SL_EXPORT = "PDF Exportieren"
+    SL_TT_NEW = "Neues Template erstellen ..."
+    SL_TT_LOAD = "Template laden ..."
+    SL_TT_SAVE = "Template speichern ..."
+    SL_TT_NEXT = "zurückblättern"
+    SL_TT_LAST = "weiterblättern"
+    SL_TT_NEW_PAGE = "Seite einfügen"
+    SL_TT_MOVE_UP = "Seite eins hoch schieben"
+    SL_TT_MOVE_DOWN = "Seite eins runter schieben"
+    SL_TT_DEL_PAGE = "Seite löschen"
 
     # for the module editor - moduleeditor.py 
     ME_NEW = "Neues Modul ..."

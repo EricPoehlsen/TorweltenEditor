@@ -6,6 +6,7 @@ from moduleeditor import ModuleEditor
 from PIL import ImageTk, Image, PngImagePlugin
 import tkinter as tk
 import config
+from tooltip import ToolTip
 page = config.Page()
 msg = config.Messages()
 
@@ -62,10 +63,6 @@ class LayoutScreen(tk.Frame):
 
         self.widgets = {}
 
-        self.toolbar = tk.Frame(self)
-        self.showToolbar(self.toolbar)
-
-        self.toolbar.pack(fill=tk.X)
         self.center_frame = tk.Frame(self)
         
         self.page_frame = tk.Frame(self.center_frame)
@@ -76,26 +73,6 @@ class LayoutScreen(tk.Frame):
         self._switchPage(0)
         self.control_frame.pack(fill=tk.BOTH)
         self.center_frame.pack()
-
-    def showToolbar(self, frame):
-        new_template = tk.Button(
-            frame,
-            text=msg.SL_NEW,
-            command=self._newTemplate
-        )
-        new_template.pack(side=tk.LEFT)
-        load_template = tk.Button(
-            frame,
-            text=msg.SL_LOAD,
-            command=self._loadTemplate
-        )
-        load_template.pack(side=tk.LEFT)
-        save_template = tk.Button(
-            frame,
-            text=msg.SL_SAVE,
-            command=self._saveTemplate
-        )
-        save_template.pack(side=tk.LEFT)
 
     def showPage(self, frame):
         cur_page = self.template.find("page[@num='"+str(self.active_page)+"']")
@@ -180,78 +157,112 @@ class LayoutScreen(tk.Frame):
                 )
 
     def showControl(self, frame):
-        sub_frame = tk.Frame(frame)
+
+        tpl_ops = [
+            (msg.SL_TT_NEW, "img/tpl_new.png", self._newTemplate),
+            (msg.SL_TT_LOAD, "img/tpl_load.png", self._loadTemplate),
+            (msg.SL_TT_SAVE, "img/tpl_save.png", self._saveTemplate)
+        ]
+
+        tpl = tk.LabelFrame(frame, text="Template")
+        for op in tpl_ops:
+            img = ImageTk.PhotoImage(file=op[1])
+            button = tk.Button(
+                tpl,
+                text=op[0],
+                image=img,
+                command=op[2],
+            )
+            tt = ToolTip(button, op[0])
+            button.image = img
+            button.pack(side=tk.LEFT)
+        tpl.pack(side=tk.LEFT)
+
+        tk.Label(frame,text=" ").pack(side=tk.LEFT)
+
+        flip = tk.LabelFrame(frame, text="blättern")
         icon = ImageTk.PhotoImage(file="img/book_previous.png")
         self.widgets["last_page"] = tk.Button(
-            sub_frame,
+            flip,
             image=icon,
             command=lambda:
                 self._switchPage(-1)
         )
+        ToolTip(self.widgets["last_page"], msg.SL_TT_LAST)
         self.widgets["last_page"].image = icon
         self.widgets["last_page"].pack(side=tk.LEFT, fill=tk.X)
         
         self.widgets["cur_page"] = tk.Label(
-            sub_frame,
+            flip,
             textvariable=self.cur_page
         )
         self.widgets["cur_page"].pack(side=tk.LEFT, fill=tk.X)
 
         icon = ImageTk.PhotoImage(file="img/book_next.png")
         self.widgets["next_page"] = tk.Button(
-            sub_frame,
+            flip,
             image=icon,
             command=lambda:
                 self._switchPage(+1)
         )
         self.widgets["next_page"].image = icon
+        ToolTip(self.widgets["next_page"], msg.SL_TT_NEXT)
         self.widgets["next_page"].pack(side=tk.LEFT, fill=tk.X)
+        flip.pack(side=tk.LEFT)
 
+        pages = tk.LabelFrame(frame, text="Seiten")
         icon = ImageTk.PhotoImage(file="img/page_new.png")
         self.widgets["new_page"] = tk.Button(
-            sub_frame,
+            pages,
             image=icon,
             command=self._newPage
         )
         self.widgets["new_page"].image = icon
+        ToolTip(self.widgets["new_page"], msg.SL_TT_NEW_PAGE)
         self.widgets["new_page"].pack(side=tk.LEFT)
 
         icon = ImageTk.PhotoImage(file="img/page_up.png")
         self.widgets["page_up"] = tk.Button(
-            sub_frame,
+            pages,
             image=icon,
             command=lambda:
                 self._movePage(self.active_page-1)
         )
         self.widgets["page_up"].image = icon
+        ToolTip(self.widgets["page_up"], msg.SL_TT_MOVE_UP)
         self.widgets["page_up"].pack(side=tk.LEFT)
 
         icon = ImageTk.PhotoImage(file="img/page_down.png")
         self.widgets["page_down"] = tk.Button(
-            sub_frame,
+            pages,
             image=icon,
             command=lambda:
             self._movePage(self.active_page+1)
         )
         self.widgets["page_down"].image = icon
+        ToolTip(self.widgets["page_down"], msg.SL_TT_MOVE_DOWN)
         self.widgets["page_down"].pack(side=tk.LEFT)
 
         icon = ImageTk.PhotoImage(file="img/page_del.png")
         self.widgets["del_page"] = tk.Button(
-            sub_frame,
+            pages,
             image=icon,
             command=self._deletePage
         )
         self.widgets["del_page"].image = icon
+        ToolTip(self.widgets["del_page"], msg.SL_TT_DEL_PAGE)
         self.widgets["del_page"].pack(side=tk.LEFT)
+        pages.pack(side=tk.LEFT)
 
-        sub_frame.pack(fill=tk.X, expand=1)
-
+        img = ImageTk.PhotoImage(file="img/pdf.png")
         export = tk.Button(
             frame,
             text=msg.SL_EXPORT,
+            image=img,
+            compound=tk.LEFT,
             command=self._exportPDF
         )
+        export.image = img
         export.pack(fill=tk.BOTH, expand=1)
 
     # switch active page ...
