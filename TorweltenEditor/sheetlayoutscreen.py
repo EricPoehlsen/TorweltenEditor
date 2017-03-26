@@ -86,8 +86,8 @@ class LayoutScreen(tk.Frame):
                 module = cur_page.find("module[@id='"+id+"']")
                 slot = tk.Canvas(
                     frame,
-                    width=150,
-                    height=100,
+                    width=195,
+                    height=120,
                     borderwidth=0,
                     highlightthickness=0,
                     relief=tk.RIDGE,
@@ -100,8 +100,8 @@ class LayoutScreen(tk.Frame):
                     # coordinates for a small module poly ... 
                     x1 = 4
                     y1 = 4
-                    x2 = 146
-                    y2 = 96
+                    x2 = 191
+                    y2 = 116
                     r = 4
 
                     # retrieve position and dimensions of module ... 
@@ -141,8 +141,8 @@ class LayoutScreen(tk.Frame):
 
                 # render text ... 
                 slot.create_text(
-                    75,
-                    50,
+                    97,
+                    60,
                     text=text,
                     justify=tk.CENTER,
                     fill=text_col
@@ -178,7 +178,7 @@ class LayoutScreen(tk.Frame):
             button.pack(side=tk.LEFT)
         tpl.pack(side=tk.LEFT)
 
-        tk.Label(frame,text=" ").pack(side=tk.LEFT)
+        tk.Label(frame, text=" ").pack(side=tk.LEFT)
 
         flip = tk.LabelFrame(frame, text="blättern")
         icon = ImageTk.PhotoImage(file="img/book_previous.png")
@@ -209,6 +209,8 @@ class LayoutScreen(tk.Frame):
         ToolTip(self.widgets["next_page"], msg.SL_TT_NEXT)
         self.widgets["next_page"].pack(side=tk.LEFT, fill=tk.X)
         flip.pack(side=tk.LEFT)
+
+        tk.Label(frame, text=" ").pack(side=tk.LEFT)
 
         pages = tk.LabelFrame(frame, text="Seiten")
         icon = ImageTk.PhotoImage(file="img/page_new.png")
@@ -253,6 +255,8 @@ class LayoutScreen(tk.Frame):
         ToolTip(self.widgets["del_page"], msg.SL_TT_DEL_PAGE)
         self.widgets["del_page"].pack(side=tk.LEFT)
         pages.pack(side=tk.LEFT)
+
+        tk.Label(frame, text=" ").pack(side=tk.LEFT)
 
         img = ImageTk.PhotoImage(file="img/pdf.png")
         export = tk.Button(
