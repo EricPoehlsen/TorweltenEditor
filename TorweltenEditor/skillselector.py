@@ -267,7 +267,6 @@ class SkillSelector(tk.Toplevel):
 
             origin = self.list_box.item(selection[0])
             origin = origin.get("text")
-            origin = origin.replace(msg.SS_X, "")
             self.origin = origin
 
         if len(selection) > 1:
@@ -303,7 +302,6 @@ class SkillSelector(tk.Toplevel):
     def _skillEntryNoFocus(self, event):
         self.new_skill_entry_focus = False
         self.list_box.config(state=tk.NORMAL)
-
 
     # checks the name of a potential skill 
     def _newSkillName(self):

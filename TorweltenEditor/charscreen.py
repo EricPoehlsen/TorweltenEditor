@@ -21,7 +21,7 @@ class CharScreen(tk.Frame):
 
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
-        # localize data ... 
+        # localize data ...
         # create the character instance # #
         self.app = app
         self.char = app.char
@@ -47,7 +47,11 @@ class CharScreen(tk.Frame):
         attr_list = self.char.ATTRIB_LIST
 
         for attr in attr_list:
-            frame = tk.LabelFrame(attr_frame, text=attr.upper())
+            frame = tk.LabelFrame(
+                attr_frame,
+                text=attr.upper(),
+                font="Arial 10 bold"
+            )
             # initiate the IntVars and bind their tcl names to the attributes
             attrib_values = self.char.attrib_values
             attrib_values[attr] = tk.IntVar()
@@ -124,7 +128,6 @@ class CharScreen(tk.Frame):
         data_frame = tk.LabelFrame(
             frame_2,
             text=msg.CS_BASE_DATA,
-            font="Arial 10 bold"
         )
 
         data_list = [
@@ -180,7 +183,6 @@ class CharScreen(tk.Frame):
         traits_frame = tk.LabelFrame(
             frame_2,
             text=msg.CS_TRAITS,
-            font="Arial 10 bold"
         )
         self.traits_text = tk.Text(
             traits_frame, 
@@ -216,7 +218,6 @@ class CharScreen(tk.Frame):
         self.active_skill_frame = tk.LabelFrame(
             frame_3, 
             text=msg.CS_ACTIVE_SKILLS, 
-            font="Arial 10 bold"
         )
         self.active_skill_canvas = tk.Canvas(
             self.active_skill_frame,
@@ -240,7 +241,6 @@ class CharScreen(tk.Frame):
         self.passive_skill_frame = tk.LabelFrame(
             frame_3, 
             text=msg.CS_PASSIVE_SKILLS,
-            font="Arial 10 bold"
         )
         self.passive_skill_canvas = tk.Canvas(
             self.passive_skill_frame,

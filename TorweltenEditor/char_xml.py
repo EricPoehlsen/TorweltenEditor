@@ -1480,9 +1480,29 @@ class Character(object):
 
     def removeImage(self):
         """ Removing an image reference """
+
         basics_tag = self.xml_char.find("./basics")
         image_tag = basics_tag.find("image")
         basics_tag.remove(image_tag)
+
+    def getPDFTemplate(self):
+        """ get the last used template """
+
+        tag = self.xml_char.find("./basics/pdftemplate")
+        filename = None
+        if tag is not None:
+            filename = tag.get("path")
+        return filename
+
+    def setPDFTemplate(self, path):
+        """store the last used template """
+
+        basics_tag = self.xml_char.find("./basics")
+        template_tag = basics_tag.find("./pdftemplate")
+        if template_tag is not None:
+            template_tag.set("path", path)
+        else:
+            et.SubElement(basics_tag, "pdftemplate", {"path": path})
 
     def logEvent(self, tag, mod=None, op=None):
         """ Logging changes to the character within itself

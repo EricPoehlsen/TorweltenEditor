@@ -5,22 +5,21 @@ constants may be retrieved from XML files ...
 """
 
 
-#defining the EWT
+# defining the EWT
 #       -7  -6  -5  -4  -3  -2  -1   0   1   2   3   4   5   6   7 
-EWT = [[2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,0.5], #  1
-       [2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.0,0.0], #  2
-       [2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.0,0.0,0.0], #  3
-       [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.0,0.0,0.0,0.0], #  4
-       [1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0], #  5
-       [1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0], #  6 
-       [1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0], #  7
-       [1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0], #  8
-       [1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0], #  9
-       [1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]] #  0
+EWT = [[2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,0.5],  # 1
+       [2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.0,0.0],  # 2
+       [2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.0,0.0,0.0],  # 3
+       [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.0,0.0,0.0,0.0],  # 4
+       [1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0],  # 5
+       [1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0],  # 6
+       [1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0],  # 7
+       [1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],  # 8
+       [1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],  # 9
+       [1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]]  # 0
 
 
-
-#THIS CLASS CONTAINS MESSAGES TO BE DISPLAYED ON THE UI OR PDF EXPORTS
+# THIS CLASS CONTAINS MESSAGES TO BE DISPLAYED ON THE UI OR PDF EXPORTS
 class Messages:
     """ Messages provides a variety of strings for the UI and PDF Export
     WARNING: some strings are used as keys in dicts so make sure unicode
@@ -73,12 +72,12 @@ class Messages:
     MENU_ABOUT = "About ..."
 
     # TOOLBAR
-    TOOLBAR_CHAR_DATA = "Daten, Fertigkeiten, Eigenschaften"
-    TOOLBAR_CHAR_EQUIP = "Ausrüstung und Waffen"
-    TOOLBAR_CHAR_CONTACTS = "Soziales und Kontakte"
+    TOOLBAR_CHAR_DATA = "Charakterdaten"
+    TOOLBAR_CHAR_EQUIP = "Inventar"
+    TOOLBAR_CHAR_CONTACTS = "Kontakte"
     TOOLBAR_CHAR_IMAGE = "Charakterbild"
-    TOOLBAR_CHAR_LAYOUT = "Layout"
     TOOLBAR_CHAR_NOTES = "Notizen"
+    TOOLBAR_CHAR_LAYOUT = "PDF-Export"
 
     # CHAR SCREEN
     CS_BASE_DATA = "Basisdaten"
@@ -115,7 +114,6 @@ class Messages:
     SS_BASE = "[G]"
     SS_SPEC = "[S]"
     SS_SEARCH = "Suche"
-    SS_X = " [X]"
     SS_TT_SHOW_BASE = "Grundfertigkeiten ein-\nund ausblenden: "
     SS_TT_SHOW_SPEC = "Spezialisierungen ein-\nund ausblenden: "
     SS_TT_SEARCH = "Fertigkeiten nach Name durchsuchen"
@@ -133,7 +131,6 @@ class Messages:
     SI_OTHER_SPEC = "weitere Spezialisierungen"
     SI_CHILD_SPEC = "zugeordnete Spezialisierungen"
     SI_CHILD_SKILL = "zugeordnete Fertigkeiten"
-
 
     # EQUIPMENT SCREEN
     ES_BUY_BUTTON = "Ausrüstung beschaffen"
@@ -319,7 +316,6 @@ class Messages:
     IE_CE_BOOTS = "Paar Stiefel", N
     IE_CE_NAMESPLIT = "Paar"
 
-
     # this is used for the name lookup ...
     IE_CLOTHING_NAMES = {
         "10000000001": IE_CE_CAP,
@@ -429,7 +425,6 @@ class Messages:
         "00000000XXX": IE_CE_BOOTS,
         "0000000XXXX": IE_CE_BOOTS,
     }
-
 
     # size options
     IE_CE_VERY = "sehr"
@@ -770,8 +765,6 @@ class Messages:
     SE_FREQUENCY_3 = "regelmäßig"
     SE_FREQUENCY_4 = "häufig"
     SE_FREQUENCY_5 = "dauernd"
-
-
 
     # IMAGE SCREEN
     IS_ERROR = "Dateifehler!"

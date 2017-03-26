@@ -696,11 +696,9 @@ class NewItem(tk.Frame):
 
         # add the item
         self.char.addItem(self.new_item)
-        self.main.updateItemList()
+        self.main.main.updateItemList()
         # show again, to make sure a new item is generated ...
-        self.selector_list.selection_set(self.cur_selection)
         self.displayItem()
-
 
     def showTooltip(self, event, caller):
         """ Displaying tool tips"""

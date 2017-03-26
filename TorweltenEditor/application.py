@@ -6,7 +6,6 @@ import skill_xml
 import trait_xml
 import config
 from charscreen import CharScreen
-from traitinfo import TraitInfo
 from equipmentscreen import EquipmentScreen
 from ewtscreen import EWTScreen
 from socialscreen import SocialScreen
@@ -132,14 +131,16 @@ class Application(tk.Frame):
         self.widgets = {}
 
         # initializing the basic screen layout ...
-        self.toolbar = tk.Frame(self)
-        self.toolbar.grid(row=0, sticky="nw")
+        self.columnconfigure(0, weight=100)
 
         self.main_frame = tk.Frame(self)
         self.main_frame.grid(row=1, sticky="nw")
 
         self.status_bar = StatusBar(self)
         self.status_bar.grid(row=2, sticky="sw")
+
+        self.toolbar = tk.Frame(self)
+        self.toolbar.grid(row=0, sticky="we")
 
         self.rowconfigure(1, weight=1000)
 
@@ -151,21 +152,30 @@ class Application(tk.Frame):
         """ Rendering the toolbar """
 
         buttons = [
-            msg.TOOLBAR_CHAR_DATA,
-            msg.TOOLBAR_CHAR_EQUIP,
-            msg.TOOLBAR_CHAR_CONTACTS,
-            msg.TOOLBAR_CHAR_NOTES,
-            msg.TOOLBAR_CHAR_IMAGE,
-            msg.TOOLBAR_CHAR_LAYOUT
+            (msg.TOOLBAR_CHAR_DATA, "img/data.png"),
+            (msg.TOOLBAR_CHAR_EQUIP, "img/backpack.png"),
+            (msg.TOOLBAR_CHAR_CONTACTS, "img/contacts.png"),
+            (msg.TOOLBAR_CHAR_NOTES, "img/note.png"),
+            (msg.TOOLBAR_CHAR_IMAGE, "img/char_image.png"),
+            (msg.TOOLBAR_CHAR_LAYOUT, "img/pdf.png")
         ]
+        width = 122
 
-        for button_label in buttons:
-            button = tk.Button(self.toolbar, text=button_label)
+        for i, label in enumerate(buttons):
+            image = ImageTk.PhotoImage(file=label[1])
+            button = tk.Button(
+                self.toolbar,
+                width=width,
+                text=label[0],
+                image=image,
+                compound=tk.TOP
+            )
+            button.image = image
             button.config(
-                command=lambda label=button_label:
+                command=lambda label=label[0]:
                 self._switchWindow(label)
             )
-            button.pack(side=tk.LEFT)
+            button.grid(row=0, column=i, sticky=tk.EW)
 
     def newChar(self):
         """ Creating a new empty character template """

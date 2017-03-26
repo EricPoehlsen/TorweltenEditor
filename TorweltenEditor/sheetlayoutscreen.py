@@ -11,6 +11,28 @@ msg = config.Messages()
 
 
 class LayoutScreen(tk.Frame):
+    sizes = {
+        page.SINGLE: (1, 1),
+        page.DOUBLE: (2, 1),
+        page.TRIPLE: (3, 1),
+        page.FULL: (4, 1),
+        page.WIDE: (1, 2),
+        page.QUART: (2, 2),
+        page.BIG: (3, 2),
+        page.HALF: (4, 2)
+    }
+
+    mod_types = {
+        page.MOD_ATTRIBUTES: msg.PDF_ATTRIBUTES,
+        page.MOD_TRAITS: msg.PDF_TRAITS,
+        page.MOD_SKILLS: msg.PDF_SKILLS,
+        page.MOD_EQUIPMENT: msg.PDF_EQUIPMENT,
+        page.MOD_WEAPONS: msg.PDF_WEAPONS,
+        page.MOD_CONTACTS: msg.PDF_CONTACTS,
+        page.MOD_EWT: msg.PDF_EWT,
+        page.MOD_IMAGE: msg.PDF_IMAGE,
+        page.MOD_NOTES: msg.PDF_NOTES
+    }
 
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
@@ -18,33 +40,16 @@ class LayoutScreen(tk.Frame):
         self.char = app.char
         self.open_windows = app.open_windows
         
-        self.sizes = {
-            page.SINGLE: (1, 1),
-            page.DOUBLE: (2, 1),
-            page.TRIPLE: (3, 1),
-            page.FULL: (4, 1),
-            page.WIDE: (1, 2),
-            page.QUART: (2, 2),
-            page.BIG: (3, 2),
-            page.HALF: (4, 2)
-        }
-
-        self.mod_types = {
-            page.MOD_ATTRIBUTES: msg.PDF_ATTRIBUTES,
-            page.MOD_TRAITS: msg.PDF_TRAITS,
-            page.MOD_SKILLS: msg.PDF_SKILLS,
-            page.MOD_EQUIPMENT: msg.PDF_EQUIPMENT,
-            page.MOD_WEAPONS: msg.PDF_WEAPONS,
-            page.MOD_CONTACTS: msg.PDF_CONTACTS,
-            page.MOD_EWT: msg.PDF_EWT,
-            page.MOD_IMAGE: msg.PDF_IMAGE,
-            page.MOD_NOTES: msg.PDF_NOTES
-        }
-
         self.template = None
-        self.template = self._newTemplate()
-        
+        self.grid = []
+
         self.active_page = 1
+        self.pages = 0
+
+        self._getTemplate()
+        if self.template is None:
+            self.template = self._newTemplate()
+
         self.pages = len(self.template.findall("page"))
         
         # for display .. 
@@ -54,10 +59,9 @@ class LayoutScreen(tk.Frame):
             pages=str(self.pages)
         )
         self.cur_page.set(page_label)
-        
-        self.grid = []
+
         self.widgets = {}
-        
+
         self.toolbar = tk.Frame(self)
         self.showToolbar(self.toolbar)
 
@@ -504,15 +508,25 @@ class LayoutScreen(tk.Frame):
             'parent': self,
             'title': 'Charakterbogentemplate laden ...',
         }
-        file = tkfd.askopenfile(mode="rb", **options)
-        if file:
-            self.template = et.parse(file)
-            file.close()
-            self.pages = len(self.template.findall("page"))
-            self._generateGrid()
-            self._switchPage(0)
+        filename = tkfd.askopenfilename(**options)
+        if filename:
+            with open(filename, mode="rb") as file:
+                self.char.setPDFTemplate(filename)
+                self.template = et.parse(file)
+                self.pages = len(self.template.findall("page"))
+                self._generateGrid()
+                self._switchPage(0)
         else:
             pass
+
+    def _getTemplate(self):
+        filename = self.char.getPDFTemplate()
+        print(filename)
+        if filename:
+            with open(filename, mode="rb") as file:
+                self.template = et.parse(file)
+                self._generateGrid()
+                self._switchPage(0)
 
     # save the current template to disk ... 
     def _saveTemplate(self):
@@ -525,11 +539,16 @@ class LayoutScreen(tk.Frame):
             "parent": self,
             "title": "Charakterbogentemplate speichern ...",
         }
-        file = tkfd.asksaveasfile(mode="wb", **options)
-        if file:
-            self.template.write(file, encoding="utf-8", xml_declaration=True)
-            file.close()
- 
+        filename = tkfd.asksaveasfilename(**options)
+        if filename:
+            with open(filename, mode="wb") as file:
+                self.template.write(
+                    file,
+                    encoding="utf-8",
+                    xml_declaration=True
+                )
+                self.char.setPDFTemplate(filename)
+
     def _generateGrid(self):
         self.grid = []
         pages = self.template.findall("page")
