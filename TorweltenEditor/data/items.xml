@@ -333,14 +333,14 @@
 	</group>
 
 	<group name = "Geld und Wertgegenstände" parent = "2" id = "2-4">
-		<item name = "Banknote 100 Rand" price = "100" weight = "2" type = "Geld" parent = "2-4">
+		<item name = "Banknote 100 Rand" price = "100" weight = "2" type = "money" parent = "2-4">
 			<description>Polyesterbanknote herausgegeben vom DeBeer Bankenkonsortium, ein weithin anerkanntes Zahlungsmittel</description>
 			<pack name = "ein Stück" quantity = "1"/>
 			<pack name = "dünnes Bündel" quantity = "25"/>
 			<pack name = "dickes Bündel" quantity = "100"/>
 		</item>
 		
-		<item name = "Banknote 50 Rand" price = "50" weight = "2" type = "Geld" parent = "2-4">
+		<item name = "Banknote 50 Rand" price = "50" weight = "2" type = "money" parent = "2-4">
 			<description>Eine Banknote herausgegeben vom DeBeer Handelskonsortium. Ein weithin anerkanntes Zahlungsmittel</description>
 		</item>
 	</group>
