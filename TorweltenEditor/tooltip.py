@@ -37,18 +37,22 @@ class Balloon(tk.Toplevel):
         self.overrideredirect(True)
 
         x, y = self.winfo_pointerxy()
-
-        label = tk.Label(
+        frame = tk.Frame(
             self,
+            bg="#555533",
+        )
+        frame.pack(anchor=tk.CENTER)
+        label = tk.Label(
+            frame,
             text=msg,
             bg="#ffffe0",
             fg="#555533",
-            relief=tk.SOLID,
-            borderwidth=1,
+            # relief=tk.SOLID,
+            # borderwidth=1,
         )
-        label.pack(anchor=tk.S)
+        label.pack(anchor=tk.CENTER, padx=1, pady=1, ipadx=2, ipady=1)
         geometry = "+{x}+{y}".format(
             x=x,
-            y=y - label.winfo_reqheight() - 5
+            y=y - label.winfo_reqheight() - 8
         )
         self.geometry(geometry)

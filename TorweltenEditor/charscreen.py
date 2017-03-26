@@ -206,9 +206,6 @@ class CharScreen(tk.Frame):
         new_traits_button.pack(fill=tk.X)
         traits_frame.pack(fill=tk.BOTH, expand=1)
 
-        # TODO (Eric): This is just a text for the tooltip
-        new_traits_button.bind("<Enter>", self.showTooltip)
-
         frame_2.pack(side=tk.LEFT, anchor=tk.N, fill=tk.Y, expand=1)
 
         # this frame holds the character skills ... 
@@ -543,17 +540,3 @@ class CharScreen(tk.Frame):
 
     def showSkillInfo(self, name):
         window = SkillInfo(self, name)
-
-    def showTooltip(self, event):
-        widget = event.widget
-        buttontext = widget.cget("text")
-
-        infos = {
-            msg.CS_ADD_TRAIT: msg.TT_ADD_TRAITS
-        }
-
-        ToolTip(
-            self.winfo_toplevel(),
-            event=event,
-            message=infos[buttontext]
-        )

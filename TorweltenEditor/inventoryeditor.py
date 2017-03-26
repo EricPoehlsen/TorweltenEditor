@@ -10,6 +10,7 @@ msg = config.Messages()
 val = config.Values()
 it = config.ItemTypes()
 
+
 class InventoryEditor(tk.Toplevel):
     """ This class creates an inventory shop to add items to the inventory
 
@@ -700,28 +701,6 @@ class NewItem(tk.Frame):
         # show again, to make sure a new item is generated ...
         self.displayItem()
 
-    def showTooltip(self, event, caller):
-        """ Displaying tool tips"""
-
-        infos = {
-            "name": msg.IE_TT_NAME,
-            "quantity": msg.IE_TT_QUANTITY,
-            "quality": msg.IE_TT_QUALITY,
-            "price": msg.IE_TT_PRICE,
-            "weight": msg.IE_TT_WEIGHT,
-            "avail": msg.IE_TT_AVAIL,
-            "damage": msg.IE_TT_DAMAGE,
-            "caliber": msg.IE_TT_CALIBER,
-            "container": msg.IE_TT_CONTAINER
-        }
-
-        ToolTip(
-            self.winfo_toplevel(),
-            event=event,
-            message=infos[caller]
-        )
-
-
 class CustomItem(tk.Frame):
     def __init__(self, parent, main, **kwargs):
         super().__init__(parent, **kwargs)
@@ -771,11 +750,6 @@ class CustomItem(tk.Frame):
         self.item_data["damage"] = damage_var
         damage_entry = tk.Entry(damage_frame, textvariable=damage_var, width=10)
         damage_entry.pack(side=tk.LEFT)
-        damage_entry.bind(
-            "<Enter>",
-            lambda e:
-            self.showTooltip(e, "damage")
-        )
         add_damage = tk.StringVar()
         self.item_data["add_damage"] = add_damage
         checkbox = tk.Checkbutton(
@@ -800,11 +774,6 @@ class CustomItem(tk.Frame):
             caliber_frame,
             textvariable=caliber_var,
             width=15
-        )
-        caliber_entry.bind(
-            "<Enter>",
-            lambda e:
-            self.showTooltip(e, "caliber")
         )
         caliber_entry.pack(side=tk.LEFT)
         tk.Label(
@@ -848,11 +817,6 @@ class CustomItem(tk.Frame):
             width=25
         )
         container_entry.pack(side=tk.LEFT)
-        container_entry.bind(
-            "<Enter>",
-            lambda e:
-            self.showTooltip(e, "container")
-        )
         add_container = tk.StringVar()
         self.item_data["add_container"] = add_container
         checkbox = tk.Checkbutton(
@@ -1153,28 +1117,6 @@ class CustomItem(tk.Frame):
             desc.text = description
             self.new_item = new_item
             self.addItem(text=False)
-
-    def showTooltip(self, event, caller):
-        """ Displaying tool tips"""
-
-        infos = {
-            "name": msg.IE_TT_NAME,
-            "quantity": msg.IE_TT_QUANTITY,
-            "quality": msg.IE_TT_QUALITY,
-            "price": msg.IE_TT_PRICE,
-            "weight": msg.IE_TT_WEIGHT,
-            "avail": msg.IE_TT_AVAIL,
-            "damage": msg.IE_TT_DAMAGE,
-            "caliber": msg.IE_TT_CALIBER,
-            "container": msg.IE_TT_CONTAINER
-        }
-
-        ToolTip(
-            self.winfo_toplevel(),
-            event=event,
-            message=infos[caller]
-        )
-
 
 class CustomClothing(tk.Frame):
     """ A submodule to generate custom clothing items
