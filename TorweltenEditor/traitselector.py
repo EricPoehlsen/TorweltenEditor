@@ -173,10 +173,14 @@ class TraitSelector(tk.Toplevel):
 
     # the player selects a trait
     def displayTraitInfo(self, event):
+        selection = event.widget.curselection()
+        if not selection:
+            return
+
         self.info_subtrait_vars = {}
         self.info_subtrait_tcl = {}
         self.trait_description = ""
-        selection = event.widget.curselection()
+
         selected = ""
         for item in selection:
             selected = self.list_box.get(item)

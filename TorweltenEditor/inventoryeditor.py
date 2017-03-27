@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from PIL import ImageTk
 import xml.etree.ElementTree as et
 import config
@@ -14,8 +15,6 @@ class InventoryEditor(tk.Toplevel):
     """ This class creates an inventory shop to add items to the inventory
 
     main (EquipmentScreen): the program module using this window
-
-
     """
 
     def __init__(self, main):
@@ -24,31 +23,36 @@ class InventoryEditor(tk.Toplevel):
         self.char = main.char
         self.itemlist = main.itemlist
         self.main = main
+        self.foldericon = ImageTk.PhotoImage(file="img/folder.png")
 
-        self.items = None
+        self.items = self.itemlist.getAllItems()
         self.cur_selection = 0
         
-        # prepare variables for the item
-        self.item = 0
-        self.new_item = et.Element("item")
-        self.item_data = {}
-        self.item_data_trace = {}
-        self.item_desc_edited = False
-
         # costruct the window
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.title(msg.IE_TITLE)
-        self.content_frame = tk.Frame(self)
-        
-        self.group_frame = tk.Frame(self.content_frame)
-        self.group_frame.pack(side=tk.LEFT, fill=tk.Y, expand=1)
-        
-        self.right_frame = tk.Frame(self.content_frame)
-        self.main_display = tk.Frame(self.right_frame)
-        
-        self.selector_list_frame = tk.Frame(self.main_display)
-        self.selector_list = tk.Listbox(self.selector_list_frame, width=30)
-        self.selector_list.bind("<<ListboxSelect>>", self.selectionChanged)
+
+        self.columnconfigure(0, weight=0)
+        self.columnconfigure(1, weight=100)
+
+        self.selection_frame = tk.Frame(self)
+        self.selection_frame.grid(
+            row=0,
+            column=0,
+            sticky=tk.NSEW
+        )
+
+        self.toolbar = tk.Frame(self.selection_frame)
+        self.toolbar.pack(fill=tk.X, expand=1)
+
+        self.selector_list_frame = tk.Frame(self.selection_frame)
+        self.selector_list = ttk.Treeview(
+            self.selector_list_frame,
+            selectmode=tk.BROWSE,
+            show="tree",
+            height=21
+        )
+        self.selector_list.bind("<<TreeviewSelect>>", self.selectionChanged)
         self.selector_scroll = tk.Scrollbar(
             self.selector_list_frame,
             orient=tk.VERTICAL,
@@ -58,15 +62,207 @@ class InventoryEditor(tk.Toplevel):
         self.selector_scroll.pack(side=tk.RIGHT, fill=tk.Y, expand=1)
         self.selector_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.selector_list_frame.pack(
-            side=tk.LEFT,
             fill=tk.Y,
             expand=1,
             anchor=tk.W
         )
         self.selector_list.focus()
 
-        self.item_frame = tk.Frame(self.main_display)
-        self.item_title_frame = tk.Frame(self.item_frame)
+        self.main_display = tk.Frame(self)
+
+        self.main_display.grid(
+            row=0,
+            column=1,
+            sticky=tk.NSEW
+        )
+
+        self.displayModules()
+        self.displayItems()
+        self._setMinSize()
+
+    def _setMinSize(self):
+        self.update_idletasks()
+        width=self.winfo_width()
+        height=self.winfo_height()
+        self.minsize(width, height)
+
+    def _clearList(self):
+        current = self.selector_list.get_children()
+        self.selector_list.delete(*current)
+
+    def displayItems(self):
+        self._clearList()
+
+        # clear the sub_module frame
+        widgets = self.main_display.winfo_children()
+        for widget in widgets:
+            widget.destroy()
+
+        item_screen = NewItem(self.main_display, self)
+        item_screen.pack(fill=tk.BOTH, expand=1)
+
+        nodes = {}
+        groups = self.itemlist.getGroups()
+
+        for group in groups:
+            group_id = group.get("id", "0")
+            parent_id = group.get("parent", "")
+            parent = nodes.get(parent_id, "")
+            nodes[group_id] = self.selector_list.insert(
+                parent,
+                1000,
+                image=self.foldericon,
+                text=group.get("name", "...")
+            )
+
+        for item in self.items:
+            parent_id = item.get("parent", "")
+            parent = nodes.get(parent_id, "")
+            self.selector_list.insert(
+                parent,
+                1000,
+                text=item.get("name")
+            )
+
+    def displayModules(self):
+        list_icon = ImageTk.PhotoImage(file="img/tree_list.png")
+        item_list = tk.Button(
+            self.toolbar,
+            image=list_icon,
+            command=self.displayItems
+        )
+        ToolTip(item_list, msg.IE_TT_LIST)
+        item_list.image = list_icon
+        item_list.pack(side=tk.LEFT)
+
+        shirt_icon = ImageTk.PhotoImage(file="img/suit.png")
+        clothing = tk.Button(
+            self.toolbar,
+            image=shirt_icon,
+            command=self.customClothing
+        )
+        ToolTip(clothing, msg.IE_TT_CE)
+        clothing.image = shirt_icon
+        clothing.pack(side=tk.LEFT)
+
+        custom_icon = ImageTk.PhotoImage(file="img/design.png")
+        custom = tk.Button(
+            self.toolbar,
+            image=custom_icon,
+            command=self.customItem
+        )
+        ToolTip(custom, msg.IE_TT_CUSTOM)
+        custom.image = custom_icon
+        custom.pack(side=tk.LEFT)
+
+    def selectionChanged(self, event=None):
+        """ Checks if the selected item needs to be changed
+
+        Args:
+            event (unused): passed from the .bind()
+        """
+
+        selection = self.selector_list.selection()
+        if self.cur_selection != self.selector_list.item(selection):
+            self.displayItem()
+
+    def displayItem(self):
+        selection = self.selector_list.selection()
+
+        if not selection:
+            return
+
+        element = self.selector_list.item(selection)
+        selected_name = element.get("text")
+
+        # is it an item or a group`?
+        for item in self.items:
+            if item.get("name") == selected_name:
+                break
+        else:
+            return
+
+        self.cur_selection = element
+
+        widgets = self.main_display.winfo_children()
+        for widget in widgets:
+            widget.destroy()
+
+        item_screen = NewItem(self.main_display, self)
+        item_screen.pack(fill=tk.BOTH, expand=1)
+
+    def customItem(self):
+        """ Creating a new custom item """
+
+        # hiding the standard item frame
+        self._clearList()
+
+        # clear the sub_module frame
+        widgets = self.main_display.winfo_children()
+        for widget in widgets:
+            widget.destroy()
+
+#        width = self.main_display.winfo_width()
+#        height = self.main_display.winfo_height()
+
+        custom_item = CustomItem(
+            self.main_display,
+            self.main,
+            # width=width,
+            # height=height
+        )
+        custom_item.pack(fill=tk.BOTH, expand=1)
+
+    def customClothing(self):
+        """ Creating a new custom clothing item """
+
+        # hiding the standard item frame
+        self._clearList()
+
+        # clear the sub_module frame
+        widgets = self.main_display.winfo_children()
+        for widget in widgets:
+            widget.destroy()
+
+        width = self.main_display.winfo_width()
+        height = self.main_display.winfo_height()
+
+        custom_clothing = CustomClothing(
+            self.main_display,
+            self.main,
+            width=width,
+            height=height
+        )
+        custom_clothing.grid(row=0, column=0, sticky=tk.NSEW)
+
+    def close(self):
+        self.main.open_windows["inv"] = 0
+        self.destroy()
+
+
+class NewItem(tk.Frame):
+    def __init__(self, parent, main):
+        super().__init__(parent)
+
+        self.char = main.char
+        self.itemlist = main.itemlist
+        self.main = main
+
+        self.selection = main.cur_selection
+
+        self.items = main.items
+
+        # prepare variables for the item
+        self.item = 0
+        self.new_item = et.Element("item")
+        self.item_data = {}
+        self.item_data_trace = {}
+        self.item_desc_edited = False
+
+        self.rowconfigure(0, weight=0)
+        self.rowconfigure(1, weight=100)
+        self.rowconfigure(2, weight=0)
+        self.item_title_frame = tk.Frame(self)
         self.item_title = tk.Label(
             self.item_title_frame,
             font="Arial 16 bold",
@@ -86,118 +282,25 @@ class InventoryEditor(tk.Toplevel):
             text=msg.IE_COST
         )
         self.item_price.pack(side=tk.RIGHT, anchor=tk.E)
-        self.item_title_frame.pack(
-            side=tk.TOP, anchor=tk.NW, fill=tk.X)
+        self.item_title_frame.grid(row=0, column=0, sticky=tk.NSEW)
         self.item_info_text = tk.Text(
-            self.item_frame, width=70, height=12, wrap=tk.WORD
+            self, width=70, height=18, wrap=tk.WORD
         )
         self.item_info_text.bind("<BackSpace>", self.descriptionEdited)
         self.item_info_text.bind("<Delete>", self.descriptionEdited)
         self.item_info_text.bind("<space>", self.descriptionEdited)
-        self.item_info_text.pack()
-        self.item_add_frame = tk.Frame(self.item_frame)
-        
-        self.item_add_frame.pack()
-        self.item_frame.pack(side=tk.LEFT)
+        self.item_info_text.grid(row=1, column=0, sticky=tk.NSEW)
+        self.item_add_frame = tk.Frame(self)
 
-        self.main_display.pack(fill=tk.BOTH, expand=1, anchor=tk.W)
-        self.right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
-        
-        self.content_frame.pack(fill=tk.BOTH, expand=1)
+        self.item_add_frame.grid(row=2, column=0, sticky=tk.S)
 
-        # reserved for sub_modules ...
-        self.sub_module = tk.Frame(self.main_display)
-
-        self.displayGroups()
-
-    def displayGroups(self):
-        # clear the current buttons
-        current_group_buttons = self.group_frame.winfo_children()
-        for widget in current_group_buttons:
-            widget.destroy()
-
-        #  clear the itemlist
-        self.selector_list.delete(0, tk.END)
-
-        groups = self.itemlist.getGroups()
-        for group in groups:
-            name = group.get("name")
-            button = tk.Button(self.group_frame, text=name, width=25)
-            button.bind("<Button-1>", self.displaySubgroups)
-            button.pack()
-        button = tk.Button(self.group_frame, text=msg.IE_CUSTOM_ITEM, width=25)
-        button.bind("<Button-1>", self.customItem)
-        button.pack()
-    
-    def displaySubgroups(self, event):
-        if not self.item_frame.winfo_ismapped():
-            self.displayItemFrame()
-
-        clicked_button = event.widget
-        group_name = clicked_button.cget("text")
-        group = self.itemlist.getGroup(group_name)
-
-        # clear the current buttons
-        current_group_buttons = self.group_frame.winfo_children()
-        for widget in current_group_buttons:
-            widget.destroy()
-
-        back_button = tk.Button(
-            self.group_frame,
-            text=msg.IE_BACK,
-            width=25,
-            command=self.displayGroups
-        )
-        back_button.pack(fill=tk.X)
-        if group_name == msg.IE_CLOTHING_GROUP:
-            editor_button = tk.Button(
-                self.group_frame,
-                text=msg.IE_CLOTHING_EDITOR,
-                width=25,
-                command=self.customClothing
-            )
-            editor_button.pack(fill=tk.X)
-
-        for subgroup in group:
-            button = tk.Button(
-                self.group_frame,
-                text=subgroup.get("name"),
-                width=25
-            )
-            button.bind("<Button-1>", self.displayItems)
-            button.pack()
-
-    def displayItems(self, event):
-        clicked = event.widget
-
-        buttons = self.group_frame.winfo_children()
-        for button in buttons:
-            button.config(background="#eeeeee")
-
-        clicked.config(background="#666666")
-
-        # clear the list ...
-        self.selector_list.delete(0, tk.END)
-
-        # fill the list
-        subgroup_name = clicked.cget("text")
-        self.items = self.itemlist.getItems(subgroup_name)
-
-        for item in self.items:
-            self.selector_list.insert(tk.END, item.get("name"))
-        self.selector_list.focus()
-
-    def selectionChanged(self, event=None):
-        """ Checks if the selected item needs to be changed
-
-        Args:
-            event (unused): passed from the .bind()
-        """
-
-        if self.selector_list.focus_get() == self.selector_list:
-            self.displayItem()
+        self.displayItem()
 
     def displayItem(self):
+        if self.selection == 0:
+            return
+
+        # do not remove item if selection is just unselected ...
 
         # clear the add item frame
         widgets = self.item_add_frame.winfo_children()
@@ -205,17 +308,16 @@ class InventoryEditor(tk.Toplevel):
             widget.destroy()
 
         self.item_desc_edited = False
-        selection_id = self.selector_list.curselection()
 
-        if not selection_id:
-            return
-
-        selected_name = self.selector_list.get(selection_id)
-        self.cur_selection = selection_id
-        
+        selected_name = self.selection.get("text")
         for item in self.items:
             if item.get("name") == selected_name:
                 break
+        else:
+            item = None
+
+        if item is None:
+            return
 
         # create the new item (as we do not want to change our item list)
         new_item = et.Element("item")
@@ -595,112 +697,60 @@ class InventoryEditor(tk.Toplevel):
 
         # add the item
         self.char.addItem(self.new_item)
-        self.main.updateItemList()
+        self.main.main.updateItemList()
         # show again, to make sure a new item is generated ...
-        self.selector_list.selection_set(self.cur_selection)
         self.displayItem()
 
-    def customItem(self, event):
-        """ Creating a new custom item 
-        
-        event (unused) called by a click event
-        
-        """
-        
-        # hiding the standard item frame 
-        self.item_frame.pack_forget()
 
-        # clear the sub_module frame
-        widgets = self.sub_module.winfo_children()
-        for widget in widgets:
-            widget.destroy()
+class CustomItem(tk.Frame):
+    def __init__(self, parent, main, **kwargs):
+        super().__init__(parent, **kwargs)
 
-        self.item_data.clear()
-        self.item_data_trace.clear()
+        self.char = main.char
+        self.main = main
 
-        # building the screen an setting up variables to hold the 
-        # given data ... 
-        name_var = tk.StringVar()
-        self.item_data["name"] = name_var
-        top_frame = tk.Frame(self.sub_module)
-        name_frame = tk.LabelFrame(top_frame, text=msg.IE_NAME)
-        tk.Entry(
-            name_frame,
-            width=40,
-            textvariable=name_var
-        ).pack()
-        name_frame.pack(side=tk.LEFT)
-        name_frame.bind("<Enter>", lambda e: self.showTooltip(e, "name"))
+        self.item_data = {}
+        self.item_data_trace = {}
 
-        quantity_var = tk.StringVar()
-        quantity_var.set("1")
-        self.item_data["quantity"] = quantity_var
-        quantity_frame = tk.LabelFrame(top_frame, text=msg.IE_QUANTITY)
-        tk.Entry(
-            quantity_frame,
-            width=7,
-            textvariable=quantity_var
-        ).pack(fill=tk.X)
-        quantity_frame.pack(side=tk.LEFT)
-        quantity_frame.bind("<Enter>", lambda e: self.showTooltip(e, "quantity"))
+        if self.winfo_reqwidth() > 1:
+            self.columnconfigure(0, minsize=self.winfo_reqwidth())
 
-        price_var = tk.StringVar()
-        self.item_data["price"] = price_var
-        price_frame = tk.LabelFrame(top_frame, text=msg.IE_PRICE)
-        tk.Entry(
-            price_frame,
-            width=7,
-            textvariable=price_var
-        ).pack(fill=tk.X)
-        price_frame.pack(side=tk.LEFT)
-        price_frame.bind("<Enter>", lambda e: self.showTooltip(e, "price"))
+        # building the screen an setting up variables to hold the
+        # given data ...
+        top_frame = tk.Frame(self, width=600)
+        top_frame.columnconfigure(0, weight=5)
+        top_frame.columnconfigure(1, weight=1)
+        top_frame.columnconfigure(2, weight=1)
+        top_frame.columnconfigure(3, weight=1)
+        top_frame.columnconfigure(4, weight=1)
+        top_frame.columnconfigure(5, weight=1)
 
-        weight_var = tk.StringVar()
-        self.item_data["weight"] = weight_var
-        weight_frame = tk.LabelFrame(top_frame, text=msg.IE_WEIGHT)
-        tk.Entry(
-            weight_frame,
-            width=7,
-            textvariable=weight_var
-        ).pack(fill=tk.X)
-        weight_frame.pack(side=tk.LEFT)
-        weight_frame.bind("<Enter>", lambda e: self.showTooltip(e, "weight"))
+        data = [
+            ("name", msg.IE_NAME, msg.IE_TT_NAME),
+            ("quantity", msg.IE_QUANTITY, msg.IE_TT_QUANTITY),
+            ("price", msg.IE_PRICE, msg.IE_TT_PRICE),
+            ("quality", msg.IE_QUALITY_S, msg.IE_TT_QUALITY),
+            ("weight", msg.IE_WEIGHT, msg.IE_TT_WEIGHT),
+            ("avail", msg.IE_AVAIL_S, msg.IE_TT_AVAIL)
+        ]
 
-        quality_var = tk.StringVar()
-        quality_var.set("6")
-        self.item_data["quality"] = quality_var
-        quality_frame = tk.LabelFrame(top_frame, text=msg.IE_QUALITY_S)
-        tk.Entry(
-            quality_frame,
-            width=7,
-            textvariable=quality_var
-        ).pack(fill=tk.X)
-        quality_frame.pack(side=tk.LEFT)
-        quality_frame.bind("<Enter>", lambda e: self.showTooltip(e, "quality"))
+        for i, d in enumerate(data):
+            w = 40 if i == 0 else 5
+            var = tk.StringVar()
+            self.item_data[d[0]] = var
+            frame = tk.LabelFrame(top_frame, text=d[1])
+            ToolTip(frame, d[2])
+            entry = tk.Entry(frame, width=w, textvariable=var)
+            entry.pack(fill=tk.X, expand=1)
+            frame.grid(row=0, column=i, sticky="nsew")
 
-        avail_var = tk.StringVar()
-        avail_var.set("0")
-        self.item_data["avail"] = avail_var
-        avail_frame = tk.LabelFrame(top_frame, text=msg.IE_AVAIL_S)
-        tk.Entry(
-            avail_frame,
-            width=7,
-            textvariable=avail_var
-        ).pack(fill=tk.X)
-        avail_frame.pack(side=tk.LEFT)
-        avail_frame.bind("<Enter>", lambda e: self.showTooltip(e, "avail"))
-        top_frame.pack()
+        top_frame.pack(fill=tk.X)
 
-        damage_frame = tk.LabelFrame(self.sub_module, text=msg.IE_DAMAGE_HEADER)
+        damage_frame = tk.LabelFrame(self, text=msg.IE_DAMAGE_HEADER)
         damage_var = tk.StringVar()
         self.item_data["damage"] = damage_var
         damage_entry = tk.Entry(damage_frame, textvariable=damage_var, width=10)
         damage_entry.pack(side=tk.LEFT)
-        damage_entry.bind(
-            "<Enter>",
-            lambda e:
-            self.showTooltip(e, "damage")
-        )
         add_damage = tk.StringVar()
         self.item_data["add_damage"] = add_damage
         checkbox = tk.Checkbutton(
@@ -714,7 +764,7 @@ class InventoryEditor(tk.Toplevel):
         add_damage.set("0")
         damage_frame.pack(fill=tk.X)
 
-        caliber_frame = tk.LabelFrame(self.sub_module, text=msg.IE_CALIBER_HEAD)
+        caliber_frame = tk.LabelFrame(self, text=msg.IE_CALIBER_HEAD)
         tk.Label(
             caliber_frame,
             text=msg.IE_CALIBER
@@ -725,11 +775,6 @@ class InventoryEditor(tk.Toplevel):
             caliber_frame,
             textvariable=caliber_var,
             width=15
-        )
-        caliber_entry.bind(
-            "<Enter>",
-            lambda e:
-            self.showTooltip(e, "caliber")
         )
         caliber_entry.pack(side=tk.LEFT)
         tk.Label(
@@ -758,7 +803,7 @@ class InventoryEditor(tk.Toplevel):
         caliber_frame.pack(fill=tk.X)
 
         container_frame = tk.LabelFrame(
-            self.sub_module,
+            self,
             text=msg.IE_CONTAINER
         )
         tk.Label(
@@ -773,11 +818,6 @@ class InventoryEditor(tk.Toplevel):
             width=25
         )
         container_entry.pack(side=tk.LEFT)
-        container_entry.bind(
-            "<Enter>",
-            lambda e:
-            self.showTooltip(e, "container")
-        )
         add_container = tk.StringVar()
         self.item_data["add_container"] = add_container
         checkbox = tk.Checkbutton(
@@ -792,14 +832,13 @@ class InventoryEditor(tk.Toplevel):
         container_frame.pack(fill=tk.X)
 
         text = msg.IE_DESCRIPTION
-        description_frame = tk.LabelFrame(self.sub_module, text=text)
-        description = tk.StringVar()
-        self.item_data["description"] = description
-        description_entry = tk.Entry(
+        description_frame = tk.LabelFrame(self, text=text)
+        description_entry = tk.Text(
             description_frame,
-            textvariable=description,
-            width=40
+            width=40,
+            height=10
         )
+        self.item_data["description"] = description_entry
         description_entry.pack(side=tk.LEFT, fill=tk.X, expand=1)
         description_frame.pack(fill=tk.X)
 
@@ -818,24 +857,22 @@ class InventoryEditor(tk.Toplevel):
         self.item_data["type"] = type_var
 
         tk.OptionMenu(
-            self.sub_module,
+            self,
             type_var,
             *itemtypes
         ).pack(fill=tk.X)
 
         tk.Button(
-            self.sub_module,
+            self,
             text=msg.IE_ADD_ITEM,
             command=self._addCustomItem
-        ).pack(fill=tk.X)
-
-        self.sub_module.pack(side=tk.RIGHT)
+        ).pack(fill=tk.BOTH, expand=1)
 
     def _addCustomItem(self):
-        """ Building a custom item from input 
-        
-        called as command on the appropriate button ... 
-        
+        """ Building a custom item from input
+
+        called as command on the appropriate button ...
+
         """
 
         # The data
@@ -853,7 +890,7 @@ class InventoryEditor(tk.Toplevel):
         container = self.item_data["container"].get()
         add_container = self.item_data["add_container"].get()
         item_type = self.item_data["type"].get()
-        description = self.item_data["description"].get()
+        description = self.item_data["description"].get("0.0", tk.END)
 
         # validating the user imputs ...
         valid = True
@@ -923,7 +960,7 @@ class InventoryEditor(tk.Toplevel):
                     s = int(damage_val[0])
                     d = int(damage_val[1])
 
-                    if not -9 <= s <= 9 or not-7 <= d <= 7:
+                    if not -9 <= s <= 9 or not -7 <= d <= 7:
                         valid = False
                         self.item_data["damage"].set(msg.IE_INVALID)
                 else:
@@ -1080,55 +1117,8 @@ class InventoryEditor(tk.Toplevel):
                 description = " "
             desc.text = description
             self.new_item = new_item
-            self.addItem(text=False)
-
-    def customClothing(self):
-        """ Creating a new custom clothing item
-
-        event (unused) called by a click event
-
-        """
-
-        # hiding the standard item frame
-        self.item_frame.pack_forget()
-
-        # clear the sub_module frame
-        widgets = self.sub_module.winfo_children()
-        for widget in widgets:
-            widget.destroy()
-
-        custom_clothing = CustomClothing(self.sub_module, self.main)
-        custom_clothing.pack(fill=tk.BOTH)
-        self.sub_module.pack(side=tk.RIGHT)
-
-    def displayItemFrame(self):
-        self.sub_module.pack_forget()
-        self.item_frame.pack(side=tk.RIGHT)
-
-    def showTooltip(self, event, caller):
-        """ Displaying tool tips"""
-
-        infos = {
-            "name": msg.IE_TT_NAME,
-            "quantity": msg.IE_TT_QUANTITY,
-            "quality": msg.IE_TT_QUALITY,
-            "price": msg.IE_TT_PRICE,
-            "weight": msg.IE_TT_WEIGHT,
-            "avail": msg.IE_TT_AVAIL,
-            "damage": msg.IE_TT_DAMAGE,
-            "caliber": msg.IE_TT_CALIBER,
-            "container": msg.IE_TT_CONTAINER
-        }
-
-        ToolTip(
-            self.winfo_toplevel(),
-            event=event,
-            message=infos[caller]
-        )
-
-    def close(self):
-        self.main.open_windows["inv"] = 0
-        self.destroy()
+            self.char.addItem(self.new_item)
+            self.main.updateItemList()
 
 
 class CustomClothing(tk.Frame):
@@ -1163,14 +1153,17 @@ class CustomClothing(tk.Frame):
         [msg.IE_CE_TRIMMINGS, 0, 1, 1.5]
     ]
 
-    def __init__(self, parent, main):
-        super().__init__(parent)
+    def __init__(self, parent, main, **kwargs):
+        super().__init__(parent, **kwargs)
 
         self.char = main.char
         self.main = main
 
         self.item_data = {}
         self.item_data_trace = {}
+
+        if self.winfo_reqwidth() > 1:
+            self.columnconfigure(0, minsize=self.winfo_reqwidth())
 
         # we need to access some widgets
         self.buy = None
@@ -1186,7 +1179,7 @@ class CustomClothing(tk.Frame):
         # building the screen an setting up variables to hold the
         # given data ...
         top_frame = self._topView(self)
-        top_frame.pack(fill=tk.X, expand=1)
+        top_frame.grid(row=0, column=0, sticky=tk.NSEW)
         middle_frame = tk.Frame(self)
         selection = self._selectionView(middle_frame)
         selection.pack(side=tk.LEFT, fill=tk.X, expand=1)
@@ -1201,9 +1194,9 @@ class CustomClothing(tk.Frame):
         )
         self.buy.pack(fill=tk.BOTH, expand=1)
         right_frame.pack(side=tk.LEFT, fill=tk.Y)
-        middle_frame.pack(fill=tk.X)
+        middle_frame.grid(row=1, column=0, sticky=tk.NSEW)
         descripton_frame = self._descriptionView(self)
-        descripton_frame.pack(fill=tk.X)
+        descripton_frame.grid(row=2, column=0, sticky=tk.NSEW)
 
     def _topView(self, parent):
         """ Creating a frame with the name of the item """
@@ -1218,7 +1211,10 @@ class CustomClothing(tk.Frame):
             width=40,
             textvariable=name_var
         ).pack(fill=tk.BOTH, expand=1)
-        name_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+        name_frame.pack(
+            side=tk.LEFT,
+            fill=tk.BOTH,
+            expand=1)
         random_frame = tk.LabelFrame(frame, text=msg.IE_CE_RANDOM)
         random_button = tk.Button(
             random_frame,
@@ -1228,7 +1224,6 @@ class CustomClothing(tk.Frame):
         random_button.pack(fill=tk.X)
         random_frame.pack(side=tk.LEFT)
 
-        # name_frame.bind("<Enter>", lambda e: self.showTooltip(e, "name"))
         return frame
 
     def _selectionView(self, parent):
@@ -1317,17 +1312,29 @@ class CustomClothing(tk.Frame):
         """ adds option icons above the selection grid """
 
         images = [
-            ImageTk.PhotoImage(file="images/ie_tick.png"),
-            ImageTk.PhotoImage(file="images/ie_armor1.png"),
-            ImageTk.PhotoImage(file="images/ie_armor2.png"),
-            ImageTk.PhotoImage(file="images/ie_closure.png"),
-            ImageTk.PhotoImage(file="images/ie_complex.png"),
-            ImageTk.PhotoImage(file="images/ie_fabric.png"),
-            ImageTk.PhotoImage(file="images/ie_trimmings.png"),
-            ImageTk.PhotoImage(file="images/ie_pockets.png")
+            ImageTk.PhotoImage(file="img/ie_tick.png"),
+            ImageTk.PhotoImage(file="img/ie_armor1.png"),
+            ImageTk.PhotoImage(file="img/ie_armor2.png"),
+            ImageTk.PhotoImage(file="img/ie_closure.png"),
+            ImageTk.PhotoImage(file="img/ie_complex.png"),
+            ImageTk.PhotoImage(file="img/ie_fabric.png"),
+            ImageTk.PhotoImage(file="img/ie_trimmings.png"),
+            ImageTk.PhotoImage(file="img/ie_pockets.png")
         ]
+        tooltips = [
+            msg.IE_TT_SELECTED,
+            msg.IE_TT_ARMOR1,
+            msg.IE_TT_ARMOR2,
+            msg.IE_TT_CLOSURE,
+            msg.IE_TT_COMPLEX,
+            msg.IE_TT_FABRIC,
+            msg.IE_TT_TRIMMINGS,
+            msg.IE_TT_POCKETS,
+        ]
+
         for col, image in enumerate(images, start=1):
             icon = tk.Label(parent, image=image)
+            ToolTip(icon, tooltips[col-1])
             icon.image = image
             icon.grid(row=0, column=col)
 
@@ -1411,36 +1418,29 @@ class CustomClothing(tk.Frame):
             *closures
         )
         self.closures.config(state=tk.DISABLED)
+        ToolTip(self.closures, msg.IE_TT_CLOSURE_TYPE)
         self.closures.pack(fill=tk.X, expand=1)
 
         # name of material
         subframe = tk.Frame(frame)
-        tk.Label(subframe, text=msg.IE_CE_FABRIC_NAME).pack(
-            side=tk.LEFT,
-            expand=1,
-            anchor=tk.W
-        )
+        label = tk.Label(subframe, text=msg.IE_CE_FABRIC_NAME)
+        label.pack(side=tk.LEFT, expand=1, anchor=tk.W)
         self.item_data["material"] = m_var = tk.StringVar()
-        tk.Entry(subframe, width=20, textvariable=m_var).pack(
-            side=tk.LEFT,
-            fill=tk.X,
-            expand=1
-        )
+        entry = tk.Entry(subframe, width=20, textvariable=m_var)
+        ToolTip(entry, msg.IE_TT_MATERIAL)
+        entry.pack(side=tk.LEFT, fill=tk.X, expand=1)
         subframe.pack(fill=tk.X)
+
         # color of clothing
         subframe = tk.Frame(frame)
-        tk.Label(subframe, text=msg.IE_CE_FABRIC_COLOR).pack(
-            side=tk.LEFT,
-            expand=1,
-            anchor=tk.W
-        )
+        label = tk.Label(subframe, text=msg.IE_CE_FABRIC_COLOR)
+        label.pack(side=tk.LEFT, expand=1, anchor=tk.W)
         self.item_data["color"] = c_var = tk.StringVar()
-        tk.Entry(subframe, textvariable=c_var).pack(
-            side=tk.LEFT,
-            fill=tk.X,
-            expand=1
-        )
+        entry = tk.Entry(subframe, textvariable=c_var)
+        ToolTip(entry, msg.IE_TT_COLOR)
+        entry.pack(side=tk.LEFT, fill=tk.X, expand=1)
         subframe.pack(fill=tk.X)
+
         # are this trousers or not?
         self.item_data["trousers"] = t_var = tk.IntVar()
         t_var.set(0)
@@ -1453,6 +1453,7 @@ class CustomClothing(tk.Frame):
             state=tk.DISABLED,
             anchor=tk.W
         )
+        ToolTip(self.trousers, msg.IE_TT_PANTS)
         self.trousers.pack(
             fill=tk.X,
             expand=1
@@ -1463,7 +1464,7 @@ class CustomClothing(tk.Frame):
     def _descriptionView(self, parent):
         self.item_data["description"] = tk.StringVar()
         frame = tk.LabelFrame(parent, text=msg.IE_DESCRIPTION)
-        icon = ImageTk.PhotoImage(file="ui_img/text_signature.png"),
+        icon = ImageTk.PhotoImage(file="img/text_signature.png"),
 
         auto_describe = tk.Button(
             frame,
@@ -1584,7 +1585,10 @@ class CustomClothing(tk.Frame):
         self.item_data[msg.IE_PRICE] = price
 
         if self.buy:
-            text = msg.IE_BUY + "\n" + str(price)
+            price_text = msg.MONEYFORMAT % price
+            price_text = price_text.replace(".", msg.MONEYSPLIT)
+
+            text = msg.IE_BUY + "\n" + price_text
             if price > 0 and len(self.item_data["name"].get()) >= 1:
                 state = tk.NORMAL
             else:
@@ -1706,11 +1710,16 @@ class CustomClothing(tk.Frame):
 
         clothing_names = msg.IE_CLOTHING_NAMES
 
-        key = self._getClothingKey(lookup=True)
+        debug = ""
+        for i in range(1, 8):
+            key = self._getClothingKey(lookup=i)
+            name, gender = clothing_names.get(key, msg.IE_CE_UNKNOWN)
+            debug += "KEY: " + key + "\n"
+            if name != msg.IE_CE_UNKNOWN[0]:
+                break
 
-        print(key)
-
-        name, gender = clothing_names.get(key, msg.IE_CE_UNKNOWN)
+        if name == msg.IE_CE_UNKNOWN[0]:
+            print(debug + name)
 
         gi = ""
         if gender == msg.M: gi = "M"
@@ -1753,7 +1762,7 @@ class CustomClothing(tk.Frame):
             msg.IE_CE_SHIRT[0],
             msg.IE_CE_DRESS[0]
         ]
-        if name in hoodies and key[0] in ["1", "2", "F"]:
+        if name in hoodies and key[0] in ["1", "2", "F", "X"]:
             name = msg.IE_CE_HOOD[0] + name.lower()
 
         display_name = name
@@ -2062,33 +2071,37 @@ class CustomClothing(tk.Frame):
 
         return closure
 
-    def _getClothingKey(self, lookup=False):
+    def _getClothingKey(self, lookup=0):
         """ Generate a description for the item based on the selections
 
         Args:
-            lookup(bool): rewrites the key for a fine graded lookup
-                in the names dictionary
+            lookup(int): rewrites the key for a fine graded lookup
+                in the names dictionary - simplifies on pass 2 and 3
 
         Returns:
             string: selected bodyparts
         """
-
         selection = self._getSelectedOptions()
         body_parts = selection.keys()
-        layers = self.item_data[msg.IE_CE_SINGLE_LAYER]
 
         all_parts = [part[0] for part in self.body_parts]
         key = ""
 
-        head = msg.IE_CE_HEAD
-        neck = msg.IE_CE_NECK
-        torso = msg.IE_CE_TORSO
         hips = msg.IE_CE_HIPS
-        feet = msg.IE_CE_FEET
 
-        material_qualitity = self.item_data.get(msg.IE_CE_SINGLE_LAYER, 1)
+        layers = self.item_data.get(msg.IE_CE_SINGLE_LAYER, 1)
+        it = self._selectionIterator
+        armor1 = sum([1 if i > 1 else 0 for i in it(msg.IE_CE_ARMOR1)])
+        armor2 = sum([1 if i > 1 else 0 for i in it(msg.IE_CE_ARMOR2)])
+        armor = armor1 + 2*armor2
+        if armor > layers: layers = armor
+        material = "1"
+        if layers >= 2:
+            material = "H"
+        if layers >= 4:
+            material = "A"
 
-        for part in all_parts:
+        for i, part in enumerate(all_parts):
             key_element = "0"
 
             if part in body_parts:
@@ -2096,71 +2109,66 @@ class CustomClothing(tk.Frame):
 
                 if lookup:
                     options = selection[part]
-
-                    if part == head:
-                        if options.get(msg.IE_CE_COMPLEX) > 0:
-                            key_element = "2"
-                        if options.get(msg.IE_CE_CANVAS) > 0:
-                            key_element = "F"
-                        if options.get(msg.IE_CE_ARMOR2) > 1:
-                            key_element = "A"
-
-                    if part == neck:
-                        if options.get(msg.IE_CE_COMPLEX) > 0:
-                            key_element = "2"
-                        if options.get(msg.IE_CE_CANVAS) > 0:
-                            key_element = "F"
-
-                    if part == torso:
-                        # rewriting the neck key!
-                        if not key.endswith("0"):
-                            key = key[:-1] + "1"
-
-                        if options.get(msg.IE_CE_CLOSURE) > 0:
+                    if options.get(msg.IE_CE_COMPLEX) > 0:
+                        key_element = "2"
+                    if options.get(msg.IE_CE_CANVAS) > 0:
+                        key_element = "F"
+                    if options.get(msg.IE_CE_CLOSURE) > 0:
+                        if i in [1, 2, 6]:
                             key_element = "C"
-                        if material_qualitity > 1:
-                            key_element = "H"
-
-                    if part == feet and material_qualitity > 1:
-                        key_element = "H"
-
-                if part == hips and self.item_data["trousers"].get() == 1:
-                    key_element = "T"
+                        else:
+                            key_element = "2"
+                    if part == hips and self.item_data["trousers"].get() == 1:
+                        key_element = "T"
 
             key += key_element
 
-        if not lookup:
-            return key
+        if key[1] == "C" and key[2] != "0":
+            key = [i if c != 1 else "2" for c, i in enumerate(key)]
+            key = "".join(key)
 
-        # rewriting some keys ...
-        arms = [3, 4]
-        legs = [7, 8]
+        if lookup >= 3:
+            key = ["X" if i in ["1", "2", "F"] else i for i in key]
+            key = "".join(key)
 
-        # neck
-        if key[2] not in ["0", "1"]:
-            key = [e if i != 1 else "X" for i, e in enumerate(key)]
-            key = "".join(key)
-        # pants and skirts
-        if key[6] in ["1", "T"]:
-            key = [e if i not in legs else "X" for i, e in enumerate(key)]
-            key = "".join(key)
-        # for dress
-        if key[2] not in ["0", "H"] and key[6] == "1":
-            key = [e if i not in arms+legs else "X" for i, e in enumerate(key)]
-            key = "".join(key)
-        """
-        if key[2] != "0":
-            start = ""
-            if key[0] == "0":
-                start += "0"
+        if lookup >= 4:
+            long = []
+            if key[2] != "0" and key[0] == "X":
+                long += [1, 1]
             else:
-                start += "1"
-            if key[1] == "0":
-                start += "0"
+                long += [0, 0]
+            if key[3] == "X":
+                long += [0, 0, 1, 0]
             else:
-                start += "1"
-            key = start + key[2:]
-        """
+                long += [0, 0, 0, 0]
+            if key[7] == "X":
+                long += [0, 0, 1, 0]
+            else:
+                long += [0, 0, 0, 0]
+            key = ["X" if l else i for i, l in zip(key, long)]
+            key = "".join(key)
+
+        if lookup >= 5:
+            if key[2] != "0" and key[0] == "X":
+                long = [1, 1]
+            else:
+                long = [0, 0]
+            if key[2] != "0":
+                long += [0, 1, 1, 0]
+            else:
+                long += [0, 0, 0, 0]
+            if key[6] != "0":
+                long += [0, 1, 1, 0]
+            else:
+                long += [0, 0, 0, 0]
+            key = ["X" if l else i for i, l in zip(key, long)]
+            key = "".join(key)
+
+        if lookup in [2, 4, 6]:
+            key += "X"
+        else:
+            key += material
+
         return key
 
     def _generateClothingKey(self):
@@ -2224,8 +2232,10 @@ class CustomClothing(tk.Frame):
                 var.set(value)
         self.item_data["trousers"].set(0)
 
-        # next we need a key for a valid piece
+        # next we need a coverage key for a valid piece
         select = self._generateClothingKey()
+
+        # are these trousers?
         if select[6] == "1":
             trousers = random.choice([0, 1])
             self.item_data["trousers"].set(trousers)
@@ -2236,9 +2246,27 @@ class CustomClothing(tk.Frame):
                 ):
                     select = "0000000" + select[7:]
 
-        cheap = [fabric for fabric in msg.IE_CE_FABRICS if fabric[3] == 0]
-        normal = [fabric for fabric in msg.IE_CE_FABRICS if fabric[3] == 1]
-        expensive = [fabric for fabric in msg.IE_CE_FABRICS if fabric[3] == 2]
+        # selecting the fabric and quality for the whole piece ...
+        # removing unfitting materials for gloves, shoes and socks first ...
+        unused = []
+        if select[5] != "0":
+            unused = msg.IE_CE_NOT_GLOVES
+        feet = False
+        if select[9] != "0":
+            if select[6] == "0":
+                feet = random.choice(["shoes", "socks"])
+            else:
+                feet = "socks"
+            if feet == "shoes":
+                unused = msg.IE_CE_NOT_SHOES
+            else:
+                unused = msg.IE_CE_NOT_SOCKS
+        fabrics = msg.IE_CE_FABRICS
+        fabrics = [f for f in fabrics if f not in unused]
+
+        cheap = [fabric for fabric in fabrics if fabric[3] == 0]
+        normal = [fabric for fabric in fabrics if fabric[3] == 1]
+        expensive = [fabric for fabric in fabrics if fabric[3] == 2]
 
         price_ranges = {
             0.25: cheap,
@@ -2259,6 +2287,11 @@ class CustomClothing(tk.Frame):
         self.item_data["F"].set(fabric_qualities[i])
 
         fabric, l_min, l_max, p = random.choice(fabrics)
+        if feet == "shoes":
+            l_min = 1
+        if feet == "socks":
+            l_min = 0
+            l_may = 0
         layers = [
             msg.IE_CE_SINGLE_LAYER,
             msg.IE_CE_MULTI_LAYER,
@@ -2282,9 +2315,10 @@ class CustomClothing(tk.Frame):
                 self.item_data["Q"].set(qualities[qual])
                 break
 
-        # color
+        # chose a color
         self._generateRandomColor()
 
+        # randomize per body part options
         closure_count = 0
         for i, value in enumerate(select):
             if value != "0":
@@ -2305,10 +2339,10 @@ class CustomClothing(tk.Frame):
                     armor2.set(10)
                 else:
                     a1 = random.random()
-                    if a1 <= 0.25:
+                    if a1 <= 0.15:
                         armor1.set(10)
                         a2 = random.random()
-                        if a2 <= 0.25:
+                        if a2 <= 0.65:
                             armor2.set(10)
                         else:
                             armor2.set(1)
@@ -2364,7 +2398,7 @@ class CustomClothing(tk.Frame):
                     else:
                         complex.set(0)
 
-                # a lot of fabric
+                # lots of fabric
                 fabric_name = body_part[0] + "_" + msg.IE_CE_CANVAS
                 fabric = self.item_data[fabric_name]
                 has_fabric = {
@@ -2438,9 +2472,12 @@ class CustomClothing(tk.Frame):
         else:
             self.item_data["C"].set(msg.IE_CE_NO_CLOSURE)
 
+        # finally write a description
         self._autoDescription()
 
     def _generateRandomColor(self):
+        """ Generating a pseudo-random color """
+
         def modify(color):
             modificators = [""]
             if color not in msg.NOT_DARK:

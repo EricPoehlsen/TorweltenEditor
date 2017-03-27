@@ -13,8 +13,7 @@ Der Einstieg in das Programm erfolgt über TorweltenEditor.py
 chars/		Standardverzeichnis für Charakterdateien
 data/		Grundlegende Datendateien 
 fonts/		Hier finden sich die Schriftarten
-images/		Bilddateien
-ui_img/		UI-Grafiken [NUR FatCow FarmFresh!]
+img/		UI Grafiken
 templates/  Templates für den PDF Export
 
 Das Programm benötigt Python 3

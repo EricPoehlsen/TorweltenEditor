@@ -10,10 +10,10 @@ class EWTScreen(tk.Frame):
         self.app = app
         self.char = app.char
 
-        self.ewt00 = ImageTk.PhotoImage(file="images/ewt_00.png")
-        self.ewt05 = ImageTk.PhotoImage(file="images/ewt_05.png")
-        self.ewt10 = ImageTk.PhotoImage(file="images/ewt_10.png")
-        self.ewt20 = ImageTk.PhotoImage(file="images/ewt_20.png")
+        self.ewt00 = ImageTk.PhotoImage(file="img/ewt_00.png")
+        self.ewt05 = ImageTk.PhotoImage(file="img/ewt_05.png")
+        self.ewt10 = ImageTk.PhotoImage(file="img/ewt_10.png")
+        self.ewt20 = ImageTk.PhotoImage(file="img/ewt_20.png")
 
         # this var holds the entry field ...
         self.roll_var = tk.StringVar()
@@ -128,21 +128,21 @@ class EWTScreen(tk.Frame):
         ewt = {}
 
         try: 
-            d[1] = ImageTk.PhotoImage(file="images/d1.png")
-            d[2] = ImageTk.PhotoImage(file="images/d2.png")
-            d[3] = ImageTk.PhotoImage(file="images/d3.png")
-            d[4] = ImageTk.PhotoImage(file="images/d4.png")
-            d[5] = ImageTk.PhotoImage(file="images/d5.png")
-            d[6] = ImageTk.PhotoImage(file="images/d6.png")
-            d[7] = ImageTk.PhotoImage(file="images/d7.png")
-            d[8] = ImageTk.PhotoImage(file="images/d8.png")
-            d[9] = ImageTk.PhotoImage(file="images/d9.png")
-            d[10] = ImageTk.PhotoImage(file="images/d0.png")
+            d[1] = ImageTk.PhotoImage(file="img/d1.png")
+            d[2] = ImageTk.PhotoImage(file="img/d2.png")
+            d[3] = ImageTk.PhotoImage(file="img/d3.png")
+            d[4] = ImageTk.PhotoImage(file="img/d4.png")
+            d[5] = ImageTk.PhotoImage(file="img/d5.png")
+            d[6] = ImageTk.PhotoImage(file="img/d6.png")
+            d[7] = ImageTk.PhotoImage(file="img/d7.png")
+            d[8] = ImageTk.PhotoImage(file="img/d8.png")
+            d[9] = ImageTk.PhotoImage(file="img/d9.png")
+            d[10] = ImageTk.PhotoImage(file="img/d0.png")
 
-            ewt["0"] = ImageTk.PhotoImage(file="images/ewt_00.png")
-            ewt["/"] = ImageTk.PhotoImage(file="images/ewt_05.png")
-            ewt["x"] = ImageTk.PhotoImage(file="images/ewt_10.png")
-            ewt["x+"] = ImageTk.PhotoImage(file="images/ewt_20.png")
+            ewt["0"] = ImageTk.PhotoImage(file="img/ewt_00.png")
+            ewt["/"] = ImageTk.PhotoImage(file="img/ewt_05.png")
+            ewt["x"] = ImageTk.PhotoImage(file="img/ewt_10.png")
+            ewt["x+"] = ImageTk.PhotoImage(file="img/ewt_20.png")
 
         except IOError:
             d = {1:"1"}

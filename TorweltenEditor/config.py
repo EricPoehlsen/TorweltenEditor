@@ -5,22 +5,21 @@ constants may be retrieved from XML files ...
 """
 
 
-#defining the EWT
+# defining the EWT
 #       -7  -6  -5  -4  -3  -2  -1   0   1   2   3   4   5   6   7 
-EWT = [[2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,0.5], #  1
-       [2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.0,0.0], #  2
-       [2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.0,0.0,0.0], #  3
-       [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.0,0.0,0.0,0.0], #  4
-       [1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0], #  5
-       [1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0], #  6 
-       [1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0], #  7
-       [1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0], #  8
-       [1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0], #  9
-       [1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]] #  0
+EWT = [[2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,0.5],  # 1
+       [2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.0,0.0],  # 2
+       [2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.0,0.0,0.0],  # 3
+       [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.0,0.0,0.0,0.0],  # 4
+       [1.0,1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0],  # 5
+       [1.0,1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0],  # 6
+       [1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0],  # 7
+       [1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],  # 8
+       [1.0,1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],  # 9
+       [1.0,0.5,0.5,0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]]  # 0
 
 
-
-#THIS CLASS CONTAINS MESSAGES TO BE DISPLAYED ON THE UI OR PDF EXPORTS
+# THIS CLASS CONTAINS MESSAGES TO BE DISPLAYED ON THE UI OR PDF EXPORTS
 class Messages:
     """ Messages provides a variety of strings for the UI and PDF Export
     WARNING: some strings are used as keys in dicts so make sure unicode
@@ -47,7 +46,8 @@ class Messages:
     ITEMNAME = "Bezeichnung"
 
     MULTIPLY = "x"
-    MONEYFORMAT = "%s,%s"
+    MONEYFORMAT = "%.2f R"
+    MONEYSPLIT = ","
     DATEFORMAT = "%d.%m.%Y %H:%M:%S"
 
     # ##### MENU 
@@ -72,11 +72,12 @@ class Messages:
     MENU_ABOUT = "About ..."
 
     # TOOLBAR
-    TOOLBAR_CHAR_DATA = "Daten, Fertigkeiten, Eigenschaften"
-    TOOLBAR_CHAR_EQUIP = "Ausrüstung und Waffen"
-    TOOLBAR_CHAR_CONTACTS = "Soziales und Kontakte"
+    TOOLBAR_CHAR_DATA = "Charakterdaten"
+    TOOLBAR_CHAR_EQUIP = "Inventar"
+    TOOLBAR_CHAR_CONTACTS = "Kontakte"
     TOOLBAR_CHAR_IMAGE = "Charakterbild"
-    TOOLBAR_CHAR_LAYOUT = "Layout"
+    TOOLBAR_CHAR_NOTES = "Notizen"
+    TOOLBAR_CHAR_LAYOUT = "PDF-Export"
 
     # CHAR SCREEN
     CS_BASE_DATA = "Basisdaten"
@@ -113,7 +114,6 @@ class Messages:
     SS_BASE = "[G]"
     SS_SPEC = "[S]"
     SS_SEARCH = "Suche"
-    SS_X = " [X]"
     SS_TT_SHOW_BASE = "Grundfertigkeiten ein-\nund ausblenden: "
     SS_TT_SHOW_SPEC = "Spezialisierungen ein-\nund ausblenden: "
     SS_TT_SEARCH = "Fertigkeiten nach Name durchsuchen"
@@ -132,9 +132,8 @@ class Messages:
     SI_CHILD_SPEC = "zugeordnete Spezialisierungen"
     SI_CHILD_SKILL = "zugeordnete Fertigkeiten"
 
-
     # EQUIPMENT SCREEN
-    ES_BUY_BUTTON = "Ausrüstung beschaffen"
+    ES_BUY_BUTTON = "Ausrüstung einkaufen"
     ES_EQUIPPED = "Mitgeführte Ausrüstung"
     ES_MELEE = "Nahkampfwaffen"
     ES_GUNS = "Fernkampfwaffen"
@@ -289,6 +288,7 @@ class Messages:
     IE_CE_HELMET = "Helm", M
     IE_CE_HEAD_SCARF = "Kopftuch", N
     IE_CE_SCARF = "Halstuch", N
+    IE_CE_COLLAR = "Kragen"
     IE_CE_TIE = "Krawatte", F
     IE_CE_MUFFLER = "Schal", M
     IE_CE_SHIRT = "Hemd", N
@@ -299,11 +299,13 @@ class Messages:
     IE_CE_SWEATER = "Pullover", M
     IE_CE_JACKET = "Jacke", F
     IE_CE_COAT = "Mantel", M
+    IE_CE_CAPE = "Cape", N
     IE_CE_BODY = "Body", M
     IE_CE_VAMBRACE = "Paar Armschienen", N
     IE_CE_GLOVES = "Paar Handschuhe", N
     IE_CE_BRIEFS = "Unterhose", F
     IE_CE_PANTS = "Hose", F
+    IE_CE_DUNGAREES = "Latzhose", F
     IE_CE_TIGHTS = "Strumpfhose", F
     IE_CE_JAMBART = "Paar Beinschienen", F
     IE_CE_OVERALL = "Overall", M
@@ -313,6 +315,116 @@ class Messages:
     IE_CE_SHOES = "Paar Schuhe", N
     IE_CE_BOOTS = "Paar Stiefel", N
     IE_CE_NAMESPLIT = "Paar"
+
+    # this is used for the name lookup ...
+    IE_CLOTHING_NAMES = {
+        "10000000001": IE_CE_CAP,
+        "20000000001": IE_CE_HAT,
+        "X000000000H": IE_CE_HAT,
+        "F0000000001": IE_CE_TURBAN,
+        "1000000000A": IE_CE_HELMET,
+        "11000000001": IE_CE_MASK,
+        "12000000001": IE_CE_GUGEL,
+        "1F000000001": IE_CE_GUGEL,
+        "XC00000000X": IE_CE_GUGEL,
+        "FF000000001": IE_CE_HEAD_SCARF,
+        "F1000000001": IE_CE_HEAD_SCARF,
+        "XX00000000X": IE_CE_GUGEL,
+        "01000000001": IE_CE_SCARF,
+        "02000000001": IE_CE_SCARF,
+        "0C00000000X": IE_CE_TIE,
+        "0F00000000X": IE_CE_MUFFLER,
+        "01100000001": IE_CE_SHIRT,
+        "00100000001": IE_CE_UNDERSHIRT,
+        "0XC0000000X": IE_CE_WEST,
+        "00X0000000X": IE_CE_WEST,
+        "0XC000C000X": IE_CE_WEST,
+        "00C0000000X": IE_CE_WEST,
+        "00C000C000X": IE_CE_WEST,
+        "XXC0000000X": IE_CE_WEST,
+        "XXC000C000X": IE_CE_WEST,
+        "XXC000CXX0X": IE_CE_WEST,
+        "0XX0000000X": IE_CE_WEST,
+        "00C000CX00H": IE_CE_WEST,
+        "00110000001": IE_CE_T_SHIRT,
+        "1010000000X": IE_CE_T_SHIRT,
+        "01110000001": IE_CE_POLOSHIRT,
+        "02110000001": IE_CE_POLOSHIRT,
+        "00XXX00000X": IE_CE_SWEATER,
+        "0XXXX00000X": IE_CE_SWEATER,
+        "XXXXX00000X": IE_CE_SWEATER,
+        "00CX0000001": IE_CE_SHIRT,
+        "00CXX000001": IE_CE_SHIRT,
+        "0XCX0000001": IE_CE_SHIRT,
+        "0XCXX000001": IE_CE_SHIRT,
+        "00CXX00000X": IE_CE_JACKET,
+        "0XCXX00000X": IE_CE_JACKET,
+        "XXCXX00000X": IE_CE_JACKET,
+        "00CXX0C000A": IE_CE_COAT,
+        "00CXX0CXX0A": IE_CE_COAT,
+        "0XCXX0C000A": IE_CE_COAT,
+        "0XCXX0CXX0A": IE_CE_COAT,
+        "XXCXX0C000A": IE_CE_COAT,
+        "XXCXX0CXX0A": IE_CE_COAT,
+        "0XCXX0CXX0X": IE_CE_COAT,
+        "XXCXX0XXX0X": IE_CE_COAT,
+        "XXCXX0CXX0X": IE_CE_COAT,
+        "0XCXX0XXX0X": IE_CE_COAT,
+        "0XCXX0CXX0H": IE_CE_COAT,
+        "00CXX0XXX0X": IE_CE_COAT,
+        "00C000C0001": IE_CE_DRESS,
+        "00C000CXX01": IE_CE_DRESS,
+        "00C000C000H": IE_CE_DRESS,
+        "00C000CXX0H": IE_CE_DRESS,
+        "00CXX0CXX01": IE_CE_DRESS,
+        "0XX000X000X": IE_CE_DRESS,
+        "0XCXX0CXX01": IE_CE_DRESS,
+        "00CXX0XXX01": IE_CE_DRESS,
+        "00CX00C000H": IE_CE_DRESS,
+        "00CX00CX00H": IE_CE_DRESS,
+        "00CX00CXX0H": IE_CE_DRESS,
+        "XXCXX0XXX01": IE_CE_DRESS,
+        "XXCXX0CXX01": IE_CE_DRESS,
+        "XXXXX0CXX01": IE_CE_DRESS,
+        "XXXXX0XXX0X": IE_CE_DRESS,
+        "00XXX0CXX0X": IE_CE_DRESS,
+        "00XXX0XXX0X": IE_CE_DRESS,
+        "0XXXX0CXX0X": IE_CE_DRESS,
+        "XXXXX0XXX01": IE_CE_DRESS,
+        "XXXXX0CXX0X": IE_CE_DRESS,
+        "0XXXX0XXX0X": IE_CE_DRESS,
+        "02F000F0001": IE_CE_CAPE,
+        "02F000FF001": IE_CE_CAPE,
+        "02F000FFF01": IE_CE_CAPE,
+        "22F000F0001": IE_CE_CAPE,
+        "22F000FF001": IE_CE_CAPE,
+        "22F000FFF01": IE_CE_CAPE,
+        "XXX000XXX0X": IE_CE_CAPE,
+        "XXCXX0TXX0X": IE_CE_OVERALL,
+        "0XCXX0TXX0X": IE_CE_OVERALL,
+        "00CXX0TXX0X": IE_CE_OVERALL,
+        "XXXXX0TXX0X": IE_CE_BODY,
+        "0XXXX0TXX0X": IE_CE_BODY,
+        "00XXX0TXX0X": IE_CE_BODY,
+        "000XXX0000X": IE_CE_GLOVES,
+        "0000XX0000X": IE_CE_GLOVES,
+        "00000X0000X": IE_CE_GLOVES,
+        "0000X00000X": IE_CE_VAMBRACE,
+        "000000CXX0X": IE_CE_SKIRT,
+        "000000XXX0X": IE_CE_SKIRT,
+        "00C000T000X": IE_CE_DUNGAREES,
+        "00C000TX00X": IE_CE_DUNGAREES,
+        "00C000TXX0X": IE_CE_DUNGAREES,
+        "000000TXX0X": IE_CE_PANTS,
+        "00000000X0X": IE_CE_JAMBART,
+        "000000000X1": IE_CE_SOCKS,
+        "00000000XX1": IE_CE_SOCKS,
+        "0000000XXX1": IE_CE_SOCKS,
+        "000000TXXX1": IE_CE_TIGHTS,
+        "000000000XX": IE_CE_SHOES,
+        "00000000XXX": IE_CE_BOOTS,
+        "0000000XXXX": IE_CE_BOOTS,
+    }
 
     # size options
     IE_CE_VERY = "sehr"
@@ -515,6 +627,8 @@ class Messages:
     IE_CE_NYLON = "Nylon", 0, 1, 0
     IE_CE_FIBRES = "Kunstfaser", 0, 1, 1
     IE_CE_PELT = "Pelz", 1, 2, 2
+    IE_CE_SYNTH_PELT = "Kunstfell", 1, 2, 0
+    IE_CE_LATEX = "Latex", 0, 0, 1
     IE_CE_POLYESTER = "Polyester", 0, 1, 1
     IE_CE_SILK = "Seide", 0, 1, 2
     IE_CE_SYNTH_SILK = "Synthseide", 0, 1, 1
@@ -527,8 +641,11 @@ class Messages:
     IE_CE_FLEECE = "Fleece", 0, 1, 0
     IE_CE_JAQUARD = "Jaquard", 1, 2, 2
     IE_CE_FROTTEE = "Frottee", 0, 1, 0
+    IE_CE_JEANS = "Jeans", 0, 1, 1
+    IE_CE_CORD = "Cord", 0, 1, 1
     IE_CE_LODEN = "Loden", 1, 2, 2
     IE_CE_TWEED = "Tweed", 1, 2, 2
+    IE_CE_RUBBER = "Gummi", 0, 2, 0
     IE_CE_ADDN = ["eide"]
     IE_CE_DELE = ["olle"]
 
@@ -554,6 +671,43 @@ class Messages:
         IE_CE_FROTTEE,
         IE_CE_LODEN,
         IE_CE_TWEED,
+        IE_CE_LATEX,
+        IE_CE_SYNTH_PELT,
+        IE_CE_JEANS,
+        IE_CE_CORD,
+        IE_CE_RUBBER,
+    ]
+
+    IE_CE_NOT_GLOVES = [
+        IE_CE_LINEN,
+        IE_CE_FLANELL,
+        IE_CE_JAQUARD,
+        IE_CE_FROTTEE,
+        IE_CE_LODEN,
+        IE_CE_TWEED,
+        IE_CE_JEANS,
+        IE_CE_CORD,
+    ]
+
+    IE_CE_NOT_SOCKS = [
+        IE_CE_LEATHER,
+        IE_CE_SYNTH_LEATHER,
+        IE_CE_PELT,
+        IE_CE_FLANELL,
+        IE_CE_SATIN,
+        IE_CE_VELVET,
+        IE_CE_SYNTH_VELVET,
+        IE_CE_LINEN,
+        IE_CE_JAQUARD,
+        IE_CE_FROTTEE,
+    ]
+
+    IE_CE_NOT_SHOES = [
+        IE_CE_LEATHER,
+        IE_CE_SYNTH_LEATHER,
+        IE_CE_PELT,
+        IE_CE_LATEX,
+        IE_CE_SYNTH_PELT,
     ]
 
     # pockets
@@ -563,105 +717,29 @@ class Messages:
     IE_CE_POCKETS_3 = "mit einigen Taschen"
     IE_CE_POCKETS_4 = "mit vielen Taschen"
 
-    # this is used for the name lookup ...
-    IE_CLOTHING_NAMES = {
-        "1000000000": IE_CE_CAP,
-        "2000000000": IE_CE_HAT,
-        "F000000000": IE_CE_TURBAN,
-        "A000000000": IE_CE_HELMET,
-        "1100000000": IE_CE_MASK,
-        "1200000000": IE_CE_GUGEL,
-        "FF00000000": IE_CE_HEAD_SCARF,
-        "F100000000": IE_CE_HEAD_SCARF,
-        "11H0000000": IE_CE_GUGEL,
-        "1110000000": IE_CE_GUGEL,
-        "0100000000": IE_CE_SCARF,
-        "0200000000": IE_CE_TIE,
-        "0F00000000": IE_CE_MUFFLER,
-        "0110000000": IE_CE_SHIRT,
-        "0010000000": IE_CE_UNDERSHIRT,
-        "0XC0000000": IE_CE_WEST,
-        "0XH0000000": IE_CE_WEST,
-        "1XC0000000": IE_CE_WEST,
-        "FXC0000000": IE_CE_WEST,
-        "2XC0000000": IE_CE_WEST,
-        "FXH0000000": IE_CE_WEST,
-        "2XH0000000": IE_CE_WEST,
-        "10C0000000": IE_CE_WEST,
-        "1011000000": IE_CE_SWEATER,
-        "0111000000": IE_CE_POLOSHIRT,
-        "0011000000": IE_CE_T_SHIRT,
-        "0XC1000000": IE_CE_SHIRT,
-        "01H1000000": IE_CE_SHIRT,
-        "1111000000": IE_CE_SHIRT,
-        "1XC1100000": IE_CE_SHIRT,
-        "2XC1100000": IE_CE_SHIRT,
-        "FXC1100000": IE_CE_SHIRT,
-        "0011100000": IE_CE_SWEATER,
-        "1011100000": IE_CE_SWEATER,
-        "1111100000": IE_CE_SWEATER,
-        "11H1100000": IE_CE_SWEATER,
-        "11H1000000": IE_CE_SWEATER,
-        "0111100000": IE_CE_SWEATER,
-        "01H1100000": IE_CE_SWEATER,
-        "1XH1000000": IE_CE_JACKET,
-        "0XC1100000": IE_CE_SHIRT,
-        "1XHXX00000": IE_CE_JACKET,
-        "1XCXX00000": IE_CE_SWEATER,
-        "1XH0001XX0": IE_CE_COAT,
-        "1XHXX01XX0": IE_CE_COAT,
-        "01H1001XX0": IE_CE_DRESS,
-        "01H0001XX0": IE_CE_DRESS,
-        "1XH1100000": IE_CE_JACKET,
-        "2XH1100000": IE_CE_JACKET,
-        "FXH1100000": IE_CE_JACKET,
-        "0XH1100000": IE_CE_JACKET,
-        "0XH1000000": IE_CE_JACKET,
-        "0XH1101XX0": IE_CE_COAT,
-        "1XH1101XX0": IE_CE_COAT,
-        "0XH110TXX0": IE_CE_OVERALL,
-        "1XH110TXX0": IE_CE_OVERALL,
-        "2XH110TXX0": IE_CE_OVERALL,
-        "FXH110TXX0": IE_CE_OVERALL,
-        "011110TXX0": IE_CE_OVERALL,
-        "11C100TXX0": IE_CE_OVERALL,
-        "0XH100TXX0": IE_CE_OVERALL,
-        "11H110TXX0": IE_CE_OVERALL,
-        "01H100TXX0": IE_CE_OVERALL,
-        "01C100TXX0": IE_CE_OVERALL,
-        "00H100TXX0": IE_CE_OVERALL,
-        "0XC110TXX0": IE_CE_OVERALL,
-        "11H100TXX0": IE_CE_OVERALL,
-        "101XX01XX0": IE_CE_DRESS,
-        "011XX01XX0": IE_CE_DRESS,
-        "11H1001XX0": IE_CE_DRESS,
-        "01H1101XX0": IE_CE_DRESS,
-        "0XCXX01XX0": IE_CE_DRESS,
-        "0XH0001XX0": IE_CE_DRESS,
-        "001XX01XX0": IE_CE_DRESS,
-        "01CXX01XX0": IE_CE_DRESS,
-        "111XX01XX0": IE_CE_DRESS,
-        "001000TXX0": IE_CE_BODY,
-        "001100TXX0": IE_CE_BODY,
-        "001110TXX0": IE_CE_BODY,
-        "0XH000TXX0": IE_CE_BODY,
-        "0001110000": IE_CE_GLOVES,
-        "0000110000": IE_CE_GLOVES,
-        "0000010000": IE_CE_GLOVES,
-        "0000100000": IE_CE_VAMBRACE,
-        "0000001XX0": IE_CE_SKIRT,
-        "0XC000TXX0": IE_CE_PANTS,
-        "000000TXX0": IE_CE_PANTS,
-        "0000000010": IE_CE_JAMBART,
-        "0000000001": IE_CE_SOCKS,
-        "0000000011": IE_CE_SOCKS,
-        "0000000111": IE_CE_SOCKS,
-        "000000TXX1": IE_CE_TIGHTS,
-        "000000TXXH": IE_CE_TIGHTS,
-        "000000000H": IE_CE_SHOES,
-        "000000001H": IE_CE_BOOTS,
-        "000000011H": IE_CE_BOOTS,
-    }
+    IE_TT_LIST = "Liste der Ausrüstungsgegenstände"
+    IE_TT_CE = "Bekleidungsbaukasten"
+    IE_TT_CUSTOM = "Gegenstand erstellen"
+
+    IE_TT_SELECTED = "Bedeckt das Kleidungsstück\ndieses Körperteil?"
+    IE_TT_ARMOR1 = "robuste Ausführung 0/+1 Panzerung"
+    IE_TT_ARMOR2 = "gepanzerte Ausführung - 0/+2"
+    IE_TT_CLOSURE = "An diesem Element befinden sich Verschlüsse"
+    IE_TT_COMPLEX = "Dieser Teil des Kleidungsstücks\n"\
+                    "besitzt einen aufwändigen Schnitt"
+    IE_TT_FABRIC = "Sehr viel Stoff (z.B Trompetenärmel oder Rock)"
+    IE_TT_TRIMMINGS = "Dieses Element ist bestickt oder anders verziert."
+    IE_TT_POCKETS = "An diesem Teil befinden sich Taschen."
+    IE_TT_CLOSURE_TYPE = "Art des Verschlusses. Nur\n"\
+                         "wählbar, wenn auch ein\n"\
+                         "Verschluss ausgewählt ist.\n"\
+                         "[nur für die Auto-Beschreibung]"
+    IE_TT_MATERIAL = "Material festlegen.\nWird als Option übernommen"
+    IE_TT_COLOR = "Farbe festlegen.\nWird als Option übernommen."
+    IE_TT_PANTS = "Das Kleidungsstück hat Hosenbeine\n"\
+                  "Nur wählbar wenn 'Hüfte' aktiv.\n"\
+                  "[für die Auto-Beschreibung relevant]"
+    IE_TT_CE_BUY = "Kleidungsstück kaufen\nDer Preis steht auch hier."
 
     IE_TT_NAME = "Alles braucht einen Namen"
     IE_TT_QUANTITY = "Anzahl\n(nur positive Zahlen)"
@@ -670,8 +748,11 @@ class Messages:
     IE_TT_AVAIL = "Verfügbarkeit:\n-6 - +6"
     IE_TT_PRICE = "Gesamtpreis\n(wird durch Anzahl geteilt!)"
     IE_TT_DAMAGE = "Schaden im Format:\n±S/±D"
-    IE_TT_CALIBER = "Waffen, Magazine und Munition\npassen nur zusammen,\nwenn dieser Wert übereinstimmt."
-    IE_TT_CONTAINER = "Anzeigename der Taschen\nz.B. 'Hosentaschen'"
+    IE_TT_CALIBER = "Waffen, Magazine und Munition\n"\
+                    "passen nur zusammen, wenn dieser\n"\
+                    "Wert übereinstimmt."
+    IE_TT_CONTAINER = "Anzeigename der Taschen\n(z.B. Hosentaschen)"
+
 
     # IMPROVE WINDOW
     IW_TITLE = "Steigern ..."
@@ -712,8 +793,6 @@ class Messages:
     SE_FREQUENCY_4 = "häufig"
     SE_FREQUENCY_5 = "dauernd"
 
-
-
     # IMAGE SCREEN
     IS_ERROR = "Dateifehler!"
     IS_ERROR_TEXT = "Fehler beim Versuch die Datei %s zu laden."
@@ -725,11 +804,17 @@ class Messages:
     IS_LOAD_MIME = "Bilddateien ..."
 
     # for the sheetlayoutscreen
-    SL_NEW = "Neu ..."
-    SL_LOAD = "Laden ..."
-    SL_SAVE = "Speichern ..."
     SL_EMPTY = "[ L E E R ]"
     SL_EXPORT = "PDF Exportieren"
+    SL_TT_NEW = "Neues Template erstellen ..."
+    SL_TT_LOAD = "Template laden ..."
+    SL_TT_SAVE = "Template speichern ..."
+    SL_TT_LAST = "zurückblättern"
+    SL_TT_NEXT = "weiterblättern"
+    SL_TT_NEW_PAGE = "Seite einfügen"
+    SL_TT_MOVE_UP = "Seite eins hoch schieben"
+    SL_TT_MOVE_DOWN = "Seite eins runter schieben"
+    SL_TT_DEL_PAGE = "Seite löschen"
 
     # for the module editor - moduleeditor.py 
     ME_NEW = "Neues Modul ..."
@@ -747,8 +832,14 @@ class Messages:
     ME_SHOW_WEAPONS = "Waffen anzeigen"
     ME_SHOW_WEIGHT = "Gewicht"
     ME_SHOW_VALUE = "Wert"
-
+    ME_CONTENTS = "Inhalt von:"
+    ME_CONDENSED = "(zusammengefasst)"
+    ME_EQUIPPED = "angelegte"
+    ME_JUST_EQUIPPED = "(nur angelegte)"
     ME_ONLY_BAG = "Nur den Inhalt der nachfolgend\n gewählten Tasche zeigen:"
+    ME_NOTES = "Die folgende Notiz verwenden ..."
+    ME_NOT_SELECTED = "nichts gewählt"
+    ME_NOTES_TITLE = "Erstelle ein leeres Feld mit folgendem Titel:"
 
     # for the pdf export - exportpdf.py and moduleeditor.py
     PDF_ATTRIBUTES = "Attribute"
@@ -950,48 +1041,46 @@ class Page:
 # this class handles the names of item types that are imported via xml
 class ItemTypes:
     #  clothing and armor
-    CLOTHING = "Kleidung"
-    HARNESS = "Harnisch"
-    ARMOR = "Rüstung"
+    CLOTHING = "clothing"
+    HARNESS = "harness"
+    ARMOR = "armor"
 
     #  melee weapons 
-    NATURAL = "Natürlich"
-    CLUBS = "Hiebwaffen"
-    BLADES = "Klingenwaffen"
-    STAFFS = "Stabwaffen"
-    OTHER_MELEE = "Andere Nahkampfwaffen"
+    NATURAL = "natural"
+    CLUBS = "club"
+    BLADES = "blade"
+    STAFFS = "staff"
+    OTHER_MELEE = "other_melee"
 
     #  guns 
-    REVOLVERS = "Revolver"
-    PISTOLS = "Pistolen"
-    RIFLES = "Gewehre"
-    SHOT_GUNS = "Flinten"
-    RIFLES_SA = "Gewehre-SA"
-    SHOT_GUNS_SA = "Flinten-SA"
-    AUTOMATIC_RIFLES = "Sturmgewehre"
-    AUTOMATIC_PISTOLS = "Maschinenpistolen"
-    MASCHINE_GUNS = "Maschinengewehre"
-    BLASTER = "Blaster"
+    REVOLVERS = "revolver"
+    PISTOLS = "pistol"
+    RIFLES = "rifle"
+    SHOT_GUNS = "shotgun"
+    RIFLES_SA = "rifle_sa"
+    SHOT_GUNS_SA = "shotgun_sa"
+    AUTOMATIC_WEAPON = "automatic_weapon"
+    BLASTER = "blaster"
 
     #  various
-    TOOLS = "Werkzeug"
-    CLIP = "Clip"
-    AMMO = "Munition"
-    MONEY = "Geld"
-    GENERIC = "Diverses"
+    TOOLS = "tool"
+    CLIP = "clip"
+    AMMO = "ammo"
+    MONEY = "money"
+    GENERIC = "generic"
 
     #  containers
-    BAG = "Tasche"
-    BOX = "Kiste"
-    CONTAINER = "Container"
+    BAG = "bag"
+    BOX = "box"
+    CONTAINER = "container"
 
     #  other stuff
-    SERVICES = "Dienstleistungen"
+    SERVICES = "service"
 
     #biotech
-    IMPLANT = "Implantat"
-    PROSTHESIS = "Prothese"
-    IMPLANT_PART = "Einbau"
+    IMPLANT = "implant"
+    PROSTHESIS = "prosthesis"
+    IMPLANT_PART = "implant_part"
 
     OPTION_CALIBER = "Kaliber"
     OPTION_COLOR = "Farbe"

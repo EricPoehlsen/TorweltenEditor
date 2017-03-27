@@ -21,7 +21,7 @@ class CharScreen(tk.Frame):
 
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
-        # localize data ... 
+        # localize data ...
         # create the character instance # #
         self.app = app
         self.char = app.char
@@ -47,7 +47,11 @@ class CharScreen(tk.Frame):
         attr_list = self.char.ATTRIB_LIST
 
         for attr in attr_list:
-            frame = tk.LabelFrame(attr_frame, text=attr.upper())
+            frame = tk.LabelFrame(
+                attr_frame,
+                text=attr.upper(),
+                font="Arial 10 bold"
+            )
             # initiate the IntVars and bind their tcl names to the attributes
             attrib_values = self.char.attrib_values
             attrib_values[attr] = tk.IntVar()
@@ -124,7 +128,6 @@ class CharScreen(tk.Frame):
         data_frame = tk.LabelFrame(
             frame_2,
             text=msg.CS_BASE_DATA,
-            font="Arial 10 bold"
         )
 
         data_list = [
@@ -180,7 +183,6 @@ class CharScreen(tk.Frame):
         traits_frame = tk.LabelFrame(
             frame_2,
             text=msg.CS_TRAITS,
-            font="Arial 10 bold"
         )
         self.traits_text = tk.Text(
             traits_frame, 
@@ -204,9 +206,6 @@ class CharScreen(tk.Frame):
         new_traits_button.pack(fill=tk.X)
         traits_frame.pack(fill=tk.BOTH, expand=1)
 
-        # TODO (Eric): This is just a text for the tooltip
-        new_traits_button.bind("<Enter>", self.showTooltip)
-
         frame_2.pack(side=tk.LEFT, anchor=tk.N, fill=tk.Y, expand=1)
 
         # this frame holds the character skills ... 
@@ -216,7 +215,6 @@ class CharScreen(tk.Frame):
         self.active_skill_frame = tk.LabelFrame(
             frame_3, 
             text=msg.CS_ACTIVE_SKILLS, 
-            font="Arial 10 bold"
         )
         self.active_skill_canvas = tk.Canvas(
             self.active_skill_frame,
@@ -240,7 +238,6 @@ class CharScreen(tk.Frame):
         self.passive_skill_frame = tk.LabelFrame(
             frame_3, 
             text=msg.CS_PASSIVE_SKILLS,
-            font="Arial 10 bold"
         )
         self.passive_skill_canvas = tk.Canvas(
             self.passive_skill_frame,
@@ -329,14 +326,17 @@ class CharScreen(tk.Frame):
             # get the specification if there is one
             trait_specification = ""
             selected = trait.find("selected")
-            specification = selected.get("spec")
+
+            specification = trait.find("specification")
             if specification is not None:
-                trait_specification = " ["+specification+"]"
+                value = specification.get("value")
+                trait_specification = " ["+value+"]"
             
             # get the xp
             trait_xp = trait.get("xp")
             
-            # insert the name of the trait and the specification. Bind text to the TraitInfoBaloon  
+            # insert the name of the trait and the specification.
+            # Bind text to the TraitInfoBaloon
             index_start = self.traits_text.index(tk.CURRENT)
             self.traits_text.insert(tk.END, trait_name)
             self.traits_text.insert(tk.END, trait_specification)
@@ -540,17 +540,3 @@ class CharScreen(tk.Frame):
 
     def showSkillInfo(self, name):
         window = SkillInfo(self, name)
-
-    def showTooltip(self, event):
-        widget = event.widget
-        buttontext = widget.cget("text")
-
-        infos = {
-            msg.CS_ADD_TRAIT: msg.TT_ADD_TRAITS
-        }
-
-        ToolTip(
-            self.winfo_toplevel(),
-            event=event,
-            message=infos[buttontext]
-        )

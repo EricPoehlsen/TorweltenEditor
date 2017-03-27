@@ -1,9 +1,10 @@
-# coding=utf-8
 """ This module is responsible for the skill selection window """
 
 import config
 import tkinter as tk
+import tkinter.ttk as ttk
 import re
+from PIL import ImageTk
 from tooltip import ToolTip
 
 msg = config.Messages()
@@ -14,7 +15,7 @@ msg = config.Messages()
 class SkillSelector(tk.Toplevel):
     def __init__(self, app):
         tk.Toplevel.__init__(self, app)
-        
+
         #  point to character and skilltree
         self.char = app.char
         self.all_skills = app.skills
@@ -25,6 +26,11 @@ class SkillSelector(tk.Toplevel):
         self.maxspec = 3
         self.origin = ""
         self.complete_list = [skill[0] for skill in self.all_skills.getList()]
+
+        # icons:
+        self.unsel_icon = ImageTk.PhotoImage(file="img/unsel.png")
+        self.sel_icon = ImageTk.PhotoImage(file="img/sel.png")
+
 
         #  build the window
         if self.char.getEditMode == "generation":
@@ -66,13 +72,12 @@ class SkillSelector(tk.Toplevel):
         self.search_frame.pack(fill=tk.X, expand=1)
         self.frame = tk.Frame(self)
         self.scrollbar = tk.Scrollbar(self.frame, orient=tk.VERTICAL)
-        self.list_box = tk.Listbox(self.frame)
-        self.list_box.bind("<<ListboxSelect>>", self._selectionChanged)
+        self.list_box = ttk.Treeview(self.frame)
+        self.list_box.bind("<<TreeviewSelect>>", self._selectionChanged)
         self.list_box.config(
-            selectmode=tk.MULTIPLE,
+            selectmode=tk.EXTENDED,
             yscrollcommand=self.scrollbar.set,
             height=20,
-            selectbackground="#0000dd"
         )
         self.scrollbar.config(command=self.list_box.yview)
         self.list_box.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
@@ -124,7 +129,8 @@ class SkillSelector(tk.Toplevel):
             search(bool)=False - if true the search box will be evaluated
         """
 
-        self.list_box.delete(0, tk.END)
+        children = self.list_box.get_children()
+        self.list_box.delete(*children)
         skills = self.all_skills.getList(minspec, maxspec)
         
         # skills the character already owns
@@ -136,25 +142,31 @@ class SkillSelector(tk.Toplevel):
             skills = [skill for skill in skills
                       if search_term.lower() in skill[0].lower()]
 
-        # filter skills the charakter already has ...             
-        if self.char.getEditMode() == "generation":
-            def append_delete(skill):
-                skill = [skill[0], skill[1], skill[2]]
-                if skill[0] in cur_skills:
-                    skill[0] += msg.SS_X
-                return skill
-            skills = [append_delete(skill) for skill in skills]
-        else:    
-            skills = [skill for skill in skills if skill[0] not in cur_skills]
-                    
-        # indent based on specialization.
-        def indent(skill):
-            return [(skill[1]-minspec)*4*" " + skill[0], skill[1], skill[2]]
-        skills = [indent(skill) for skill in skills]
+        sk_dict = {}
 
-        # now add the skills ... 
+
         for skill in skills:
-            self.list_box.insert(tk.END, skill[0])
+            name, spec, id, parent = skill
+            if name in cur_skills:
+                image = self.sel_icon
+            else:
+                image = self.unsel_icon
+            if sk_dict.get(parent):
+                sk_dict[id] = self.list_box.insert(
+                    sk_dict[parent],
+                    100,
+                    iid=id,
+                    text=name,
+                    image=image
+                )
+            else:
+                sk_dict[id] = self.list_box.insert(
+                    "",
+                    100,
+                    text=name,
+                    image=image
+                )
+
 
     def toggleMinSpec(self):
         """ Toggles minimum specialization between 1 and 2
@@ -195,7 +207,7 @@ class SkillSelector(tk.Toplevel):
         presses the button 
         """
 
-        selection = self.list_box.curselection()
+        selection = self.list_box.selection()
 
         # adding a new skill ...
         new_skill_name = self.new_skill_name.get()
@@ -208,14 +220,16 @@ class SkillSelector(tk.Toplevel):
 
         # ... or adding / removing existing skills ...
         else:
-            for item in selection:
-                skill_name = self.list_box.get(item).strip()
-                if msg.SS_X in skill_name:
-                    self.char.delSkill(skill_name[:-len(msg.SS_X)])
-                else:
+            for id in selection:
+                skill = self.list_box.item(id)
+                icon = skill.get("image")[0]
+                skill_name = skill.get("text")
+                if icon == str(self.unsel_icon):
                     skill_element = self.all_skills.getSkill(skill_name)
                     self.char.addSkill(skill_element)
-        
+                else:
+                    self.char.delSkill(skill_name)
+
         # finally close the window
         self.app.updateSkillList()
         self.close()
@@ -224,13 +238,19 @@ class SkillSelector(tk.Toplevel):
     def _selectionChanged(self, event):
         """ Updating relevant UI elements on selection changes """
 
-        self.list_box.config(selectbackground="#0000dd")
-        selection = self.list_box.curselection()
+        selection = self.list_box.selection()
         
         # list of items to add / remove ...
-        add = [item for item in selection if msg.SS_X not in self.list_box.get(item)]
-        remove = [item for item in selection if msg.SS_X in self.list_box.get(item)]
-           
+        add = []
+        remove = []
+        for id in selection:
+            item = self.list_box.item(id)
+            icon = item.get("image")[0]
+            if icon == str(self.unsel_icon):
+                add.append(item)
+            else:
+                remove.append(item)
+
         if len(selection) == 0 and not self.new_skill_entry_focus:
             self.new_skill_entry.config(state=tk.DISABLED)
             self.new_skill_name.set(msg.SS_NEW_SKILL)
@@ -245,9 +265,8 @@ class SkillSelector(tk.Toplevel):
             else:
                 self.add_button_text.set(msg.SS_REMOVE_SINGLE_SKILL)
 
-            origin = self.list_box.get(selection[0])
-            origin = origin.strip()
-            origin = origin.replace(msg.SS_X, "")
+            origin = self.list_box.item(selection[0])
+            origin = origin.get("text")
             self.origin = origin
 
         if len(selection) > 1:
@@ -283,7 +302,6 @@ class SkillSelector(tk.Toplevel):
     def _skillEntryNoFocus(self, event):
         self.new_skill_entry_focus = False
         self.list_box.config(state=tk.NORMAL)
-
 
     # checks the name of a potential skill 
     def _newSkillName(self):

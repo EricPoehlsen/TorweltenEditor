@@ -43,7 +43,9 @@ class Improve(tk.Toplevel):
         
         # money frame
         self.money_frame = tk.LabelFrame(self, text=msg.IW_MONEY)
-        self.money_amount.set(msg.MONEYFORMAT %("0","00"))
+        money = msg.MONEYFORMAT % 0
+        money = money.replace(".", msg.MONEYSPLIT)
+        self.money_amount.set(money)
         self.money_amount.trace("w", lambda n,e,m: self._ValidateField(check="money"))
         self.money_entry = tk.Entry(self.money_frame, 
                                     textvariable = self.money_amount,
@@ -82,11 +84,10 @@ class Improve(tk.Toplevel):
         for account in accounts: 
             account_name = account.get("name")
             if account_name == '0': account_name = msg.AC_PRIMARY_NAME
-            balance = account.get("balance").split(".")
-            if len(balance) == 1: balance.append("00")
-            if len(balance[1]) == 1: balance[1] += "0"
-            pretty_balance = msg.MONEYFORMAT %(balance[0],balance[1])
-            display_string = account_name + " (" + pretty_balance +")"
+            balance = float(account.get("balance"))
+            pretty_balance = msg.MONEYFORMAT % balance
+            pretty_balance = pretty_balance.replace(".", msg.MONEYSPLIT)
+            display_string = account_name + " (" + pretty_balance + ")"
             account_list.append(display_string)
         
         # append an entry for the characters cash
@@ -96,10 +97,8 @@ class Improve(tk.Toplevel):
             item_quantity = item.get("quantity")
             item_value = item.get("price")
             value += int(item_quantity) * float(item_value)
-        value = str(value).split(".")
-        if len(value) == 1: value.append("00")
-        if len(value[1]) == 1: value[1] += "0"
-        value_string = msg.MONEYFORMAT %(value[0],value[1])
+        value_string = msg.MONEYFORMAT % value
+        value_string = value_string.replace(".", msg.MONEYSPLIT)
         display_string = msg.IW_CASH + " (" + value_string + ")"
         account_list.append(display_string)
 

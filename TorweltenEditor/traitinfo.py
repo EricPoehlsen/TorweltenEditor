@@ -1,4 +1,3 @@
-# coding=utf-8
 import tkinter as tk
 import config
 
@@ -25,8 +24,10 @@ class TraitInfo(tk.Toplevel):
         # get the information ...
         self.char_trait = self.getCharTrait(event)
         self.trait_name = self.char_trait.get("name")
+        self.specification = self.char_trait.findall("./specification")
+        self.ranks = self.char_trait.findall("./rank")
+        self.variables = self.char_trait.findall("./variable")
         self.trait = self.traits.getTrait(self.trait_name)
-        self.selected = self.char_trait.find("./selected")
         self.id = self.char_trait.get("id")
 
         self.trait_xp = self.char_trait.get("xp")
@@ -43,9 +44,9 @@ class TraitInfo(tk.Toplevel):
         # render content
         self.drawTitle()
         self.drawSpecification()
-        self.drawDescription()
         self.drawRanks()
         self.drawVariables()
+        self.drawDescription()
         self.finalize()
 
     # retrieve the character trait based on the id passed as text_tag
@@ -114,11 +115,10 @@ class TraitInfo(tk.Toplevel):
     def drawSpecification(self):
         """ Looks for specification and renders it """
 
-        specification = self.trait.find("./specification")
-        if specification is not None:
+        for specification in self.specification:
             text = "{name}: {value}".format(
                 name=specification.get("name"),
-                value=self.selected.get("spec")
+                value=specification.get("value")
             )
             self.drawText(text, font="Arial 10 bold")
 
@@ -133,38 +133,32 @@ class TraitInfo(tk.Toplevel):
 
     def drawRanks(self):
         """ Looks for ranks and renders them """
-        ranks = self.trait.findall("./rank")
-        if ranks is not None:
-            for rank in ranks:
-                rank_id = rank.get("id")
-                rank_name = rank.get("name")
-                rank_selected = self.selected.get("rank-"+rank_id)
-                text = "{rank}: {value}".format(
-                    rank=rank_name,
-                    value=rank_selected
-                )
-                self.drawText(text, font="Arial 10 bold")
+        for rank in self.ranks:
+            rank_name = rank.get("name")
+            rank_value = rank.get("value")
+            text = "{rank}: {value}".format(
+                rank=rank_name,
+                value=rank_value
+            )
+            self.drawText(text, font="Arial 10 bold")
 
     def drawVariables(self):
         """ Go through variables and add them (including description) """
 
-        variables = self.trait.findall("./variable")
-        if variables is not None:
-            for variable in variables:
-                var_id = variable.get("id")
-                var_name = variable.get("name")
-                var_selected = self.selected.get("id-"+var_id)
-                text = "{variable}: {value}".format(
-                    variable=var_name,
-                    value=var_selected
-                )
-                self.drawText(text, font="Arial 10 bold")
+        for variable in self.variables:
+            var_name = variable.get("name")
+            var_value = variable.get("value")
+            text = "{variable}: {value}".format(
+                variable=var_name,
+                value=var_value
+            )
+            self.drawText(text, font="Arial 10 bold")
 
-                search = "./description[@value='"+var_selected+"']"
-                description = variable.find(search)
-                if description is not None:
-                    if description.text:
-                        self.drawText(description.text)
+            search = "./description[@value='"+var_value+"']"
+            description = variable.find(search)
+            if description is not None:
+                if description.text:
+                    self.drawText(description.text)
 
     def drawText(self, text, font="Arial 9"):
         """ Helper method to draw text to the canvas

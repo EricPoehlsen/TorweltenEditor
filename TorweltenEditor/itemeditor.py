@@ -216,9 +216,7 @@ class ItemEditor(tk.Toplevel):
             it.PISTOLS,
             it.RIFLES,
             it.SHOT_GUNS,
-            it.MASCHINE_GUNS,
-            it.AUTOMATIC_PISTOLS,
-            it.AUTOMATIC_RIFLES
+            it.AUTOMATIC_WEAPON
         ]
         melee_weapons = [
             it.CLUBS,
@@ -390,9 +388,7 @@ class ItemEditor(tk.Toplevel):
             it.PISTOLS,
             it.RIFLES,
             it.SHOT_GUNS,
-            it.MASCHINE_GUNS,
-            it.AUTOMATIC_PISTOLS,
-            it.AUTOMATIC_RIFLES
+            it.AUTOMATIC_WEAPON
         ]
         if self.item.get("type") in ha_weapons:
             content_list = self.item.get("content", "x").split()

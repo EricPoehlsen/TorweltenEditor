@@ -65,8 +65,9 @@ class SkillTree(object):
             name = skill.get("name")
             spec = int(skill.get("spec"))
             id = int(skill.get("id"))
+            parent = int(skill.get("parent"))
             if minspec <= spec <= maxspec:
-                result.append((name, spec, id))
+                result.append((name, spec, id, parent))
         return result
 
     def getSkill(self, name):

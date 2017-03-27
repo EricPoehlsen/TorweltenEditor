@@ -220,39 +220,58 @@ class Character(object):
         xp = xp_var.get()
         xp = xp[1:-1]
         trait.set("xp", str(xp))
-        trait.set("name", str(full_trait.get("name")))
-        selected = et.SubElement(trait, "selected")
+        trait_name = str(full_trait.get("name"))
+        trait.set("name", trait_name)
 
         # get the specification
         specification = full_trait.find("specification")
         if specification is not None:
-            selected.set("spec", str(variables["spec"].get()))
+            spec_name = specification.get("name", "")
+            spec_value = str(variables["spec"].get())
+            spec = et.SubElement(trait, "specification")
+            spec.set("name", spec_name)
+            spec.set("value", spec_value)
 
         # get the ranks
         ranks = full_trait.findall("rank")
         if ranks:
             for rank in ranks:
                 rank_id = rank.get("id")
+                rank_name = rank.get("name")
                 id_tag = "rank-"+rank_id
-                selected.set(id_tag, str(variables["rank_"+rank_id].get()))
-        
+                rank_value = str(variables["rank_"+rank_id].get())
+                rank_tag = et.SubElement(trait, "rank")
+                rank_tag.set("name", rank_name)
+                rank_tag.set("id", rank_id)
+                rank_tag.set("value", rank_value)
+
         # get the variables
         variable_tags = full_trait.findall("variable")
         if variable_tags:
             for variable in variable_tags:
                 var_id = variable.get("id")
-                id_tag = "id-"+var_id
-                selected.set(id_tag, str(variables["var_"+var_id].get()))
-        
-        if len(description) > 1:
-            description_tag = et.SubElement(trait, "description")
-            description_tag.text = description
+                var_name = variable.get("name")
+                var_value = str(variables["var_"+var_id].get())
+                var_tag = et.SubElement(trait, "variable")
+                var_tag.set("id", var_id)
+                var_tag.set("name", var_name)
+                var_tag.set("value", var_value)
+
+        if len(description) <= 1:
+            full_desc = full_trait.find("description")
+            if full_desc is not None:
+                text = full_desc.text
+                if text:
+                    description = text
+
+        description_tag = et.SubElement(trait, "description")
+        description_tag.text = description
 
         char_traits = self.xml_char.find('traits')
         char_traits.append(trait)
         self.updateAvailableXP(-int(xp))
         
-        self.logEvent(trait, op=msg.CHAR_TRAIT_ADDED)
+        self.logEvent(trait, op=msg.CHAR_TRAIT_ADDED, mod=trait_name)
 
     def resetTraitIDs(self):
         """ Reset trait ids if necessary """
@@ -1370,6 +1389,41 @@ class Character(object):
                 highest_id = id
         return highest_id
 
+    def getNotes(self):
+        notes = self.xml_char.find(".//notes")
+        if notes is None:
+            basics = self.xml_char.find("basics")
+            notes = et.SubElement(basics, "notes")
+        return notes
+
+    def findNoteById(self, id):
+        id = str(id)
+        return self.xml_char.find(".//note[@id='"+id+"']")
+
+    def getHighestNoteId(self):
+        notes = self.getNotes()
+        highest_id = 0
+        for note in notes:
+            id = int(note.get("id", "0"))
+            if id > highest_id:
+                highest_id = id
+        return highest_id
+
+    def addNote(self):
+        notes = self.xml_char.find(".//notes")
+        id = str(self.getHighestNoteId() + 1)
+        note = et.SubElement(
+            notes,
+            "note",
+            {"id": id}
+        )
+
+    def delNote(self, id):
+        notes = self.xml_char.find(".//notes")
+        note = notes.find("note[@id='"+id+"']")
+        if note is not None:
+            notes.remove(note)
+
     def setImage(self, filename):
         """ Setting the reference to a character image
 
@@ -1426,9 +1480,29 @@ class Character(object):
 
     def removeImage(self):
         """ Removing an image reference """
+
         basics_tag = self.xml_char.find("./basics")
         image_tag = basics_tag.find("image")
         basics_tag.remove(image_tag)
+
+    def getPDFTemplate(self):
+        """ get the last used template """
+
+        tag = self.xml_char.find("./basics/pdftemplate")
+        filename = None
+        if tag is not None:
+            filename = tag.get("path")
+        return filename
+
+    def setPDFTemplate(self, path):
+        """store the last used template """
+
+        basics_tag = self.xml_char.find("./basics")
+        template_tag = basics_tag.find("./pdftemplate")
+        if template_tag is not None:
+            template_tag.set("path", path)
+        else:
+            et.SubElement(basics_tag, "pdftemplate", {"path": path})
 
     def logEvent(self, tag, mod=None, op=None):
         """ Logging changes to the character within itself
@@ -1565,6 +1639,12 @@ class Character(object):
     def checkHashes(self):
         """ Check the hashes when the character is loaded """
 
+        def modified():
+            """ store 'illegal' modifications """
+            basics = self.xml_char.find("basics")
+            bad_file = et.SubElement(basics, "modified")
+            self.logEvent(bad_file)
+
         tags = [
             "basics",
             "attributes",
@@ -1574,6 +1654,11 @@ class Character(object):
         ]
 
         hash_element = self.xml_char.find("hash")
+
+        if hash_element is None:
+            modified()
+            return
+
         for tag in tags:
             tag_hash = self.hashElement(self.xml_char.find(tag))
             stored_hash = int(hash_element.get(tag))
@@ -1581,9 +1666,7 @@ class Character(object):
                 hash_element.set("check", "1")
             else:
                 hash_element.set("check", "0")
-                basics = self.xml_char.find("basics")
-                bad_file = et.SubElement(basics, "modified")
-                self.logEvent(bad_file)
+                modified()
                 break
 
     def getHashes(self):

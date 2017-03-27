@@ -6,11 +6,34 @@ from moduleeditor import ModuleEditor
 from PIL import ImageTk, Image, PngImagePlugin
 import tkinter as tk
 import config
+from tooltip import ToolTip
 page = config.Page()
 msg = config.Messages()
 
 
 class LayoutScreen(tk.Frame):
+    sizes = {
+        page.SINGLE: (1, 1),
+        page.DOUBLE: (2, 1),
+        page.TRIPLE: (3, 1),
+        page.FULL: (4, 1),
+        page.WIDE: (1, 2),
+        page.QUART: (2, 2),
+        page.BIG: (3, 2),
+        page.HALF: (4, 2)
+    }
+
+    mod_types = {
+        page.MOD_ATTRIBUTES: msg.PDF_ATTRIBUTES,
+        page.MOD_TRAITS: msg.PDF_TRAITS,
+        page.MOD_SKILLS: msg.PDF_SKILLS,
+        page.MOD_EQUIPMENT: msg.PDF_EQUIPMENT,
+        page.MOD_WEAPONS: msg.PDF_WEAPONS,
+        page.MOD_CONTACTS: msg.PDF_CONTACTS,
+        page.MOD_EWT: msg.PDF_EWT,
+        page.MOD_IMAGE: msg.PDF_IMAGE,
+        page.MOD_NOTES: msg.PDF_NOTES
+    }
 
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
@@ -18,33 +41,16 @@ class LayoutScreen(tk.Frame):
         self.char = app.char
         self.open_windows = app.open_windows
         
-        self.sizes = {
-            page.SINGLE: (1, 1),
-            page.DOUBLE: (2, 1),
-            page.TRIPLE: (3, 1),
-            page.FULL: (4, 1),
-            page.WIDE: (1, 2),
-            page.QUART: (2, 2),
-            page.BIG: (3, 2),
-            page.HALF: (4, 2)
-        }
-
-        self.mod_types = {
-            page.MOD_ATTRIBUTES: msg.PDF_ATTRIBUTES,
-            page.MOD_TRAITS: msg.PDF_TRAITS,
-            page.MOD_SKILLS: msg.PDF_SKILLS,
-            page.MOD_EQUIPMENT: msg.PDF_EQUIPMENT,
-            page.MOD_WEAPONS: msg.PDF_WEAPONS,
-            page.MOD_CONTACTS: msg.PDF_CONTACTS,
-            page.MOD_EWT: msg.PDF_EWT,
-            page.MOD_IMAGE: msg.PDF_IMAGE,
-            page.MOD_NOTES: msg.PDF_NOTES
-        }
-
         self.template = None
-        self.template = self._newTemplate()
-        
+        self.grid = []
+
         self.active_page = 1
+        self.pages = 0
+
+        self._getTemplate()
+        if self.template is None:
+            self.template = self._newTemplate()
+
         self.pages = len(self.template.findall("page"))
         
         # for display .. 
@@ -54,14 +60,9 @@ class LayoutScreen(tk.Frame):
             pages=str(self.pages)
         )
         self.cur_page.set(page_label)
-        
-        self.grid = []
-        self.widgets = {}
-        
-        self.toolbar = tk.Frame(self)
-        self.showToolbar(self.toolbar)
 
-        self.toolbar.pack(fill=tk.X)
+        self.widgets = {}
+
         self.center_frame = tk.Frame(self)
         
         self.page_frame = tk.Frame(self.center_frame)
@@ -72,26 +73,6 @@ class LayoutScreen(tk.Frame):
         self._switchPage(0)
         self.control_frame.pack(fill=tk.BOTH)
         self.center_frame.pack()
-
-    def showToolbar(self, frame):
-        new_template = tk.Button(
-            frame,
-            text=msg.SL_NEW,
-            command=self._newTemplate
-        )
-        new_template.pack(side=tk.LEFT)
-        load_template = tk.Button(
-            frame,
-            text=msg.SL_LOAD,
-            command=self._loadTemplate
-        )
-        load_template.pack(side=tk.LEFT)
-        save_template = tk.Button(
-            frame,
-            text=msg.SL_SAVE,
-            command=self._saveTemplate
-        )
-        save_template.pack(side=tk.LEFT)
 
     def showPage(self, frame):
         cur_page = self.template.find("page[@num='"+str(self.active_page)+"']")
@@ -105,8 +86,8 @@ class LayoutScreen(tk.Frame):
                 module = cur_page.find("module[@id='"+id+"']")
                 slot = tk.Canvas(
                     frame,
-                    width=150,
-                    height=100,
+                    width=195,
+                    height=120,
                     borderwidth=0,
                     highlightthickness=0,
                     relief=tk.RIDGE,
@@ -115,13 +96,12 @@ class LayoutScreen(tk.Frame):
 
                 # display module ... 
                 if module is not None:
-                    mod_type = module.get("type")
 
                     # coordinates for a small module poly ... 
                     x1 = 4
                     y1 = 4
-                    x2 = 146
-                    y2 = 96
+                    x2 = 191
+                    y2 = 116
                     r = 4
 
                     # retrieve position and dimensions of module ... 
@@ -144,7 +124,7 @@ class LayoutScreen(tk.Frame):
                         x2 += 20
 
                     if row == m_row and col == m_col:
-                        text = self.mod_types[mod_type]
+                        text = self._text(module)
                         text_col = "#000000"
                         
                     else:
@@ -160,7 +140,13 @@ class LayoutScreen(tk.Frame):
                 slot.create_line(0, 95, 0, 100, fill="#dddddd")
 
                 # render text ... 
-                slot.create_text(75, 50, text=text, fill=text_col)
+                slot.create_text(
+                    97,
+                    60,
+                    text=text,
+                    justify=tk.CENTER,
+                    fill=text_col
+                )
 
                 # place canvas ...                 
                 slot.grid(row=row, column=col)
@@ -171,78 +157,116 @@ class LayoutScreen(tk.Frame):
                 )
 
     def showControl(self, frame):
-        sub_frame = tk.Frame(frame)
-        icon = ImageTk.PhotoImage(file="ui_img/book_previous.png")
+
+        tpl_ops = [
+            (msg.SL_TT_NEW, "img/tpl_new.png", self._newTemplate),
+            (msg.SL_TT_LOAD, "img/tpl_load.png", self._loadTemplate),
+            (msg.SL_TT_SAVE, "img/tpl_save.png", self._saveTemplate)
+        ]
+
+        tpl = tk.LabelFrame(frame, text="Template")
+        for op in tpl_ops:
+            img = ImageTk.PhotoImage(file=op[1])
+            button = tk.Button(
+                tpl,
+                text=op[0],
+                image=img,
+                command=op[2],
+            )
+            tt = ToolTip(button, op[0])
+            button.image = img
+            button.pack(side=tk.LEFT)
+        tpl.pack(side=tk.LEFT)
+
+        tk.Label(frame, text=" ").pack(side=tk.LEFT)
+
+        flip = tk.LabelFrame(frame, text="blättern")
+        icon = ImageTk.PhotoImage(file="img/book_previous.png")
         self.widgets["last_page"] = tk.Button(
-            sub_frame,
+            flip,
             image=icon,
             command=lambda:
                 self._switchPage(-1)
         )
+        ToolTip(self.widgets["last_page"], msg.SL_TT_LAST)
         self.widgets["last_page"].image = icon
         self.widgets["last_page"].pack(side=tk.LEFT, fill=tk.X)
         
         self.widgets["cur_page"] = tk.Label(
-            sub_frame,
+            flip,
             textvariable=self.cur_page
         )
         self.widgets["cur_page"].pack(side=tk.LEFT, fill=tk.X)
 
-        icon = ImageTk.PhotoImage(file="ui_img/book_next.png")
+        icon = ImageTk.PhotoImage(file="img/book_next.png")
         self.widgets["next_page"] = tk.Button(
-            sub_frame,
+            flip,
             image=icon,
             command=lambda:
                 self._switchPage(+1)
         )
         self.widgets["next_page"].image = icon
+        ToolTip(self.widgets["next_page"], msg.SL_TT_NEXT)
         self.widgets["next_page"].pack(side=tk.LEFT, fill=tk.X)
+        flip.pack(side=tk.LEFT)
 
-        icon = ImageTk.PhotoImage(file="ui_img/page_new.png")
+        tk.Label(frame, text=" ").pack(side=tk.LEFT)
+
+        pages = tk.LabelFrame(frame, text="Seiten")
+        icon = ImageTk.PhotoImage(file="img/page_new.png")
         self.widgets["new_page"] = tk.Button(
-            sub_frame,
+            pages,
             image=icon,
             command=self._newPage
         )
         self.widgets["new_page"].image = icon
+        ToolTip(self.widgets["new_page"], msg.SL_TT_NEW_PAGE)
         self.widgets["new_page"].pack(side=tk.LEFT)
 
-        icon = ImageTk.PhotoImage(file="ui_img/page_up.png")
+        icon = ImageTk.PhotoImage(file="img/page_up.png")
         self.widgets["page_up"] = tk.Button(
-            sub_frame,
+            pages,
             image=icon,
             command=lambda:
                 self._movePage(self.active_page-1)
         )
         self.widgets["page_up"].image = icon
+        ToolTip(self.widgets["page_up"], msg.SL_TT_MOVE_UP)
         self.widgets["page_up"].pack(side=tk.LEFT)
 
-        icon = ImageTk.PhotoImage(file="ui_img/page_down.png")
+        icon = ImageTk.PhotoImage(file="img/page_down.png")
         self.widgets["page_down"] = tk.Button(
-            sub_frame,
+            pages,
             image=icon,
             command=lambda:
             self._movePage(self.active_page+1)
         )
         self.widgets["page_down"].image = icon
+        ToolTip(self.widgets["page_down"], msg.SL_TT_MOVE_DOWN)
         self.widgets["page_down"].pack(side=tk.LEFT)
 
-        icon = ImageTk.PhotoImage(file="ui_img/page_del.png")
+        icon = ImageTk.PhotoImage(file="img/page_del.png")
         self.widgets["del_page"] = tk.Button(
-            sub_frame,
+            pages,
             image=icon,
             command=self._deletePage
         )
         self.widgets["del_page"].image = icon
+        ToolTip(self.widgets["del_page"], msg.SL_TT_DEL_PAGE)
         self.widgets["del_page"].pack(side=tk.LEFT)
+        pages.pack(side=tk.LEFT)
 
-        sub_frame.pack(fill=tk.X, expand=1)
+        tk.Label(frame, text=" ").pack(side=tk.LEFT)
 
+        img = ImageTk.PhotoImage(file="img/pdf.png")
         export = tk.Button(
             frame,
             text=msg.SL_EXPORT,
+            image=img,
+            compound=tk.LEFT,
             command=self._exportPDF
         )
+        export.image = img
         export.pack(fill=tk.BOTH, expand=1)
 
     # switch active page ...
@@ -330,6 +354,7 @@ class LayoutScreen(tk.Frame):
             self.pages = len(self.template.findall("page"))
             self._refactorTemplate()
             self._switchPage(0)
+
         else:
             self.pages = len(self.template.findall("page"))
             self._switchPage(-1)
@@ -357,6 +382,102 @@ class LayoutScreen(tk.Frame):
     # call the PDF exporter (file selector)
     def _exportPDF(self):
         self.app.exportCharWindow(self.template)
+
+    def _text(self, module):
+        """ create the descriptive text """
+        mod_type = module.get("type")
+        text = self.mod_types[mod_type]
+
+        params = module.findall("param")
+
+        if mod_type == page.MOD_TRAITS:
+            trait_type = None
+            for param in params:
+                if param.get("name", "") == "trait_type":
+                    trait_type = param.get("value")
+            if trait_type:
+                trait_dict = {
+                    "all": msg.PDF_ALL_TRAITS,
+                    "positive": msg.PDF_POSITIVE_TRAITS,
+                    "negative": msg.PDF_NEGATIVE_TRAITS
+                }
+                text = trait_dict.get(trait_type)
+
+        if mod_type == page.MOD_SKILLS:
+            skill_type = None
+            for param in params:
+                if param.get("name", "") == "skill_type":
+                    skill_type = param.get("value")
+            if skill_type:
+                skill_dict = {
+                    "all": msg.PDF_SKILLS_ALL,
+                    "active": msg.PDF_SKILLS_ACTIVE,
+                    "passive": msg.PDF_SKILLS_PASSIVE,
+                    "knowledge": msg.PDF_SKILLS_KNOWLEDGE,
+                    "lang": msg.PDF_SKILLS_LANGUAGE
+                }
+
+                text = skill_dict[skill_type]
+
+        if mod_type == page.MOD_EQUIPMENT:
+            item_id = None
+            condensed = None
+            equipped = None
+            content = None
+
+            for param in params:
+                if param.get("name", "") == "item_id":
+                    item_id = param.get("value", "")
+                if param.get("name", "") == "condensed":
+                    condensed = True
+                if param.get("name", "") == "equipped":
+                    equipped = True
+                if param.get("name", "") == "content":
+                    content = True
+
+            if item_id:
+                item = self.char.getItemById(item_id)
+                if item is not None:
+                    text = msg.ME_CONTENTS + "\n" + item.get("name")
+            elif condensed:
+                text += "\n" + msg.ME_CONDENSED
+            if equipped:
+                text = msg.ME_EQUIPPED + "\n" + text
+            if content:
+                text += "\n" + msg.ME_BAG_CONTENTS
+
+        if mod_type == page.MOD_WEAPONS:
+            variant = None
+            equipped = None
+            for param in params:
+                if param.get("name", "") == "variant":
+                    variant = param.get("value")
+                if param.get("name", "") == "equipped":
+                    equipped = True
+
+            if variant:
+                weapons_dict = {
+                    "all": msg.PDF_ALL_WEAPONS,
+                    "melee": msg.PDF_MELEE,
+                    "guns": msg.PDF_GUNS,
+                    "ammo": msg.PDF_AMMO
+                }
+                text = weapons_dict[variant]
+
+            if equipped:
+                text += "\n" + msg.ME_JUST_EQUIPPED
+
+        if mod_type == page.MOD_NOTES:
+            id = None
+            for param in params:
+                if param.get("name", "") == "note_id":
+                    id = param.get("value")
+            if id:
+                note = self.char.findNoteById(id)
+                if note is not None:
+                    text += ":\n" + note.get("name")
+
+        return text
 
     # open an edit window
     def _editModule(self, position):
@@ -402,15 +523,25 @@ class LayoutScreen(tk.Frame):
             'parent': self,
             'title': 'Charakterbogentemplate laden ...',
         }
-        file = tkfd.askopenfile(mode="rb", **options)
-        if file:
-            self.template = et.parse(file)
-            file.close()
-            self.pages = len(self.template.findall("page"))
-            self._generateGrid()
-            self._switchPage(0)
+        filename = tkfd.askopenfilename(**options)
+        if filename:
+            with open(filename, mode="rb") as file:
+                self.char.setPDFTemplate(filename)
+                self.template = et.parse(file)
+                self.pages = len(self.template.findall("page"))
+                self._generateGrid()
+                self._switchPage(0)
         else:
             pass
+
+    def _getTemplate(self):
+        filename = self.char.getPDFTemplate()
+        print(filename)
+        if filename:
+            with open(filename, mode="rb") as file:
+                self.template = et.parse(file)
+                self._generateGrid()
+                self._switchPage(0)
 
     # save the current template to disk ... 
     def _saveTemplate(self):
@@ -423,11 +554,16 @@ class LayoutScreen(tk.Frame):
             "parent": self,
             "title": "Charakterbogentemplate speichern ...",
         }
-        file = tkfd.asksaveasfile(mode="wb", **options)
-        if file:
-            self.template.write(file, encoding="utf-8", xml_declaration=True)
-            file.close()
- 
+        filename = tkfd.asksaveasfilename(**options)
+        if filename:
+            with open(filename, mode="wb") as file:
+                self.template.write(
+                    file,
+                    encoding="utf-8",
+                    xml_declaration=True
+                )
+                self.char.setPDFTemplate(filename)
+
     def _generateGrid(self):
         self.grid = []
         pages = self.template.findall("page")

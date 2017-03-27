@@ -18,8 +18,8 @@ class ImageScreen(tk.Frame):
     """ Create and Display a screen for selecting a character image and 
     fitting selections for different aspect ratios used in the PDF Export.
     """
-    def __init__(self,main,app):
-        tk.Frame.__init__(self,main)
+    def __init__(self, main, app):
+        tk.Frame.__init__(self, main)
 
         self.app = app
         self.char = app.char
@@ -104,7 +104,7 @@ class ImageScreen(tk.Frame):
     def imageError(self, filename):
         window = tk.Toplevel()
         window.title(msg.IS_ERROR)
-        img = ImageTk.PhotoImage(file="ui_img/exclamation.png")
+        img = ImageTk.PhotoImage(file="img/exclamation.png")
         icon = tk.Label(window, image=img)
         icon.image = img
         icon.grid(row=0, column=0)
@@ -126,13 +126,14 @@ class ImageScreen(tk.Frame):
         if self.image is not None:
             real_width = self.image.size[0]
             real_height = self.image.size[1]
-            canvas_dim = self.image_canvas.winfo_height()
+            canvas_dim = self.image_canvas.winfo_reqheight()
             scale1 = 1.0 * canvas_dim / real_width
             scale2 = 1.0 * canvas_dim / real_height
-            scale = min(scale1,scale2)
-            resized = self.image.resize(
-                (int(real_width*scale), int(real_height*scale))
-            )
+            scale = min(scale1, scale2)
+            size_x = max(int(real_width*scale), 1)
+            size_y = max(int(real_height*scale), 1)
+
+            resized = self.image.resize((size_x, size_y))
             tk_image = ImageTk.PhotoImage(image = resized)
             self.images.append(tk_image)
             self.img_on_canvas = self.image_canvas.create_image(
@@ -159,6 +160,10 @@ class ImageScreen(tk.Frame):
         return aspect
             
     def _showAspectButtons(self):
+        loaded = self.variant_frame.winfo_children()
+        if loaded:
+            return
+
         variants = [
             (page.ATTRIB_IMAGE, msg.PDF_ATTRIB_IMAGE),
             (page.SINGLE, msg.PDF_SINGLE),
@@ -180,7 +185,6 @@ class ImageScreen(tk.Frame):
             button.bind("<Button-1>", self._aspectSelector)
             button.pack(fill=tk.X)
         self.variants = variants
-
         self.variant_frame.pack(fill=tk.X)
 
     # the player clicked on one of the aspect buttons ...
@@ -455,7 +459,8 @@ class ImageScreen(tk.Frame):
         """ this method removes the character image and redraws the ImageScreen
         """
         self.char.removeImage()
-        window = ImageScreen(self, self.app)
+        self.image_canvas.delete(tk.ALL)
+        self._checkForImage()
 
     # TEST - Export alle Bildmodule ... 
     def _test(self):
@@ -465,14 +470,14 @@ class ImageScreen(tk.Frame):
         page1 = et.SubElement(template,"page",{"num":"1"})
         et.SubElement(page1,"module",{"row":"0", "col":"2", "size":"single","type":"image","id":"1"})
         et.SubElement(page1,"module",{"row":"0", "col":"1", "size":"double","type":"image","id":"2"})
-        et.SubElement(page1,"module",{"row":"0", "col":"0", "size":"double","type":"attributes","id":"2"})
-        et.SubElement(page1,"module",{"row":"1", "col":"2", "size":"triple","type":"image","id":"3"})
-        et.SubElement(page1,"module",{"row":"0", "col":"3", "size":"full","type":"image","id":"4"})
-        et.SubElement(page1,"module",{"row":"2", "col":"0", "size":"quart","type":"image","id":"4"})
+        et.SubElement(page1,"module",{"row":"0", "col":"0", "size":"double","type":"attributes","id":"3"})
+        et.SubElement(page1,"module",{"row":"1", "col":"2", "size":"triple","type":"image","id":"4"})
+        et.SubElement(page1,"module",{"row":"0", "col":"3", "size":"full","type":"image","id":"5"})
+        et.SubElement(page1,"module",{"row":"2", "col":"0", "size":"quart","type":"image","id":"6"})
         page2 = et.SubElement(template,"page",{"num":"1"})
-        et.SubElement(page2,"module",{"row":"0", "col":"0", "size":"wide","type":"image","id":"1"})
-        et.SubElement(page2,"module",{"row":"1", "col":"0", "size":"big","type":"image","id":"2"})
-        et.SubElement(page2,"module",{"row":"0", "col":"2", "size":"half","type":"image","id":"3"})
+        et.SubElement(page2,"module",{"row":"0", "col":"0", "size":"wide","type":"image","id":"7"})
+        et.SubElement(page2,"module",{"row":"1", "col":"0", "size":"big","type":"image","id":"8"})
+        et.SubElement(page2,"module",{"row":"0", "col":"2", "size":"half","type":"image","id":"9"})
 
         exportpdf.ExportPdf("test.pdf",self.char,self.app.traits,template)
 

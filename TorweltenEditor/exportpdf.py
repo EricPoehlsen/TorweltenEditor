@@ -638,7 +638,7 @@ class ExportPdf:
         )
 
         # get the image ...
-        image = self._loadImage(size, img_width, img_height)
+        image = self._loadImage("attrimg", img_width, img_height)
 
         # draw image ...
         if image is not None: 
@@ -664,6 +664,7 @@ class ExportPdf:
         x,
         y,
         size=SINGLE,
+        note_id=None,
         lines_per_entry=1,
         title="NOTIZEN",
         info_title=None
@@ -673,13 +674,14 @@ class ExportPdf:
         x,y: int - top left corner in points
         size: string - "single", "wide, "double", "quart", "triple", "big", "full", "half"
         trait_type: string - "all", "positive", "negative"
-        lines_per_entry: int - 0 (no lines) 
+        note_id (str): id string of note to display
+        lines_per_entry: int - 0 (no lines)
         title: string - name of box ... 
         info_title: String - Header Bar ...
         """
 
         # localize variables for easy use ... 
-        limit = 52
+        limit = 49
         width, height = self.sizeHandler(size)
         if width == DOUBLE_WIDTH:
             limit = 100
@@ -716,36 +718,67 @@ class ExportPdf:
             stroke,
             1
         )
-        
+
+        # prepare the text ...
+        text = []
+        if note_id:
+            note = self.char.findNoteById(note_id)
+            if note is not None:
+                title = note.get("name", "")
+                if note.text:
+                    words = note.text
+                    words = words.replace("\n", "|| ")
+                    words = words.split()
+                    line = ""
+                    for word in words:
+                        linebreak = False
+                        if "||" in word:
+                            linebreak = True
+                            word = word.replace("||", "")
+                        if len(line) + len(word) <= limit:
+                            line += " " + word
+                        else:
+                            text.append(line.strip())
+                            line = word
+                        if linebreak:
+                            text.append(line.strip())
+                            line = ""
+                    if line:
+                        text.append(line.strip())
+
         title = title.upper()
         self.drawTitle(canvas, x, y, height, title)
+
+        columns = [width - bar]
 
         # the header line ...
         if info_title: 
             canvas.setFillColorRGB(1, 1, 1)
             local_x = x + bar
             local_y = y - padding - info_line
-            canvas.roundRect(
+
+            self.drawLineBackground(
+                canvas,
                 local_x,
                 local_y,
-                width-bar,
+                columns,
                 info_line,
-                i_rad,
-                stroke,
-                1
+                i_rad
             )
-            offset = 2
+
+            offset = 3
+
             canvas.setFillColorRGB(0, 0, 0)
             canvas.setFont(FONT_NAME, 7)
             canvas.drawString(local_x + offset, local_y+offset, info_title)
         
         canvas.setFillColorRGB(1, 1, 1)
-
         canvas.setFont(FONT_NAME, 10)
 
         offset = 3
 
         i = line_count - 1
+        l = 0
 
         while i >= 0:
             # construct the line ... 
@@ -755,15 +788,20 @@ class ExportPdf:
 
             # boxes
             canvas.setFillColorRGB(1, 1, 1)
-            canvas.roundRect(
+
+            self.drawLineBackground(
+                canvas,
                 local_x,
                 local_y,
-                width-bar,
-                line_height*lines_per_entry,
+                columns,
+                line_height,
                 i_rad,
-                stroke,
-                1
             )
+
+            if text and l < len(text):
+                canvas.setFillColorRGB(0, 0, 0)
+                canvas.drawString(local_x + offset, local_y+offset, text[l])
+                l += 1
 
     def moduleImage(self, canvas, x, y, size=SINGLE):
         """ this module draws a image box ...
@@ -993,44 +1031,33 @@ class ExportPdf:
                 trait = trait_list[trait_count]
                 trait_xp = trait.get("xp", "0")
                 trait_name = trait.get("name", "")
-                trait_spec = ""
-                trait_vars = []
-                trait_rank = ""
+                trait_spec = trait.findall("./specification")
+                trait_vars = trait.findall("./variable")
+                trait_rank = trait.findall("./ranke")
 
-                full_trait = self.traits.getTrait(trait_name)
-                
-                selected = trait.find("selected")
-                if (full_trait is not None) and (selected is not None): 
-                    # add specification
-                    spec = selected.get("spec", "")
-                    if spec:
-                        trait_spec = "("+spec+")"
-                    
-                    # add rank    
-                    full_ranks = full_trait.findall("rank")
-                    if full_ranks:
-                        rank_id = "rank-"+full_ranks[0].get("id")
-                        rank = selected.get(rank_id, "")
-                        if rank:
-                            trait_rank = "["+rank+"]"
+                spec = ""
+                rank = ""
+                variables = []
 
-                    # description (base)
-                    description = [
-                        trait.find("description"),
-                        full_trait.find("description")
-                    ]
+                # add specification
+                for spec in trait_spec:
+                    spec = "(" + spec.get("value") + ")"
 
-                    # variables
-                    full_variables = full_trait.findall("variable")
-                    for variable in full_variables:
-                        var_id = "id-"+variable.get("id", "")
-                        var_name = variable.get("name", "")
-                        if var_name:
-                            value = selected.get(var_id, "")
-                            trait_vars.append((var_name, value))
-                            search = "description[@value='"+value+"']"
-                            description.append(variable.find(search))
-                
+                # add rank
+                for rank in trait_rank:
+                    rank = "[" + rank.get("value") + "]"
+
+                # description (base)
+                description = [trait.find("description")]
+
+                # variables
+                for variable in trait_vars:
+                    var_name = variable.get("name", "")
+                    var_value = variable.get("value", "")
+                    search = "description[@value='"+var_value+"']"
+                    description.append(variable.find(search))
+                    variables.append((var_name, var_value))
+
                 canvas.setFillColorRGB(0, 0, 0)
                 local_x = x + bar
 
@@ -1039,7 +1066,7 @@ class ExportPdf:
                         description.remove(desc)
                 
                 # add specification and rank to name ... 
-                trait_name += " " + trait_spec + trait_rank
+                trait_name += " " + spec + rank
 
                 # add variables (for one liners ...)
                 if info_lines == 0:
@@ -1081,8 +1108,8 @@ class ExportPdf:
                     v_count = 0
                     while v_count < len(trait_vars) and cur_line < info_lines:
                         var_text = "{name}: {value}".format(
-                            name=trait_vars[v_count][0],
-                            value=trait_vars[v_count][1]
+                            name=variables[v_count][0],
+                            value=variables[v_count][1]
                         )
                         if len(text) + len(var_text) > info_limit: 
                             local_y -= line_height
@@ -1472,12 +1499,9 @@ class ExportPdf:
                 it.RIFLES_SA,
                 it.SHOT_GUNS,
                 it.SHOT_GUNS_SA,
-                it.AUTOMATIC_PISTOLS,
-                it.MASCHINE_GUNS,
-                it.AUTOMATIC_RIFLES,
+                it.AUTOMATIC_WEAPON,
                 it.BLASTER
             ]
-            print(item_type)
             if it.MONEY in item_type:
                 title = msg.PDF_EQUIPMENT_MONEY
             if it.IMPLANT in item_type:
@@ -1880,9 +1904,7 @@ class ExportPdf:
                     it.RIFLES_SA,
                     it.SHOT_GUNS,
                     it.SHOT_GUNS_SA,
-                    it.AUTOMATIC_PISTOLS,
-                    it.MASCHINE_GUNS,
-                    it.AUTOMATIC_RIFLES,
+                    it.AUTOMATIC_WEAPON,
                     it.BLASTER
                 ]
             elif variant == "ammo": 
@@ -1998,7 +2020,7 @@ class ExportPdf:
         info_x = x + bar
         info_y += offset
         if amount:
-            _x = + quantity_width/2
+            _x = info_x + quantity_width/2
             canvas.drawCentredString(_x, info_y, msg.PDF_QUANTITY)
             info_x += quantity_width
         info_x += offset
@@ -2518,10 +2540,10 @@ class ExportPdf:
         # draw the lines (and fill in skills if they exist ...                     
         ewt = config.EWT
         
-        ewt_20 = ImageReader("images/ewt_20.png")
-        ewt_10 = ImageReader("images/ewt_10.png")
-        ewt_05 = ImageReader("images/ewt_05.png")
-        ewt_00 = ImageReader("images/ewt_00.png")
+        ewt_20 = ImageReader("img/ewt_20.png")
+        ewt_10 = ImageReader("img/ewt_10.png")
+        ewt_05 = ImageReader("img/ewt_05.png")
+        ewt_00 = ImageReader("img/ewt_00.png")
 
         roll_width = 10
         inner_width = width - bar
@@ -2582,6 +2604,7 @@ class ExportPdf:
         elif size == TRIPLE:
             height = TRIPLE_HEIGHT
         elif size == FULL:
+            height = FULL_HEIGHT
             width = SINGLE_WIDTH
         elif size == WIDE:
             height = SINGLE_HEIGHT
