@@ -133,7 +133,7 @@ class Messages:
     SI_CHILD_SKILL = "zugeordnete Fertigkeiten"
 
     # EQUIPMENT SCREEN
-    ES_BUY_BUTTON = "Ausrüstung beschaffen"
+    ES_BUY_BUTTON = "Ausrüstung einkaufen"
     ES_EQUIPPED = "Mitgeführte Ausrüstung"
     ES_MELEE = "Nahkampfwaffen"
     ES_GUNS = "Fernkampfwaffen"
@@ -717,6 +717,30 @@ class Messages:
     IE_CE_POCKETS_3 = "mit einigen Taschen"
     IE_CE_POCKETS_4 = "mit vielen Taschen"
 
+    IE_TT_LIST = "Liste der Ausrüstungsgegenstände"
+    IE_TT_CE = "Bekleidungsbaukasten"
+    IE_TT_CUSTOM = "Gegenstand erstellen"
+
+    IE_TT_SELECTED = "Bedeckt das Kleidungsstück\ndieses Körperteil?"
+    IE_TT_ARMOR1 = "robuste Ausführung 0/+1 Panzerung"
+    IE_TT_ARMOR2 = "gepanzerte Ausführung - 0/+2"
+    IE_TT_CLOSURE = "An diesem Element befinden sich Verschlüsse"
+    IE_TT_COMPLEX = "Dieser Teil des Kleidungsstücks\n"\
+                    "besitzt einen aufwändigen Schnitt"
+    IE_TT_FABRIC = "Sehr viel Stoff (z.B Trompetenärmel oder Rock)"
+    IE_TT_TRIMMINGS = "Dieses Element ist bestickt oder anders verziert."
+    IE_TT_POCKETS = "An diesem Teil befinden sich Taschen."
+    IE_TT_CLOSURE_TYPE = "Art des Verschlusses. Nur\n"\
+                         "wählbar, wenn auch ein\n"\
+                         "Verschluss ausgewählt ist.\n"\
+                         "[nur für die Auto-Beschreibung]"
+    IE_TT_MATERIAL = "Material festlegen.\nWird als Option übernommen"
+    IE_TT_COLOR = "Farbe festlegen.\nWird als Option übernommen."
+    IE_TT_PANTS = "Das Kleidungsstück hat Hosenbeine\n"\
+                  "Nur wählbar wenn 'Hüfte' aktiv.\n"\
+                  "[für die Auto-Beschreibung relevant]"
+    IE_TT_CE_BUY = "Kleidungsstück kaufen\nDer Preis steht auch hier."
+
     IE_TT_NAME = "Alles braucht einen Namen"
     IE_TT_QUANTITY = "Anzahl\n(nur positive Zahlen)"
     IE_TT_WEIGHT = "Gewicht\npro Stück\nin Gramm"
@@ -724,8 +748,11 @@ class Messages:
     IE_TT_AVAIL = "Verfügbarkeit:\n-6 - +6"
     IE_TT_PRICE = "Gesamtpreis\n(wird durch Anzahl geteilt!)"
     IE_TT_DAMAGE = "Schaden im Format:\n±S/±D"
-    IE_TT_CALIBER = "Waffen, Magazine und Munition\npassen nur zusammen,\nwenn dieser Wert übereinstimmt."
-    IE_TT_CONTAINER = "Anzeigename der Taschen\nz.B. 'Hosentaschen'"
+    IE_TT_CALIBER = "Waffen, Magazine und Munition\n"\
+                    "passen nur zusammen, wenn dieser\n"\
+                    "Wert übereinstimmt."
+    IE_TT_CONTAINER = "Anzeigename der Taschen\n(z.B. Hosentaschen)"
+
 
     # IMPROVE WINDOW
     IW_TITLE = "Steigern ..."

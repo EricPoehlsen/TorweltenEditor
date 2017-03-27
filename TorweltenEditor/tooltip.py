@@ -52,7 +52,7 @@ class Balloon(tk.Toplevel):
         )
         label.pack(anchor=tk.CENTER, padx=1, pady=1, ipadx=2, ipady=1)
         geometry = "+{x}+{y}".format(
-            x=x,
+            x=x - label.winfo_reqwidth() // 2,
             y=y - label.winfo_reqheight() - 8
         )
         self.geometry(geometry)

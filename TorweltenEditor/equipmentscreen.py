@@ -1,12 +1,14 @@
 # coding=utf-8
 import tkinter as tk
 import xml.etree.ElementTree as et
+from PIL import ImageTk
 from itemeditor import ItemEditor
 from inventoryeditor import InventoryEditor
 import config
 
 it = config.ItemTypes()
 msg = config.Messages()
+colors = config.Colors()
 
 
 class EquipmentScreen(tk.Frame):
@@ -26,41 +28,24 @@ class EquipmentScreen(tk.Frame):
         self.left_frame.pack(
             side=tk.LEFT,
             anchor=tk.N,
-            fill=tk.Y
+            fill=tk.Y,
+            expand=1
         )
 
         # displaying the characters initial account
-        self.initial_account_frame = tk.Frame(self.left_frame)
-        mode = self.char.getEditMode()
-        if mode == "generation":
-            self.reduce_account = tk.Button(
-                self.initial_account_frame,
-                text=" - ",
-                command=lambda: self.initialAccount(-1)
-            )
-            self.reduce_account.pack(side=tk.LEFT, anchor=tk.W)
-        account_label = tk.Label(
-            self.initial_account_frame,
-            textvariable=self.account_info
-        )
-        account_label.pack(side=tk.LEFT, fill=tk.X, expand=1)
-        if mode == "generation":
-            self.increase_account = tk.Button(
-                self.initial_account_frame,
-                text=" + ",
-                command=lambda: self.initialAccount(+1)
-            )
-            self.increase_account.pack(side=tk.LEFT, anchor=tk.E)
-        self.initial_account_frame.pack(fill=tk.X, expand=1)
-        self.initialAccount()
+        self.initial_account_frame = self.initialAccount(self.left_frame)
+        self.initial_account_frame.pack(fill=tk.X)
+
+        self.updateInitialAccount()
 
         # a button to buy new stuff (opens the InventoryEditor)
         self.buy_button = tk.Button(
             self.left_frame,
             text=msg.ES_BUY_BUTTON,
+            font="Arial 12 bold",
             command=self.displayInventoryEditor
         )
-        self.buy_button.pack(fill=tk.X)
+        self.buy_button.pack(fill=tk.BOTH, expand=1)
 
         # show equipped items 
         self.equipped_frame = tk.LabelFrame(
@@ -172,7 +157,44 @@ class EquipmentScreen(tk.Frame):
         self.showUnassignedItems()
 
     # handling the initial account ... 
-    def initialAccount(self, change=0):
+    def initialAccount(self, parent):
+        frame = tk.Frame(parent)
+        frame.columnconfigure(1, weight=100)
+
+        minus = ImageTk.PhotoImage(file="img/minus.png")
+        reduce_account = tk.Button(
+            frame,
+            image=minus,
+            command=lambda: self.updateInitialAccount(-1)
+        )
+        reduce_account.image = minus
+
+        img = ImageTk.PhotoImage(file="img/money.png")
+        account_label = tk.Label(
+            frame,
+            textvariable=self.account_info,
+            compound = tk.LEFT,
+            image=img,
+        )
+        account_label.image = img
+        account_label.grid(row=0, column=1)
+
+        plus = ImageTk.PhotoImage(file="img/plus.png")
+        increase_account = tk.Button(
+            frame,
+            image=plus,
+            command=lambda: self.updateInitialAccount(+1)
+        )
+        increase_account.image = plus
+
+        mode = self.char.getEditMode()
+        if mode == "generation":
+            reduce_account.grid(row=0, column=0)
+            increase_account.grid(row=0, column=2)
+
+        return frame
+
+    def updateInitialAccount(self, change=0):
         """ This method is called to update the initial account
 
         change: int - (1 = 1000 Rand and costs 1 XP)
@@ -189,6 +211,9 @@ class EquipmentScreen(tk.Frame):
 
         new_value = initial + change
 
+        if new_value < 0:
+            return
+
         # update the account and xp ..
         if change != 0:
             self.char.updateAvailableXP(-change)
@@ -199,13 +224,6 @@ class EquipmentScreen(tk.Frame):
         initial_amount = 1000 * new_value
         text = msg.ES_INITIAL_FUNDS.format(amount=str(initial_amount))
         self.account_info.set(text)
-
-        # disable reduce button if necessary
-        if self.char.getEditMode() == "generation":
-            if new_value < 1:
-                self.reduce_account.config(state=tk.DISABLED)
-            else:
-                self.reduce_account.config(state=tk.NORMAL)
 
     # open the inventory editor and add it to the list of the open windows
     def displayInventoryEditor(self):
