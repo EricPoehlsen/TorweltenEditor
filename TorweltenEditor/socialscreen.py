@@ -17,7 +17,7 @@ class SocialScreen(tk.Frame):
         self.char = app.char
         self.open_windows = app.open_windows
         # create canvas ... 
-        self.contact_canvas = tk.Canvas(self,width = 770,height = 540)
+        self.contact_canvas = tk.Canvas(self, width=770, height=540)
         self.contact_canvas.pack(side = tk.LEFT)
         self.contact_scroll = tk.Scrollbar(self,orient = tk.VERTICAL)
         self.contact_scroll.pack(side = tk.LEFT, fill = tk.Y) 
@@ -27,7 +27,7 @@ class SocialScreen(tk.Frame):
         self.showContacts(self.contact_canvas)
 
     # show all contacts
-    def showContacts(self,canvas):
+    def showContacts(self, canvas):
         """ display all contacts 
         
         canvas (tk.Canvas): the canvas to draw on 

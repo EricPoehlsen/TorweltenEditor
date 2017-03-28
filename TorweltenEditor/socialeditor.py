@@ -459,7 +459,7 @@ class SocialEditor(tk.Toplevel):
 
             # remove contact, update list and close window ...
             self.char.removeContactById(contact_id)
-            self.app.showContacts(self.app.contact_frame)
+            self.app.showContacts(self.app.contact_canvas)
             self.close()
         else:
             self.delete_check = True
