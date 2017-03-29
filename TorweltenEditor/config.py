@@ -904,6 +904,18 @@ class Messages:
     PDF_HALF = "2x4 - halbe Seite"
     PDF_ATTRIB_IMAGE = "im Attributsmodul"
 
+    # SettingScreen
+    SET_CORE_SETTINGS = "Programmoptionen"
+    SET_INITIAL_XP = "Erfahrungspunkte für neue Charaktere"
+    SET_INIT_XP_INVALID = "UNGÜLTIG"
+    SET_CHAR_SETTINGS = "Charakteroptionen"
+    SET_EDIT_MODE = "Bearbeitungsmodus wählen"
+    SET_EDIT_GENERATION = "Charaktergenerierung"
+    SET_EDIT_EDIT = "Bearbeitungsmodus"
+    SET_EDIT_VIEW = "Ansichtsmodus"
+    SET_EDIT_SIM = "Simulation"
+    SET_EDIT_SWITCH = "Modus wechseln"
+
     # these strings are used in the character xml 
     CHAR_CREATED = "Charaktergenerierung gestartet ..."
     CHAR_INITIAL_XP = "Initiale Generierungspunkte"
@@ -1085,7 +1097,7 @@ class ItemTypes:
     OPTION_CALIBER = "Kaliber"
     OPTION_COLOR = "Farbe"
 
-
+"""
 # this class handles character XML data names
 class Character:
     # attributes
@@ -1112,6 +1124,7 @@ class Character:
     EYES = "eyes"
     SKIN = "skin"
     SKIN_TYPE = "skintype"
+"""
 
 
 class Colors:

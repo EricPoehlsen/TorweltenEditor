@@ -1,9 +1,10 @@
 import re
 import tkinter.filedialog as tkfd
-import char_xml as character
-import item_xml
-import skill_xml
-import trait_xml
+from char_xml import Character
+from item_xml import ItemTree
+from skill_xml import SkillTree
+from trait_xml import TraitTree
+from setting_xml import Settings
 import config
 from charscreen import CharScreen
 from equipmentscreen import EquipmentScreen
@@ -15,6 +16,7 @@ from sheetlayoutscreen import LayoutScreen
 from exportpdf import ExportPdf
 from imagescreen import ImageScreen
 from notesscreen import NotesScreen
+from aboutscreen import About
 from improvewindow import Improve
 from PIL import ImageTk, Image, PngImagePlugin
 import tkinter as tk
@@ -32,16 +34,15 @@ class Application(tk.Frame):
 
     def __init__(self, main):
         tk.Frame.__init__(self, main)
-        # maybe important later ... 
-        self.dimensions = None
-        
-        # create the character instance # #
-        self.char = character.Character()
-        self.skills = skill_xml.SkillTree()
-        self.traits = trait_xml.TraitTree()
-        self.itemlist = item_xml.ItemTree()
-
         self.main = main
+
+        # setting up data
+        self.char = Character()
+        self.skills = SkillTree()
+        self.traits = TraitTree()
+        self.itemlist = ItemTree()
+        self.settings = Settings()
+
         self._setHotkeys()
 
         # creating the menu
@@ -179,9 +180,10 @@ class Application(tk.Frame):
 
     def newChar(self):
         """ Creating a new empty character template """
-        self.char = character.Character()
+        self.char = Character()
+        init_xp = int(self.settings.getInitialXP())
         self.char.addXP(
-            amount=300, 
+            amount=init_xp,
             reason=msg.CHAR_INITIAL_XP
         )
         self._switchWindow(msg.TOOLBAR_CHAR_DATA)
@@ -285,6 +287,7 @@ class Application(tk.Frame):
             msg.MENU_SETTINGS: SettingScreen,
             msg.MENU_EWT: EWTScreen,
             msg.MENU_CHAR_LOG: LogScreen,
+            msg.MENU_ABOUT: About,
         }
 
         # display the new module
@@ -295,7 +298,7 @@ class Application(tk.Frame):
         window = Improve(self)
 
     def about(self):
-        print("About")
+        self._switchWindow(msg.MENU_ABOUT)
 
     # TODO this is a currently unused
     def startScreenImage(self):

@@ -15,4 +15,6 @@ class About(tk.Frame):
 
     def __init__(self, main, app):
         super().__init__(main)
+
+        tk.Label(self, text="About").pack()
         pass
