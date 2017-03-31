@@ -143,13 +143,17 @@ class SkillSelector(tk.Toplevel):
 
         sk_dict = {}
 
-
         for skill in skills:
             name, spec, id, parent = skill
             if name in cur_skills:
                 image = self.sel_icon
             else:
                 image = self.unsel_icon
+
+            # making sure that ids are unique
+            while sk_dict.get(id):
+                id *= 10
+
             if sk_dict.get(parent):
                 sk_dict[id] = self.list_box.insert(
                     sk_dict[parent],
@@ -165,7 +169,6 @@ class SkillSelector(tk.Toplevel):
                     text=name,
                     image=image
                 )
-
 
     def toggleMinSpec(self):
         """ Toggles minimum specialization between 1 and 2

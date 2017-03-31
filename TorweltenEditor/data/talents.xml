@@ -1,6 +1,6 @@
 <?xml version = "1.0" encoding = "utf-8" ?>
 
-<traits>
+<traits lang="de" name="Eigenschaften" expansion="core">
 <trait name = "Blind" xp = "-18" class = "phy" group = "Wahrnehmung">
 <description><text>Der Charakter kann Licht im für Menschen üblicherweise sichtbaren Spektrum nicht wahrnehmen.</text></description>
 <text>&#10;Dieser Nachteil schließt nicht aus, dass der Charakter möglicherweise durch den Vorteil Infrarotsicht oder UV-Sicht sehen kann.</text>

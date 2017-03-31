@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<skills>
-<meta target="Torwelten Editor" version="0.1" />
+<skills lang="de" name="Fertigkeiten" expansion="core">
+<meta version = "0.1" lang = "de" />
 
 <skillgroup maxid="129999" minid="110000" name="Körperlich" type="active">
 	<skill id="110000" name="Athletik" parent="0" spec="1" type="active" />

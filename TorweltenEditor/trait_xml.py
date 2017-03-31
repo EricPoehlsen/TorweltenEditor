@@ -6,15 +6,28 @@ import tkinter as tk
 class TraitTree(object):
     """ Provides an ElementTree with character Traits"""
 
-    def __init__(self):
-        self.xml_traits = None
-        self.loadTree()
+    def __init__(self, settings):
+        self.xml_traits = self.loadTree("data/traits_de.xml")
 
-    def loadTree(self, filename="data/traits.xml"):
+        self.settings = settings
+
+    def loadTree(self, filename=None):
         """ Getting the traits from a given filename """
+        tree = None
+        if not filename:
+            return tree
 
         with open(filename, mode="rb") as file:
-            self.xml_traits = et.parse(file)
+            try:
+                tree = et.parse(filename)
+                root = tree.getroot()
+                if root.tag == "expansion":
+                    traits = root.find("traits")
+                    tree = et.ElementTree(traits)
+            except et.ParseError as e:
+                print(str(e))
+
+        return tree
 
     def getTraits(self):
         """ get all traits

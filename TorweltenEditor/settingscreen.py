@@ -1,8 +1,16 @@
 # coding=utf-8
 import tkinter as tk
 import config
+import os
+import xml.etree.ElementTree as et
 
 msg = config.Messages()
+
+"""
+FOR LATER USE 
+members = [attr for attr in dir(msg) if not attr.startswith("__")]
+print(members)
+"""
 
 
 class SettingScreen(tk.Frame):
@@ -18,7 +26,6 @@ class SettingScreen(tk.Frame):
             height=app.main_frame.winfo_reqheight()
         )
 
-        print(self.winfo_reqwidth(), self.winfo_reqheight())
         self.char_settings = self.charSettings(self)
         self.char_settings.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
 
@@ -38,13 +45,15 @@ class SettingScreen(tk.Frame):
         init_xp = self.initialXPEntry(frame)
         init_xp.pack(fill=tk.X, expand=1)
 
-        tk.Label(frame, text="Test").pack()
+        expansions = self.expansionsFrame(frame)
+        expansions.pack(fill=tk.X, expand=1)
 
         tk.Button(
             frame,
             text=msg.ME_SAVE,
             command=self.save
         ).pack()
+
         return frame
 
     def editModeSwitcher(self, parent):
@@ -103,10 +112,69 @@ class SettingScreen(tk.Frame):
         except ValueError:
             self.data["init_xp"].set("0")
 
+    def expansionsFrame(self, parent):
+        """ building the data selection frame """
+
+        self.scanDataFiles()
+        frame = tk.LabelFrame(parent, text=msg.SET_EXPANSIONS)
+        cur_selection = self.settings.getExpansions()
+        print(cur_selection)
+        for name, lang, file in self.data["expansions"]:
+            self.data["exp_"+file] = var = tk.IntVar()
+            button = tk.Checkbutton(
+                frame,
+                text=name + " " + file,
+                offvalue=0,
+                onvalue=1,
+                var=var,
+            )
+            var.set(0)
+            if file in cur_selection:
+                var.set(1)
+            button.pack(anchor=tk.W, expand=1)
+        return frame
+
+    def scanDataFiles(self):
+        """ find available expansions """
+
+        self.data["expansions"] = []
+        path = "data/"
+
+        files = []
+        for (dirpath, dirnames, filenames) in os.walk(path):
+            files.extend(filenames)
+            break
+
+        for file in files:
+            if file.endswith("xml"):
+                filename = path+file
+                try:
+                    xml_tree = et.parse(filename)
+                    root = xml_tree.getroot()
+                    tag = root.tag
+                    if tag == "expansion":
+                        meta = root.find("meta")
+                        if meta is not None:
+                            name = root.get("name", "")
+                            lang = meta.get("lang")
+                            self.data["expansions"].append((name, lang, file))
+                except et.ParseError:
+                    print(file + "error")
+
+    def updateDataSources(self):
+        for expansion in self.data["expansions"]:
+            var = self.data["exp_"+expansion[2]]
+            selected = var.get()
+            if selected:
+                self.settings.updateExpansions(expansion[2], include=True)
+            else:
+                self.settings.updateExpansions(expansion[2], include=False)
+
     def save(self):
         """ saving settings """
 
         new_initial_xp = self.data["init_xp"].get()
         self.settings.setInitialXP(new_initial_xp)
+        self.updateDataSources()
 
         self.settings.save()

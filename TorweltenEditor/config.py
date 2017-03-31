@@ -915,6 +915,7 @@ class Messages:
     SET_EDIT_VIEW = "Ansichtsmodus"
     SET_EDIT_SIM = "Simulation"
     SET_EDIT_SWITCH = "Modus wechseln"
+    SET_EXPANSIONS = "Erweiterungen auswählen: "
 
     # these strings are used in the character xml 
     CHAR_CREATED = "Charaktergenerierung gestartet ..."

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<skills>
+<skills lang="de" name="Fertigkeiten" expansion="core">>
 <meta target="Torwelten Editor" version="0.1" />
 
 <skillgroup maxid="129999" minid="110000" name="Körperlich" type="active">
@@ -12,7 +12,8 @@
 	<skill id="110200" name="Reiten" parent="110000" spec="2" type="active" />
 	<skill id="110201" name="Pferde" parent="110200" spec="3" type="active" />
 	<skill id="110202" name="Oliphanten" parent="110200" spec="3" type="active" />
-	<skill id="110203" name="katzen" parent="110200" spec="3" type="active" /><skill id="110300" name="Schwimmen" parent="110000" spec="2" type="active" />
+	<skill id="110203" name="katzen" parent="110200" spec="3" type="active" />
+    <skill id="110300" name="Schwimmen" parent="110000" spec="2" type="active" />
 	<skill id="110301" name="Langstreckenschwimmen" parent="110300" spec="3" type="active" />
 	<skill id="110302" name="Rettungsschwimmen" parent="110300" spec="3" type="active" />
 	<skill id="110303" name="Freitauchen" parent="110300" spec="3" type="active" />

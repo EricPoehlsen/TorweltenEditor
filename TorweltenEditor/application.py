@@ -1,10 +1,10 @@
 import re
 import tkinter.filedialog as tkfd
+from setting_xml import Settings
 from char_xml import Character
 from item_xml import ItemTree
 from skill_xml import SkillTree
 from trait_xml import TraitTree
-from setting_xml import Settings
 import config
 from charscreen import CharScreen
 from equipmentscreen import EquipmentScreen
@@ -37,11 +37,12 @@ class Application(tk.Frame):
         self.main = main
 
         # setting up data
-        self.char = Character()
-        self.skills = SkillTree()
-        self.traits = TraitTree()
-        self.itemlist = ItemTree()
         self.settings = Settings()
+
+        self.char = Character()
+        self.skills = SkillTree(self.settings)
+        self.traits = TraitTree(self.settings)
+        self.itemlist = ItemTree(self.settings)
 
         self._setHotkeys()
 

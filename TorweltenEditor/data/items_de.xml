@@ -1,6 +1,6 @@
 <?xml version = "1.0" encoding = "utf-8" ?>
 <items>
-<meta target = "Torwelten Editor" version = "0.0"/>
+<meta version = "0.1" lang = "de"/>
 <group name = "Kleidung und Taschen" id ="1">
 	<group name = "Alltagskleidung" parent = "1" id = "1-1">
 		<item name = "Einwegunterwäsche" price = "2" weight = "50" type = "clothing" parent = "1-1">
@@ -1132,6 +1132,7 @@
 	<group name = "Reisen" parent = "7" id = "7-2" />
 	<group name = "Reparaturen" parent = "7" id = "7-3" />
 	<group name = "Medizinische Behandlung" parent = "7" id = "7-4" />
-	
+</group>
+<group name = "Sonstiges" id = "0">
 </group>
 </items>
