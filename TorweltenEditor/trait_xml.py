@@ -12,7 +12,12 @@ class TraitTree(object):
         self.buildTree()
 
     def loadTree(self, filename=None):
-        """ Getting the traits from a given filename """
+        """ retrieve an xml file and try parsing it for traits 
+        
+        Args: 
+            filename (str): path to xml file 
+        """
+
         tree = None
         if filename:
             try:
@@ -30,7 +35,7 @@ class TraitTree(object):
         return tree
 
     def addToTree(self, filename=None):
-        """ Adding another set of traits to the trait tree
+        """ Adds traits to an existing tree
 
         Args:
             filename (str): the file to parse
@@ -52,6 +57,8 @@ class TraitTree(object):
                 loaded_traits.append(trait)
 
     def buildTree(self):
+        """ builds the traits tree """
+
         self.xml_traits = self.loadTree("data/traits_de.xml")
         active_expansions = self.settings.getExpansions()
         for expansion in active_expansions:
@@ -65,13 +72,17 @@ class TraitTree(object):
         """
 
         traits = self.xml_traits.getroot()
+        traits = traits.findall(".//trait")
         return traits
 
     def getList(self):
-        """ Retrieve a trait list
+        """ Retrieve a textual trait list
+        
+        Note:
+            This is used to build the selector  
 
         Returns:
-            [(name, class, groub),...]:
+            [(name, class, group),...]:
                 name (str): name of trait
                 class (str): class of trait
                 group (str): group of trait
@@ -79,9 +90,9 @@ class TraitTree(object):
 
         def listEntry(trait):
             name = trait.get("name")
-            cls = trait.get("class")
+            xp = trait.get("xp")
             grp = trait.get("group")
-            return name, cls, grp
+            return name, xp, grp
 
         result = [listEntry(trait) for trait in self.getTraits()]
         return result

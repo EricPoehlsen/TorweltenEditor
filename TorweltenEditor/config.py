@@ -92,12 +92,25 @@ class Messages:
     TS_SEARCH_NAME = "nach Name suchen ..."
     TS_NAME = "Name"
     TS_GROUP = "Gruppe"
-    TS_CLASS = "Klasse"
     TS_SEARCH = "Suche"
     TS_TRAIT = "Eigenschaft"
     TS_DESCRIPTION = "Beschreibung ..."
     TS_ADD_TRAIT = "Ausgewählte Eigenschaft hinzufügen ..."
     TS_JUST_SCROLL = "einfach durchblättern..."
+
+    TS_BODY = "Körperbau"
+    TS_MIND = "Geistig"
+    TS_SOCIAL = "Sozial"
+    TS_PERCEPTION = "Wahrnehmung"
+    TS_FINANCIAL = "Vermögen"
+    TS_FIGHTING = "Kampf"
+    TS_ILLNESS = "Erkrankung"
+    TS_TEMPORAL = "Temporales"
+    TS_SKILL = "Fertigkeiten"
+    TS_BEHAVIOR = "Verhalten"
+    TS_XS = "Extraspatiales"
+    TS_PSI = "Psionik"
+
 
     # SKILL SELECTOR
     SS_TITLE = "Fertigkeiten wählen"
@@ -1051,8 +1064,14 @@ class Page:
     MOD_IMAGE = "image"
 
 
-# this class handles the names of item types that are imported via xml
 class ItemTypes:
+    """ handling item import from xml files 
+    
+    Note:
+        This handles how data from xml is parsed, changing it might
+        break import of data files!
+    """
+
     #  clothing and armor
     CLOTHING = "clothing"
     HARNESS = "harness"
@@ -1097,6 +1116,23 @@ class ItemTypes:
 
     OPTION_CALIBER = "Kaliber"
     OPTION_COLOR = "Farbe"
+
+
+class TraitGroups:
+
+    BODY = "body"
+    MIND = "mind"
+    SOCIAL = "social"
+    PERCEPTION = "perception"
+    FINANCIAL = "financial"
+    FIGHTING = "fighting"
+    ILLNESS = "illness"
+    TEMPORAL = "temporal"
+    SKILL = "skill"
+    BEHAVIOR = "behavior"
+    PSI = "psi"
+    XS = "xs"
+
 
 """
 # this class handles character XML data names

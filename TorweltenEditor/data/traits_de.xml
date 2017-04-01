@@ -2,35 +2,36 @@
 
 <traits>
 <meta version = "0.1" lang = "de" />
-<trait name = "Blind" xp = "-18" class = "phy" group = "Wahrnehmung">
+<trait name = "Blind" xp = "-18" group = "perception">
 <description>Der Charakter kann Licht im für Menschen üblicherweise sichtbaren Spektrum nicht wahrnehmen.</description>
 &#10;Dieser Nachteil schließt nicht aus, dass der Charakter möglicherweise durch den Vorteil Infrarotsicht oder UV-Sicht sehen kann.
 </trait>
 
-<trait name = "Dämmerungssicht" xp = "3" class = "phy" group = "Wahrnehmung">
+<trait name = "Dämmerungssicht" xp = "3" group = "perception">
 <description>Dieser Vorteil erhöht die Lichtempfindlichkeit der Augen. Der Modifikator für schlechte Lichtverhältnisse wird für diesen Charakter nicht angewendet.</description>
 </trait>
 
-<trait name = "Infrarotsicht" xp = "6" class = "phy" group = "Wahrnehmung">
+<trait name = "Infrarotsicht" xp = "6" group = "perception">
 <description>Der Charaktere ist in der Lage Licht im Infrarotspektrum wahrzunehmen.</description>
 </trait>
 
-<trait name = "UV-Sicht" xp = "6" class = "phy" group = "Wahrnehmung">
+<trait name = "UV-Sicht" xp = "6" group = "perception">
 <description>Der Charakter ist in der Lage Licht im ultravioletten Spektrum zu sehen</description>
 </trait>
-<trait name = "Erweitertes Sichtfeld" xp = "1" class = "phy" group = "Wahrnehmung">
+
+<trait name = "Erweitertes Sichtfeld" xp = "1" group = "perception">
 <description>Ein Charakter mit diesem Vorteil besitzt ein Sichtfeld das deutlich über 180°. Das heißt es ist deutlich schwieriger, den Charakter zu überraschen. Der Vorteil kostet pro 15° Sichtfelderweiterung einen Punkt. Für ein Sichtfeld von 270° also 6 Punkte und für 360° 12 Punkte.</description>
 <variable id = "1" name = "Blickfeld" values = "210°,240°,270°,300°,330°,360°" xp = "2,4,6,8,10,12" factor = "add" />
 </trait>
 
-<trait name = "Eingeschränktes Sichtfeld" xp = "-1" class = "phy" group = "Wahrnehmung">
+<trait name = "Eingeschränktes Sichtfeld" xp = "-1" group = "perception">
 <variable id = "1" name = "Blickfeld" values = "150°,120°,90°,60°,30°" xp ="-2,-4,-6,-8,-10" factor = "add" />
 <description>Der Charakter hat ein eingeängtes Gesichtfeld. Hierunter fallen Erkrankungen, die einen Tunnelblick verursachen, aber auch der Umstand, dass der Charakter nur ein Auge besitzt. Analog zum Erweiterten Sichtfeld bringt dieser Nachteil 1 Punkt / 15° Einschränkung. (-4): wäre 120°, was dem Sichtfeld eines einäugigen Charakters entspricht.
 Ein Sichtfeld von weniger als 30° sollte über den Nachteil Blind abgehandelt werden.</description>
 
 </trait>
 
-<trait name = "Vermindertes Spektrum" xp ="-1" class = "phy" group = "Wahrnehmung">
+<trait name = "Vermindertes Spektrum" xp ="-1" group = "perception">
 <description>Durch diesen Nachteil werden verschiedene Spielarten der Farbenblindheit abgedeckt. Charaktere erleiden negative Modifikatoren auf Proben, bei denen es auch auf Farben ankommen - etwa die Beurteilung von Kunstwerken oder das Erkennen von gefälschten Geldscheinen, aber auch für Proben auf elektronische Reparaturen.</description>
 
 <variable id = "1" name = "Auswahl:" values = "Rot-Grün-Blind,Farbenbline,Kurzes Spektrum" xp = "-3,-6,-6" factor="add">
@@ -40,8 +41,8 @@ Ein Sichtfeld von weniger als 30° sollte über den Nachteil Blind abgehandelt w
 </variable>
 </trait>
 
-<trait name ="Kurzsichtig" xp = "-1" class = "phy" group = "Wahrnehmung">
-<type class = "phy" group = "Wahrnehmung" />
+<trait name ="Kurzsichtig" xp = "-1" group = "perception">
+<type group = "perception" />
 <description>Die Augen des Charakters sind nicht in der Lage auf große Entfernungen zu fokussieren. Ohne Brille oder Kontaktlinsen kann der Charakter weiter entfernte Objekte nur schwer oder gar nicht erkennen.</description>
 <variable id = "1" name = "Ausprägung" values = "leicht,deutlich,erheblich" xp = "-1,-3,-6" factor = "add">
 <description value = "leicht">(-1): Geringe Beeinträchtigung, Modifikator +1 für Wahrnehmungsproben auf Sicht bei einer Distanz von mehr als 5m.&#10;</description>
@@ -52,71 +53,71 @@ Ein Sichtfeld von weniger als 30° sollte über den Nachteil Blind abgehandelt w
 </variable>
 </trait>
 
-<trait name = "Robustes Gehör" xp = "3" class = "phy" group = "Wahrnehmung">
+<trait name = "Robustes Gehör" xp = "3" group = "perception">
 <description>Die Ohren des Charakters sind ziemlich unempfindlich und erst ein Schalldruck jenseits von 140dB verursacht Schmerzen und Unwohlsein.</description>
 </trait>
 
-<trait name ="Taub" xp = "-9" class = "phy" group = "Wahrnehmung">
+<trait name ="Taub" xp = "-9" group = "perception">
 <description>Ein Charakter mit diesem Nachteil kann Töne und Klänge im üblichen menschlichen Wahrnehmungsbereich nicht hören.</description>
 </trait>
 
-<trait name = "Feine Nase" xp = "3" class = "phy" group = "Wahrnehmung">
+<trait name = "Feine Nase" xp = "3" group = "perception">
 <description>Der Geruchssinn dieses Charakters ist deutlich besser ausgeprägt, als der eines Menschen. Er kann Aromastoffe in deutlich geringeren Spuren wahrnehmen.</description> 
 <description>Um die Aromastoffe auch zuzuordnen, benötigt der Charakter passende Wissensfertigkeiten, beispielsweise Geruchskenntnis (Drogen) oder Geruchskenntnis (Gewürze).</description>
 </trait>
 
-<trait name = "Geruchsblind" xp = "-3" class = "phy" group = "Wahrnehmung">
+<trait name = "Geruchsblind" xp = "-3" group = "perception">
 <description>Der Charakter ist nicht in der Lage, in der Atmosphäre gelöste Gase und Aromastoffe zu riechen.
 Das bedeutet natürlich auch, dass er vor möglichen Giftstoffen in der Luft nicht gewarnt wird.</description>
 </trait>
 
-<trait name = "Verminderter Tastsinn" xp = "-3"  class = "phy" group = "Wahrnehmung">
+<trait name = "Verminderter Tastsinn" xp = "-3" group = "perception">
 <description>Der Charakter hat ein deutlich weniger ausgeprägtes Tastgefühl, als die meisten Menschen. Er weiß zwar, wenn sich seine Hände um einen Gegenstand schließen, kann aber höchstens durch Sicht abschätzen, wie fest er jetzt zudrückt. Proben bei denen es auf Fingerfertigkeit ankommt, werden um einen Punkt erschwert.</description>
 </trait>
 
-<trait name = "Kein Tastempfinden" xp = "-6"  class = "phy" group = "Wahrnehmung">
+<trait name = "Kein Tastempfinden" xp = "-6" group = "perception">
 <description>Der Charakter besitzt keinerlei Tastempfinden. Proben, bei denen es auf Fingerfertigkeit und Feingefühl ankommt, werden um zwei Punkte erschwert. Zudem können auch Proben bei denen es ganz allgemein auf einen festen uns sicheren Griff ankommen, wie etwa Klettern, erschwert werden.</description>
 </trait>
 
-<trait name = "Ausgeprägter Tastsinn" xp = "6"  class = "phy" group = "Wahrnehmung">
+<trait name = "Ausgeprägter Tastsinn" xp = "6" group = "perception">
 <description>Durch diesen Vorteil ist der Charakter in der Lage, deutlich feinere Strukturen zu erstasten, als ein Mensch das könnte. Der Charakter erkennt feinste Unebenheiten oder Risse in Oberflächen.</description>
 </trait>
 
-<trait name ="Vermindertes Schmerzempfinden" xp = "-3" class = "phy" group = "Wahrnehmung">
+<trait name ="Vermindertes Schmerzempfinden" xp = "-3" group = "perception">
 <description>Schmerzen sind ein Warnsignal, dass irgendetwas mit dem Körper nicht in Ordnung ist, somit handelt es sich um einen Nachteil. Ein Charakter mit diesem Nachteil muss eine unmodifizierte MEN-Probe ablegen, um eine Verletzung zu registrieren.</description>
 </trait>
-<trait name = "Kein Schmerzempfinden" xp ="-6"  class = "phy" group = "Wahrnehmung">
+
+<trait name = "Kein Schmerzempfinden" xp ="-6" group = "perception">
 <description>Dieser Charakter hat überhaupt kein Schmerzempfinden. Das kann zwar in gewissen Situationen durchaus von Vorteil sein, allerdings muss er eine um 2 erschwerte MEN-Probe ablegen, um eine Verletzung zu registrieren.</description>
 </trait>
 
-<trait name = "Hohe Schmerzempfindlichkeit" xp ="-6" class = "phy" group = "Wahrnehmung">
+<trait name = "Hohe Schmerzempfindlichkeit" xp ="-6" group = "perception">
 <description>Der Charakter empfindet bereits kleinere Verletzungen als schmerzhaft. Wird der Charakter verletzt und verliert LP, muss er eine unmodifizierte MEN-Probe bestehen. Bei einem Misserfolg ist er W10 Kampfrunden benommen und alle Proben werden um +1 erschwert.</description>
 </trait>
 
-<trait name ="Ausgeprägte Temperaturwahrnehmung" xp ="3" class = "phy" group = "Wahrnehmung">
+<trait name ="Ausgeprägte Temperaturwahrnehmung" xp ="3" group = "perception">
 <description>Der Charakter kann sehr feine Temperaturgradienten unterscheiden und auch ziemlich genau abschätzen, wie warm oder kalt ein Gegenstand ist.</description>
 </trait>
 
-<trait name ="Keinerlei Temperaturempfindung" xp ="-6" class = "phy" group = "Wahrnehmung">
+<trait name ="Keinerlei Temperaturempfindung" xp ="-6" group = "perception">
 <description>Mit diesem Nachteil ist der Charakter nicht in der Lage festzustellen, ob ein Gegenstand oder eine Flüssigkeit möglicherweise zu heiß oder zu kalt ist. Sofern der Charakter allerdings über ein normales Schmerzempfinden verfügt, bemerkt er, wenn er sich verbrennt oder Erfrierungen zuzieht.</description>
 </trait>
 
-<trait name = "Synesthesie" xp ="3" class = "phy" group = "Wahrnehmung">
+<trait name = "Synesthesie" xp ="3" group = "perception">
 <description>Der Charakter besitzt kombinierte Sinne - kann Farben schmecken oder Geräusche sehen.</description>
 </trait>
 
-<trait name = "0-G-Intoleranz" xp ="-6" class = "phy" group = "Wahrnehmung">
+<trait name = "0-G-Intoleranz" xp ="-6" group = "perception">
 <description>Der Charakter verträgt keine Schwerelosigkeit. Jedes Mal, wenn er Schwerelosigkeit ausgesetzt wird muss er eine PHY-Probe ablegen. Bei Gelingen sind alle Proben in Schwerelosigkeit um einen Punkt erschwert. Bei Misslingen hat der Charakter mit Schwindel, Übelkeit, Sturzgefühlen und ähnlichem zu kämpfen. Seine Proben sind um 3 Punkte erschwert.</description>
 </trait>
 
-<trait name = "Richtungssinn" xp = "1" class = "phy" group = "Wahrnehmung">
+<trait name = "Richtungssinn" xp = "1" group = "perception">
 <variable id = "1" name = "Umgebung" values = "nur bei Gravitation,auch in 0-G-Umgebungen" xp ="6,9"/>
 <description>Der Charakter hat ein ausgesprochen gutes Gespür für Richtungen und Dimensionen, er weiß in welche Richtung er sich bewegt und wie weit. Die Größe von Räumen oder Objekten kann er ziemlich gut abschätzen.
 Selbst in auf dem Meer oder in der Wüste schafft er es die Richtung zu halten. In der teureren Variante gilt das auch für Situationen in Schwerelosigkeit.</description>
 </trait>
 
-
-<trait name = "Riesenwuchs" xp = "-1" class = "phy" group = "Körperbau">
+<trait name = "Riesenwuchs" xp = "-1" group = "body">
 <limit class = "attribute" name = "phy" value = "5" type = "min"/>
 <limit class = "data" name = "height" value = "210" type = "min" xp = "-3"/>
 <limit class = "data" name = "height" value = "250" type = "max" xp = "-3"/>
@@ -128,7 +129,7 @@ Selbst in auf dem Meer oder in der Wüste schafft er es die Richtung zu halten. 
 </variable>
 </trait>
 
-<trait name = "Zwergenwuchs" xp = "-1" class = "phy" group = "Körperbau">
+<trait name = "Zwergenwuchs" xp = "-1" group = "body">
 <limit class = "attribute" name = "phy" value = "5" type = "max"/>
 <limit class = "data" name = "height" value = "150" type = "max" xp = "-3"/>
 <limit class = "data" name = "height" value = "100" type = "min" xp = "-3"/>
@@ -140,19 +141,19 @@ Selbst in auf dem Meer oder in der Wüste schafft er es die Richtung zu halten. 
 </variable>
 </trait>
 
-<trait name = "Dick" type = "phy" group = "Körperbau" xp = "-6">
+<trait name = "Dick" group = "body" xp = "-6">
 <variable id = "1" name = "Ausprägung" xp = "-1,-6,-12" values = "füllig,dick,fett">
 <description value = "füllig">Der Charakter ist deutlich schwerer als der durchschnittliche Vertreter seiner Spezies.</description>
 </variable>
 <description>Der Charakter ist nicht einfach nur füllig, sondern deutlich überdurchschnittlich schwer. </description>
 </trait>
-<trait name = "Dünn" type = "phy" group = "Körperbau" xp = "-6">
+
+<trait name = "Dünn" group = "body" xp = "-6">
 <variable id = "1" name = "Ausprägung" xp = "-1,-6,-12" values = "schmal,dünn,dürr"/>
 
 </trait>
 
-
-<trait name = "Fehlende oder verkrüppelte Gliedmaßen" type = "phy" group = "Körperbau" xp = "-1">
+<trait name = "Fehlende oder verkrüppelte Gliedmaßen" group = "body" xp = "-1">
 <specification name = "Körperteil"/>
 <description>Eine Extremität des Charakters entspricht nicht der Humanoiden Norm, ist verkrüppelt oder fehlt.</description>
 <description>&#10;Hierbei handelt es sich um einen Nachteil, der in seinen Ausprägungen und auch seiner tatsächlichen Wirkung extrem vielschichtig ist.&#10;
@@ -168,7 +169,7 @@ Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit 
 </variable>
 </trait>
 
-<trait name = "Schwanz" xp = "1" class = "phy" group = "Körperbau">
+<trait name = "Schwanz" xp = "1" group = "body">
 <description>Der Charakter verfügt über einen Schwanz.</description>
 <description>&#10;Wenn du einen Charakter mit mehreren Schwänzen bauen möchtest, verwende dafür bitte den Vorteil "Tentakeln"&#10;</description>
 <variable id = "1" name = "Art" values = "Einfacher Schwanz,Balanceschwanz,Greifschwanz" xp ="1,3,9">
@@ -178,7 +179,7 @@ Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit 
 </variable>
 </trait>
 
-<trait name = "Tentakeln" xp = "1" class = "phy" group = "Körperbau">
+<trait name = "Tentakeln" xp = "1" group = "body">
 <description>Der Charakter verfügt über einen Satz Tentakeln.</description>
 <description>&#10;Es mag durchaus Spezies gegeben, die statt Armen Tentakeln besitzen. Ein Satz von sechs Tentakeln mit der Kraft eines Armes und einfacher Armlänge kostet 12 Punkte und kompensiert somit genau einen fehlenden Arm (-12).&#10; Jeder Satz Tentakeln mit einer Anzahl vier oder mehr, kann als Hand gewertet werden.</description>
 <variable id = "1" name = "Anzahl" values = "1,2,4,6,8" xp = "1,2,4,6,8" factor = "add"/>
@@ -186,7 +187,7 @@ Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit 
 <variable id = "3" name = "Länge" values = "armlang,körperlang,länger" xp = "2,6,12" factor = "add"/>
 </trait>
 
-<trait name = "Weiteres Armpaar" xp = "1" class ="phy" group = "Körperbau">
+<trait name = "Weiteres Armpaar" xp = "1" group = "body">
 <description>Ein Charakter mit diesem Vorteil besitzt mehr als zwei Arme.</description>
 <description>&#10;Charaktere die multitasken, etwa eine Leiter hochklettern und gleichzeitig mit den anderen Armen schießen, erhalten auf die Aktionen entsprechende Erschwernisse analog zu Aktionen während der Bewegung.&#10; Es mag im Torwelten durchaus Spezies geben, bei denen der der doppelt gewählte Nachteil Fehlende/Verkrüppelte Gliedmaßen: Bein durch diesen Vorteil ausgeglichen wird.</description>
 <variable id = "1" name = "Armlänge" values = "kurz,normal" xp = "2,6" factor = "add">
@@ -204,71 +205,71 @@ Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit 
 </variable>
 </trait>
 
-<trait name = "Flügel" xp = "-6" class = "phy" group = "Körperbau">
+<trait name = "Flügel" xp = "-6" group = "body">
 <description>Der Charakter besitzt einen Satz Flügel. Du liest das schon korrekt, das ist ein Nachteil! Flügel sind unhandlich und groß. Und allein der Umstand, dass der Charakter über diese Gliedmaßen verfügt, bedeutet noch lange nicht, dass er auch wirklich fliegen kann. Das wird über entsprechende Fertigkeiten und Talente abgewickelt, die zusätzlich erworben werden müssen.</description>
 </trait>
 
-<trait name = "Beidhändigkeit" xp ="9" class = "phy" group = "Körperbau">
+<trait name = "Beidhändigkeit" xp ="9" group = "body">
 <description>Der Charakter kann mit beiden Händen gleich gut umgehen. Insbesondere vermag er zwei gleichartige einhändige Waffen zu führen die als ein Angriff gewertet werden.</description>
 <description>Ein Charakter mit dem Vorteil Weiteres Armpaar muss diesen Vorteil für jedes Armpaar nehmen.</description>
 </trait>
 
-<trait name = "Natürliche Panzerung" xp = "9" class = "phy" group = "Körperbau">
+<trait name = "Natürliche Panzerung" xp = "9" group = "body">
 <description>Die Haut des Charakters ist besonders widerstandsfähig und schwer zu verletzen. Der Charakter besitzt 0/+1 Schadensresistenz.</description>
 </trait>
 
-<trait name ="Kräftig" xp = "9" class = "phy" group = "Eigenschaften">
+<trait name ="Kräftig" xp = "9" group = "body">
 <description>Der Charakter ist besonders muskulös und athlethisch. Athletikproben werden um einen Punkt erleichtert.</description>
 <description>Der Charakter sollte ein PHY Attribut von 5 oder mehr besitzen, wenn er diesen Vorteil wählt.</description>
 <limit class = "attribute" name = "phy" value = "5" type = "min"/>
 </trait>
 
-<trait name = "Schwach" xp = "-9" class = "phy" group = "Eigenschaften">
+<trait name = "Schwach" xp = "-9" group = "body">
 <description>Die Kraft des Charakters lässt zu wünschen übrig. Athletikproben für diesen Charakter werden um 1 Punkt erschwert.</description>
 <description>Dieser Nachteil sollte nicht von Charakteren gewählt werden, die einen PHY-Wert von 5 oder mehr besitzen. Darüber hinaus, empfielt es sich, entsprechende Fertigkeit maximal auf Rang 2 zu beherrschen.</description>
 <limit class = "attribute" name = "phy" value = "4" type = "max"/>
 <limit class = "skill" name = "Athletik" value = "2" type = "max"/>
 </trait>
 
-<trait name = "Gelenkig" xp = "9" class = "phy" group = "Eigenschaft">
+<trait name = "Gelenkig" xp = "9" group = "body">
 <description>Durch diesen Vorteil ist der Charakter besonders beweglich, er kann sich durch sehr schmale Ritzen schieben. Proben bei denen es auf Gewandheit ankommt, werden um einen Punkt erleichtert.</description>
 <description>Um diesen Vorteil zu wählen, sollte der Charakter mindestens einen PHY-Wert von 5 besitzen.</description>
 <limit class = "attribute" name = "phy" value = "5" type = "min"/>
 </trait>
 
-<trait name = "Ungelenkig" xp = "-9" class = "phy" group ="Eigenschaften">
+<trait name = "Ungelenkig" xp = "-9" group ="body">
 <description>Dieser Charakter ist eher unbeweglich und hat Schwierigkeiten mit komplexen, koordinierten Körperbewegungen. Proben, die sich um Gewandheit drehen, werden um einen Punkt erschwert.</description>
 <description>Der Charakter sollte maximal ein PHY Attribut von 4 besitzen, Fertigkeiten aus der Betroffenen Gruppe, sollten nicht über einem Wert von 2 beherrscht werden.</description>
 <limit class = "attribute" name ="phy" value = "4" type = "max"/>
 <limit class = "skill" name = "Geschick" vaule = "2" type = "max"/>
 </trait>
 
-<trait name ="Fingerfertig" xp = "9" class = "phy" group = "Eigenschaften">
+<trait name ="Fingerfertig" xp = "9" group = "body">
 <description>Durch diesen Vorteil hat der Charakter besonders flinke Finger und eine gute Hand-Auge-Koordination. Proben, die sich auf Fingerfertigkeit beziehen, werden um einen Punkt erleichtert.</description>
 <description>Da die Fingerfertigkeit eher ein kleiner Aspekt der gesamten körperlichen Präsenz ist, ergeht hier keine zwingende Empfehlung, dass der PHY-Wert mindestens 5 betragen sollte.</description>
 </trait>
 
-<trait name = "Grobmotoriker" xp ="-9" class = "phy" group = "Eigenschaften">
+<trait name = "Grobmotoriker" xp ="-9" group = "body">
 <description>Dieser Nachteil ist für Charaktere gedacht, die sich regelmäßig die Finger verknoten. Fingerfertigkeitsproben sind um einen Punkt erschwert.</description>
 <description>Ebenso gibt es auch keinen Grund, diesen Nachteil von einem maximalen PHY-Wert abhängig zu machen, allerdings wäre zu empfehlen, keine Fertigkeiten aus der Fingerfertigkeitsgruppe über einem Wert von 2 zu nehmen.</description>
 <limit class = "skill" name ="Fingerfertigkeit" value = "2" type ="max"/>
 </trait>
 
-<trait name = "Schnell" xp = "1" class = "phy" group = "Eigenschaften">
+<trait name = "Schnell" xp = "1" group = "body">
 <description>Der Charakter ist besonders flink. Jeder Rang in diesem Vorteil erhöht die Effektive Bewegung um 1.</description>
 <description>Der maximale Rang in diesem Vorteil beträgt den Wert des PHY-Attributs.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "3"/>
 <limit class = "attribute" name ="phy" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name ="Langsam" xp ="-1" class = "phy" group ="Eigenschaften">
+<trait name ="Langsam" xp ="-1" group ="body">
 <description>Der Charakter ist eher träge unterwegs. Jeder Rang in diesem Nachteil senkt die Effektive Bewegung um 1.</description>
 <description>Durch die Wahl dieses Nachteils darf die effektive Bewegung des Charakters nicht unter 1 sinken.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "-3"/>
 <limit class = "special" name ="bew" value = "1" type = "min"/>
 </trait>
 
-<trait name = "Eiserner Lebenswille" xp ="1" class = "lp" group = "Eigenschaften">
+<trait name = "Eiserner Lebenswille" xp ="1" group = "body">
 <description>Der Charakter ist ein zäher Brocken. Er überlebt auch Verletzungen, die jeden anderen töten würden. Die Todesschwelle erhöht sich um zwei Punkte pro Rang.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "3">
 <modify class = "special" name = "todesschwelle" value = "2" type = "rank"/>
@@ -276,12 +277,12 @@ Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit 
 </rank>
 </trait>
 
-<trait name = "Gravitationstoleranz" xp = "1" class = "phy" group = "Eigenschaften">
+<trait name = "Gravitationstoleranz" xp = "1" group = "body">
 <variable id = "1" name = "Gewöhnung" values = "1.5G,2.0G,2.5G,3.0G" xp = "3,6,9,15"/>
 <description>Der Charakter ist das genannte Gravitationslevel gewöhnt und erleidet bis zu diesem Wert keine Erschwernis</description>
 </trait> 
 
-<trait name = "Raubtiergebiss" xp = "1" class ="nk" group = "Eigenschaften">
+<trait name = "Raubtiergebiss" xp = "1" group = "body">
 <description>Der Charakter besitzt einen kräftigen Kiefer und besonders Spitze, sowie scharfe Zähne. Bei einem erfolgreichen Angriff, verursacht sein Biss schwerere Verletzungen.</description>
 <description>Ein Raubtiergebiss findet man bei vielen Hazaru-Unterarten aber auch bei den Reynora und den Douwg.</description>
 <variable id ="1" name = "Ausprägung" values = "Starker Kiefer,Böse Reißzähne,Kräftiges Raubtiergebiss" xp = "1,3,6">
@@ -300,7 +301,7 @@ Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit 
 </variable>
 </trait>
 
-<trait name = "Krallen und Klauen" xp = "1" class = "nk" group = "Eigenschaften">
+<trait name = "Krallen und Klauen" xp = "1" group = "body">
 <description>Die Finger und/oder Zehen des Charakters laufen in ernsthafte Krallen oder Klauen aus. Bei einem erfolgreichen Angriff verursachen sie klaffende Wunden und schwere Verletzungen.</description>
 <description>Je nach Länge der Krallen, bietet es sich an, dazu eine entsprechende Einschränkung der Fingerfertigkeit in Betracht zu ziehen.</description>
 <variable id = "1" name = "Ausprägung" values = "Schmerzhafte Pranken,Scharfe Krallen,Eindrucksvolle Klauen" xp = "1,3,6">
@@ -319,7 +320,7 @@ Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit 
 </variable>
 </trait>
 
-<trait name = "Allergie" xp = "-1" class = "phy" group = "Krankheiten">
+<trait name = "Allergie" xp = "-1" group = "illness">
 <description>Der Charakter reagiert allergisch auf bestimmte Auslöser.</description>
 <description>Auch dieser Nachteil hat eine sehr weite Bandbreite. Das reicht von einem leichten Heuschnupfen bis hin zu einer potentiell tödlichen Erdnussallergie. Mach dir Gedanken, welche Auswirkungen die Allergie auf den Charakter hat. Eine Kontaktallergie die nässende Ausschläge verursacht wird eher die handwerklichen Fähigkeiten des Charakters beeinflussen. Eine Atemwegsallergie kann sich im Normalfall auf Ausdauer oder Wahrnehmung niederschlagen. Wenn im folgenden Text von 'betroffenen Fertigkeiten' die Rede ist, dann sind die Fertigkeiten gemeint, die durch die jeweilige Allergie in Mitleidenschaft gezogen werden. Allergien lassen sich aus verschiedenen Komponenten zusammenbauen. Letztes Wort über Art und Auswirkung der Allergie hat der Spielleiter.</description>
 <specification name = "Auslöser"/>
@@ -340,14 +341,13 @@ Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit 
 </variable>
 </trait>
 
-<trait name = "Asthma" xp = "-1" class = "phy" group = "Krankheiten">
+<trait name = "Asthma" xp = "-1" group = "illness">
 <description>Der Charakter reagiert mit einer Autoimmunreaktion auf körperliche Belastung</description>
 <description>Der Punktwert hängt von der Schwere der Erkrankung ab.</description>
 <variable id = "1" name = "Auslöser" values = "Leichte körperliche Belastung,Schwere körperliche Belastung" xp = "3,1" factor = "add">
 <description value = "Leichte körperliche Belastung">Der Charakter erleidet schon bei leichter körperlicher Anstrengung unangenehme Wirkungen.</description>
 <description value = "Schwere körperliche Belastung">Bei schwerer Anstrengung muss der Charakter damit rechnen, dass sein Körper ihm das übel nimmt.</description>
 </variable>
-
 <variable id = "2" name = "Reaktion" values = "Ausschlag,Reizhusten,Schwerer Reizhusten,Schwindelanfälle,Atemnot,Schwere Atemnot" xp ="-1,-1,-2,-3,-3,-4" factor = "multiply">
 <description value = "Ausschlag">Nässender juckender Ausschlag. Alle Proben bei denen entsprechende Körperteile beteiligt sind, werden um 1 Punkt erschwert.</description>
 <description value ="Reizhusten"> Immer wieder Husten, der den Charakter zeitweilig einschränkt. Für jede Spielrunde wird eine PHY-Probe gewürfelt. Misslingt diese, werden alle Proben für die nächste Spielrunde aufgrund von Hustenanfällen um 1 Punkt erschwert.</description>
@@ -358,7 +358,7 @@ Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit 
 </variable>
 </trait>
 
-<trait name ="Motorische Störungen" xp = "-1" class = "phy" group = "Krankheiten">
+<trait name ="Motorische Störungen" xp = "-1" group = "illness">
 <description>Der Charakter leidet an einer motorischen Störung. Dieser Nachteil umfasst eine Vielzahl von unterschiedlichen Erkrankungen oder Verletzungen, die zur Folge haben, dass der Charakter nur eingeschränkte Kontrolle über Teile seines Körpers.</description>
 <description>Das kann ein gelegentliches Zittern der linken Hand sein, aber auch eine vollständige Querschnittslähmung vom Hals abwärts.</description>
 <specification name = "Genaue Bezeichung"/>
@@ -369,38 +369,38 @@ Besonders bei der mehrfachen Wahl dieses Nachteils, sollte man die Spielbarkeit 
 <variable id = "5" name = "Dauer" values = "Sekunden,Minuten,Stunden,Tage,permanent" xp = "1,1.33,1.5,1.75,2" factor = "multiply"/>
 </trait>
  
-<trait name = "Tot" xp = "-100" class = "lp" group = "Krankheiten">
+<trait name = "Tot" xp = "-100" group = "illness">
 <description>Der Charakter ist gestorben. Dies kann als Abenteueraufhänger für andere Charaktere dienen. Nein, die Punkte sind nicht übertragbar.</description>
 </trait>
 
-<trait name = "Aggressiv" xp ="-1" class = "men" group = "Verhalten">
+<trait name = "Aggressiv" xp ="-1" group = "behavior">
 <description>Der Charakter ist aggressiv und kann seine Gefühlsausbrüche nur schwer kontrollieren. Um nicht mit Gewalt auf ein Problem zu reagieren, muss dem Charakter eine MEN-Probe gelingen, diese wird pauschal um den Rang des Nachteils erschwert und kann zudem abhängig vom Auslöser (Beleidigung, Tätlichkeit ...) weiter modifiziert werden.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "-3"/>
 <limit class = "attribute" name = "men" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Dickköpfig" xp = "-1" class = "men" group = "Verhalten">
+<trait name = "Dickköpfig" xp = "-1" group = "behavior">
 <description>Der Charakter ist nur schwer von einer einmal getroffenen Entscheidung abzubringen. Was er angefangen hat, will er auch zuende bringen, ob er nun jemand verfolgt oder er der meinung ist, dass er den Reaktor selbst reparieren muss. Sollte die Entscheidung ihn oder die Gruppe in Gefahr bringen oder möchte der Charakter seine Aktion abbrechen, kann er eine MEN-Probe, erschwert um den Rang des Nachteils, ablegen. Modifikatoren nach Spielleiterentscheid sind möglich.</description>
 <description>Der Einsatz von Unterrichten, Überreden, Einschüchtern und verwandten Fertigkeiten gegen den Charakter werden um den Rang des Nachteils erschwert.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "-3"/>
 <limit class = "attribute" name = "men" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Ehrlich" xp = "-1" class = "men" group = "Verhalten">
+<trait name = "Ehrlich" xp = "-1" group = "behavior">
 <description>Der Charakter ist kreuzehrlich. Und man sieht es ihm an. Er ist nicht in der Lage zu lügen. Bei jedem Versuch zu lügen oder die Wahrheit zu verschweigen, muss ihm zuvor eine (um den Rang des Nachteils erschwerte) SOZ-Probe gelingen, um nicht sofort als Lügner aufzufallen. Diese kann nach Spielleiterentscheid modifiziert werden, so sind etwa Händler, Polizisten oder Richter besser darin, Lügner zu entlarven. Die normale Fertigkeitsprobe auf Lügen wird anschließend abgehandelt.</description>
 <description>Allerdings gilt der Charakter auch als ehrlich und integer – entsprechend positiv reagieren Personen, die ihn kennen. SOZ-Proben können unter umständen erleichtert werden.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "-3"/>
 <limit class = "attribute" name = "soz" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Geizig" xp = "-1" class = "men" group = "Verhalten">
+<trait name = "Geizig" xp = "-1" group = "behavior">
 <description>Ein Charakter mit diesem Nachteil ist nicht einfach nur sparsam, er versucht jegliche Art von Ausgaben zu vermeiden. Er gibt kein Trinkgeld, er bietet nicht an die Rechnung zu übernehmen und wird dem Bettler an der Straßenecke keinen Cent geben.
 Natürlich hat ein solcher Charakter auch Schwierigkeiten damit, die Richtige Menge Schmiergeld zwischen die Dokumente der Zollabfertigung zu legen. Um zu erkennen, dass eine scheinbar sinnlose Geldverschwendung eine notwendige Investition ist, muss dem Charakter eine MEN-Probe gelingen, die um den Rang des Nachteils erschwert ist.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "-3"/>
 <limit class = "attribute" name = "men" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Gierig" xp = "-1" class = "men" group = "Verhalten">
+<trait name = "Gierig" xp = "-1" group = "behavior">
 <description>Der Charakter giert nach Reichtum, Geld, Schätzen, Kunstwerken oder auch nach besonders gutem Essen, Machtpositionen, Titeln oder Orden. Die Art der Gier sollte festgelegt werden, der Spielleiter kann durchaus zulassen dass der Spieler mehr als eine Gier besitzt.
 Wann immer sich eine Gelegenheit für den Charakter bietet, an ein Objekt seiner Begierde zu gelangen, muss er versuchen, es zu bekommen. Wäre der Versuch illegal oder lebensgefährlich, kann der Spielleiter eine SOZ-Probe erlauben, die wieder um den Rang des Nachteils erschwert ist.</description>
 <description>Im übrigen ist Gierig nicht gleich Geizig. Ein passionierter Taschendieb kann durchaus das Geld mit vollen Händen ausgeben - immerhin hat er ja eine relativ sichere Quelle.</description>
@@ -409,7 +409,7 @@ Wann immer sich eine Gelegenheit für den Charakter bietet, an ein Objekt seiner
 <limit class = "attribute" name = "soz" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name ="Impulsiv" xp = "-1" class = "men" group = "Verhalten">
+<trait name ="Impulsiv" xp = "-1" group = "behavior">
 <description>Der Charakter neigt dazu schnell, konsequent und ... ohne Überlegung zu handeln.
 Wichtig bei diesem Nachteil ist, ihn richtig zu spielen. Der Charakter hasst lange Diskussionen. Er trifft seine Entscheidung schnell und handelt danach.
 Während der Rest noch redet, ist er schon fertig.
@@ -420,7 +420,7 @@ Um einen impulsiven Charakter zum planen zu bringen, muss ihm erst eine MEN-Prob
 <limit class = "attribute" name = "men" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Intoleranz / Vorurteile" xp = "-1" class = "men" group = "Verhalten">
+<trait name = "Intoleranz / Vorurteile" xp = "-1" group = "behavior">
 <description>Der Charakter hat ein festgefügtes und engstirniges Weltbild und eine Abneigung gegen alles, was nicht in sein Weltbild passt oder nach seinen Werten lebt. 
 Dem Charakter muss eine MEN-Probe gelingen, erschwert um den Rang des Nachteils, um seine Abneigung zu überwinden. Fertigkeitsproben im Umgang mit dem Subjekt oder Objekt der Abneigung, können zudem erschwert werden.</description>
 <description>Dieser Nachteil kann sich gegen Vertreter einer bestimmten Art, eines Berufsstands, einer Fraktion, einer religiösen oder sexuellen Überzeugung richten - oder aber auch gegen bestimmte Technologien, Staatsformen, etc. Prinzipiell kann dieser Nachteil mehrfach gewählt werden.
@@ -430,7 +430,7 @@ Ein extremes Beispiel für Intoleranz und Vorurteile sind die Jünger des zürne
 <limit class = "attribute" name = "men" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Neugier" xp = "-1" class = "men" group = "Verhalten">
+<trait name = "Neugier" xp = "-1" group = "behavior">
 <description>Jeder Charakter sollte eine gewisse Neugierde mitbringen, sonst kann er auch zuhause bleiben und einem ganz normalen Job nachgehen. Neugierig als Nachteil heißt, der Charakter ist zu neugierig.
 Du verlangsamst durchaus mal deinen Schritt um ein Gespräch etwas länger zu verfolgen. Du blätterst am Kopierer auch durch die Ausdrucke die nicht dir gehören. Du wirfst einen langen Blick in den geöffneten Tresor.
 Der Spielleiter kann dir eine, um den Rang des Nachteils erschwerte, MEN-Probe erlauben, um zu entscheiden, den an Wand befindlichen, unbeschrifteten roten Knopf nicht zu drücken ...</description>
@@ -438,15 +438,14 @@ Der Spielleiter kann dir eine, um den Rang des Nachteils erschwerte, MEN-Probe e
 <limit class = "attribute" name = "men" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Pazifist" xp = "-1" class = "men" group = "Verhalten">
+<trait name = "Pazifist" xp = "-1" group = "behavior">
 <description>Der Charakter hat eine Abneigung gegen die Anwendung von Gewalt. Er wird vermeiden jemanden zu verletzen oder gar zu töten. Der Charakter wird von sich aus keinen Kampf beginnen.
 Natürlich kann auch hier der Charakter entscheiden, eine (vorzugsweise nichttödliche) Waffe zu verwenden, um sich in einer Gefahrensituation seiner Haut zu erwehren. Ist davon auszugehen, dass das primäre Ziel der Angreifer nicht der Tod des Charakters ist, muss ihm eine MEN-Probe, modifiziert um den Rang des Nachteils, gelingen, um aktiv in den Kampf einzugreifen.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "-3"/>
 <limit class = "attribute" name = "men" value = "1" type = "maxrank"/>
 </trait>
 
-
-<trait name = "Phobie" xp = "-1" class = "men" group = "Verhalten">
+<trait name = "Phobie" xp = "-1" group = "illness">
 <description>Der Charakter hat vor irgendetwas eine objektiv irrationale Angst. Der konkrete Wert einer Phobie ergibt sich aus der Art des Auslösers und der schwere seiner Symptome</description>
 <description>Die Liste der möglichen Phobien ist lang und sie hier aufzuführen würde wohl den Rahmen sprengen, üblich sind Raumangst, Höhenangst, Angst von Nagetieren oder Angst vom Menschenmassen.</description>
 <specification name = "Auslöser"/>
@@ -464,7 +463,7 @@ Natürlich kann auch hier der Charakter entscheiden, eine (vorzugsweise nichttö
 </variable>
 </trait>
 
-<trait name = "Drogensucht" xp = "-1" class = "men" group = "Krankheit">
+<trait name = "Drogensucht" xp = "-1" group = "illness">
 <description>Der Charakter hat eine Abhängigkeit zu einer bestimmten chemischen Substanz entwickelt. Das kann durchaus auch ein körperlicher Nachteil sein, primär ist es aber ein mentaler Nachteil. Er ist gezwungen, die Substanz regelmäßig zu sich zu nehmen, um normal aggieren zu können.</description>
 <description>Bekommt der Charakter seine Drogen nicht, drohen Entzugserscheinungen, unkontrollierte Gefühlsausbrüche, Schmerzen oder sogar gesundheitliche Schäden. Details zu Wirkungen und Nebenwirkungen, Legalität und Verfügbarkeit, Suchtpotential und Entzugserscheinungen verschiedener Drogen finden sich in der Ausrüstungsliste.
 </description>
@@ -495,7 +494,7 @@ Natürlich kann auch hier der Charakter entscheiden, eine (vorzugsweise nichttö
 </variable>
 </trait>
 
-<trait name = "Spielsucht / Wettsucht" xp = "-1" class = "men" group = "Krankheit">
+<trait name = "Spielsucht / Wettsucht" xp = "-1" group = "illness">
 <description>Deutliches Symptom für Spielsucht ist häufiges, auch episodenhaftes, Glücksspiel. Dabei ist der Betroffene überzeugt, dass er das System besiegt hat und bessere Gewinnchancen besitzt, als der Gelegenheitsspieler und möglicherweise sogar die Bank. Aus zunächst gelegentlichem Spiel werden häufigere Sitzungen am Spieltisch oder Automaten, dabei werden die Einsätze immer höher, in der Hoffnung, aufgelaufene Verluste wieder reinzuholen.
 Der Spielsüchtige befasst sich auch außerhalb des Spiels viel mit dem Spiel und versucht sein System weiter zu verfeinern oder zu verbessern. Auf lange Sicht, häufen sich oftmals beachtliche Schuldenberge an. 
 Dem Charakter muss eine MEN-Probe (erschwert um den Rang des Nachteils) gelingen, um dem Drang zu widerstehen an einem Glücksspiel teilzunehmen oder das Spiel abzubrechen.</description>
@@ -506,8 +505,7 @@ Dieser Nachteil gilt für eine bestimmte Art von Spiel (Kartenspiele, Automatens
 <limit class = "attribute" name = "men" value = "1" type = "maxrank"/>
 </trait>
 
-
-<trait name = "Paranoia" xp = "-1" class = "men" group = "Verhalten">
+<trait name = "Paranoia" xp = "-1" group = "illness">
 <description>Sie verfolgen deinen Charakter und er weiß es. Jeder gehört zu ihnen. Alle sind Spitzel und Häscher, die gekommen sind, um ihn mitzunehmen...
 Der Charakter leidet an krankhaftem Verfolgungswahn. In allem und jedem erkennt er die böse Verschwörung oder seine Verfolger. Der Charakter wird nur schwer mit anderen zusammenarbeiten. Vertrauen wird er sowieso niemals jemandem. Fremde reagieren auf den Charakter mit Abneigung, wenn sie seine Störung erkennen. Man wird ihn für einen Spinner halten und entsprechend behandeln.
 SOZ-Proben, bei denen das Vertrauen in das Gegenüber eine zentrale Rolle spielt, werden um den Rang der Paranoia erschwert, sofern dem Charakter nicht zuvor eine MEN-Probe, erschwert um den Rang des Nachteils gelungen ist.</description>
@@ -517,7 +515,7 @@ SOZ-Proben, bei denen das Vertrauen in das Gegenüber eine zentrale Rolle spielt
 <limit class = "attribute" name = "men" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Zwangsstörungen und Manien" xp = "-1" class = "men" group = "Verhalten">
+<trait name = "Zwangsstörungen und Manien" xp = "-1" group = "illness">
 <description>Der Charakter leidet an einer Zwangsstörung, die dafür sorgt, dass er sich in gewisser Weise abnorm verhält. Der Spieler kann eine MEN-Probe, erschwert um den Rang des Nachteils ablegen, wenn der Charakter gegen seine Natur handeln muss.</description>
 <description>In der Psychatrie ist der Begriff der Monomanien, zu denen Krankheitsbilder wie Kleptomanie oder Pyromanie zählen, längst überkommen. Das liegt einfach daran, dass sich jedes abnorme Verhalten innerhalb dieses Betrachtungsrahmens als Erkrankungung definieren ließe.
 Fakt ist, es gibt durchaus reizvolle Zwangsstörungen, Neurosen und Manien, die einen Charakter einzigartig machen und auch eine rollenspielerische Herausforderung darstellen. Leidet der Charakter vielleicht an Kaufsucht, muss er sein Werkzeug der Größe nach sortieren, muss er sich dreimal überzeugen, dass die Türe wirklich verschlossen ist?</description>
@@ -526,7 +524,7 @@ Fakt ist, es gibt durchaus reizvolle Zwangsstörungen, Neurosen und Manien, die 
 <limit class = "attribute" name = "men" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Adelskodex" xp = "-1" class = "soz" group = "Verhaltenskodex">
+<trait name = "Adelskodex" xp = "-1" group = "behavior">
 <description>Adel verpflichtet! Der Charakter gehört dem Adel der Novaropäischen Allianz an und hat einen Eid geschworen, dem Kaiserreich und dem Kaiser, sowie seinem Lehnsherrn gegenüber treu zu sein.
 Der Charakter muss eine Probe gegen sein SOZ-Attribut, erschwert um den Rang des Nachteils, ablegen, wenn er gegen den Kodex verstoßen möchte.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "-3"/>
@@ -534,21 +532,21 @@ Der Charakter muss eine Probe gegen sein SOZ-Attribut, erschwert um den Rang des
 <limit class = "traits" name = "Adelig" value = "1" type = "required"/>
 </trait>
 
-<trait name = "Ritterkodex" xp = "-1" class = "soz" group = "Verhaltenskodex">
+<trait name = "Ritterkodex" xp = "-1" group = "behavior">
 <description>Der Charakter folgt dem Kodex der Ritterlichkeit. Er wird keinem Gegner in den Rücken fallen und sich stets fair und anständig verhaltenn.
 Der Charakter muss eine Probe gegen sein SOZ-Attribut, erschwert um den Rang des Nachteils, ablegen, wenn er gegen den Kodex verstoßen möchte.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "-3"/>
 <limit class = "attribute" name = "soz" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Hippokratischer Eid" xp = "-1" class = "soz" group = "Verhaltenskodex">
+<trait name = "Hippokratischer Eid" xp = "-1" group = "behavior">
 <description>Der Begriff ist eher historisch, der Eid der Mediziner hat sich über die Jahrtausende in seinem Wortlaut mehrfach verändert. Viele Kernaussagen sind allerdings über die Zeitalter geblieben. Der Charakter wird anderen Personen keinen Schaden zufügen und Verletzten und Erkrankten helfen.
 Der Charakter muss eine Probe gegen sein SOZ-Attribut, erschwert um den Rang des Nachteils, ablegen, wenn er gegen den Kodex verstoßen möchte.</description>
 <rank id ="1" name = "Rang" min = "1" max = "9" xp = "-3"/>
 <limit class = "attribute" name = "soz" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Piratenkodex" xp = "-1" class = "soz" group = "Verhaltenskodex">
+<trait name = "Piratenkodex" xp = "-1" group = "behavior">
 <description>Hierbei handelt es sich um einen Satz ungeschriebener Regeln, an den sich Freibeuter und auch die meisten Piraten halten.
 Mord ist ein Verbrechen des Feiglings - Töte nur, wenn es sich nicht vermeiden lässt. Niemand mag feige Mörder.
 Nimm deinem Opfer nicht das letzte Hemd - Jeder muss irgendwie über die Runden kommen. Nimm einem Matrosen nicht das Goldkettchen, das er von seiner Frau geschenkt bekommen hat, halte dich lieber an die Goldbarren im Frachtraum.
@@ -557,66 +555,67 @@ Der Charakter muss eine Probe gegen sein SOZ-Attribut, erschwert um den Rang des
 <limit class = "attribute" name = "soz" value = "1" type = "maxrank"/>
 </trait>
 
-<trait name = "Ausgeprägtes logisches Verständnis" xp = "9" class = "men" group = "Eigenschaften">
+<trait name = "Ausgeprägtes logisches Verständnis" xp = "9" group = "mind">
 <description>Der Charakter verfügt über ein ausgezeichnetes Verständnis für logische Konzepte und Strukturen, sowie für Mustererkennung. MEN-Proben die mit Mathematik und Logik zu tun haben, werden einen Punkt erleichtert.</description>
 </trait>
 
-<trait name = "Bauchgefühl" xp = "9" class = "men" group = "Eigenschaften">
+<trait name = "Bauchgefühl" xp = "9" group = "mind">
 <description>Ein Charakter mit diesem Vorteil kann gute Entscheidungen aus dem Bauch heraus treffen. Er kann zwar nicht sicher sagen, wie die statistische Wahrscheinlichkeit für die angestrebte Aktion aussieht, weiß aber meistens ob das jetzt eher die richtige oder die falsche Entscheidung ist. MEN-Proben bei denen es eher auf Intuition ankommt, werden um einen Punkt erleichtert.</description>
 </trait>
 
-<trait name = "Aufmerksam" xp = "9" class = "men" group = "Eigenschaften">
+<trait name = "Aufmerksam" xp = "9" group = "mind">
 <description>Der Charakter hat eine sehr ausgeprägte Beobachtungsgabe und bemerkt auch kleinere Details mit Leichtigkeit. MEN-Proben, die in den Bereich der Wahrnehmung gehen, werden sind um einen Punkt erleichtert.</description>
 </trait>
 
-<trait name = "Mathematische Niete" xp = "-9" class = "men" group = "Eigenschaften">
+<trait name = "Mathematische Niete" xp = "-9" group = "mind">
 <description>Der Charakter hat ein deutlich unterdurchschnittlich ausgeprägtes Verständnis für Logik und Mathematik. Aufgaben bei denen es auf das Verständnis von Mathematik oder logischen Mustern ankommt, sind für diesen Charakter um einen Punkt erschwert.</description>
 </trait>
 
-<trait name = "Unaufmerksam" xp = "-9" class = "men" group = "Eigenschaften">
+<trait name = "Unaufmerksam" xp = "-9" group = "mind">
 <description>Der Charakter ist leicht abzulenken und sieht gelegentlich den Wald vor lauter Bäumen nicht. MEN-Proben, die sich auf Wahrnehmung beziehen sind für diesen Charakter um einen Punkt erschwert</description>
 </trait>
 
-<trait name = "Kühler Kopf" xp = "9" class = "men" group = "Kampf">
+<trait name = "Kühler Kopf" xp = "9" group = "fighting">
 <description>Der Charakter behält auch in stressigsten Situationen die Nerven. Negative Modifikatoren für 'Unter Beschuss' oder andere Stresssituationen werden für den Charakter um die Hälfte reduziert.</description>
 </trait>
 
-<trait name = "Hohe Schmerztoleranz" xp = "1" class = "men" group = "Eigenschaften">
+<trait name = "Hohe Schmerztoleranz" xp = "1" group = "body">
 <rank id ="1" name = "Rang" min = "1" max = "3" xp = "9"/>
 <description>Der Charakter hat eine überdurchschnittlich hohe Schmerztoleranz. Negative Modifikatoren aufgrund von Verletzungen werden um 1 Punkt je Rang reduziert.
 Bei Widerstand gegen Schmerzen - Folter, PSI-Effekte, etc, kann der Charakter die MP-Probe einmal je Stufe wiederholen als hätte er eine entsprechende Fertigkeit.</description>
 </trait>
 
-<trait name = "Zeitgefühl" xp = "1" class = "men" group = "Eigenschaften">
+<trait name = "Zeitgefühl" xp = "1" group = "temporal">
 <variable id = "1" name = "Ausprägung" values = "gut,perfekt" xp = "6,12">
 <description value = "gut">Der Charakter hat ein ausgeprägtes Zeitgefühl. Er kann Zeiträume sehr genau abschätzen und er prägt sich Tagesabläufe auf verschiedenen Planeten sehr schnell ein.</description>
 <description value = "perfekt">Der Charakter kann Zeit mit der Präzision eine durchschnittlichen Uhr abschätzen. Ist der Charakter wach liegt die Abweichung bei weniger als einer Sekunde pro Stunde, selbst während Schlafphasen oder Bewusstlosigkeit kann er die Zeitspanne auf wenige Minuten genau abschätzen. Dies kann natürlich durch Drogen oder Psionische Effekte Eingeschränkt sein.</description>
 </variable>
 </trait>
 
-<trait name = "Gefahreninstinkt" xp = "1" class = "psi" group = "Temporal">
+<trait name = "Gefahreninstinkt" xp = "1" group = "psi">
 <rank id = "1" name = "Rang" min = "1" max = "3" xp = "9"/>
 <description>Der Charakter verfügt über ein ausgeprägtes Gefahreninstinkt. In gefährlichen oder merkwürdigen Situationen sträuben sich seine Nackenhaare. Einige Wissenschaftler gehen davon aus, dass es sich um eine Art intuitive Präkognition handelt. Der Charakter darf Proben zum Erkennen eines Hinterhalts oder einer Falle wiederholen, als hätte eine entsprechende Fertigkeit.</description>
 </trait>
 
-<trait name = "Gesunder Menschenverstand" xp = "3" class = "meta" group = "Meta">
+<trait name = "Gesunder Menschenverstand" xp = "3" group = "mind">
 <description>Der Charakter verfügt über ein gutes Maß an Bauernschläue und steht mit beiden Beinen auf dem Boden. Einmal pro Spielsitzung sollte der Spielleiter den Spieler darauf hinweisen, dass sein Charakter – oder die Gruppe – gerade im Begriff ist, eine Dummheit zu begehen. Natürlich nur, wenn die Helden wirklich eine Dummheit begehen würden.</description>
 </trait>
 
-<trait name = "Herausragender Astrogator" xp = "9" class = "psi" group = "Extraspatial">
+<trait name = "Herausragender Astrogator" xp = "9" group = "xs">
 <description>Der Charakter hat ein nahezu unheimliches Gefühl für die Strömungen des Extraspatialraums. Er weiß intuitiv, wie weit ein Sprung führen wird und ob dieser sicher sein wird.</description>
 </trait>
 
-<trait name = "Meister des ..." xp = "1" class = "meta" group = "Eigenschaft">
+<trait name = "Meister des ..." xp = "1" group = "skill">
+<specification name = "Fertigkeit" />
 <variable id = "1" name = "Klasse" values = "Aktionsfertigkeit,Passive Fertigkeit" xp = "12,6"/>
 <description>Der Charakter ist in einer Fertigkeit einfach besonders gut. Negative Modifikatoren werden beim Einsatz dieser Fähigkeit halbiert.</description>
 </trait>
 
-<trait name = "Quälende Alpträume" xp = "-9" class = "men" group = "Krankheit">
+<trait name = "Quälende Alpträume" xp = "-9" group = "illness">
 <description>Der Charakter leidet unter so schweren Alpträumen, dass er regelmäßig aufwacht. Aus diesem Grund wird die Regeneration von LP, EP und MP pri Ruhephase um je einen Punkt reduziert.</description>
 </trait>
 
-<trait name = "Kampfrausch" xp = "-6" class = "men" group = "Kampf">
+<trait name = "Kampfrausch" xp = "-6" group = "fighting">
 <description>Der Charakter neigt dazu, im Kampf die Kontrolle zu verlieren. Wenn der Charakter im Kampf getroffen wird, muss ihm eine MEN-Probe gelingen, um die Ruhe zu bewahren. Jedes Mal, wenn der Charakter in der selben Szene erneut getroffen wird, muss er die Probe wiederholen, jeweils um einen Punkt erschwert. 
 Misslingt die Probe, so verfällt der Charakter in einen Kampfrausch. Er greift jedes Ziel in Reichweite an - unabhängig ob es sich dabei um Feinde oder Kameraden handelt.
 Während des Blutrausches spürt der Charakter keine Schmerzen. Wunden werden ignoriert. Betäubungsangriffe zählen nur, wenn sie genug Schaden verursachen um den Charakter sofort bewustlos werden zu lassen, ansonsten werden sie gänzlich ignoriert.
@@ -625,43 +624,47 @@ Der Spieler kann, während des Kampfrausches, Die Aktion 'Durchatmen' ausführen
 Erleidet der Charakter jedoch während des Durchatmens einen Treffer muss, wird der Grundmodifikator um eins erhöht und er muss neu beginnen.</description>
 </trait>
 
-<trait name = "Kampflähmung" xp = "-9" class = "men" group = "Kampf">
+<trait name = "Kampflähmung" xp = "-9" group = "fighting">
 <description>Der Charakter neigt dazu, in ernsthaften, bedrohlichen Stresssituationen einzufrieren. Er kann nichts tun. Angst und Stress lähmen ihn einfach.
 Gerät der Charakter in so eine Situation, muss er eine MEM-Probe ablegen. Bei einem Misserfolg ist der Charakter handlungsunfähig. Nach der ersten Runde kann er jede Runde einmal versuchen, sich aus seiner Starre zu lösen. Dazu muss ihm eine MEN-Probe gelingen.</description>
 </trait>
 
-<trait name = "Schneller Alternd" xp = "-1" class = "phy" group = "Eigenschaften">
+<trait name = "Schneller Alternd" xp = "-1" group = "body">
 <description>Der Charakter wird deutlicher früher sterben als der durchschnittliche Vertreter seiner Spezies, er wird früher Alt werden und entsprechende Alterserscheinungen wie Attributsverluste, Erschwernisse auf Wissensfertigkeitswürfe oder auch Krankheiten oder Abhängigkeit von Medikamenten werden sich früher einstellen.</description>
 </trait>
 
-<trait name = "Gutes Aussehen" xp = "3" class = "soz" group = "Eigenschaften">
+<trait name = "Gutes Aussehen" xp = "3" group = "body">
 <description>Der Charakter sieht (für seine Spezies) besonders gut oder eindrucksvoll aus. Alle Fertigkeitsproben, bei denen Aussehen eine Rolle spielt werden gegenüber Mitgliedern der eigenen Spezies um einen Punkt erleichtert.</description>
 </trait>
 
-<trait name = "Hervorragendes Aussehen" xp = "9" class = "soz" group = "Eigenschaften">
+<trait name = "Hervorragendes Aussehen" xp = "9" group = "body">
 <description>Das Aussehen des Charakters ist von solch blendender Schönheit, dass sogar Wesen von anderen Spezies beeindruckt werden. Alle Fertigkeitsproben bei denen das Aussehen eine Rolle spielt werden gegenüber Mitgliedern der eigenen Spezies um drei Punkte erleichtert; für andere Spezies kann der Spielleiter situationsabhängig einen Bonus von ein bis zwei Punkten gewähren.</description>
 </trait>
 
-<trait name = "Beeindruckende Narbe" xp = "3" class = "soz" group = "Eigenschaften">
+<trait name = "Beeindruckende Narbe" xp = "3" group = "body">
 <description>Der Charakter verfügt über eine beeindruckende, allerdings nicht entstellende Narbe an einer offensichtliches Stelle. Einschüchtern, Kommandieren und ähnliche Proben werden um einen Punkt erleichtert. Zudem kann man auf Festen interessante Geschichten vom Krieg zum Besten geben...</description>
 </trait>
 
-<trait name = "Beeindruckende Stimme" xp = "3" class = "soz" group = "Eigenschaften">
+<trait name = "Beeindruckende Stimme" xp = "3" group = "body">
 <description>Der Charakter kann mit einer klangvollen Stimme sprechen oder Singen und weiß sein Gegenüber durch Wortwahl und Stimmmodulation zu überzeugen. Fertigkeitswürfe bei denen die Stimme wichtig ist (Feilschen, Schauspiel, Singen, Überreden...) werden um einen Punkt erleichtert.</description>
 </trait>
 
-<trait name = "Sprachfehler" xp = "-1" class = "soz" group = "Eigenschaften">
+<trait name = "Sprachfehler" xp = "-1" group = "body">
 <specification name = "Art der Sprachstörung"/>
 <variable id ="1" name = "Ausprägung" values = "leicht,störend,erheblich" xp = "-3,-6,-12"/>
 <description>Der Charakter leidet an einem Sprachfehler. Lispeln, stottern, sich ständig verhaspeln oder irgendwelche Geräusche in einen Satz einflechten etc. gelten als solche. Auf jeden Fall wirkt er auf sein Gegenüber seltsam. SOZ-Proben bei denen Sprache eine Rolle spielt, beispielsweise 'Verhandlung', können je nach Situation je nach gewählter Ausprägung um ein bis drei Punkte erschwert werden. Bei erheblichen Sprachfehlern kann der Spielleiter mit einer Probe auf die Sprachfertigkeit des Gegenübers prüfen, ob der Inhalt korrekt verstanden wurde.</description>
 <description>Lispeln ist kein Sprachfehler für Hazaru.</description>
 </trait>
 
-<trait name = "Sprachbegabung" xp = "6" class = "soz" group = "Sprachen">
-<description>Ein Charakter mit dieser Eigenschaft ist in der Lage Sprachen deutlich schneller zu erlernen. Bereits nach kurzer Zeit kann er sich flüssig in der gewählten Sprache unterhalten. Bei einem Fertigkeitswert von eins und zwei wird die Fertigkeit behandelt als hätte der Charakter einen Wert von drei.</description>
+<trait name = "Sprachgespür" xp = "6" group = "mind">
+<description>Ein Charakter mit dieser Eigenschaft hat ein natürliches Gespür für den Klang von Sprachen und Dialekten. Mit Leichtigkeit eignet er sich einen großen Wortschatz an und ist in Konversationen schon nach kurzer Zeit kaum von einem Muttersprachler zu unterscheiden. Bei einem Fertigkeitswert von eins und zwei wird die Sprachfertigkeit bei Gesprächen behandelt als hätte der Charakter einen Wert von drei.</description>
 </trait>
 
-<trait name = "Auf der Flucht" xp = "-1" class = "soz" group = "Verbindungen">
+<trait name = "Sprachtalent" xp = "6" group = "mind">
+<description>Mit dieser Eigenschaft hat ein Charakter ein herausragendes Gespür für die schriftliche Repräsentation von Sprachen. Schnell eignet er sich auch komplexe grammatikalische Feinheiten und neue Alphabete an. Bereits mit einem Fertigkeitswert von eins oder zwei, wird das Textverständnis des Charakters behandelt, als hätte er den Wert drei. Gerade bei komplexen Texten zu obskuren technischen und wissenschaftlichen Themen, sollte man allerdings bedenken, dass das reine Textverständnis nicht ausreicht.</description>
+</trait>
+
+<trait name = "Auf der Flucht" xp = "-1" group = "social">
 <description>Der Charakter ist auf der Flucht vor einer Fraktion.</description>
 <description>Natürlich sollte der genaue Grund für die Flucht vorab mit dem Spielleiter geklärt werden, ebenso um welche Fraktion es sich handelt, die den Charakter verfolgt. Es macht natürlich einen deutlichen Unterschied, ob man vor dem örtlichen Kredithai auf der Flucht ist, weil die 20.000 Rand überfällig sind, oder ob man wegen Hochverrats vom Haus Pendragon gesucht wird.</description>
 <specification name = "Fraktion"/>
@@ -676,14 +679,14 @@ Gerät der Charakter in so eine Situation, muss er eine MEM-Probe ablegen. Bei e
 </variable>
 </trait>
 
-<trait name = "Barbar" xp = "-1" class = "men" group = "Wissen" >
-<variable name = "Techlevel" values = "Steinzeit/Eisenzeit,Antike bis Mittelalter,Dampf- und Industriezeitalter" xp = "-18,-12,-6"/>
+<trait name = "Barbar" xp = "-1" group = "mind" >
+<variable id = "1" name = "Techlevel" values = "Steinzeit/Eisenzeit,Antike bis Mittelalter,Dampf- und Industriezeitalter" xp = "-18,-12,-6"/>
 <description>Der Charakter stammt von einer Welt, deren technologisches Niveau weit hinter den Errungenschaften der modernen intergalaktischen Zivilisation zurückbleibt. Während der Charaktererschaffung können keine Fertigkeiten gewählt werden, die sich auf Technologien beziehen, die in seiner Kultur noch unbekannt sind.</description> 
 <description>Von den verbreiteten Sprachen kann maximal eine auf Rang 1 erlernt werden. 
-Der Charkater reagiert möglicherweise mit Vorurteilen oder Angst auf Technologien jenseits seines Verständnisses. Hier können entsprechende weitere Nachteile erworben werden.</description>
+Der Charakter reagiert möglicherweise mit Vorurteilen oder Angst auf Technologien jenseits seines Verständnisses. Hier können entsprechende weitere Nachteile erworben werden.</description>
 </trait>
 
-<trait name = "Militärischer Rang" type = "soz" group = "Rang" xp = "1">
+<trait name = "Militärischer Rang" group = "social" xp = "1">
 <description>Der Charakter ist oder war Mitglied in einer regulären Armee oder einer größeren Söldnergruppierung.</description>
 <specification name = "Dienstgrad"/>
 <rank id = "1" name = "Protokollrang" min = "1" max = "13" xp = "3"/>
@@ -691,12 +694,12 @@ Der Charkater reagiert möglicherweise mit Vorurteilen oder Angst auf Technologi
 <description>Die Protokollränge für Mannschaften und Unteroffiziere liegen zwischen 1 und 2. Ein Hauptmann liegt bei 5, ein Oberst hat einen Rang von 8.</description>
 </trait>
 
-<trait name = "Wissenschaftlicher Rang" type = "soz" group = "Rang" xp = "1">
+<trait name = "Wissenschaftlicher Rang" group = "social" xp = "1">
 <variable id = "1" name = "Titel" values = "Doktortitel,Professur" xp = "12,15"/>
 <description>Der Charakter hat nicht nur einfach studiert sondern sich aktiv in die wissenschaftlichen Gesellschaft eingebracht und tatsächlich Artikel oder Bücher veröffentlicht.</description>
 </trait>
 
-<trait name = "Adelig" type = "soz" group = "Rang" xp = "1">
+<trait name = "Adelig" group = "social" xp = "1">
 <specification name = "Titel"/>
 <rank id = "1" name = "Protokollrang" min = "5" max = "20" xp = "3"/>
 <variable id = "2" name = "Erbansprüche" values = "Erstgeborener,Anteile,nur der Name" xp = "2,1,0.5" factor = "multiply"/>
@@ -704,54 +707,53 @@ Der Charkater reagiert möglicherweise mit Vorurteilen oder Angst auf Technologi
 <description>Ein einfacher Freiherr beginnt bei Protokollrang 5, Ritter liegen um den 9. Rang. Vom 15. Rang aufwärts finden sich Fürsten und Könige. Der 20. Rang ist der Kaiser der Novaropäischen Allianz.</description>
 </trait>
 
-<trait name = "Weitere Titel" type = "soz" group = "Rang" xp = "1">
+<trait name = "Weitere Titel" group = "social" xp = "1">
 <specification name = "Titel"/>
 <rank id = "1" name = "Protokollrang" min = "1" max = "5" xp = "3"/>
 <description>In einigen Berufszweigen kommt man ohne Titel nicht weit. Teilweise darf man überhaupt nicht tätig werden oder man bewegt sich in einer Grauzone. Auch diese Ränge werden im Rangsystem der Protokollränge geführt.</description>
 <description>Handwerksgesellen finden sich im 1. Rang, Meister im 2. und 3. Rang. Ein Arzt oder Ingenieur je nach Prestige der Universität im 3. bis 4. Rang. Doktortitel werden mit dem Vorteil "Wissenschaftlicher Rang" abgebildet. Sie entsprechen dem 4. oder 5. Rang.</description>
 </trait>
 
-<trait name = "Berühmt oder Berüchtigt" type = "soz" group = "Rang" xp = "1">
+<trait name = "Berühmt oder Berüchtigt" group = "social" xp = "1">
 <specification name = "Grund"/>
 <variable id = "1" name = "Bekanntheitsgrad" values = "Innerhalb einer Subkultur,Allgemein bekannt" xp = "2,6" factor = "multiply"/>
 <variable id = "2" name = "Verbreitung" values = "lokal,regional,galaxisweit" xp = "1,2,3"/>
 <description>Der Charakter trägt zwar keinen besonderen Titel, doch er ist aus anderen Gründen bekannt. Beispiele sind Sportler, Schauspieler, Schriftsteller, bekannte Händler oder legendäre Archäologen.</description>
 </trait>
 
-<trait name = "Diplomatische Immunität" type = "soz" group = "Rang" xp = "18">
+<trait name = "Diplomatische Immunität" group = "social" xp = "18">
 <description>Der Charakter genießt diplomatische Immunität</description>
 <description>Für die Wahl dieses Vorteils sollte es gute Gründe geben, die mit dem Spielleiter besprochen werden. Man sollte sich auch stets bewusst sein, dass Diplomatische Immunität nicht kugelsicher macht und es die meisten Regierungen nicht gerne sehen, wenn sich ihre offiziellen Repräsentanten daneben benehmen.</description>
 </trait>
 
-<trait name = "Gesellschaftlicher Makel" type = "soz" group = "Rang" xp = "-1">
+<trait name = "Gesellschaftlicher Makel" group = "social" xp = "-1">
 <specification name = "Bezeichnung"/>
 <variable id = "1" name = "Auswirkung" values = "geringfügig,schwerwiegend,bedrohlich,lebensbedrohlich" xp = "-1,-3,-6,-12"/>
 <description>Der Charakter ist aus irgend einem Grund in seiner gewöhnlichen Gesellschaft nicht akzeptiert. Das kann verschiedenste Gründe haben. Die Höhe der Punkte für diesen Nachteil hängt davon ab, wie stark der Charakter in der Gesellschaft zurückgesetzt wird.</description>
 <description>Der Nachteil kann von 'vernachlässigbar' (ein Mann auf einer matriarchischen Welt) für 1 Punkt bis hin zu lebensbedrohlich (ein Agent hinter feindlichen Linien) für 12 Punkte gehen.</description>
 </trait>
 
-
-<trait name = "Schulden" class = "soz" group = "Finanzen" xp = "-1">
+<trait name = "Schulden" group = "financial" xp = "-1">
 <specification name = "Gläubiger"/>
 <variable id = "1" name = "Betrag" values = "2000,4000,6000,8000,10000,20000" xp = "-1,-2,-3,-4,-5,-10"/>
 <variable>Durch diesen Nachteil bekommst du kein Geld, aber du kannst du Kosten deines Startkapitals reduzieren. Natürlich kann man mehr Schulden haben als Startkapital.</variable>
 </trait>
 
-<trait name = "Regelmäßiges Einkommen" class = "soz" group = "Finanzen" xp = "1">
+<trait name = "Regelmäßiges Einkommen" group = "financial" xp = "1">
 <specification name = "Geldquelle"/>
 <rank id = "1" name = "Rang" min = "1" max = "100"/>
 <description>Der Charakter verfügt über eine regelmäßige Geldquelle. Die genaue Natur muss mit dem Spielleiter vereinbart werden. Beispiele wären Aktienanteile, eine feste Arbeit, oder Unterstützung durch Eltern oder einen Gönner.&#10;Pro Charakterpunkt erhältst du 100 Rand / MegaSek.&#10;</description>
 <description>Abhängig von der gespielten Kampagne, ist es natürlich durchaus möglich, dass es nicht so ganz einfach ist, an das Geld zu kommen. Das kann etwa der Fall sein, wenn man irgendwo, in einer ganz anderen Ecke der Galaxis unterwegs ist.&#10;Selbstverständlich ist es durchaus möglich, dass diese Geldquelle im Laufe des Spiels versiegt - Firmen können Pleite machen, Anstellungen kann man verlieren, Eltern können sich zerstreiten ...</description>
 </trait>
 
-<trait name = "Zugriff auf Ausrüstung" class = "soz" group = "Finanzen" xp = "1">
+<trait name = "Zugriff auf Ausrüstung" group = "financial" xp = "1">
 <specification name = "Art der Ausrüstung"/>
 <rank id = "1" name = "Verfügbarkeit" values = "+4,+5,+6" xp = "1,2,3"/>
 <description>Manche Ausrüstung ist selten und steht am Anfang einer Abenteurerkarriere eigentlich nicht zur Verfügung. Dein Charakter besitzt jedoch einen solchen seltenen Gegenstand. Üblicherweise kann man nur Gegenstände erwerben, deren Verfügbarkeit bei +3 oder mehr liegt. Wie viele Vorteilspunkte der Zugriff auf einen Gegenstand kostet hängt natürlich auch von der gespielten Kampagne ab.</description>
 <description>Natürlich muss so ein Besitz auch irgendwie begründet werden. 'Hab ich auf der Straße gefunden' kann vielleicht für ein Päckchen Drogen funktionieren, wird aber spätestens bei einer Servo-Rüstung oder einem Panzerfahrzeug etwas unglaubwürdig. Darüber hinaus muss die Ausrüstung zusätzlich mit Startkapital bezahlt werden.</description>
 </trait>
 
-<trait name = "Akteur" class = "soz" group = "Finanzen" xp = "1">
+<trait name = "Akteur" group = "financial" xp = "1">
 <specification name = "Fraktion"/>
 <rank id = "1" name = "Rang" min = "1" max = "100"/>
 <description>Mit der Wahl dieses Vorteils, übt der Charakter Kontrolle über eine Fraktion aus. Jeder Punkt, der in Akteur investiert wird, zählt als Resourcenpunkt für die Erschaffung einer Fraktion - dabei kann dies als Gruppenvorteil, von mehreren Spielern gemeinsam gewählt werden. Akteur bietet sich an, wenn die Charakter die Geschicke einer Organisation oder Firma aktiv in die Hand nehmen wollen. Für eine stille Teilhaberschaft oder ein Aktienpaket ist der Vorteil Regelmäßiges Einkommen besser geeignet.</description>

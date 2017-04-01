@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 import config
 
 msg = config.Messages()
@@ -41,29 +42,44 @@ class TraitSelector(tk.Toplevel):
         self.search = tk.StringVar()
         self.search.set(msg.TS_SEARCH_NAME)
         self.search_mode = "name"
+        self.search_neg = tk.IntVar(value=1)
+        self.search_pos = tk.IntVar(value=1)
         self.upper_search_frame = tk.Frame(self.search_frame)
         self.search_mode_name = tk.Button(
             self.upper_search_frame,
             text=msg.TS_NAME,
-            relief=tk.SUNKEN,
+            font="Arial 10 bold",
             command=lambda:
                 self.switchSearchMode("name")
         )
         self.search_mode_name.pack(side=tk.LEFT, fill=tk.X, expand=1)
-        self.search_mode_cls = tk.Button(
-            self.upper_search_frame,
-            text=msg.TS_CLASS,
-            command=lambda:
-                self.switchSearchMode("cls")
-        )
-        self.search_mode_cls.pack(side=tk.LEFT, fill=tk.X, expand=1)
         self.search_mode_grp = tk.Button(
             self.upper_search_frame,
+            font="Arial 10",
             text=msg.TS_GROUP,
             command=lambda:
                 self.switchSearchMode("grp")
         )
         self.search_mode_grp.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        self.pos_button = tk.Checkbutton(
+            self.upper_search_frame,
+            text="pos.",
+            var=self.search_pos,
+            onvalue=1,
+            offvalue=0,
+            command=self.searchTraits
+        )
+        self.pos_button.pack(side=tk.LEFT)
+        self.neg_button = tk.Checkbutton(
+            self.upper_search_frame,
+            text="neg.",
+            var=self.search_neg,
+            onvalue=1,
+            offvalue=0,
+            command=self.searchTraits
+        )
+        self.neg_button.pack(side=tk.LEFT)
+
         self.upper_search_frame.pack(fill=tk.X, expand=1)
         self.lower_search_frame = tk.Frame(self.search_frame)
         self.search_box = tk.Entry(
@@ -153,20 +169,42 @@ class TraitSelector(tk.Toplevel):
         # clear the listbox
         self.list_box.delete(0, tk.END)
 
-        cur_traits = [trait.get("name") for trait in self.char.getTraits()]
         for trait in traits:
+            xp = int(trait[1])
+            if not self.search_neg.get() and xp < 0:
+                continue
+            if not self.search_pos.get() and xp > 0:
+                continue
+
+            search_term = self.search.get()
+            if search_term in [msg.TS_SEARCH_NAME, msg.TS_JUST_SCROLL]:
+                search = False
+
             if search is False:
                 self.list_box.insert(tk.END, trait[0])
             if search is True:
                 selector = 0
                 if self.search_mode == "name":
                     selector = 0
-                if self.search_mode == "cls":
-                    selector = 1
                 if self.search_mode == "grp":
                     selector = 2
-                
-                search_term = self.search.get()
+                    grp = config.TraitGroups
+                    groups = {
+                        msg.TS_BODY: grp.BODY,
+                        msg.TS_MIND: grp.MIND,
+                        msg.TS_SOCIAL: grp.SOCIAL,
+                        msg.TS_PERCEPTION: grp.PERCEPTION,
+                        msg.TS_FINANCIAL: grp.FINANCIAL,
+                        msg.TS_FIGHTING: grp.FIGHTING,
+                        msg.TS_ILLNESS: grp.ILLNESS,
+                        msg.TS_TEMPORAL: grp.TEMPORAL,
+                        msg.TS_SKILL: grp.SKILL,
+                        msg.TS_BEHAVIOR: grp.BEHAVIOR,
+                        msg.TS_XS: grp.XS,
+                        msg.TS_PSI: grp.PSI,
+                    }
+                    search_term = groups[search_term]
+
                 if trait[selector]:
                     if search_term.lower() in trait[selector].lower():
                         self.list_box.insert(tk.END, trait[0])
@@ -415,7 +453,6 @@ class TraitSelector(tk.Toplevel):
             self.search_mode = mode
             if mode == "name":
                 self.search_mode_name.config(relief=tk.SUNKEN)
-                self.search_mode_cls.config(relief=tk.RAISED)
                 self.search_mode_grp.config(relief=tk.RAISED)
                 self.search_box.pack_forget()
                 self.search_box = tk.Entry(
@@ -424,65 +461,41 @@ class TraitSelector(tk.Toplevel):
                 )
                 self.search_box.pack(fill=tk.BOTH)
                 self.search_box.bind("<Control-a>", self.searchSelectAll)
-                self.search_box.bind(
-                    "<Return>",
-                    lambda event:
-                        self.searchTraits()
-                )
+                self.search_box.bind("<Return>", self.searchTraits)
                 self.search.set(msg.TS_SEARCH_NAME)
-            if mode == "cls":
-                self.search_mode_name.config(relief=tk.RAISED)
-                self.search_mode_cls.config(relief=tk.SUNKEN)
-                self.search_mode_grp.config(relief=tk.RAISED)
 
-                self.search_box.pack_forget()
-                self.search_box = tk.Spinbox(
-                    self.lower_search_frame,
-                    textvariable=self.search
-                )
-                self.search_box.pack(fill=tk.BOTH)
-                self.search_box.bind(
-                    "<Return>",
-                    lambda event:
-                        self.searchTraits()
-                )
-
-                traits = self.all_traits.getList()
-                trait_set = set()
-                for trait in traits:
-                    if trait[1]:
-                        trait_set.add(trait[1])
-                trait_list = list(trait_set)
-                self.search_box.config(values=trait_list)
-                self.search.set(msg.TS_JUST_SCROLL)
-                
             if mode == "grp":
                 self.search_mode_name.config(relief=tk.RAISED)
-                self.search_mode_cls.config(relief=tk.RAISED)
                 self.search_mode_grp.config(relief=tk.SUNKEN)
 
                 self.search_box.pack_forget()
-                self.search_box = tk.Spinbox(
+                self.search_box = ttk.Combobox(
                     self.lower_search_frame,
                     textvariable=self.search
                 )
                 self.search_box.pack(fill=tk.BOTH)
-                self.search_box.bind(
-                    "<Return>",
-                    lambda event:
-                    self.searchTraits()
-                )
+                self.search_box.bind("<Return>", self.searchTraits)
+                self.search_box.bind("<<ComboboxSelected>>", self.searchTraits)
 
-                traits = self.all_traits.getList()
-                trait_set = set()
-                for trait in traits:
-                    if trait[2]:
-                        trait_set.add(trait[2])
-                trait_list = list(trait_set)
-                self.search_box.config(values=trait_list)
+                groups = [
+                    msg.TS_BODY,
+                    msg.TS_MIND,
+                    msg.TS_SOCIAL,
+                    msg.TS_PERCEPTION,
+                    msg.TS_FINANCIAL,
+                    msg.TS_FIGHTING,
+                    msg.TS_ILLNESS,
+                    msg.TS_TEMPORAL,
+                    msg.TS_SKILL,
+                    msg.TS_BEHAVIOR,
+                    msg.TS_XS,
+                    msg.TS_PSI,
+                ]
+
+                self.search_box.config(values=groups)
                 self.search.set(msg.TS_JUST_SCROLL)
 
-    def searchTraits(self):
+    def searchTraits(self, event=None):
         self.listTraits(True)
 
     # player presses the add trait button
