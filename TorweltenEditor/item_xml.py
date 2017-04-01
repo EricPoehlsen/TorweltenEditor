@@ -11,8 +11,8 @@ class ItemTree(object):
     def __init__(self, settings):
         # this is the xml interpretation of the available items
         self.settings = settings
-        self.xml_items = self.loadTree('data/items_de.xml')
-        self.loadExpansions()
+        self.xml_items = None
+        self.buildTree()
 
         self.EQUIPPABLE = [
             it.CLOTHING,
@@ -35,24 +35,25 @@ class ItemTree(object):
             it.NATURAL,
         ]
 
-    def loadExpansions(self):
+    def buildTree(self):
+        self.xml_items = self.loadTree('data/items_de.xml')
         active_expansions = self.settings.getExpansions()
         for expansion in active_expansions:
             self.addToTree("data/"+expansion)
 
     def loadTree(self, filename=None):
         tree = None
-        if filename is None:
-            return tree
-
-        else:
+        if filename:
             try:
                 tree = et.parse(filename)
                 root = tree.getroot()
                 if root.tag == "expansion":
                     items = root.find("items")
-                    tree = et.ElementTree(items)
-            except et.ParseError as e:
+                    if items is not None:
+                        tree = et.ElementTree(items)
+                    else:
+                        tree = None
+            except (FileNotFoundError, et.ParseError) as e:
                 print(str(e))
         return tree
 
@@ -67,6 +68,8 @@ class ItemTree(object):
             return
 
         local_tree = self.loadTree(filename)
+        if local_tree is None:
+            return
 
         items = local_tree.findall(".//item")
         groups = self.xml_items.findall(".//group")

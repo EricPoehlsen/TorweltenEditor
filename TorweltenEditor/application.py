@@ -335,9 +335,9 @@ class Application(tk.Frame):
         called by menu entry or hotkey
         """
 
-        self.itemlist.loadTree()
-        self.skills.loadTree()
-        self.traits.loadTree()
+        self.itemlist.buildTree()
+        self.skills.buildTree()
+        self.traits.buildTree()
 
     # this will later be used to prepare the screen for high resolution screens
     def _resolution(self):
