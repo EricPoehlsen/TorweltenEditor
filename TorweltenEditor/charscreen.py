@@ -6,7 +6,7 @@ from skillinfo import SkillInfo
 from PIL import ImageTk,Image,PngImagePlugin
 from tooltip import ToolTip
 
-import tkinter as tk
+import tk_ as tk
 
 msg = config.Messages()
 
@@ -21,6 +21,7 @@ class CharScreen(tk.Frame):
 
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
+        self.style = app.style
         # localize data ...
         # create the character instance # #
         self.app = app
@@ -49,8 +50,8 @@ class CharScreen(tk.Frame):
         for attr in attr_list:
             frame = tk.LabelFrame(
                 attr_frame,
+                style="main.TLabelframe",
                 text=attr.upper(),
-                font="Arial 10 bold"
             )
             # initiate the IntVars and bind their tcl names to the attributes
             attrib_values = self.char.attrib_values
@@ -64,9 +65,9 @@ class CharScreen(tk.Frame):
                 self.widgets[attr] = tk.Spinbox(
                     frame, 
                     from_=0, 
-                    to=9, 
+                    to=9,
+                    font="Arial 11 bold",
                     textvariable=attrib_values[attr], 
-                    font="Arial 12 bold", 
                     width=3
                 )
                 self.widgets[attr].pack()
@@ -81,7 +82,6 @@ class CharScreen(tk.Frame):
                 value_field = tk.Label(
                     frame, 
                     textvariable=attrib_values[attr], 
-                    font="Arial 12 bold",
                     width=3
                 )
                 value_field.pack(side=tk.LEFT)
@@ -94,16 +94,15 @@ class CharScreen(tk.Frame):
                 self.widgets[attr+"_inc"].pack(side=tk.RIGHT)
             
             # in view mode there is only a label ...
-            if self.char.getEditMode() == "view":
+            if self.char.getEditMode() in ["view", "simulation"]:
                 value_field = tk.Label(
                     frame,
                     textvariable=attrib_values[attr], 
-                    font="Arial 12 bold",
                     width=3
                 )
-                value_field.pack()
+                value_field.pack(fill=tk.X)
 
-            frame.pack()
+            frame.pack(fill=tk.X)
         attr_frame.pack(anchor=tk.N)
         
         # this displays the characters XP
@@ -127,6 +126,7 @@ class CharScreen(tk.Frame):
         # beginning with the data frame 
         data_frame = tk.LabelFrame(
             frame_2,
+            style="main.TLabelframe",
             text=msg.CS_BASE_DATA,
         )
 
@@ -182,11 +182,12 @@ class CharScreen(tk.Frame):
         # within this frame will be the character traits
         traits_frame = tk.LabelFrame(
             frame_2,
+            style="main.TLabelframe",
             text=msg.CS_TRAITS,
         )
         self.traits_text = tk.Text(
             traits_frame, 
-            bg="#dddddd", 
+            bg="#eeeeee",
             font="Arial 10",
             wrap=tk.WORD,
             height=10,
@@ -213,7 +214,8 @@ class CharScreen(tk.Frame):
 
         # active skills ...
         self.active_skill_frame = tk.LabelFrame(
-            frame_3, 
+            frame_3,
+            style="main.TLabelframe",
             text=msg.CS_ACTIVE_SKILLS, 
         )
         self.active_skill_canvas = tk.Canvas(
@@ -236,7 +238,8 @@ class CharScreen(tk.Frame):
 
         # passive skills
         self.passive_skill_frame = tk.LabelFrame(
-            frame_3, 
+            frame_3,
+            style="main.TLabelframe",
             text=msg.CS_PASSIVE_SKILLS,
         )
         self.passive_skill_canvas = tk.Canvas(
@@ -540,3 +543,4 @@ class CharScreen(tk.Frame):
 
     def showSkillInfo(self, name):
         window = SkillInfo(self, name)
+

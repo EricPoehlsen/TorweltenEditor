@@ -1,10 +1,8 @@
-# coding=utf-8
-
 import xml.etree.ElementTree as et
 import tkinter.filedialog as tkfd
 from moduleeditor import ModuleEditor
 from PIL import ImageTk, Image, PngImagePlugin
-import tkinter as tk
+import tk_ as tk
 import config
 from tooltip import ToolTip
 page = config.Page()
@@ -38,6 +36,7 @@ class LayoutScreen(tk.Frame):
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
         self.app = app
+        self.style = app.style
         self.char = app.char
         self.open_windows = app.open_windows
         

@@ -3,7 +3,7 @@ This module contains the Class for the character image selection
 """
 
 
-import tkinter as tk
+import tk_ as tk
 import config
 import tkinter.filedialog as tkfd
 import exportpdf
@@ -20,6 +20,7 @@ class ImageScreen(tk.Frame):
     """
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
+        self.style = app.style
 
         self.app = app
         self.char = app.char
@@ -60,7 +61,11 @@ class ImageScreen(tk.Frame):
         self._checkForImage()
         
         # TEST
-        tk.Button(self.edit_frame, text="TESTEXPORT", command=self._test).pack()
+        tk.Button(
+            self.edit_frame,
+            text="TESTEXPORT",
+            command=self._test,
+        ).pack(fill=tk.X)
 
         self.variant_frame = tk.LabelFrame(
             self.edit_frame,
@@ -180,7 +185,6 @@ class ImageScreen(tk.Frame):
             button = tk.Button(
                 self.variant_frame,
                 text=variant[1],
-                anchor=tk.W
             )
             button.bind("<Button-1>", self._aspectSelector)
             button.pack(fill=tk.X)
@@ -195,13 +199,13 @@ class ImageScreen(tk.Frame):
         # update buttons and retrieve selection ...
         buttons = self.variant_frame.winfo_children()
         for button in buttons:
-            button.config(background="#eeeeee")
+            button.config(style="TButton")
             if button is widget: 
                 text = button.cget("text")
+                button.config(style="selected.TButton")
                 for variant in self.variants:
                     if variant[1] == text:
                         self.selected_size = variant[0]
-        widget.config(background="#ffffaa")
 
         self.selected_ratio = self._aspectRatios()[self.selected_size]
 
@@ -446,12 +450,14 @@ class ImageScreen(tk.Frame):
         if image_tag is not None:
             self.load_button.config(
                 text=msg.IS_REMOVE_IMAGE,
-                command=self._removeImage
+                command=self._removeImage,
+                width=20
             )
         else:
             self.load_button.config(
                 text=msg.IS_IMPORT_IMAGE,
-                command=self.loadImageWindow
+                command=self.loadImageWindow,
+                width=20
             )
 
     # remove the image

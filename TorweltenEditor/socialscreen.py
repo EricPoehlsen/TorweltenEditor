@@ -1,5 +1,5 @@
-# coding=utf-8
-import tkinter as tk
+import tk_ as tk
+from PIL import ImageTk
 import config
 from socialeditor import SocialEditor
 
@@ -13,6 +13,7 @@ class SocialScreen(tk.Frame):
 
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
+        self.style = app.style
         self.app = app
         self.char = app.char
         self.open_windows = app.open_windows
@@ -54,43 +55,33 @@ class SocialScreen(tk.Frame):
 
             # render contact to canvas ... 
             else:
-                
-                box = tk.Label(canvas, borderwidth=2, relief=tk.RIDGE)
-                id = contact.get("id")
 
-                # the contacts name ...
-                name = contact.get("name","")
-                name_label = tk.Label(box, text=name, font="Arial 12 bold")
-                name_label.pack(fill=tk.X)
-               
-                # the contacts loyality is used to recolor the name ...
-                loyality = float(contact.get("loyality","0"))
-                if loyality >= 1:
-                    name_label.config(foreground=config.Colors.DARK_GREEN)
-                if loyality < 0:
-                    name_label.config(foreground=config.Colors.DARK_RED)
-                if loyality > 0 and loyality <1:
-                    name_label.config(foreground=config.Colors.BLACK)
-
+                name = contact.get("name", "")
                 competency = "{name} ({lvl})".format(
                     name=contact.get("competency", ""),
                     lvl=contact.get("competencylevel", "")
                 )
-                competency_label = tk.Label(
-                    box,
-                    text=competency,
-                    font="Arial 9 bold"
-                )
-                competency_label.pack()
+                location = contact.get("location", "")
 
-                # ... and the current known location 
-                location = contact.get("location","")
-                location_label = tk.Label(
-                    box,
-                    text=location,
-                    font="Arial 9 italic"
+                id = contact.get("id")
+
+                box = tk.Button(
+                    canvas,
+                    text=name+"\n"+competency+"\n"+location,
+                    command=lambda id=id: self.editContact(id)
+
                 )
-                location_label.pack()
+
+                # the contacts loyality is used to recolor the name ...
+                loyality = float(contact.get("loyality", "0"))
+                """
+                if loyality >= 1:
+                    name_label.config(style="green.TLabel")
+                if loyality < 0:
+                    name_label.config(style="red.TLabel")
+                if loyality > 0 and loyality <1:
+                    name_label.config(style="inner.TButton")
+                """
 
                 # draw box to canvas
                 canvas.create_window(
@@ -101,16 +92,7 @@ class SocialScreen(tk.Frame):
                     height=height,
                     anchor=tk.NW
                 )
-                
-                # bind the whole stuff to one command ...
-                widgets = [box, name_label, competency_label, location_label]
-                for widget in widgets:
-                    widget.bind(
-                        "<Button-1>",
-                        lambda event, id=id:
-                            self.editContact(event, id)
-                    )
-                
+
                 # set grid location for next box ...                
                 col += 1
                 if col >= 3:
@@ -118,13 +100,13 @@ class SocialScreen(tk.Frame):
                     row += 1
 
         # finally add a button to add contacts ... 
+        plus_image = ImageTk.PhotoImage(file="img/plus.png")
         new_button = tk.Button(
-            canvas, text="+",
-            foreground="#cccccc",
-            font="Arial 40 bold",
-            relief=tk.RIDGE,
+            canvas,
+            image=plus_image,
             command=self.newContact
         )
+        new_button.image = plus_image
         canvas.create_window(
             col * width,   # x
             row * height,  # y
@@ -140,7 +122,7 @@ class SocialScreen(tk.Frame):
         contact = self.char.getContactById(new_id)
         self.displaySocialEditor(contact)
 
-    def editContact(self, event, id):
+    def editContact(self, id):
         contact = self.char.getContactById(id)
         self.displaySocialEditor(contact)
 
@@ -151,3 +133,8 @@ class SocialScreen(tk.Frame):
         else: 
             self.app.open_windows["contact"].close()
             SocialEditor(self, contact)
+
+
+class ContactButton(tk.Button):
+    def __init__(self, master=None, text=None, **kwargs):
+        super().__init__(self, master=None, text=None, **kwargs)

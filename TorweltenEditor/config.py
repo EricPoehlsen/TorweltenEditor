@@ -21,10 +21,7 @@ EWT = [[2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,0.5],  # 1
 
 # THIS CLASS CONTAINS MESSAGES TO BE DISPLAYED ON THE UI OR PDF EXPORTS
 class Messages:
-    """ Messages provides a variety of strings for the UI and PDF Export
-    WARNING: some strings are used as keys in dicts so make sure unicode
-    strings are correctly defined otherwise you will be out of "Glück" ...
-    """
+    """ Messages provides a variety of strings for the UI and PDF Export """
 
     title = "Torwelten Charaktergenerator"
 
@@ -96,7 +93,9 @@ class Messages:
     TS_TRAIT = "Eigenschaft"
     TS_DESCRIPTION = "Beschreibung ..."
     TS_ADD_TRAIT = "Ausgewählte Eigenschaft hinzufügen ..."
-    TS_JUST_SCROLL = "einfach durchblättern..."
+    TS_JUST_SCROLL = "Gruppe wählen ..."
+    TS_POSITIVE = "pos."
+    TS_NEGATIVE = "neg."
 
     TS_BODY = "Körperbau"
     TS_MIND = "Geistig"
@@ -110,7 +109,6 @@ class Messages:
     TS_BEHAVIOR = "Verhalten"
     TS_XS = "Extraspatiales"
     TS_PSI = "Psionik"
-
 
     # SKILL SELECTOR
     SS_TITLE = "Fertigkeiten wählen"

@@ -1,5 +1,4 @@
-import tkinter as tk
-import tkinter.ttk as ttk
+import tk_ as tk
 import config
 
 msg = config.Messages()
@@ -14,7 +13,8 @@ class TraitSelector(tk.Toplevel):
 
     def __init__(self, app):
         tk.Toplevel.__init__(self, app)
-        
+        self.style = tk.Style()
+        self._setStyle()
         # point to character and traitstree
         self.char = app.char
         self.all_traits = app.traits
@@ -48,14 +48,13 @@ class TraitSelector(tk.Toplevel):
         self.search_mode_name = tk.Button(
             self.upper_search_frame,
             text=msg.TS_NAME,
-            font="Arial 10 bold",
             command=lambda:
                 self.switchSearchMode("name")
         )
+        self.search_mode_name.state(["pressed"])
         self.search_mode_name.pack(side=tk.LEFT, fill=tk.X, expand=1)
         self.search_mode_grp = tk.Button(
             self.upper_search_frame,
-            font="Arial 10",
             text=msg.TS_GROUP,
             command=lambda:
                 self.switchSearchMode("grp")
@@ -63,7 +62,7 @@ class TraitSelector(tk.Toplevel):
         self.search_mode_grp.pack(side=tk.LEFT, fill=tk.X, expand=1)
         self.pos_button = tk.Checkbutton(
             self.upper_search_frame,
-            text="pos.",
+            text=msg.TS_POSITIVE,
             var=self.search_pos,
             onvalue=1,
             offvalue=0,
@@ -72,7 +71,7 @@ class TraitSelector(tk.Toplevel):
         self.pos_button.pack(side=tk.LEFT)
         self.neg_button = tk.Checkbutton(
             self.upper_search_frame,
-            text="neg.",
+            text=msg.TS_NEGATIVE,
             var=self.search_neg,
             onvalue=1,
             offvalue=0,
@@ -86,7 +85,7 @@ class TraitSelector(tk.Toplevel):
             self.lower_search_frame,
             textvariable=self.search)
         self.search_box.bind("<Control-a>", self.searchSelectAll)
-        self.search_box.bind("<Return>", lambda event: self.searchTraits())
+        self.search_box.bind("<Return>", self.searchTraits)
         self.search_box.pack(side=tk.LEFT, fill=tk.X, expand=1)
         self.search_button = tk.Button(
             self.lower_search_frame,
@@ -109,8 +108,8 @@ class TraitSelector(tk.Toplevel):
         self.scrollbar_select.config(command=self.list_box.yview)
         self.list_box.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.list_box.bind("<<ListboxSelect>>", self.displayTraitInfo)
-        self.scrollbar_select.pack(side=tk.RIGHT, fill=tk.Y, expand=1)
-        self.select_frame.pack(fill=tk.Y, expand=1)
+        self.scrollbar_select.pack(side=tk.RIGHT, fill=tk.Y)
+        self.select_frame.pack(fill=tk.BOTH, expand=1)
         self.left_frame.pack(fill=tk.Y, side=tk.LEFT, expand=1)
         
         # the info frame displays the information about the selected trait.
@@ -170,6 +169,7 @@ class TraitSelector(tk.Toplevel):
         self.list_box.delete(0, tk.END)
 
         for trait in traits:
+            # filter positive and negative traits if not selected
             xp = int(trait[1])
             if not self.search_neg.get() and xp < 0:
                 continue
@@ -188,6 +188,7 @@ class TraitSelector(tk.Toplevel):
                     selector = 0
                 if self.search_mode == "grp":
                     selector = 2
+                    # translate search term to xml name
                     grp = config.TraitGroups
                     groups = {
                         msg.TS_BODY: grp.BODY,
@@ -331,14 +332,14 @@ class TraitSelector(tk.Toplevel):
         try:
             xp = int(xp_string)
             if xp == 0:
-                self.info_xp.config(fg=config.Colors.BLACK)
-                self.submit.config(state=tk.DISABLED)
+                self.info_xp.config(style="TLabel")
+                self.submit.state(["disabled"])
             if xp < 0:
-                self.info_xp.config(fg=config.Colors.DARK_RED)
-                self.submit.config(state=tk.NORMAL)
+                self.info_xp.config(style="red.TLabel")
+                self.submit.state(["!disabled"])
             if xp > 0:
-                self.info_xp.config(fg=config.Colors.DARK_GREEN)
-                self.submit.config(state=tk.NORMAL)
+                self.info_xp.config(style="green.TLabel")
+                self.submit.state(["!disabled"])
         except ValueError:
             pass
         
@@ -436,11 +437,11 @@ class TraitSelector(tk.Toplevel):
         self.trait_cost.set("(" + str(int(trait_cost)) + ")")
 
         if trait_cost < 0:
-            self.info_xp.config(fg=config.Colors.DARK_RED)
+            self.info_xp.config(style="red.TLabel")
         elif trait_cost == 0:
-            self.info_xp.config(fg=config.Colors.BLACK)
+            self.info_xp.config(style="TLabel")
         else:
-            self.info_xp.config(fg=config.Colors.DARK_GREEN)
+            self.info_xp.config(style="green.TLabel")
 
     # add the text    
     def setDescription(self):
@@ -452,8 +453,8 @@ class TraitSelector(tk.Toplevel):
         if mode != self.search_mode:
             self.search_mode = mode
             if mode == "name":
-                self.search_mode_name.config(relief=tk.SUNKEN)
-                self.search_mode_grp.config(relief=tk.RAISED)
+                self.search_mode_name.state(["pressed"])
+                self.search_mode_grp.state(["!pressed"])
                 self.search_box.pack_forget()
                 self.search_box = tk.Entry(
                     self.lower_search_frame,
@@ -465,11 +466,11 @@ class TraitSelector(tk.Toplevel):
                 self.search.set(msg.TS_SEARCH_NAME)
 
             if mode == "grp":
-                self.search_mode_name.config(relief=tk.RAISED)
-                self.search_mode_grp.config(relief=tk.SUNKEN)
+                self.search_mode_name.state(["!pressed"])
+                self.search_mode_grp.state(["pressed"])
 
                 self.search_box.pack_forget()
-                self.search_box = ttk.Combobox(
+                self.search_box = tk.Combobox(
                     self.lower_search_frame,
                     textvariable=self.search
                 )
@@ -516,7 +517,18 @@ class TraitSelector(tk.Toplevel):
         widget = event.widget
         widget.select_range(0, tk.END)
         return "break"
-    
+
+    def _setStyle(self):
+        self.style.configure(
+            "red.TLabel",
+            foreground = config.Colors.DARK_RED
+        )
+        self.style.configure(
+            "green.TLabel",
+            foreground=config.Colors.DARK_GREEN
+        )
+
+
     def close(self):
         self.destroy()
         self.app.open_windows["trait"] = 0

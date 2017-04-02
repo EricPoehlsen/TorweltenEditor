@@ -1,5 +1,5 @@
 # coding=utf-8
-import tkinter as tk
+import tk_ as tk
 import xml.etree.ElementTree as et
 from PIL import ImageTk
 from itemeditor import ItemEditor
@@ -15,6 +15,7 @@ class EquipmentScreen(tk.Frame):
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
         self.app = app
+        self.style = app.style
         self.char = app.char
         self.itemlist = app.itemlist
 
@@ -42,7 +43,6 @@ class EquipmentScreen(tk.Frame):
         self.buy_button = tk.Button(
             self.left_frame,
             text=msg.ES_BUY_BUTTON,
-            font="Arial 12 bold",
             command=self.displayInventoryEditor
         )
         self.buy_button.pack(fill=tk.BOTH, expand=1)
@@ -51,7 +51,7 @@ class EquipmentScreen(tk.Frame):
         self.equipped_frame = tk.LabelFrame(
             self.left_frame,
             text=msg.ES_EQUIPPED,
-            font="Arial 10 bold"
+            style="main.TLabelframe"
         )
         self.equipped_canvas = tk.Canvas(
             self.equipped_frame,
@@ -79,7 +79,7 @@ class EquipmentScreen(tk.Frame):
         self.melee_frame = tk.LabelFrame(
             self.center_frame,
             text=msg.ES_MELEE,
-            font="Arial 10 bold"
+            style="main.TLabelframe"
         )
         self.melee_canvas = tk.Canvas(
             self.melee_frame,
@@ -103,7 +103,7 @@ class EquipmentScreen(tk.Frame):
         self.guns_frame = tk.LabelFrame(
             self.center_frame,
             text=msg.ES_GUNS,
-            font="Arial 10 bold"
+            style="main.TLabelframe"
         )
         self.guns_canvas = tk.Canvas(
             self.guns_frame,
@@ -133,7 +133,7 @@ class EquipmentScreen(tk.Frame):
         self.unassigned_frame = tk.LabelFrame(
             self.right_frame,
             text=msg.ES_UNASSIGNED,
-            font="Arial 10 bold"
+            style="main.TLabelframe"
         )
         self.unassigned_canvas = tk.Canvas(
             self.unassigned_frame,
@@ -392,7 +392,8 @@ class EquipmentScreen(tk.Frame):
         bag_frame = tk.LabelFrame(frame, text=bag_tag.get("name"))
             
         if self.active_bag_id == bag_id:
-            bag_frame.config(foreground="#0000ff")
+            pass
+            # bag_frame.config(foreground="#0000ff")
 
         # retrieve bag content and display ...
         item_ids = bag.get("content")

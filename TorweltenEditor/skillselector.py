@@ -1,8 +1,7 @@
 """ This module is responsible for the skill selection window """
 
 import config
-import tkinter as tk
-import tkinter.ttk as ttk
+import tk_ as tk
 import re
 from PIL import ImageTk
 from tooltip import ToolTip
@@ -15,7 +14,7 @@ msg = config.Messages()
 class SkillSelector(tk.Toplevel):
     def __init__(self, app):
         tk.Toplevel.__init__(self, app)
-
+        self.style = app.style
         #  point to character and skilltree
         self.char = app.char
         self.all_skills = app.skills
@@ -42,18 +41,20 @@ class SkillSelector(tk.Toplevel):
         self.search = tk.StringVar()
         self.search_gf = tk.Button(
             self.search_frame,
+            width=3,
             text=msg.SS_BASE,
-            relief=tk.SUNKEN,
             command=self.toggleMinSpec
         )
+        self.search_gf.state(["pressed"])
         ToolTip(self.search_gf, msg.SS_TT_SHOW_BASE)
         self.search_gf.pack(side=tk.LEFT)
         self.search_sp = tk.Button(
             self.search_frame,
+            width=3,
             text=msg.SS_SPEC,
-            relief=tk.SUNKEN,
             command=self.toggleMaxSpec
         )
+        self.search_sp.state(["pressed"])
         ToolTip(self.search_sp, msg.SS_TT_SHOW_SPEC)
         self.search_sp.pack(side=tk.LEFT)
         self.search_box = tk.Entry(
@@ -72,12 +73,13 @@ class SkillSelector(tk.Toplevel):
         self.search_frame.pack(fill=tk.X, expand=1)
         self.frame = tk.Frame(self)
         self.scrollbar = tk.Scrollbar(self.frame, orient=tk.VERTICAL)
-        self.list_box = ttk.Treeview(self.frame)
+        self.list_box = tk.Treeview(self.frame)
         self.list_box.bind("<<TreeviewSelect>>", self._selectionChanged)
         self.list_box.config(
             selectmode=tk.EXTENDED,
             yscrollcommand=self.scrollbar.set,
             height=20,
+            show="tree",
         )
         self.scrollbar.config(command=self.list_box.yview)
         self.list_box.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
@@ -179,10 +181,10 @@ class SkillSelector(tk.Toplevel):
 
         if self.minspec == 1:
             self.minspec = 2
-            self.search_gf.config(relief=tk.RAISED)
+            self.search_gf.state(["!pressed"])
         else:
             self.minspec = 1
-            self.search_gf.config(relief=tk.SUNKEN)
+            self.search_gf.state(["pressed"])
         self._showSkills(self.minspec, self.maxspec)
 
     def toggleMaxSpec(self):
@@ -194,10 +196,10 @@ class SkillSelector(tk.Toplevel):
 
         if self.maxspec == 3:
             self.maxspec = 2
-            self.search_sp.config(relief=tk.RAISED)
+            self.search_sp.state(["!pressed"])
         else:
             self.maxspec = 3
-            self.search_sp.config(relief=tk.SUNKEN)
+            self.search_sp.state(["pressed"])
         self._showSkills(self.minspec, self.maxspec)
 
     #  player presses the add skills button

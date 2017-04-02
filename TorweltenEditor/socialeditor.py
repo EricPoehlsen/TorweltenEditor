@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as et
-import tkinter as tk
+import tk_ as tk
 import config
 
 msg = config.Messages()
@@ -77,9 +77,11 @@ class SocialEditor(tk.Toplevel):
                     widget.config(state=tk.DISABLED)
             if widget.cget("text") == msg.SE_DELETE:
                 if self.delete_check is True:
-                    widget.config(background="#ff0000")
-                else: 
-                    widget.config(background="#dddddd")
+                    pass
+                    # widget.config(background="#ff0000")
+                else:
+                    pass
+                    # widget.config(background="#dddddd")
 
     # display the contact information ...
     def showContact(self, frame):
@@ -155,7 +157,6 @@ class SocialEditor(tk.Toplevel):
             from_=-3,
             to=3,
             variable=self.vars["loyality_level"],
-            showvalue=0,
             orient=tk.HORIZONTAL
             )
         loyality_level.pack(fill=tk.X)
@@ -177,7 +178,6 @@ class SocialEditor(tk.Toplevel):
             from_=0,
             to=5,
             variable=self.vars["frequency_level"],
-            showvalue=0,
             orient=tk.HORIZONTAL)
         frequency_level.pack(fill=tk.X)
         frequency_frame.pack(fill=tk.X)
@@ -265,7 +265,7 @@ class SocialEditor(tk.Toplevel):
 
         # frequency changed            
         elif name == frequency_name:
-            freq_var = int(self.vars["frequency_level"].get())
+            freq_var = int(float(self.vars["frequency_level"].get()))
             if freq_var == 0: self.vars["frequency"].set(msg.SE_FREQUENCY_0)
             elif freq_var == 1: self.vars["frequency"].set(msg.SE_FREQUENCY_1)
             elif freq_var == 2: self.vars["frequency"].set(msg.SE_FREQUENCY_2)
@@ -355,7 +355,7 @@ class SocialEditor(tk.Toplevel):
             changed = True
             self.changes.append("competency")
 
-        frequency_var = int(self.vars["frequency_level"].get())
+        frequency_var = int(float(self.vars["frequency_level"].get()))
         frequencies = {0: 0.25, 1: 0.5, 2: 0.75, 3: 1.0, 4: 1.5, 5: 2.0}
         new_frequency_level = str(frequencies[frequency_var])
         old_frequency_level = self.contact.get("frequency", "")
@@ -428,7 +428,10 @@ class SocialEditor(tk.Toplevel):
         old_xp = int(self.contact.get("xp", "0"))
 
         new_frequency = 0
-        frequency_var = int(self.vars["frequency_level"].get())
+
+        frequency_var = self.vars["frequency_level"].get()
+        if not frequency_var: frequency_var = "0"
+        frequency_var = int(float(frequency_var))
         frequencies = {0: 0.25, 1: 0.5, 2: 0.75, 3: 1.0, 4: 1.5, 5: 2.0}
         new_frequency = frequencies[frequency_var]
 

@@ -1,5 +1,4 @@
-# coding=utf-8
-import tkinter as tk
+import tk_ as tk
 from PIL import ImageTk
 import config
 
@@ -13,6 +12,7 @@ class NotesScreen(tk.Frame):
 
     def __init__(self, main, app):
         tk.Frame.__init__(self,main)
+        self.style = app.style
         self.app = app
         self.char = app.char
         self.open_windows = app.open_windows
@@ -122,13 +122,15 @@ class NotesScreen(tk.Frame):
         delete_button.image = del_icon
         delete_button.pack(side=tk.LEFT)
 
-        title_frame.pack(fill=tk.X, expand=1)
-
+        title_frame.pack(padx=2, pady=2, fill=tk.X, expand=1)
         text_widget = tk.Text(
             frame,
             width=20,
             height=12,
             wrap=tk.WORD,
+            borderwidth=0,
+            highlightthickness=1,
+            highlightbackground="#666666",
             font="Arial 10"
         )
         text_widget.insert("0.0", text)
@@ -137,7 +139,7 @@ class NotesScreen(tk.Frame):
         text_widget.bind("<Return>", update)
         text_widget.bind("<Tab>", update)
 
-        text_widget.pack(fill=tk.X)
+        text_widget.pack(padx=2, fill=tk.X)
 
         height = title.winfo_reqheight() + text_widget.winfo_reqheight()
 

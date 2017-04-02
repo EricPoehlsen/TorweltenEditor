@@ -1,5 +1,4 @@
-import tkinter as tk
-import tkinter.ttk as ttk
+import tk_ as tk
 from PIL import ImageTk
 import xml.etree.ElementTree as et
 import config
@@ -46,7 +45,7 @@ class InventoryEditor(tk.Toplevel):
         self.toolbar.pack(fill=tk.X, expand=1)
 
         self.selector_list_frame = tk.Frame(self.selection_frame)
-        self.selector_list = ttk.Treeview(
+        self.selector_list = tk.Treeview(
             self.selector_list_frame,
             selectmode=tk.BROWSE,
             show="tree",
@@ -1451,7 +1450,6 @@ class CustomClothing(tk.Frame):
             onvalue=1,
             offvalue=0,
             state=tk.DISABLED,
-            anchor=tk.W
         )
         ToolTip(self.trousers, msg.IE_TT_PANTS)
         self.trousers.pack(

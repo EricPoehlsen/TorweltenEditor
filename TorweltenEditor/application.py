@@ -19,7 +19,7 @@ from notesscreen import NotesScreen
 from aboutscreen import About
 from improvewindow import Improve
 from PIL import ImageTk, Image, PngImagePlugin
-import tkinter as tk
+import tk_ as tk
 
 msg = config.Messages()
 
@@ -35,6 +35,8 @@ class Application(tk.Frame):
     def __init__(self, main):
         tk.Frame.__init__(self, main)
         self.main = main
+        self.style = tk.Style()
+        self._setStyle()
 
         # setting up data
         self.settings = Settings()
@@ -161,7 +163,7 @@ class Application(tk.Frame):
             (msg.TOOLBAR_CHAR_IMAGE, "img/char_image.png"),
             (msg.TOOLBAR_CHAR_LAYOUT, "img/pdf.png")
         ]
-        width = 122
+        width = 20
 
         for i, label in enumerate(buttons):
             image = ImageTk.PhotoImage(file=label[1])
@@ -308,7 +310,25 @@ class Application(tk.Frame):
         label = tk.Label(self.main_frame, image=photo)
         label.image = photo
         label.pack()
-        
+
+    def _setStyle(self):
+        self.style.configure(
+            "TLabelframe.Label",
+            font="Arial 9",
+            foreground="#000000",
+        )
+        self.style.configure(
+            "main.TLabelframe.Label",
+            font="Arial 10 bold",
+            foreground="#000000",
+        )
+        self.style.configure(
+            "selected.TButton",
+            foreground="#000000",
+            font="Arial 10 bold"
+        )
+
+
     def _setHotkeys(self):
         """ Binding global hotkeys """
 
