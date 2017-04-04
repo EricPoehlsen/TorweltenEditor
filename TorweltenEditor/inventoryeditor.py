@@ -361,8 +361,16 @@ class NewItem(tk.Frame):
 
             # are there values???
             option_values = option.get("values")
-            
-            option_text = tk.Label(self.item_add_frame, text=option_name)
+
+            display_name = ""
+            if option_name == it.OPTION_CALIBER:
+                display_name = msg.IE_CALIBER
+            elif option_name == it.OPTION_COLOR:
+                display_name = msg.IE_CE_FABRIC_COLOR
+            else:
+                display_name = option_name
+
+            option_text = tk.Label(self.item_add_frame, text=display_name)
             option_text.pack(side=tk.LEFT)
 
             option_widget = tk.Entry(
@@ -376,6 +384,7 @@ class NewItem(tk.Frame):
                 option_widget = tk.OptionMenu(
                     self.item_add_frame,
                     self.item_data[option_name],
+                    option_values[0],
                     *option_values)
             option_widget.pack(side=tk.LEFT)
 
