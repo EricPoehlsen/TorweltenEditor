@@ -962,7 +962,9 @@ class Messages:
     # LOG DISPLAY
     LOG_HEADER = " ΔXP     Zeitpunkt:                  Ereignis:"
     LOG_XP_CHANGED = "Verfügbare XP: {total} ({delta})"
-    LOG_ITEM_ADDED = "%s zum Inventar hinzugefügt - Gesamtmenge: %d"
+    LOG_ITEM_ADDED = "{new} x {name} zum Inventar hinzugefügt"\
+                     " insgesamt: {total}"
+    LOG_ITEM_BOUGHT = "Ausrüstung bezahlt"
     LOG_ITEM_RENAMED = "%s in %s umbenannt."
     LOG_ITEM_PACKED = "{name} in {container} eingelegt."
     LOG_ITEM_UNPACKED = "{name} aus {container} entnommen."
@@ -1112,7 +1114,7 @@ class ItemTypes:
     PROSTHESIS = "prosthesis"
     IMPLANT_PART = "implant_part"
 
-    OPTION_CALIBER = "Kaliber"
+    OPTION_CALIBER = "caliber"
     OPTION_COLOR = "Farbe"
 
 

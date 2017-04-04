@@ -1,4 +1,4 @@
-import tkinter as tk
+import tk_ as tk
 import config
 import re
 
@@ -9,9 +9,11 @@ msg = config.Messages()
 class ItemEditor(tk.Toplevel):
     def __init__(self, app, item):
         tk.Toplevel.__init__(self)
+        self.style = app.style
         self.app = app
         self.char = app.char
         self.item = item
+        self.widgets = {}
 
         self.item_name = item.get("name")
         self.item_quantity = int(item.get("quantity"))
@@ -129,15 +131,15 @@ class ItemEditor(tk.Toplevel):
             text=str(self.item_quantity) + "x - ",
             font="Helvetica 12 bold")
         quant_label.pack(side=tk.LEFT)
+        quant_label.pack(side=tk.LEFT)
 
-        name_label = tk.Entry(item_title, font="Helvetica 12 bold")
-        name_label.insert(0, self.item_name)
-        name_label.config(
-            relief=tk.FLAT,
-            state=tk.DISABLED,
-            disabledbackground="#eeeeee",
-            disabledforeground="#000000"
+        name_label = tk.Entry(
+            item_title,
+            font="Helvetica 12 bold",
+            style="edit_entry"
         )
+        name_label.insert(0, self.item_name)
+        name_label.state(["disabled"])
         name_label.pack(side=tk.LEFT, expand=1)
         name_label.bind("<Double-Button-1>", self._activateEntryField)
         name_label.bind(
@@ -162,22 +164,32 @@ class ItemEditor(tk.Toplevel):
         for option in options:
             name = option.get("name", "")
             value = option.get("value", "")
+            print(value)
             frame = tk.Frame(self.item_body)
-            tk.Label(frame, text=name + ":").pack(side=tk.LEFT, anchor=tk.W)
-            entry = tk.Entry(frame, width=len(value)+2)
+            display_name = ""
+            if name == it.OPTION_CALIBER:
+                display_name = msg.IE_CALIBER
+            elif name == it.OPTION_COLOR:
+                display_name = msg.IE_CE_FABRIC_COLOR
+            else:
+                display_name = name
+            tk.Label(
+                frame,
+                text=display_name
+            ).pack(side=tk.LEFT, anchor=tk.W)
+            entry = tk.Entry(
+                frame,
+                width=len(value)+2,
+                style="edit_entry"
+            )
             entry.delete(0, tk.END)
             entry.insert(0, value)
+            entry.state(["disabled"])
             entry.bind("<Double-Button-1>", self._activateEntryField)
             entry.bind(
                 "<Return>",
                 lambda event, name=name:
                     self._updateTag(event, tagname="option", name=name)
-            )
-            entry.config(
-                relief=tk.FLAT,
-                state=tk.DISABLED,
-                disabledbackground="#eeeeee",
-                disabledforeground="#000000"
             )
             entry.pack(side=tk.RIGHT, anchor=tk.E)
             frame.pack()
@@ -252,9 +264,15 @@ class ItemEditor(tk.Toplevel):
         event: an event as normally called by a button click
         number: int - the intended chamber
         """
-        selected = self.char.setActiveChamber(self.item, number+1)
+
+        selected = self.char.setActiveChamber(self.item, number)
+        print(selected)
         if selected:
-            self._showItemInfo()
+            widgets = self.widgets["chambers"].winfo_children()
+            for widget in widgets:
+                widget.state(["!pressed"])
+            active = self.widgets["chamber"+str(number)]
+            active.state(["pressed"])
 
     # load a round into the active chamber
     def loadRoundInChamber(self, event, item, mode="weapon"):
@@ -582,6 +600,7 @@ class ItemEditor(tk.Toplevel):
         chamber_frame = tk.LabelFrame(frame, text=msg.IE_CHAMBERS)
             
         i = 0
+        self.widgets["chambers"] = chamber_frame
         while i < number_chambers:
             loaded_item = None
             if len(ammo_list) > i:
@@ -591,16 +610,15 @@ class ItemEditor(tk.Toplevel):
                 text = loaded_item.get("name")
                 
             chamber_button = tk.Button(chamber_frame, text=text)
-            if text == msg.IE_EMPTY:
-                chamber_button.config(background="#aaaaaa")
+            self.widgets["chamber"+str(i+1)] = chamber_button
             chamber_button.bind(
                 "<Button-1>",
-                lambda event, i=i:
-                    self.selectChamber(event, i)
+                lambda event, chamber=i+1:
+                    self.selectChamber(event, chamber)
             )
             chamber_button.pack(fill=tk.X, expand=1)
             if i == active_chamber - 1:
-                chamber_button.config(relief=tk.SUNKEN)
+                chamber_button.state(["pressed"])
             i += 1
         chamber_frame.pack(fill=tk.X, expand=1)
 
@@ -896,7 +914,7 @@ class ItemEditor(tk.Toplevel):
                         command=lambda sub_item=sub_item:
                             self.packItem(sub_item)
                     )
-                    button.pack(side=tk.RIGHT,anchor=tk.E)
+                    button.pack(side=tk.RIGHT, anchor=tk.E)
                     sub_frame.pack(fill=tk.X)
 
         if item_type == it.IMPLANT and not implanted:

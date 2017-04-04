@@ -312,11 +312,17 @@ class Application(tk.Frame):
         label.pack()
 
     def _setStyle(self):
+        print(self.style.lookup("TLabelframe", "highlightcolor"))
         self.style.configure(
             "TLabelframe.Label",
             font="Arial 9",
             foreground="#000000",
         )
+        self.style.configure(
+            "TLabelframe.Border",
+            background="#000000",
+        )
+
         self.style.configure(
             "main.TLabelframe.Label",
             font="Arial 10 bold",
@@ -328,6 +334,23 @@ class Application(tk.Frame):
             font="Arial 10 bold"
         )
 
+        # edit_entry - editable labels for the itemeditor
+        self.style.layout(
+            "edit_entry",
+            [('edit_entry', {'sticky': 'nswe', 'children':
+                [('Entry.background', {'sticky': 'nswe', 'children':
+                    [('Entry.padding', {'sticky': 'nswe', 'children':
+                        [('Entry.textarea', {'sticky': 'nswe'})]}
+                    )]}
+                )]}
+            )]
+        )
+        self.style.map(
+            "edit_entry",
+            foreground=[("active", "#000000"), ("disabled", "#000000")],
+            background=[("active", "#ffffff"), ("disabled", "#eeeeee")],
+            borderwidth=[("active", 0), ("disabled", 0)],
+        )
 
     def _setHotkeys(self):
         """ Binding global hotkeys """

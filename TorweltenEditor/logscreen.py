@@ -1,11 +1,8 @@
-import tkinter as tk
+import tk_ as tk
 from PIL import ImageTk
 import config
 msg = config.Messages()
 
-
-# TODO: According to 'Horrorcat' hash() is not persistent and the tostring()
-# of ElementTree might do bad stuff ...
 
 class LogScreen(tk.Frame):
     """ The log screen displays the character edit history 
@@ -16,6 +13,7 @@ class LogScreen(tk.Frame):
 
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
+        self.style = app.style
         self.app = app
         self.char = app.char
 
@@ -39,7 +37,12 @@ class LogScreen(tk.Frame):
         # draw the header
         x, y = 0, 65
         label = tk.Label(self.log_canvas, text=msg.LOG_HEADER)
-        self.log_canvas.create_window(x, y, window=label, anchor=tk.NW)
+        self.log_canvas.create_window(
+            x,
+            y,
+            window=label,
+            anchor=tk.NW,
+        )
         y += label.winfo_reqheight()
 
         # building the log display and extracting data for integrity checks
@@ -103,7 +106,13 @@ class LogScreen(tk.Frame):
             text=msg.LOG_INTEGRITY
         )
         self.checkIntegrity(data_integrity)
-        self.log_canvas.create_window(0, 0, window=data_integrity, anchor=tk.NW)
+        self.log_canvas.create_window(
+            0,
+            0,
+            window=data_integrity,
+            anchor=tk.NW,
+            width=770
+        )
 
         # ... finally set the canvas scrollbox ... 
         self.log_canvas.config(scrollregion=self.log_canvas.bbox(tk.ALL))
@@ -157,13 +166,19 @@ class LogScreen(tk.Frame):
     def displayItem(self, event):
         display = True
         op = event.get("op")
+        print(op)
         name = event.get("name")
         id = int(str(event.get("id")))
         quantity = int(event.get("quantity"))
         hash_value = int(event.get("hash"))
         event_string = ""
         if op == msg.CHAR_ITEM_ADDED:
-            event_string = msg.LOG_ITEM_ADDED % (name, quantity)
+            new = event.get("mod")
+            event_string = msg.LOG_ITEM_ADDED.format(
+                new=new,
+                name=name,
+                total=quantity
+            )
         elif op == msg.CHAR_ITEM_RENAMED:
             old_name = event.get("mod")
             event_string = msg.LOG_ITEM_RENAMED % (old_name, name)

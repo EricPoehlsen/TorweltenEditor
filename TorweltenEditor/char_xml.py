@@ -698,15 +698,23 @@ class Character(object):
             item_quantity = int(item.get("quantity"))
             new_quantity = old_quantity + item_quantity
             identical_item.set("quantity", str(new_quantity))
-            self.logEvent(identical_item, op=msg.CHAR_ITEM_ADDED)
+            self.logEvent(
+                identical_item,
+                op=msg.CHAR_ITEM_ADDED,
+                mod=item.get("quantity")
+            )
         else:
             new_id = self.getHighestItemID() + 1
             item.set("id", str(new_id))
             inventory = self.getInventory()
             inventory.append(item)
-            self.logEvent(item, op=msg.CHAR_ITEM_ADDED)
+            self.logEvent(
+                item,
+                op=msg.CHAR_ITEM_ADDED,
+                mod=item.get("quantity")
+            )
         # pay for item
-        self.updateAccount(-item_price, account)
+        self.updateAccount(-item_price, account, reason=msg.LOG_ITEM_BOUGHT)
     
     def splitItemStack(self, item, amount):
         """ Splits an item stack
@@ -787,7 +795,7 @@ class Character(object):
             inventory = self.getInventory()
             inventory.remove(item) 
 
-    def setActiveChamber(self, weapon, value=1):
+    def setActiveChamber(self, weapon, chamber=1):
         """ Setting the active chamber of a weapon
 
         Note:
@@ -796,33 +804,36 @@ class Character(object):
 
         Args:
             weapon (Element<item>): A weapon item
-            value (int): the chamber to set as active
-            value (str): "next", "random"
+            chamber (int): the chamber to set as active
+            chamber (str): "next", "random"
         """
 
         ammo_tag = weapon.find("ammo")
         if ammo_tag is not None:
             chambers = int(ammo_tag.get("chambers", "1"))
-            number = 0
-            valid = ["next", "random"]
-            if type(value) == str and value not in valid:
-                number = int(value)
 
-            if 1 <= number <= chambers:
-                ammo_tag.set("active", str(number))
+            actions = ["next", "random"]
+            if type(chamber) == str and chamber not in actions:
+                try:
+                    chamber = int(chamber)
+                except ValueError as e:
+                    print(e)
+                    pass
 
-            if value == "next":
+            if chamber == "next":
                 current = int(ammo_tag.get("active", "1"))
-                next_chamber = current + 1
-                if next_chamber > chambers:
-                    next_chamber = 1
-                ammo_tag.set("active", str(next_chamber))
-
-            if value == "random":
-                random_chamber = random.randint(1, chambers)
-                ammo_tag.set("active", str(random_chamber))
+                chamber = current + 1
+                if chamber > chambers:
+                    chamber = 1
+                ammo_tag.set("active", str(chamber))
+            elif chamber == "random":
+                chamber = random.randint(1, chambers)
+                ammo_tag.set("active", str(chamber))
+            elif 1 <= chamber <= chambers:
+                ammo_tag.set("active", str(chamber))
 
             self.logEvent(weapon, op=msg.CHAR_ITEM_ROTATECHAMBER)
+            return chamber
 
     @staticmethod
     def getActiveChamber(weapon):
