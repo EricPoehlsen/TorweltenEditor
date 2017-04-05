@@ -51,7 +51,7 @@ class EquipmentScreen(tk.Frame):
         self.equipped_frame = tk.LabelFrame(
             self.left_frame,
             text=msg.ES_EQUIPPED,
-            style="main.TLabelframe"
+            font=config.Style.TITLE_LF_FONT
         )
         self.equipped_canvas = tk.Canvas(
             self.equipped_frame,
@@ -79,7 +79,7 @@ class EquipmentScreen(tk.Frame):
         self.melee_frame = tk.LabelFrame(
             self.center_frame,
             text=msg.ES_MELEE,
-            style="main.TLabelframe"
+            font=config.Style.TITLE_LF_FONT
         )
         self.melee_canvas = tk.Canvas(
             self.melee_frame,
@@ -103,7 +103,7 @@ class EquipmentScreen(tk.Frame):
         self.guns_frame = tk.LabelFrame(
             self.center_frame,
             text=msg.ES_GUNS,
-            style="main.TLabelframe"
+            font=config.Style.TITLE_LF_FONT
         )
         self.guns_canvas = tk.Canvas(
             self.guns_frame,
@@ -133,7 +133,7 @@ class EquipmentScreen(tk.Frame):
         self.unassigned_frame = tk.LabelFrame(
             self.right_frame,
             text=msg.ES_UNASSIGNED,
-            style="main.TLabelframe"
+            font=config.Style.TITLE_LF_FONT
         )
         self.unassigned_canvas = tk.Canvas(
             self.unassigned_frame,
@@ -286,8 +286,10 @@ class EquipmentScreen(tk.Frame):
                 )
                 name_label.grid(row=0, column=1, sticky=tk.W)
                     
-                if item.get("type") in equippable_types: 
-                    equip_button = tk.Button(item_frame, text="E")
+                if item.get("type") in equippable_types:
+                    equip_icon = ImageTk.PhotoImage(file="img/equip.png")
+                    equip_button = tk.Button(item_frame, image=equip_icon)
+                    equip_button.image = equip_icon
                     equip_button.bind(
                         "<Button-1>",
                         lambda event, item_id=item_id:
@@ -298,8 +300,10 @@ class EquipmentScreen(tk.Frame):
                     empty = tk.Label(item_frame, text=" ", width=2)
                     empty.grid(row=0, column=2)
                     
-                if self.active_bag_id >= 0: 
-                    pack_button = tk.Button(item_frame, text="P")
+                if self.active_bag_id >= 0:
+                    pack_icon = ImageTk.PhotoImage(file="img/pack.png")
+                    pack_button = tk.Button(item_frame, image=pack_icon)
+                    pack_button.image = pack_icon
                     pack_button.bind(
                         "<Button-1>",
                         lambda event, item_id=item_id:
@@ -392,8 +396,9 @@ class EquipmentScreen(tk.Frame):
         bag_frame = tk.LabelFrame(frame, text=bag_tag.get("name"))
             
         if self.active_bag_id == bag_id:
-            pass
-            # bag_frame.config(foreground="#0000ff")
+            bag_frame.config(
+                font=config.Style.BAG_LF_FONT,
+            )
 
         # retrieve bag content and display ...
         item_ids = bag.get("content")
@@ -418,7 +423,9 @@ class EquipmentScreen(tk.Frame):
                         lambda event, id=item_id:
                             self.displayItemEditor(event, id))
                     item_label.pack(side=tk.LEFT, fill=tk.X, expand=1)
-                    item_unpack = tk.Button(item_line, text="U")
+                    unpack_icon = ImageTk.PhotoImage(file="img/unpack.png")
+                    item_unpack = tk.Button(item_line, image=unpack_icon)
+                    item_unpack.image = unpack_icon
                     item_unpack.bind(
                         "<Button-1>",
                         lambda event, id=item_id:
@@ -447,12 +454,13 @@ class EquipmentScreen(tk.Frame):
     def showEquippedClothing(self, frame):
         items = self.char.getItems()
         row = 0
+        frame.columnconfigure(0, weight=100)
         name_label = tk.Label(frame, text=msg.ES_ITEMNAME)
-        name_label.grid(row=row, column=0, columnspan=3, sticky=tk.W)
+        name_label.grid(row=row, column=0, sticky=tk.W)
         sd_label = tk.Label(frame, text=msg.ES_DAMAGE_S)
-        sd_label.grid(row=row, column=3, sticky=tk.EW)
+        sd_label.grid(row=row, column=1, sticky=tk.EW)
         qual_label = tk.Label(frame, text=msg.ES_QUALITY_S)
-        qual_label.grid(row=row, column=4, sticky=tk.EW)
+        qual_label.grid(row=row, column=2, sticky=tk.EW)
         row = 1
         for item in items:
             
@@ -462,24 +470,32 @@ class EquipmentScreen(tk.Frame):
                 item.get("type") == it.HARNESS)
             ):
                 name = item.get("name")
+                item_id = item.get("id")
                 name_label = tk.Label(frame, text=name)
-                name_label.grid(row=row, column=0, columnspan=3, sticky=tk.W)
+                name_label.bind(
+                    "<Button-1>",
+                    lambda event, item_id=item_id:
+                        self.displayItemEditor(event, item_id)
+                )
+                name_label.grid(row=row, column=0, sticky=tk.W)
                 sd = ""
                 damage = item.find("damage")
                 if damage is not None:
                     sd = damage.get("value", "")
                 sd_label = tk.Label(frame, text=sd)
-                sd_label.grid(row=row, column=3, sticky=tk.EW)
+                sd_label.grid(row=row, column=1, sticky=tk.EW)
                 quality = item.get("quality")
                 qual_label = tk.Label(frame, text=quality)
-                qual_label.grid(row=row, column=4, sticky=tk.EW)
-                unequip_button = tk.Button(frame, text=msg.ES_UNEQUIP_S)
+                qual_label.grid(row=row, column=2, sticky=tk.EW)
+                unequip_icon = ImageTk.PhotoImage(file="img/unequip.png")
+                unequip_button = tk.Button(frame, image=unequip_icon)
+                unequip_button.image = unequip_icon
                 item_id = item.get("id")
                 unequip_button.bind(
                     "<Button-1>", lambda event, item_id=item_id:
                         self.unequipItem(event, item_id)
                 )
-                unequip_button.grid(row=row, column=5, sticky=tk.EW)
+                unequip_button.grid(row=row, column=3, sticky=tk.EW)
                 row += 1
         return row
 

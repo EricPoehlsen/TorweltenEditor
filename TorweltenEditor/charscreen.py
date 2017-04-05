@@ -50,7 +50,7 @@ class CharScreen(tk.Frame):
         for attr in attr_list:
             frame = tk.LabelFrame(
                 attr_frame,
-                style="main.TLabelframe",
+                font=config.Style.ATTR_LF_FONT,
                 text=attr.upper(),
             )
             # initiate the IntVars and bind their tcl names to the attributes
@@ -66,11 +66,12 @@ class CharScreen(tk.Frame):
                     frame, 
                     from_=0, 
                     to=9,
-                    font="Arial 11 bold",
+                    font=config.Style.ATTR_FONT,
+                    justify=tk.CENTER,
                     textvariable=attrib_values[attr], 
                     width=3
                 )
-                self.widgets[attr].pack()
+                self.widgets[attr].pack(fill=tk.X)
                 self.char.widgets = self.widgets
                 self.char.attrib_values[attr].trace(
                     "w",
@@ -103,7 +104,7 @@ class CharScreen(tk.Frame):
                 value_field.pack(fill=tk.X)
 
             frame.pack(fill=tk.X)
-        attr_frame.pack(anchor=tk.N)
+        attr_frame.pack(fill=tk.X, anchor=tk.N)
         
         # this displays the characters XP
         xp_frame = tk.LabelFrame(frame_1, text=msg.XP)
@@ -126,7 +127,7 @@ class CharScreen(tk.Frame):
         # beginning with the data frame 
         data_frame = tk.LabelFrame(
             frame_2,
-            style="main.TLabelframe",
+            font=config.Style.TITLE_LF_FONT,
             text=msg.CS_BASE_DATA,
         )
 
@@ -182,7 +183,7 @@ class CharScreen(tk.Frame):
         # within this frame will be the character traits
         traits_frame = tk.LabelFrame(
             frame_2,
-            style="main.TLabelframe",
+            font=config.Style.TITLE_LF_FONT,
             text=msg.CS_TRAITS,
         )
         self.traits_text = tk.Text(
@@ -215,7 +216,7 @@ class CharScreen(tk.Frame):
         # active skills ...
         self.active_skill_frame = tk.LabelFrame(
             frame_3,
-            style="main.TLabelframe",
+            font=config.Style.TITLE_LF_FONT,
             text=msg.CS_ACTIVE_SKILLS, 
         )
         self.active_skill_canvas = tk.Canvas(
@@ -239,7 +240,7 @@ class CharScreen(tk.Frame):
         # passive skills
         self.passive_skill_frame = tk.LabelFrame(
             frame_3,
-            style="main.TLabelframe",
+            font=config.Style.TITLE_LF_FONT,
             text=msg.CS_PASSIVE_SKILLS,
         )
         self.passive_skill_canvas = tk.Canvas(

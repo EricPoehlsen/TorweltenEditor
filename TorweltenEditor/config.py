@@ -1172,5 +1172,8 @@ class Colors:
 
 
 class Style:
-    FONT = "Arial"
-    SIZE = "10"
+    ATTR_FONT = "Arial 14 bold"
+
+    ATTR_LF_FONT = "Arial 12 bold"
+    TITLE_LF_FONT = "Arial 10 bold"
+    BAG_LF_FONT = "Arial 9 bold"

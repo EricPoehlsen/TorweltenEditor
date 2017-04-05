@@ -312,22 +312,6 @@ class Application(tk.Frame):
         label.pack()
 
     def _setStyle(self):
-        print(self.style.lookup("TLabelframe", "highlightcolor"))
-        self.style.configure(
-            "TLabelframe.Label",
-            font="Arial 9",
-            foreground="#000000",
-        )
-        self.style.configure(
-            "TLabelframe.Border",
-            background="#000000",
-        )
-
-        self.style.configure(
-            "main.TLabelframe.Label",
-            font="Arial 10 bold",
-            foreground="#000000",
-        )
         self.style.configure(
             "selected.TButton",
             foreground="#000000",
