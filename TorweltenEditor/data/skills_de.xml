@@ -352,7 +352,8 @@
 	<skill id="810700" name="Franças" parent="810000" spec="2" type="lang" />
 	<skill id="810800" name="Latin" parent="810000" spec="2" type="lang" />
 	<skill id="810900" name="Helleniki" parent="810000" spec="2" type="lang" />
-	<skill id="810901" name="Helleniki (Athenisch)" parent="810900" spec="3" type="lang" /><skill id="811000" name="Nippon" parent="810000" spec="2" type="lang" />
+	<skill id="810901" name="Helleniki (Athenisch)" parent="810900" spec="3" type="lang" />
+    <skill id="811000" name="Nippon" parent="810000" spec="2" type="lang" />
 	<skill id="811100" name="Rosska" parent="810000" spec="2" type="lang" />
 	<skill id="811200" name="Technobabel" parent="810000" spec="2" type="lang" />
 	<skill id="811300" name="AlphaGanimed-Babel" parent="810000" spec="2" type="lang" />

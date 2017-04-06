@@ -657,7 +657,7 @@ Gerät der Charakter in so eine Situation, muss er eine MEM-Probe ablegen. Bei e
 </trait>
 
 <trait name = "Sprachgespür" xp = "6" group = "mind">
-<description>Ein Charakter mit dieser Eigenschaft hat ein natürliches Gespür für den Klang von Sprachen und Dialekten. Mit Leichtigkeit eignet er sich einen großen Wortschatz an und ist in Konversationen schon nach kurzer Zeit kaum von einem Muttersprachler zu unterscheiden. Bei einem Fertigkeitswert von eins und zwei wird die Sprachfertigkeit bei Gesprächen behandelt als hätte der Charakter einen Wert von drei.</description>
+<description>Ein Charakter mit dieser Eigenschaft besitzt ein natürliches Gespür für den Klang von Sprachen. Mit Leichtigkeit eignet er sich einen umfangreichen Wortschatz an. In Konversationen ist er bereits nach kurzer Zeit kaum von einem Muttersprachler zu unterscheiden. Schon bei einem Fertigkeitswert von eins, wird die Sprachfertigkeit bei Gesprächen behandelt als hätte der Charakter einen Wert von drei. Bei sehr obskuren oder wissenschaftlichen Themen, ist Sprachverständnis alleine natürlich nicht ausreichend.</description>
 </trait>
 
 <trait name = "Sprachtalent" xp = "6" group = "mind">

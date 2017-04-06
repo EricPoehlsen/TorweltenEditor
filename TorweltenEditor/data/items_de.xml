@@ -5,16 +5,16 @@
 	<group name = "Alltagskleidung" parent = "1" id = "1-1">
 		<item name = "Einwegunterwäsche" price = "2" weight = "50" type = "clothing" parent = "1-1">
 			<description>Sehr bequem, grundsätzlich auch waschbar. In vielen Farben verfügbar</description>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 		</item>
 		
 		<item name = "Einfaches T-Shirt" price = "10" weight = "100" type = "clothing" parent = "1-1">
 			<description>Ein einfaches T-Shirt aus schmiegsamer Kunstfaser.</description>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 		</item>
 		
 		<item name = "Hemd" price = "20" weight = "150" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<option name = "Verschluss" values = "Knopfleiste,Reißverschluss"/>
 			<option name = "Ärmel" values = "langarm,kurzarm"/>
 			<container name = "Hemdtasche" limit = "100"/>
@@ -22,70 +22,70 @@
 		</item>
 		
 		<item name = "Bluse" price = "20" weight = "150" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<option name = "Verschluss" values = "Knopfleiste,Reißverschluss"/>
 			<option name = "Ärmel" values = "langarm,kurzarm"/>
 			<description>Das Hemd im Schnitt für die Dame. Verfügbar mit klassischer Knopfleiste oder aber auch mit verdecktem Reißverschluss.</description>
 		</item>
 		
 		<item name = "Pullover" price = "20" weight = "500" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<description>Ein Oberteil zum überziehen, häufig aus einem wärmenden Stoff gefertigt</description>
 		</item>
 		
 		<item name = "Sakko" price = "150" weight = "1200" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<description>Eine leichte Anzugjacke für formelle Anlässe, meistens aus einem etwas hochwertigeren Stoff geschneidert</description>
 		</item>
 		
 		<item name = "Jackett" price = "150" weight = "1200" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<description>Eine leichte Anzugjacke für formelle Anlässe, üblicherweise aus einem eher hochwertigeren Stoff gefertigt</description>
 		</item>
 		
 		<item name = "Regenjacke" price = "50" weight = "700" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<container name = "Jackentaschen" limit = "1000"/>
 			<description>Eine leichte wind- und regendichte Jacke für den planetaren Einsatz</description>
 		</item>
 		
 		<item name = "Winterjacke" price = "150" weight = "1200" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<container name = "Jackentaschen" limit = "1000"/>
 			<description>Eine schwerere Jacke mit Thermoisolierung für den Einsatz im Winter. Komfortbereich +10°C bis -40°C.</description>
 		</item>	
 		
 		<item name = "Stretchhose" price = "40" weight = "400" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<container name = "Hosentaschen" limit = "250"/>
 			<description>Hosen aus einem Synthetikgewebe, angenehm zu tragen und gleichzeitig robust.</description>
 		</item>
 		
 		<item name = "Jeanshose" price = "60" weight = "500" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<containter name = "Hosentaschen" limit = "500"/>
 			<description>Seit über tausend Jahren bewährt ist Jeansstoff noch immer weit verbreitet und besonders im Haus Abrahams Teil der klassischen Mode.</description>
 		</item>
 		
 		<item name = "Cargohose" price = "50" weight = "250" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<container name = "Hosentaschen" limit = "1000"/>
 			<description>Bei dieser Freizeit- und Arbeitshose handelt es sich um die &apos;zivile&apos; Variante der klassischen Uniformhose mit seitlich aufgesetzten Taschen.</description>
 		</item>
 		
 		<item name = "Rock" price = "30" weight = "300" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<description>In vielen Kulturen wird der Rock eher von weiblichen Vertretern der Spezies getragen.</description>
 		</item>
 		
 		<item name = "Gürtel" price = "10" weight = "100" type = "harness" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<option name = "Material"/>
 			<description>Ein Gürtel stellt nicht nur sicher, dass die Hose oben bleibt, man kann ihn auch verwenden, um eine Vielzahl praktischer Utensilien daran zu befestigen.</description>
 		</item>
 		
 		<item name = "Hut" price = "20" weight = "150" type = "clothing" parent = "1-1">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<option name = "Material"/>
 			<description>Ein Hut kann vor Sonne und Regen schützen und außerdem ist er stylish ...</description>
 		</item>
@@ -93,7 +93,7 @@
 
 	<group name = "Arbeitskleidung" id = "1-2" parent = "1">
 		<item name = "Arbeitsoverall" price = "75" weight = "1000" type = "clothing" parent = "1-2">
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<container name = "Taschen" limit = "2500"/>
 			<description>Der Einteiler mit dem Reißverschluss und einer Vielzahl von aufgesetzten Taschen ist nicht nur an Bord vieler ziviler Raumschiffe anzutreffen sondern in reglementierten Ausführungen auch als Uniformvariante vieler Marineeinheiten verbreitet. Üblicherweise werden Arbeitsoveralls aus einem flammhemmenden, pflegeleichen Synthetikgewebe gefertigt und sind quasi.</description>
 		</item>
@@ -227,19 +227,19 @@
 		<item name = "Hüftgurt" price = "50" weight = "200" type = "harness" avail = "-4" parent = "2-2">
 			<container name = "Klettergurt"/>
 			<description>Beim Hüftgurt handelt es sich um eine robuste Gurtkonstruktion mit der sich ein Kletterer an seinem Sicherungsseil verankert. An verschiedenen Schlaufen und Ösen kann man Ausrüstung und Karabinerhaken befestigen.</description>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 		</item>
 		<item name = "Kombigurt" price = "150" weight = "500" type = "harness" avail = "-4" parent = "2-2">
 			<container name = "Klettergurt"/>
 			<description>Der Kombigurt besteht aus einem Hüftgurt und einem Brustgurt und sichert damit auch den Oberkörper des Kletterers. Bei korrekter Anwendung schützt er auch bei Stürzen aus größerer Höhe.</description>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 		</item>
 		<item name = "Zilk™ - Die Superfaser" price = "2" weight = "10" type = "tool" avail = "-4" parent = "2-2">
 			<description>Die Zilk™ Kunstfaser ist seit Jahrhunderten ein Garant für einwandfreie Seile. Seidenweich, dauerbelastbar bis 2 Tonnen, leicht, säurefest, UV- und röntgenbeständig, sollte dieses Seil in keiner Ausrüstung fehlen.</description>
 			<pack name = "10m" quantity = "10"/>
 			<pack name = "20m" quantity = "20"/>
 			<pack name = "50m" quantity = "50"/>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 		</item>
 
 		<item name = "Seil!™ - Das Hochleistungsseil" price = "10" weight = "15" type = "tool" avail = "-4" parent = "2-2">
@@ -247,21 +247,21 @@
 			<pack name = "10m" quantity = "10"/>
 			<pack name = "25m" quantity = "25"/>
 			<pack name = "50m" quantity = "50"/>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 		</item>
 		<item name = "Karabinerhaken, klein" price = "2" weight = "15" type = "tool" avail = "-4" parent = "2-2">
 			<description>Karabinerhaken sollten grundsätzlich in keiner Abenteurerausrüstung fehlen, egal ob am Klettergurt oder am Raumanzug. Der kleine Karabinerhaken ist darauf ausgelegt einen oder mehrere Ausrüstungsgegenstände am Gürtel, Harnisch oder Rucksack zu befestigen. Ihre Belastbarkeit ist mit 20kg angegeben.</description>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<option name = "Verschluss" values="einfach,Verschraubung,Einhandsicherung"/>
 		</item>
 		<item name = "Karabinerhaken, standard" price = "10" weight = "50" type = "tool" avail = "-3" parent = "2-2">
 			<description>Der bewährte Kletterhaken, darauf ausgelegt einen Menschen mit Ausrüstung zu halten und kurzfristige Belastungen von bis zu 5G zu überstehen. Die angegebene Dauerlast beträgt 500kg.</description>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<option name = "Verschluss" values="Verschraubung,Einhandsicherung"/>
 		</item>
 		<item name = "Karabinerhaken, groß" price = "25" weight = "100" type = "tool" avail = "-2" parent = "2-2">
 			<description>Der robuste Karabinerhaken ist auf eine Dauerlast von 5.000kg bei einer Spitzenlast von 15G zertifiziert. Er kann somit auch zum Befestigen schwererer Lasten verwendet werden.</description>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<option name = "Verschluss" values="Verschraubung,Einhandsicherung"/>
 		</item>
 
@@ -297,7 +297,7 @@
 
 		<item name = "Feldbett" price = "75" weight = "3000" avail = "-4" type = "generic" parent = "2-2">
 			<description>Faltbares Spannbett aus einem leichten Metallpolymerrahmen, belastbar bis 250kg. Aufgrund der Rahmenelemente auch eher für den Transport in einem Fahrzeug gedacht, denn als Marschgepäck.</description>
-			<option name = "Farbe" />
+			<option name = "color" />
 		</item>
 
 		<item name = "Hängematte" price = "50" weight = "750" avail = "-4" type = "generic" parent = "2-2">
@@ -306,17 +306,17 @@
 
 		<item name = "Schlafsack" price = "100" weight = "250" avail = "-3" type = "generic" parent = "2-2">
 			<description>Ein Schlafsack mit einem Komfortbereich von -20°C bis +25°C.</description>
-			<option name = "Farbe" />
+			<option name = "color" />
 		</item>
 
 		<item name = "Thermoschlafsack" price = "250" weight = "300" avail = "-2" type = "generic" parent = "2-2">
 			<description>Dieser Schlafsack ist auch für kältere Umgebungen geeignet und bietet einen Komfortbereich von -50°C bis +25°C.</description>
-			<option name = "Farbe" />
+			<option name = "color" />
 		</item>
 
 		<item name = "Wolldecke" price = "50" weight = "1000" avail = "-4" type = "generic" parent = "2-2">
 			<description>Für denjenigen, der nicht so auf Schlafsäcke steht, ist die Wolldecke geeignet, nicht ganz so kompakt, dafür etwas günstiger.</description>
-			<option name = "Farbe" />
+			<option name = "color" />
 		</item>
 	</group>
 	
@@ -790,7 +790,7 @@
 
 		<item name = "Gefechtsfeldbeleuchtung 50" weight = "75" price = "15" type = "ammo" parent = "5-1">
 			<option name = "caliber" values = ".500 OMG"/>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<damage value = "5/0"/>
 			<description>Diese Signalpatrone enthält einen kleinen Metallfallschirm, der durch die darunter brennende Pyroladung bis zu 15 Minuten in der Luft schwebt</description>
 		</item>
@@ -834,7 +834,7 @@
 		
 		<item name = "Signalpatrone" weight = "20" price = "5" type = "ammo" parent = "5-2">
 			<option name = "caliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW" tag = "damage"/>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<damage value = "4/0" name = "5.56x45mm NA"/>
 			<damage value = "4/0" name = ".223 SMI"/>
 			<damage value = "5/0" name = "7.62x51mm NA"/>
@@ -844,7 +844,7 @@
 		
 		<item name = "Leuchtspurmunition" weight = "20" price = "6" type = "ammo" parent = "5-2">
 			<option name = "caliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW" tag = "damage"/>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<damage value = "3/0" name = "5.56x45mm NA"/>
 			<damage value = "3/0" name = ".223 SMI"/>
 			<damage value = "4/0" name = "7.62x51mm NA"/>
@@ -874,7 +874,7 @@
 			
 		<item name = "Gefechtsfeldbeleuchtung 50" weight = "125" price = "20" type = "ammo" parent = "5-2">
 			<option name = "caliber" values = ".50 OMG"/>
-			<option name = "Farbe"/>
+			<option name = "color"/>
 			<damage value = "6/-1"/>
 			<description>Diese Signalpatrone enthält einen kleinen Metallfallschirm, der durch die darunter brennende Pyroladung bis zu 15 Minuten in der Luft schwebt</description>
 		</item>
