@@ -1,7 +1,7 @@
 # coding=utf-8
 import tk_ as tk
-import xml.etree.ElementTree as et
 from PIL import ImageTk
+from tooltip import ToolTip
 from itemeditor import ItemEditor
 from inventoryeditor import InventoryEditor
 import config
@@ -289,6 +289,7 @@ class EquipmentScreen(tk.Frame):
                 if item.get("type") in equippable_types:
                     equip_icon = ImageTk.PhotoImage(file="img/equip.png")
                     equip_button = tk.Button(item_frame, image=equip_icon)
+                    ToolTip(equip_button, msg.ES_TT_EQUIP)
                     equip_button.image = equip_icon
                     equip_button.bind(
                         "<Button-1>",
@@ -303,6 +304,7 @@ class EquipmentScreen(tk.Frame):
                 if self.active_bag_id >= 0:
                     pack_icon = ImageTk.PhotoImage(file="img/pack.png")
                     pack_button = tk.Button(item_frame, image=pack_icon)
+                    ToolTip(pack_button, msg.ES_TT_PACK)
                     pack_button.image = pack_icon
                     pack_button.bind(
                         "<Button-1>",
@@ -399,6 +401,9 @@ class EquipmentScreen(tk.Frame):
             bag_frame.config(
                 font=config.Style.BAG_LF_FONT,
             )
+            ToolTip(bag_frame, msg.ES_TT_ACTIVE_BAG)
+        else:
+            ToolTip(bag_frame, msg.ES_TT_INACTIVE_BAG)
 
         # retrieve bag content and display ...
         item_ids = bag.get("content")
@@ -425,6 +430,7 @@ class EquipmentScreen(tk.Frame):
                     item_label.pack(side=tk.LEFT, fill=tk.X, expand=1)
                     unpack_icon = ImageTk.PhotoImage(file="img/unpack.png")
                     item_unpack = tk.Button(item_line, image=unpack_icon)
+                    ToolTip(item_unpack, msg.ES_TT_UNPACK)
                     item_unpack.image = unpack_icon
                     item_unpack.bind(
                         "<Button-1>",
@@ -433,16 +439,12 @@ class EquipmentScreen(tk.Frame):
                     )
                     item_unpack.pack(side=tk.RIGHT, anchor=tk.E)
                     item_line.pack(fill=tk.X, expand=1)
-        
-        # unequip bag ...                    
-        bag_unequip = tk.Button(bag_frame, text=msg.ES_UNEQUIP)
-        bag_unequip.bind(
-            "<Button-1>",
-            lambda event, id=str(bag_id):
-                self.unequipItem(event, id)
-        )
-        bag_unequip.pack(fill=tk.X)
-        
+
+        children = bag_frame.winfo_children()
+        # for empty bag ...
+        if not children:
+            tk.Label(bag_frame, text=" ").pack()
+
         bag_frame.pack(fill=tk.BOTH, expand=1)
         bag_frame.bind(
             "<Button-1>",
@@ -462,12 +464,17 @@ class EquipmentScreen(tk.Frame):
         qual_label = tk.Label(frame, text=msg.ES_QUALITY_S)
         qual_label.grid(row=row, column=2, sticky=tk.EW)
         row = 1
+        clothing_and_bags = [
+            it.CLOTHING,
+            it.ARMOR,
+            it.HARNESS,
+            it.BAG,
+            it.CONTAINER
+        ]
+
         for item in items:
-            
             if (item.get("equipped", "0") == "1" and
-                (item.get("type") == it.CLOTHING or
-                item.get("type") == it.ARMOR or
-                item.get("type") == it.HARNESS)
+                item.get("type") in clothing_and_bags
             ):
                 name = item.get("name")
                 item_id = item.get("id")
@@ -489,6 +496,7 @@ class EquipmentScreen(tk.Frame):
                 qual_label.grid(row=row, column=2, sticky=tk.EW)
                 unequip_icon = ImageTk.PhotoImage(file="img/unequip.png")
                 unequip_button = tk.Button(frame, image=unequip_icon)
+                ToolTip(unequip_button, msg.ES_TT_UNEQUIP)
                 unequip_button.image = unequip_icon
                 item_id = item.get("id")
                 unequip_button.bind(

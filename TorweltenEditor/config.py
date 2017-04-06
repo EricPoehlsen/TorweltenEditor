@@ -163,6 +163,14 @@ class Messages:
     ES_G = " g"
     ES_WEIGHT = "Gewicht: "
     ES_CLIP = "{name} - {number} / {capacity}"
+    ES_TT_EQUIP = "Gegenstand anlegen."
+    ES_TT_UNEQUIP = "Gegenstand ablegen."
+    ES_TT_PACK = "Gegenstand in Tasche packen."
+    ES_TT_UNPACK = "Gegenstand auspacken."
+    ES_TT_ACTIVE_BAG = "Aktiver Behälter, gewählte Gegenstände\n"\
+                       "werden hier eingelegt"
+    ES_TT_INACTIVE_BAG = "Behälter ist derzeit inaktiv,\n"\
+                         "anklicken zum aktivieren ..."
 
     # ####ITEM EDITOR and INVENTORY EDITOR # ####
     IE_UNEQUIP = "Ablegen"
