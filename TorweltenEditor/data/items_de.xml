@@ -408,24 +408,24 @@
 	</group>
 		
 	<group name = "Stabwaffen" parent = "3" id = "3-2">
-		<item name = "Kampfstab" weight = "500" price = "100" type = "Stabwaffen" parent = "3-2">
+		<item name = "Kampfstab" weight = "500" price = "100" type = "staff" parent = "3-2">
 			<option name = "Variante" values = "natura,Metallbeschläge" tag = "damage"/>
 			<damage value = "1/0" name = "natura"/>
 			<damage value = "2/0" name = "Metallbeschläge"/>
 			<description>Der klassische Kampfstab, wird üblicherweise in einer Länge knapp unter der Körpergröße des Trägers verwendet. Auf Wunsch mit robusten Metallbeschlägen.</description> 
 		</item>
 		
-		<item name = "Teleskopstab" weight = "1000" price = "350" type = "Stabwaffen" parent = "3-2">
+		<item name = "Teleskopstab" weight = "1000" price = "350" type = "staff" parent = "3-2">
 			<damage value = "2/0"/>
 			<description>Der Teleskopkampfstab kann als Kurzstock mit einer Länge von ca. 60 cm verwendet werden oder durch einen Knopfdruck auf knapp 180 cm verlängert werden.</description>
 		</item>
 		
-		<item name = "Speer" weight = "1200" price = "400" type = "Stabwaffen" parent = "3-2">
+		<item name = "Speer" weight = "1200" price = "400" type = "staff" parent = "3-2">
 			<damage value = "2/0"/>
 			<description>Der angespitzte Stab war eine der ersten Waffen des Menschen und über die Jahrtausende weiterentwickelt handelt es sich um eine nicht zu unterschätzende Waffe, die sowohl im Nahkampf eingesetzt, als auch geworfen werden kann. Ihre geringe Verbreitung ergibt sich aus ihrer Unhandlichkeit</description>
 		</item>
 		
-		<item name = "Helebarde" weight = "1600" price = "750" type = "Stabwaffen" parent = "3-2">
+		<item name = "Helebarde" weight = "1600" price = "750" type = "staff" parent = "3-2">
 			<damage value = "2/-1"/>
 			<description>Historisch eine Infantriewaffe für das Schlachtfeld, eine elegante Symbiose aus Axt, Speer und Stab. Für den Einsatz in den beengten Korridoren eines Raumschiffs oder einer Orbitalstation natürlich denkbar ungeeignet und auf dem Schlachtfeld in Zeiten automatischer Blastergewehre auch nicht mehr die Waffe erster Wahl. Weit verbreitet ist die Helebarde allerdings als zeremonielle Waffe bei höfischen Garden in verschiedenen Kulturkreisen der Novaropäischen Allianz.</description>
 		</item>

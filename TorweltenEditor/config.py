@@ -173,15 +173,11 @@ class Messages:
                          "anklicken zum aktivieren ..."
 
     # ####ITEM EDITOR and INVENTORY EDITOR # ####
-    IE_UNEQUIP = "Ablegen"
-    IE_EQUIP = "Anlegen"
-    IE_SPLIT = "Teilen"
-    IE_CONDENSE = "Zusammenführen"
     IE_DESTROY = "Zerstören"
-    IE_SELL = "Verkaufen"
     IE_KG = " kg"
     IE_G = " g"
     IE_WEIGHT = "Gewicht: "
+    IE_PRICE_VALUE = "Wert: "
     IE_CANCEL = "Abbrechen"
     IE_CONTENT = "Inhalt: "
     IE_CHAMBERS = "Kammern: "
@@ -203,6 +199,8 @@ class Messages:
     IE_ADD_ONE = "+1"
     IE_INSERT_CARTRIDGE = "Patrone einlegen ..."
     IE_QUALITY = "Qualität"
+    IE_QUALITY_1 = "kaputt"
+    IE_QUALITY_2 = "beschädigt"
     IE_QUALITY_3 = "miserabel"
     IE_QUALITY_4 = "schlecht"
     IE_QUALITY_5 = "gebraucht"
@@ -772,6 +770,16 @@ class Messages:
                     "Wert übereinstimmt."
     IE_TT_CONTAINER = "Anzeigename der Taschen\n(z.B. Hosentaschen)"
 
+    IE_TT_EQUIP = "Gegenstand anlegen."
+    IE_TT_UNEQUIP = "Gegenstand ablegen."
+    IE_TT_SPLIT = "Stapel teilen"
+    IE_TT_SPLIT_AMOUNT = "Welche Menge abteilen"
+    IE_TT_CONDENSE = "Gleiche Gegenstände zusammenführen"
+    IE_TT_DESTROY = "zerstören / verbrauchen"
+    IE_TT_SELL = "Gegenstand verkaufen"
+    IE_TT_REPAIR = "Gegenstand reparieren / verbessern"
+    IE_TT_DAMAGE_ITEM = "Gegenstand beschädigen"
+
 
     # IMPROVE WINDOW
     IW_TITLE = "Steigern ..."
@@ -965,6 +973,8 @@ class Messages:
     CHAR_ITEM_UPDATE = "geändert"
     CHAR_ITEM_DESCRIPTION = "Beschreibung geändert"
     CHAR_ITEM_RENAMED = "umbenannt"
+    CHAR_ITEM_REPAIRED = "repariert"
+    CHAR_ITEM_DAMAGED = "beschädigt"
     CHAR_CONTACT_NEW = "erstellt"
 
     # LOG DISPLAY
@@ -978,6 +988,8 @@ class Messages:
     LOG_ITEM_UNPACKED = "{name} aus {container} entnommen."
     LOG_ITEM_EQUIPPED = "{name} angelegt."
     LOG_ITEM_UNKNOWN = "[UNBEKANNT]"
+    LOG_ITEM_DAMAGED = "{name} beschädigt, neue Qualität: {value}"
+    LOG_ITEM_REPAIRED = "{name} repariert, neue Qualität: {value}"
     LOG_CONTACT_CHANGED = "ID: {id} - {name} {diff}"
     LOG_CONTACT_RENAMED = "umbenannt in: "
     LOG_CONTACT_COMPETENCY = "Kompetenz: "
@@ -1116,6 +1128,8 @@ class ItemTypes:
 
     #  other stuff
     SERVICES = "service"
+    FOOD = "food"
+    DRUG = "drug"
 
     #biotech
     IMPLANT = "implant"

@@ -318,6 +318,12 @@ class Application(tk.Frame):
             font="Arial 10 bold"
         )
 
+        self.style.configure(
+            "destroy.TButton",
+            background="#ff0000",
+            foreground="#ff0000"
+        )
+
         # edit_entry - editable labels for the itemeditor
         self.style.layout(
             "edit_entry",

@@ -166,7 +166,7 @@ class LogScreen(tk.Frame):
     def displayItem(self, event):
         display = True
         op = event.get("op")
-        print(op)
+        mod = event.get("mod")
         name = event.get("name")
         id = int(str(event.get("id")))
         quantity = int(event.get("quantity"))
@@ -207,6 +207,16 @@ class LogScreen(tk.Frame):
         elif op == msg.CHAR_ITEM_EQUIP:
             event_string = msg.LOG_ITEM_EQUIPPED.format(
                 name=name
+            )
+        elif op == msg.CHAR_ITEM_REPAIRED:
+            event_string = msg.LOG_ITEM_REPAIRED.format(
+                name=name,
+                value=mod
+            )
+        elif op == msg.CHAR_ITEM_DAMAGED:
+            event_string = msg.LOG_ITEM_DAMAGED.format(
+                name=name,
+                value=mod
             )
         elif op == msg.CHAR_ITEM_BAG or op is None:
             display = False
