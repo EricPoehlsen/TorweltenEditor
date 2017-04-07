@@ -62,11 +62,14 @@ class LogScreen(tk.Frame):
             display = True
             x = 40
             anchor = tk.NW
-            if element == "xp" and op == "upd":
-                event_string = self.displayXP(event)
-                linebreak = False
-                x = 35
-                anchor = tk.NE
+            if element == "xp":
+                if op == msg.CHAR_UPDATED:
+                    event_string = self.displayXP(event)
+                    linebreak = False
+                    x = 35
+                    anchor = tk.NE
+                else:
+                    event_string = self.displayXP(event)
             elif element == "attribute":
                 event_string = self.displayAttribute(event)
             elif element == "skill":
@@ -76,11 +79,19 @@ class LogScreen(tk.Frame):
             elif element == "item":
                 event_string, display = self.displayItem(event)
             elif element == "account":
-                event_string = self.displayAccount(event)
+                amount = float(event.get("mod", "0"))
+                if amount:
+                    event_string = self.displayAccount(event)
+                else:
+                    linebreak = False
             elif element == "contact":
                 event_string = self.displayContact(event)
             elif element == "modified":
                 event_string = msg.LOG_CORRUPT_FILE
+            elif element == "character":
+                event_string = self.displayCharacter(event)
+            elif element == "edit":
+                event_string = self.displayEditMode(event)
             else:
                 op = event.get("op", "")
                 mod = event.get("mod", "")
@@ -119,30 +130,72 @@ class LogScreen(tk.Frame):
 
     @staticmethod
     def displayXP(event):
-        delta = int(float(event.get("mod")))
+        delta = int(float(event.get("mod", "0")))
         if delta > 0:
             event_string = "+"+str(delta)
         else:
             event_string = str(delta)
+
+        op = event.get("op")
+        if op == msg.CHAR_INITIAL_XP:
+            event_string = msg.LOG_INITIAL_XP + event_string
         return event_string
 
-    def displayAttribute(self, event):
+    @staticmethod
+    def displayCharacter(event):
+        event_string = ""
+        op = event.get("op")
+        if op == msg.CHAR_LOADED:
+            return msg.LOG_CHAR_LOADED
+        if op == msg.CHAR_SAVED:
+            return msg.LOG_CHAR_SAVED
+        if op == msg.CHAR_CREATED:
+            return msg.LOG_CHAR_CREATED
+        return event_string
+
+    @staticmethod
+    def displayEditMode(event):
+        event_string = ""
+        modes = {
+            "generation": msg.LOG_EDIT_GENERATION,
+            "edit": msg.LOG_EDIT_EDIT,
+            "simulation": msg.LOG_EDIT_SIM,
+            "view": msg.LOG_EDIT_VIEW
+        }
+        mode = event.get("mod")
+        return modes[mode]
+
+    @staticmethod
+    def displayAttribute(event):
         name = event.get("name")
         value = int(event.get("value"))
-        event_string = "Attribut geändert" + " (" + name.upper() + "): " + str(value)
+        event_string = msg.LOG_ATTRIBUTE_CHANGED.format(
+            name=name.upper(),
+            value=value
+        )
         return event_string
 
     def displaySkill(self, event):
         op = event.get("op")
-        id = int(event.get("id"))
-        value = int(event.get("value", "0"))
-        skill_name = self.char.getSkillById(str(id)).get("name")
-        event_string = op + ": " + skill_name + " - " + str(value)
+        id = event.get("id")
+
+        event_string = ""
+        if op == msg.CHAR_ADDED:
+            event_string = msg.LOG_SKILL_ADDED
+        if op == msg.CHAR_UPDATED:
+            event_string = msg.LOG_SKILL_UPDATED
+        if op == msg.CHAR_REMOVED:
+            event_string = msg.LOG_SKILL_REMOVED
+        name = event.get("name")
+        value = event.get("value", "0")
+
+        event_string = event_string.format(name=name, value=value)
         return event_string
 
     @staticmethod
     def displayData(event):
         op = event.get("op")
+        mod = event.get("mod")
         data_str = {
             'name': msg.NAME,
             'species': msg.SPECIES,
@@ -158,9 +211,23 @@ class LogScreen(tk.Frame):
             'skin': msg.SKIN_COLOR,
             'skintype': msg.SKIN_TYPE
         }
-        name = event.get("name")
-        value = event.get("value")
-        event_string = op + ": " + data_str[name] + ", " + str(value)
+        name = event.get("name", "")
+        value = event.get("value", "")
+        event_string = ""
+        if op == msg.CHAR_ADDED:
+            event_string = msg.LOG_DATA_ADDED
+        if op == msg.CHAR_UPDATED:
+            event_string = msg.LOG_DATA_UPDATED
+            if value == "":
+                event_string = msg.LOG_DATA_REMOVED
+            elif not mod:
+                event_string = msg.LOG_DATA_ADDED
+
+        event_string = event_string.format(
+            name=data_str[name],
+            value=value,
+            old=mod
+        )
         return event_string
 
     def displayItem(self, event):
@@ -172,7 +239,7 @@ class LogScreen(tk.Frame):
         quantity = int(event.get("quantity"))
         hash_value = int(event.get("hash"))
         event_string = ""
-        if op == msg.CHAR_ITEM_ADDED:
+        if op == msg.CHAR_ADDED:
             new = event.get("mod")
             event_string = msg.LOG_ITEM_ADDED.format(
                 new=new,
@@ -213,6 +280,26 @@ class LogScreen(tk.Frame):
                 name=name,
                 value=mod
             )
+        elif op == msg.CHAR_ITEM_SPLIT:
+            event_string = msg.LOG_ITEM_SPLIT.format(
+                name=name,
+                quantity = quantity
+            )
+        elif op == msg.CHAR_ITEM_SPLIT:
+            event_string = msg.LOG_ITEM_JOIN.format(
+                name=name,
+                quantity=quantity
+            )
+        elif op == msg.CHAR_ITEM_SELL:
+            event_string = msg.LOG_ITEM_SELL.format(
+                name=name,
+                quantity=quantity
+            )
+        elif op == msg.CHAR_ITEM_DESTROY:
+            event_string = msg.LOG_ITEM_DESTROY.format(
+                name=name,
+                quantity=quantity
+            )
         elif op == msg.CHAR_ITEM_DAMAGED:
             event_string = msg.LOG_ITEM_DAMAGED.format(
                 name=name,
@@ -227,21 +314,31 @@ class LogScreen(tk.Frame):
     @staticmethod
     def displayAccount(event):
         op = event.get("op", "")
+        event_string = ""
         amount = float(event.get("mod", "0"))
-        amount = "{:+.2f}".format(amount)
+        amount_str = "{:+.2f}".format(amount)
 
-        event_string = op + " " + amount
+        if op == msg.CHAR_STARTING_CAPITAL:
+            if amount > 0:
+                event_string = msg.LOG_ACCOUNT_CAP_INC
+            else:
+                event_string = msg.LOG_ACCOUNT_CAP_DEC
+            event_string = event_string.format(amount=amount_str)
+        else:
+            event_string = op + " " + amount_str
 
         return event_string
 
     def displayContact(self, event):
         op = event.get("op")
         mod = event.get("mod")
-        id = int(str(event.get("id")))
+        id = event.get("id")
         contact = self.char.getContactById(id)
 
-        name = contact.get("name")
+        if contact is None:
+            return msg.LOG_CONTACT_UNKNOWN +id
 
+        name = contact.get("name")
         changes = []
         if "name" in mod:
             name = event.get("oldname")

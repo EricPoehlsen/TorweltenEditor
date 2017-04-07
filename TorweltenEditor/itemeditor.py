@@ -1104,13 +1104,13 @@ class ItemEditor(tk.Toplevel):
                     op = msg.CHAR_ITEM_RENAMED
                 else:
                     mod_info = attribute+":"+new_value
-                    op = msg.CHAR_ITEM_UPDATE
+                    op = msg.CHAR_UPDATE
                     
                 self.item.set(attribute, new_value)
                 self.char.logEvent(
                     self.item,
                     mod=mod_info,
-                    op=msg.CHAR_ITEM_UPDATE
+                    op=msg.CHAR_UPDATE
                 )
                 self.app.updateItemList()
 
@@ -1147,5 +1147,5 @@ class ItemEditor(tk.Toplevel):
                 self.char.logEvent(
                     self.item,
                     mod=mod_info,
-                    op=msg.CHAR_ITEM_UPDATE
+                    op=msg.CHAR_UPDATE
                 )
