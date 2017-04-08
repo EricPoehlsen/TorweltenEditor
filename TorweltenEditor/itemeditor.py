@@ -559,13 +559,17 @@ class ItemEditor(tk.Toplevel):
     def unequipItem(self):
         self.char.unequipItem(self.item)
         self.app.updateItemList()
-        self.close(load=self.item)
+        self._showItemInfo()
+        self.addMenuIcons()
 
     # equip an item: called by equip_button
     def equipItem(self):
         self.char.unpackItem(self.item, equip=True)
         self.app.updateItemList()
-        self.close(load=self.item)
+        self._showItemInfo()
+        self.addMenuIcons()
+
+        # self.close(load=self.item)
 
     def destroyItem(self):
         if self.destroy_check == 0: 
