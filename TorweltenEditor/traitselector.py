@@ -13,8 +13,7 @@ class TraitSelector(tk.Toplevel):
 
     def __init__(self, app):
         tk.Toplevel.__init__(self, app)
-        self.style = tk.Style()
-        self._setStyle()
+        self.style = app.style
         # point to character and traitstree
         self.char = app.char
         self.all_traits = app.traits
@@ -129,10 +128,8 @@ class TraitSelector(tk.Toplevel):
         )
         self.info_title.pack(fill=tk.X, side=tk.LEFT)
         self.info_title_frame.pack(fill=tk.X)
-        self.info_subtrait_container = tk.Frame(self.info_frame)
-        self.info_subtrait = tk.Frame(self.info_subtrait_container)
-        self.info_subtrait.pack(fill=tk.X)
-        self.info_subtrait_container.pack(fill=tk.X)
+        self.info_subtrait = tk.Frame(self.info_frame)
+        self.info_subtrait.pack(fill=tk.X, expand=1)
         self.info_subtrait_widgets = {}
         self.info_subtrait_vars = {}
         self.info_subtrait_tcl = {}
@@ -235,19 +232,22 @@ class TraitSelector(tk.Toplevel):
         self.setDescription()
 
         # destroy the subtrait frame and recreate it
-        self.info_subtrait.destroy()
-        self.info_subtrait = tk.Frame(self.info_subtrait_container)
-        self.info_subtrait.pack(fill=tk.X)
+        widgets = self.info_subtrait.winfo_children()
+        for widget in widgets:
+            widget.destroy()
 
         # check if the trait has a specification: 
         specification = self.trait.find("specification")
+        data_frame = tk.Frame(self.info_subtrait)
+        data_frame.columnconfigure(1, weight=100)
+        row = -1
         if specification is not None:
-            specification_frame = tk.Frame(self.info_subtrait)
+            row += 1
             specification_label_text = specification.get("name")
             specification_label = tk.Label(
-                specification_frame,
+                data_frame,
                 text=specification_label_text+": ")
-            specification_label.pack(side=tk.LEFT)
+            specification_label.grid(row=row, column=0, sticky=tk.E)
             # create a stringvar
             spec_var = tk.StringVar()
             self.info_subtrait_vars["spec"] = spec_var
@@ -256,25 +256,24 @@ class TraitSelector(tk.Toplevel):
             # bind the tcl_name of the variable to the variable
             self.info_subtrait_tcl[str(spec_var)] = "spec"
             specification_entry = tk.Entry(
-                specification_frame,
+                data_frame,
                 textvariable=self.info_subtrait_vars["spec"]
             )
             self.info_subtrait_widgets["spec"] = specification_entry
-            specification_entry.pack(side=tk.LEFT, fill=tk.X)
-            specification_frame.pack(fill=tk.X)
-        
+            specification_entry.grid(row=row, column=1, sticky=tk.NSEW)
+
         # check for a rank tag:
         ranks = self.trait.findall("rank")
         if ranks is not None:
             for rank in ranks:
+                row +=1
                 rank_name = rank.get("name")
                 rank_id = rank.get("id")
                 xp_factor = int(rank.get("xp"))
                 min_rank = int(rank.get("min", "1"))
                 max_rank = int(rank.get("max", "10"))
-                rank_frame = tk.Frame(self.info_subtrait)
-                rank_label = tk.Label(rank_frame, text=rank_name)
-                rank_label.pack(side=tk.LEFT)
+                rank_label = tk.Label(data_frame, text=rank_name+": ")
+                rank_label.grid(row=row, column=0, sticky=tk.E)
                 var = tk.StringVar()
                 self.info_subtrait_vars["rank"+"_"+rank_id] = var
                 var.set(min_rank)
@@ -284,29 +283,27 @@ class TraitSelector(tk.Toplevel):
                     self.info_subtrait_vars["rank_"+rank_id]
                 )] = "rank_"+rank_id
                 spinbox = tk.Spinbox(
-                    rank_frame,
+                    data_frame,
                     textvariable=var,
                     from_=min_rank,
                     to=max_rank
                 )
                 self.info_subtrait_widgets["rank"+rank_id] = spinbox
-                spinbox.pack(side=tk.RIGHT)
-                rank_frame.pack()
+                spinbox.grid(row=row, column=1)
 
         # check if there are variables
         variables = self.trait.findall("variable")
         if variables is not None:
-            rownum = 0
-            variable_frame = tk.Frame(self.info_subtrait)
             for variable in variables:
-                variable_label_text = variable.get("name")
+                row += 1
+                variable_label_text = variable.get("name") + ": "
                 variable_id = variable.get("id")
                 variable_values_string = variable.get("values")
                 variable_values = variable_values_string.split(",")
                 variable_label = tk.Label(
-                    variable_frame,
+                    data_frame,
                     text=variable_label_text)
-                variable_label.grid(row=rownum, column=0)
+                variable_label.grid(row=row, column=0, sticky=tk.E)
                 # create a string_var for the variable
                 var = tk.StringVar()
                 self.info_subtrait_vars["var"+"_"+variable_id] = var
@@ -314,14 +311,15 @@ class TraitSelector(tk.Toplevel):
                 # bind the label to the tcl_name
 
                 self.info_subtrait_tcl[str(var)] = "var"+"_"+variable_id
-                spinbox = tk.Spinbox(
-                    variable_frame,
+                var.set(variable_values[0])
+                combobox = tk.Combobox(
+                    data_frame,
                     textvariable=var,
                     values=variable_values)
-                self.info_subtrait_widgets["var"+"_"+variable_id] = spinbox
-                spinbox.grid(row=rownum, column=1)
-                rownum += 1
-            variable_frame.pack()
+                self.info_subtrait_widgets["var"+"_"+variable_id] = combobox
+                combobox.grid(row=row, column=1, sticky=tk.NSEW)
+
+            data_frame.pack(fill=tk.X, expand=1)
     
     def updateDescription(self, event):
         self.trait_description = self.info_description.get("0.0", tk.END)
@@ -517,17 +515,6 @@ class TraitSelector(tk.Toplevel):
         widget = event.widget
         widget.select_range(0, tk.END)
         return "break"
-
-    def _setStyle(self):
-        self.style.configure(
-            "red.TLabel",
-            foreground = config.Colors.DARK_RED
-        )
-        self.style.configure(
-            "green.TLabel",
-            foreground=config.Colors.DARK_GREEN
-        )
-
 
     def close(self):
         self.destroy()

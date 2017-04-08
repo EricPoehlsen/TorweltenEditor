@@ -1,4 +1,4 @@
-import tkinter as tk
+import tk_ as tk
 import config
 
 # Display additional information about selected traits ... # #

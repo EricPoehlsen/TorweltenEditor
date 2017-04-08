@@ -313,6 +313,19 @@ class Application(tk.Frame):
 
     def _setStyle(self):
         self.style.configure(
+            "red.TLabel",
+            foreground = config.Colors.DARK_RED
+        )
+        self.style.configure(
+            "green.TLabel",
+            foreground=config.Colors.DARK_GREEN
+        )
+
+        self.style.configure(
+            "test.TFrame",
+            background = "#ff0000"
+        )
+        self.style.configure(
             "selected.TButton",
             foreground="#000000",
             font="Arial 10 bold"
