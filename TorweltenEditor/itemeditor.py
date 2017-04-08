@@ -663,7 +663,10 @@ class ItemEditor(tk.Toplevel):
                         self.close(load=load_item)
                 )
                 label.pack(side=tk.LEFT)
-                unpack_button = tk.Button(line, text="U")
+                unpack_icon = ImageTk.PhotoImage(file="img/unpack.png")
+                unpack_button = tk.Button(line, image=unpack_icon)
+                unpack_button.image = unpack_icon
+                ToolTip(unpack_button, msg.IE_TT_UNPACK)
                 unpack_button.bind(
                     "<Button-1>",
                     lambda event, sub=sub_item, line_widget=line:

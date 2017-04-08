@@ -772,6 +772,7 @@ class Messages:
 
     IE_TT_EQUIP = "Gegenstand anlegen."
     IE_TT_UNEQUIP = "Gegenstand ablegen."
+    IE_TT_UNPACK = "Gegenstand auspacken."
     IE_TT_SPLIT = "Stapel teilen"
     IE_TT_SPLIT_AMOUNT = "Welche Menge abteilen"
     IE_TT_CONDENSE = "Gleiche Gegenstände zusammenführen"
