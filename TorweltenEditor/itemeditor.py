@@ -73,8 +73,17 @@ class ItemEditor(tk.Toplevel):
             if self.item.get("type") != it.IMPLANT:
                 unequip_button.pack(side=tk.LEFT)
                 ToolTip(unequip_button, msg.IE_TT_UNEQUIP)
-        else: 
-            if self.item.get("type", "") in self.app.itemlist.EQUIPPABLE:
+        else:
+            item_type = self.item.get("type", "")
+            if item_type in self.app.itemlist.EQUIPPABLE:
+                show = True
+                # tools are not always equippable ...
+                if item_type == config.ItemTypes.TOOLS:
+                    container = self.item.find("container")
+                    damage = self.item.find("damage")
+                    if container is None and damage is None:
+                        show = False
+
                 equip_icon = ImageTk.PhotoImage(file="img/equip_l.png")
                 equip_button = tk.Button(
                     self.item_menu,
@@ -82,8 +91,9 @@ class ItemEditor(tk.Toplevel):
                     command=self.equipItem
                 )
                 equip_button.image = equip_icon
-                equip_button.pack(side=tk.LEFT)
-                ToolTip(equip_button, msg.IE_TT_EQUIP)
+                if show:
+                    equip_button.pack(side=tk.LEFT)
+                    ToolTip(equip_button, msg.IE_TT_EQUIP)
 
         if int(self.item_quantity) > 1:
             self.split_number.set("1")
@@ -240,7 +250,6 @@ class ItemEditor(tk.Toplevel):
         for option in options:
             name = option.get("name", "")
             value = option.get("value", "")
-            print(value)
             frame = tk.Frame(self.item_body)
             display_name = ""
             if name == it.OPTION_CALIBER:
@@ -293,7 +302,9 @@ class ItemEditor(tk.Toplevel):
         containers = [
             it.BAG,
             it.BOX,
-            it.CONTAINER
+            it.CONTAINER,
+            it.TOOLS,
+            it.HARNESS
         ]
         sa_weapons = [
             it.REVOLVERS,
@@ -320,7 +331,9 @@ class ItemEditor(tk.Toplevel):
         ]
 
         if item_type in containers:
-            self.showContent(frame)
+            container_tag = self.item.find("container")
+            if container_tag is not None:
+                self.showContent(frame)
         elif item_type in melee_weapons:
             self.getMeleeInfo(frame)
         elif item_type == it.CLIP:
@@ -342,7 +355,6 @@ class ItemEditor(tk.Toplevel):
         """
 
         selected = self.char.setActiveChamber(self.item, number)
-        print(selected)
         if selected:
             widgets = self.widgets["chambers"].winfo_children()
             for widget in widgets:

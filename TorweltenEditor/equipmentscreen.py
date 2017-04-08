@@ -285,8 +285,15 @@ class EquipmentScreen(tk.Frame):
                         self.displayItemEditor(event, item_id)
                 )
                 name_label.grid(row=0, column=1, sticky=tk.W)
-                    
-                if item.get("type") in equippable_types:
+                item_type = item.get("type")
+                if item_type in equippable_types:
+                    show = True
+                    if item_type == it.TOOLS:
+                        container = item.find("container")
+                        damage = item.find("damage")
+                        if damage is None and container is None:
+                            show = False
+
                     equip_icon = ImageTk.PhotoImage(file="img/equip.png")
                     equip_button = tk.Button(item_frame, image=equip_icon)
                     ToolTip(equip_button, msg.ES_TT_EQUIP)
@@ -296,7 +303,11 @@ class EquipmentScreen(tk.Frame):
                         lambda event, item_id=item_id:
                             self.equipItem(event, item_id)
                     )
-                    equip_button.grid(row=0, column=2)
+                    if show:
+                        equip_button.grid(row=0, column=2)
+                    else:
+                        empty = tk.Label(item_frame, text=" ", width=2)
+                        empty.grid(row=0, column=2)
                 else:
                     empty = tk.Label(item_frame, text=" ", width=2)
                     empty.grid(row=0, column=2)
@@ -469,13 +480,19 @@ class EquipmentScreen(tk.Frame):
             it.ARMOR,
             it.HARNESS,
             it.BAG,
-            it.CONTAINER
+            it.CONTAINER,
+            it.TOOLS
         ]
 
         for item in items:
             if (item.get("equipped", "0") == "1" and
                 item.get("type") in clothing_and_bags
             ):
+                # only show tools that are containers ...
+                if item.get("type") == it.TOOLS:
+                    container = item.find("container")
+                    if container is None:
+                        continue
                 name = item.get("name")
                 item_id = item.get("id")
                 name_label = tk.Label(frame, text=name)
