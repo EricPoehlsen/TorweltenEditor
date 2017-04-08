@@ -468,24 +468,93 @@ class ImageScreen(tk.Frame):
         self.image_canvas.delete(tk.ALL)
         self._checkForImage()
 
-    # TEST - Export alle Bildmodule ... 
+    # TEST - exports all image modules ...
     def _test(self):
         """ exporting a test PDF displaying the image in all module sizes 
         """
         template = et.Element("template")
-        page1 = et.SubElement(template,"page",{"num":"1"})
-        et.SubElement(page1,"module",{"row":"0", "col":"2", "size":"single","type":"image","id":"1"})
-        et.SubElement(page1,"module",{"row":"0", "col":"1", "size":"double","type":"image","id":"2"})
-        et.SubElement(page1,"module",{"row":"0", "col":"0", "size":"double","type":"attributes","id":"3"})
-        et.SubElement(page1,"module",{"row":"1", "col":"2", "size":"triple","type":"image","id":"4"})
-        et.SubElement(page1,"module",{"row":"0", "col":"3", "size":"full","type":"image","id":"5"})
-        et.SubElement(page1,"module",{"row":"2", "col":"0", "size":"quart","type":"image","id":"6"})
-        page2 = et.SubElement(template,"page",{"num":"1"})
-        et.SubElement(page2,"module",{"row":"0", "col":"0", "size":"wide","type":"image","id":"7"})
-        et.SubElement(page2,"module",{"row":"1", "col":"0", "size":"big","type":"image","id":"8"})
-        et.SubElement(page2,"module",{"row":"0", "col":"2", "size":"half","type":"image","id":"9"})
+        page1 = et.SubElement(template, "page", {"num": "1"})
+        et.SubElement(
+            page1,
+            "module",
+            {"row": "0",
+             "col": "2",
+             "size": "single",
+             "type": "image",
+             "id": "1"}
+        )
+        et.SubElement(
+            page1,
+            "module",
+            {"row": "0",
+             "col": "1",
+             "size": "double",
+             "type": "image",
+             "id": "2"}
+        )
+        et.SubElement(
+            page1,
+            "module",
+            {"row": "0",
+             "col": "0",
+             "size": "double",
+             "type": "attributes",
+             "id": "3"}
+        )
+        et.SubElement(
+            page1,
+            "module",
+            {"row": "1",
+             "col": "2",
+             "size": "triple",
+             "type": "image",
+             "id": "4"}
+        )
+        et.SubElement(
+            page1,
+            "module",
+            {"row": "0",
+             "col": "3",
+             "size": "full",
+             "type": "image",
+             "id": "5"}
+        )
+        et.SubElement(
+            page1,
+            "module",
+            {"row": "2",
+             "col": "0",
+             "size": "quart",
+             "type": "image",
+             "id": "6"}
+        )
+        page2 = et.SubElement(template, "page", {"num": "2"})
+        et.SubElement(
+            page2,
+            "module",
+            {"row": "0",
+             "col": "0",
+             "size": "wide",
+             "type": "image",
+             "id": "7"}
+        )
+        et.SubElement(
+            page2,
+            "module",
+            {"row": "1",
+             "col": "0",
+             "size": "big",
+             "type": "image",
+             "id":"8"}
+        )
+        et.SubElement(
+            page2,
+            "module",
+            {"row": "0",
+             "col": "2",
+             "size": "half",
+             "type": "image",
+             "id":"9"}
+        )
         tree = et.ElementTree(template)
-
-        exportpdf.ExportPdf("test.pdf",self.char,self.app.traits,tree)
-
-
+        exportpdf.ExportPdf("test.pdf", self.char, self.app.traits, tree)

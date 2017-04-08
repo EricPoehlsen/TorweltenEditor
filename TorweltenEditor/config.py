@@ -830,9 +830,16 @@ class Messages:
     IS_LOAD_IMAGE_TITLE = "Bilddatei laden ..."
     IS_LOAD_MIME = "Bilddateien ..."
 
+    # NOTESCREEN
+    NS_TT_DELETE = "zum Löschen 2x klicken ..."
+    NS_TT_NEW = "Neue Charakternotiz anlegen."
+
     # for the sheetlayoutscreen
     SL_EMPTY = "[ L E E R ]"
     SL_EXPORT = "PDF Exportieren"
+    SL_STYLE = "Style"
+    SL_TT_STYLE_ROUND = "abgerundete Ecken"
+    SL_TT_STYLE_STRAIGHT = "abgeschrägte Ecken"
     SL_TT_NEW = "Neues Template erstellen ..."
     SL_TT_LOAD = "Template laden ..."
     SL_TT_SAVE = "Template speichern ..."

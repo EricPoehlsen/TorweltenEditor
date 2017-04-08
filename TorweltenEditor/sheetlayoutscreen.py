@@ -39,7 +39,8 @@ class LayoutScreen(tk.Frame):
         self.style = app.style
         self.char = app.char
         self.open_windows = app.open_windows
-        
+        self.widgets = {}
+
         self.template = None
         self.grid = []
 
@@ -59,8 +60,6 @@ class LayoutScreen(tk.Frame):
             pages=str(self.pages)
         )
         self.cur_page.set(page_label)
-
-        self.widgets = {}
 
         self.center_frame = tk.Frame(self)
         
@@ -257,21 +256,27 @@ class LayoutScreen(tk.Frame):
 
         tk.Label(frame, text=" ").pack(side=tk.LEFT)
 
-        style_frame = tk.LabelFrame(frame, text="style")
+        style_frame = tk.LabelFrame(frame, text=msg.SL_STYLE)
         s_icon = ImageTk.PhotoImage(file="img/style_straight.png")
-        straight_button = tk.Button(
+        if self.template.getroot().get("style") == "straight":
+            s_icon = ImageTk.PhotoImage(file="img/style_straight_sel.png")
+        self.widgets["straight"] = straight_button = tk.Button(
             style_frame,
             image=s_icon,
             command=lambda: self._setStyle("straight")
         )
+        ToolTip(straight_button, msg.SL_TT_STYLE_STRAIGHT)
         straight_button.image = s_icon
         straight_button.pack(side=tk.LEFT)
         r_icon = ImageTk.PhotoImage(file="img/style_round.png")
-        round_button = tk.Button(
+        if self.template.getroot().get("style") == "round":
+            r_icon = ImageTk.PhotoImage(file="img/style_round_sel.png")
+        self.widgets["round"] = round_button = tk.Button(
             style_frame,
             image=r_icon,
             command=lambda: self._setStyle("round")
         )
+        ToolTip(round_button, msg.SL_TT_STYLE_ROUND)
         round_button.image = r_icon
         round_button.pack(side=tk.LEFT)
         style_frame.pack(side=tk.LEFT)
@@ -534,6 +539,20 @@ class LayoutScreen(tk.Frame):
     def _setStyle(self, style=None):
         if not style:
             return
+        if style == "round":
+            r_icon = ImageTk.PhotoImage(file="img/style_round_sel.png")
+            s_icon = ImageTk.PhotoImage(file="img/style_straight.png")
+            self.widgets["round"].config(image=r_icon)
+            self.widgets["round"].image = r_icon
+            self.widgets["straight"].config(image=s_icon)
+            self.widgets["straight"].image = s_icon
+        if style == "straight":
+            r_icon = ImageTk.PhotoImage(file="img/style_round.png")
+            s_icon = ImageTk.PhotoImage(file="img/style_straight_sel.png")
+            self.widgets["round"].config(image=r_icon)
+            self.widgets["round"].image = r_icon
+            self.widgets["straight"].config(image=s_icon)
+            self.widgets["straight"].image = s_icon
         root = self.template.getroot()
         root.set("style", style)
 
