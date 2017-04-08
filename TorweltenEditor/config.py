@@ -1076,7 +1076,7 @@ class Page:
     BAR_WIDTH = 20
     OUTER_RADIUS = 4
     INNER_RADIUS = 2
-    Y_PADDING = 2
+    Y_PADDING = 4
     SPACER = 14
     MINLINE_HEIGHT = 14
     INFO_LINE = 9

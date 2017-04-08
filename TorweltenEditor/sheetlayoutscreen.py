@@ -257,6 +257,25 @@ class LayoutScreen(tk.Frame):
 
         tk.Label(frame, text=" ").pack(side=tk.LEFT)
 
+        style_frame = tk.LabelFrame(frame, text="style")
+        s_icon = ImageTk.PhotoImage(file="img/style_straight.png")
+        straight_button = tk.Button(
+            style_frame,
+            image=s_icon,
+            command=lambda: self._setStyle("straight")
+        )
+        straight_button.image = s_icon
+        straight_button.pack(side=tk.LEFT)
+        r_icon = ImageTk.PhotoImage(file="img/style_round.png")
+        round_button = tk.Button(
+            style_frame,
+            image=r_icon,
+            command=lambda: self._setStyle("round")
+        )
+        round_button.image = r_icon
+        round_button.pack(side=tk.LEFT)
+        style_frame.pack(side=tk.LEFT)
+
         img = ImageTk.PhotoImage(file="img/pdf.png")
         export = tk.Button(
             frame,
@@ -511,6 +530,12 @@ class LayoutScreen(tk.Frame):
             self._switchPage(1, goto=True)
         else:
             return template
+
+    def _setStyle(self, style=None):
+        if not style:
+            return
+        root = self.template.getroot()
+        root.set("style", style)
 
     # load a template from disk ... 
     def _loadTemplate(self):

@@ -1,0 +1,61 @@
+EricPoehlsen:
+    bullet
+    d0
+    d1
+    d2
+    d3
+    d4
+    d5
+    d6
+    d7
+    d8
+    d9
+    dmg_0
+    dmg_1
+    dmg_2
+    dmg0
+    dmg1
+    dmg2
+    dmg0s
+    dmg1s
+    dmg2s
+    ewt_00
+    ewt_05
+    ewt_10
+    ewt_20
+    ie_armor1
+    ie_armor2
+    ie_closure
+    ie_complex
+    ie_fabric
+    ie_pockets
+    ie_tick
+    ie_trimmings
+    sel
+    unsel
+    
+    
+Fatcow
+    account_menu
+    add_small
+    book_next
+    book_previous
+    cross
+    cross_small
+    exclamation
+    note_add
+    pdf
+    text_signature
+    tick
+    tree_list
+    
+    DERIVATIVES:
+        page_del
+        page_down
+        page_new
+        page_up
+    
+    
+ProjectIcons
+    design
+    suit

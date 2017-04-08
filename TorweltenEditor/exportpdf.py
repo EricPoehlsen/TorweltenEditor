@@ -30,9 +30,6 @@ TRIPLE_HEIGHT = page_data.TRIPLE_HEIGHT
 FULL_HEIGHT = page_data.FULL_HEIGHT
         
 BAR_WIDTH = page_data.BAR_WIDTH
-OUTER_RADIUS = page_data.OUTER_RADIUS
-INNER_RADIUS = page_data.INNER_RADIUS
-Y_PADDING = page_data.Y_PADDING
 FONT_NAME = "samuel"
 
 SPACER = page_data.SPACER
@@ -58,32 +55,44 @@ class DisplayPdf(Thread):
 
 
 class ExportPdf:
-    # defining some constants in points ... 
+    # defining some constants in points ...
 
     def __init__(self, filename, char, traits, template):
         self.char = char
         self.traits = traits
         self.filename = filename
         self.template = template
+        self.style = None
+
+        self.outer_radius = page_data.OUTER_RADIUS
+        self.inner_radius = page_data.INNER_RADIUS
+        self.y_padding = page_data.Y_PADDING
 
         self.pdf = self.start()
-        
+
         samuel = "fonts/hh_samuel.ttf"
-        pdfmetrics.registerFont(TTFont(FONT_NAME, samuel)) 
+        pdfmetrics.registerFont(TTFont(FONT_NAME, samuel))
 
         if self.template is not None:
+            self.style = self.template.getroot().get("style")
+
+            if not self.style:
+                self.style = "straight"
+                self.outer_radius = 0
+                self.inner_radius = 0
+
             pages = self.template.findall("page")
-            for page in pages: 
+            for page in pages:
                 self.renderPage(self.pdf, page)
                 self.nextPage(self.pdf)
-        else: 
+        else:
             self.renderStandard()
             self.nextPage(self.pdf)
-        
+
         self.save(self.pdf)
         self.display()
-    
-    # begin generation of a new pdf            
+
+    # begin generation of a new pdf
     def start(self):
         return canvas.Canvas(self.filename, pagesize=landscape(A4))
 
@@ -98,7 +107,7 @@ class ExportPdf:
         canvas.save()
         pass
 
-    # open pdf in os 
+    # open pdf in os
     def display(self):
         thread = DisplayPdf(self.filename)
         thread.start()
@@ -107,7 +116,7 @@ class ExportPdf:
     def renderPage(self, canvas, page):
         if page is not None:
             modules = page.findall("module")
-            for module in modules: 
+            for module in modules:
                 kwargs = {}
                 col = int(module.get("col"))
                 row = int(module.get("row"))
@@ -142,7 +151,7 @@ class ExportPdf:
                 elif mod_type == page_data.MOD_IMAGE:
                     self.moduleImage(**kwargs)
 
-    # standard one page sheet ... 
+    # standard one page sheet ...
     def renderStandard(self):
         self.moduleAttributes(
             self.pdf,
@@ -211,19 +220,30 @@ class ExportPdf:
         height: height in points
         title: string - text to display
         """
-        
+
         bar = BAR_WIDTH
-        i_rad = INNER_RADIUS
+        i_rad = self.inner_radius
+        pad = self.y_padding
         stroke = STROKE
 
         canvas.setFillColorRGB(1, 1, 1)
-        canvas.roundRect(x, (y+2-height), bar, height-4, i_rad, stroke, 1)
-
+        self.drawBackground(canvas, x, y, bar, height)
+        """
+        canvas.roundRect(
+            x,
+            y+pad-height,
+            bar,
+            height-(2*pad),
+            i_rad,
+            stroke,
+            1
+        )
+        """
         canvas.saveState()
         canvas.setFillColorRGB(0, 0, 0)
         canvas.rotate(90)
         canvas.setFont(FONT_NAME, 18)
-        canvas.drawRightString(y-4, -x-bar+3, title)
+        canvas.drawRightString(y-(2*pad), -x-bar+3, title)
         canvas.rotate(-90)
         canvas.restoreState()
 
@@ -235,12 +255,12 @@ class ExportPdf:
         CURRENTLY ONLY double EXISTS
         """
 
-        # localize variables for easy use ... 
+        # localize variables for easy use ...
         width = SINGLE_WIDTH
 
-        o_rad = OUTER_RADIUS
-        i_rad = INNER_RADIUS
-        padding = Y_PADDING
+        o_rad = self.outer_radius
+        i_rad = self.inner_radius
+        padding = self.y_padding
 
         stroke = STROKE
         bar = BAR_WIDTH
@@ -249,34 +269,31 @@ class ExportPdf:
         title = "ATTRIBUTE"
 
         # handle different sizes
-        if size == DOUBLE: 
+        if size == DOUBLE:
             height = DOUBLE_HEIGHT
         else:
             valid_sizes = [DOUBLE]
             raise TypeError("size: " + ",".join(valid_sizes))
 
-        # draw the outer box ... 
+        # draw the outer box ...
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(x, (y-height), width, height, o_rad, stroke, 1)
+        self.drawBackground(canvas, x, y, width, height)
 
-        self.drawTitle(canvas, x, y, height, title)
-        
         if size == DOUBLE:
             inner_height = height - 2*padding
             inner_width = width - bar
-            canvas.setFillColorRGB(1, 1, 1)
             local_x = x + bar
             local_y = y - inner_height - padding
-            canvas.roundRect(
+            canvas.setFillColorRGB(1, 1, 1)
+            canvas.rect(
                 local_x,
                 local_y,
-                inner_width,
+                inner_width + 2,
                 inner_height,
-                i_rad,
-                1,
+                0,
                 1
             )
-            canvas.rect(x+width - 3, y-height+3, 6, height - 6, 0, 1)
+
             # draw the vitals ...
             vitals = ["lp", "ep", "mp"]
             vit_width = 30
@@ -286,31 +303,28 @@ class ExportPdf:
             tag_text_size = tag_height - 3
             small_box_dims = vit_width * 1.0 / 5
             local_height = 10.0*box_dims + tag_height + 2.0*small_box_dims + 2*padding
-            
+
             for vital in vitals:
-            
+
                 local_x = x + width - vit_count*vit_width
                 local_y = y - height
-                
+
                 canvas.setFillColorRGB(0, 0, 0)
-                canvas.roundRect(
-                    local_x + box_dims/2,
-                    local_y,
+                self.drawBackground(
+                    canvas,
+                    local_x + box_dims / 2,
+                    local_y + local_height,
                     box_dims,
-                    local_height ,
-                    o_rad,
-                    1,
-                    1
+                    local_height,
                 )
+
                 lower_box_height = 2*padding + 2*small_box_dims + tag_height
-                canvas.roundRect(
+                self.drawBackground(
+                    canvas,
                     local_x,
-                    local_y,
+                    local_y + lower_box_height,
                     vit_width,
                     lower_box_height,
-                    o_rad,
-                    1,
-                    1
                 )
 
                 canvas.setFillColorRGB(1, 1, 1)
@@ -350,7 +364,7 @@ class ExportPdf:
                     local_y+2,
                     text
                 )
-                
+
                 local_y -= small_box_dims
                 canvas.setFillColorRGB(1, 1, 1)
                 for col in range(5):
@@ -376,19 +390,18 @@ class ExportPdf:
             val_col = (1.0 * scale_width - att_col) / 11
 
             # draw outer_box ...
-            bounding_width = att_col + 10.0 * val_col + bar 
+            bounding_width = att_col + 10.0 * val_col + bar
             bounding_height = len(attribs) * line_height + 2*padding
             local_x = x
-            local_y = y-height
+            local_y = y - height
+            attr_y = local_y + bounding_height
             canvas.setFillColorRGB(0, 0, 0)
-            canvas.roundRect(
+            self.drawBackground(
+                canvas,
                 local_x,
-                local_y,
+                attr_y,
                 bounding_width,
                 bounding_height,
-                o_rad,
-                stroke,
-                1
             )
 
             # draw attrib_lines ...
@@ -409,11 +422,11 @@ class ExportPdf:
                 canvas.setFont(FONT_NAME, text_size)
                 canvas.setFillColorRGB(0, 0, 0)
                 canvas.drawCentredString(
-                    local_x + att_col / 2, 
+                    local_x + att_col / 2,
                     local_y + 3,
                     attrib.upper()
                 )
-                
+
                 attr_value = self.char.getAttributeValue(attrib)
                 for value in range(10):
                     canvas.setFillColorRGB(1, 1, 1)
@@ -477,7 +490,7 @@ class ExportPdf:
         }
 
         # get space
-        data_height = inner_height - 6.3 * vit_width+2*padding
+        data_height = inner_height - (6 * vit_width) - (3 * padding)
         data_width = inner_width / 5.0
         line_height = data_height / 5.0
 
@@ -488,18 +501,16 @@ class ExportPdf:
 
         # draw border
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(
+        self.drawBackground(
+            canvas,
             local_x,
-            local_y,
+            local_y + data_height,
             width,
             data_height,
-            o_rad,
-            1,
-            1
         )
-        
+
         # draw contents ...
-        info_font = 4 
+        info_font = 4
         for i in range(5):
             local_x = x + bar
             local_y = y - padding - (i+1)*line_height
@@ -609,19 +620,17 @@ class ExportPdf:
 
         # draw image box
         local_x = x
-        local_y = y - height + 2.75 * vit_width
+        local_y = attr_y + 2*padding
         upper_y = y - height + 2*padding + 11*box_dims + 2*small_box_dims
 
         bounding_height = upper_y - local_y
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(
+        self.drawBackground(
+            canvas,
             local_x,
-            local_y,
+            local_y + bounding_height,
             bounding_width,
             bounding_height,
-            o_rad,
-            1,
-            1
         )
         local_y += padding
         canvas.setFillColorRGB(1, 1, 1)
@@ -641,7 +650,7 @@ class ExportPdf:
         image = self._loadImage("attrimg", img_width, img_height)
 
         # draw image ...
-        if image is not None: 
+        if image is not None:
             img = ImageReader(image)
             canvas.drawImage(
                 img,
@@ -680,15 +689,14 @@ class ExportPdf:
         info_title: String - Header Bar ...
         """
 
-        # localize variables for easy use ... 
+        # localize variables for easy use ...
         limit = 49
         width, height = self.sizeHandler(size)
         if width == DOUBLE_WIDTH:
             limit = 100
 
-        o_rad = OUTER_RADIUS
-        i_rad = INNER_RADIUS
-        padding = Y_PADDING
+        i_rad = self.inner_radius
+        padding = self.y_padding
 
         stroke = STROKE
         bar = BAR_WIDTH
@@ -707,17 +715,9 @@ class ExportPdf:
             line_count -= 1
         line_height = 1.0 * inner_height / line_count
 
-        # draw the outer box ... 
+        # draw the outer box ...
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(
-            x,
-            y-height,
-            width,
-            height,
-            o_rad,
-            stroke,
-            1
-        )
+        self.drawBackground(canvas, x, y, width, height)
 
         # prepare the text ...
         text = []
@@ -752,7 +752,7 @@ class ExportPdf:
         columns = [width - bar]
 
         # the header line ...
-        if info_title: 
+        if info_title:
             canvas.setFillColorRGB(1, 1, 1)
             local_x = x + bar
             local_y = y - padding - info_line
@@ -771,7 +771,7 @@ class ExportPdf:
             canvas.setFillColorRGB(0, 0, 0)
             canvas.setFont(FONT_NAME, 7)
             canvas.drawString(local_x + offset, local_y+offset, info_title)
-        
+
         canvas.setFillColorRGB(1, 1, 1)
         canvas.setFont(FONT_NAME, 10)
 
@@ -781,7 +781,7 @@ class ExportPdf:
         l = 0
 
         while i >= 0:
-            # construct the line ... 
+            # construct the line ...
             i -= lines_per_entry
             local_y = (y + padding - height) + line_height * (i+1)
             local_x = (x + bar)
@@ -810,19 +810,19 @@ class ExportPdf:
         size: string - "single", "wide, "double", "quart", "triple", "big", "full", "half"
         """
 
-        # localize variables for easy use ... 
+        # localize variables for easy use ...
         width = SINGLE_WIDTH
-        o_rad = OUTER_RADIUS
-        i_rad = INNER_RADIUS
-        padding = Y_PADDING
+        o_rad = self.outer_radius
+        i_rad = self.inner_radius
+        padding = self.y_padding
 
         stroke = STROKE
         width, height = self.sizeHandler(size)
 
-        # draw the outer box ... 
+        # draw the outer box ...
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(x, (y-height), width, height, o_rad, stroke, 1)
-        
+        self.drawBackground(canvas, x, y, width, height)
+
         # draw the inner box (so there is something white if the image has
         # transparency or there is no image
         canvas.setFillColorRGB(1, 1, 1)
@@ -843,7 +843,7 @@ class ExportPdf:
         image = self._loadImage(size, width, height)
 
         # draw image ...
-        if image is not None: 
+        if image is not None:
             img = ImageReader(image)
             canvas.drawImage(
                 img,
@@ -854,35 +854,36 @@ class ExportPdf:
                 mask="auto"
             )
 
-            # brute forcing a nice border ... 
-            canvas.setFillAlpha(0)
-            canvas.roundRect(
-                local_x,
-                local_y-local_height-padding,
-                width,
-                local_height+(2*padding),
-                o_rad,
-                stroke,
-                1
-            )
-            canvas.roundRect(
-                local_x,
-                local_y-local_height-(0.5*padding),
-                width,
-                local_height+padding,
-                (0.5*(o_rad+i_rad)),
-                stroke,
-                1)
-            canvas.roundRect(
-                local_x,
-                local_y-local_height,
-                width,
-                local_height,
-                i_rad,
-                stroke,
-                1
-            )
-            canvas.setFillAlpha(1)
+            # brute forcing a nice border ...
+            if self.style == "round":
+                canvas.setFillAlpha(0)
+                canvas.roundRect(
+                    local_x,
+                    local_y-local_height-padding,
+                    width,
+                    local_height+(2*padding),
+                    o_rad,
+                    stroke,
+                    1
+                )
+                canvas.roundRect(
+                    local_x,
+                    local_y-local_height-(0.5*padding),
+                    width,
+                    local_height+padding,
+                    (0.5*(o_rad+i_rad)),
+                    stroke,
+                    1)
+                canvas.roundRect(
+                    local_x,
+                    local_y-local_height,
+                    width,
+                    local_height,
+                    i_rad,
+                    stroke,
+                    1
+                )
+                canvas.setFillAlpha(1)
 
     def moduleTraits(
         self,
@@ -903,11 +904,11 @@ class ExportPdf:
         start_index: int - where to start in the skill list ...
         """
 
-        # localize variables for easy use ... 
+        # localize variables for easy use ...
         width = SINGLE_WIDTH
-        o_rad = OUTER_RADIUS
-        i_rad = INNER_RADIUS
-        padding = Y_PADDING
+        o_rad = self.outer_radius
+        i_rad = self.inner_radius
+        padding = self.y_padding
 
         stroke = STROKE
         bar = BAR_WIDTH
@@ -937,9 +938,9 @@ class ExportPdf:
             line_count -= 1
         line_height = 1.0 * inner_height / line_count
 
-        # draw the outer box ... 
+        # draw the outer box ...
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(x, y-height, width, height, o_rad, stroke, 1)
+        self.drawBackground(canvas, x, y, width, height)
         self.drawTitle(canvas, x, y, height, title)
 
         # this creates the appropriate header bar
@@ -988,8 +989,8 @@ class ExportPdf:
                     trait_list.append(trait)
                 elif xp < 0 and trait_type == "negative":
                     trait_list.append(trait)
-                
-        # draw the lines (and fill in skills if they exist ...                     
+
+        # draw the lines (and fill in skills if they exist ...
         trait_count = start_index
 
         canvas.setFont(FONT_NAME, 10)
@@ -997,7 +998,7 @@ class ExportPdf:
 
         i = line_count - 1
         while i >= 0:
-            # construct the line ... 
+            # construct the line ...
             local_y = (y + padding - height) + line_height * i
             local_x = (x + bar)
 
@@ -1012,7 +1013,7 @@ class ExportPdf:
                 i_rad
             )
             # info_box
-            if info_lines > 0: 
+            if info_lines > 0:
                 box_height = info_lines * line_height
                 temp_y = local_y - box_height
                 local_x = x + bar
@@ -1064,8 +1065,8 @@ class ExportPdf:
                 for desc in description:
                     if desc is None:
                         description.remove(desc)
-                
-                # add specification and rank to name ... 
+
+                # add specification and rank to name ...
                 trait_name += " " + spec + rank
 
                 # add variables (for one liners ...)
@@ -1081,7 +1082,7 @@ class ExportPdf:
                         else:
                             trait_name += ")"
 
-                # and trim ...                
+                # and trim ...
                 if len(trait_name) > limit:
                     trait_name = trait_name[0:limit] + "..."
                 canvas.drawString(
@@ -1098,7 +1099,7 @@ class ExportPdf:
                 )
 
                 # fill the info box ...
-                if info_lines > 0: 
+                if info_lines > 0:
                     local_x = x + bar
                     info_limit = limit + 10
                     cur_line = 0
@@ -1111,7 +1112,7 @@ class ExportPdf:
                             name=variables[v_count][0],
                             value=variables[v_count][1]
                         )
-                        if len(text) + len(var_text) > info_limit: 
+                        if len(text) + len(var_text) > info_limit:
                             local_y -= line_height
                             cur_line += 1
                             canvas.drawString(
@@ -1125,7 +1126,7 @@ class ExportPdf:
                         v_count += 1
                         if v_count < len(trait_vars):
                             text += ", "
-                    # add final line of variables text ... 
+                    # add final line of variables text ...
                     if text != "":
                         local_y -= line_height
                         cur_line += 1
@@ -1136,21 +1137,21 @@ class ExportPdf:
                         )
                         text = ""
 
-                    # add description to the lines that are still remaining ... 
+                    # add description to the lines that are still remaining ...
                     desc_count = 0
                     while cur_line < info_lines:
                         if desc_count < len(description):
                             desc_element = description[desc_count]
                             desc_words = desc_element.text.split()
 
-                            # render text for one description ... 
+                            # render text for one description ...
                             word_count = 0
                             while word_count < len(desc_words):
                                 l = len(text) + len(desc_words[word_count])
                                 if l < info_limit:
                                     text += " "+desc_words[word_count]
                                     word_count += 1
-                                else: 
+                                else:
                                     local_y -= line_height
                                     cur_line += 1
                                     if (cur_line == info_lines
@@ -1165,7 +1166,7 @@ class ExportPdf:
                                     text = ""
                                     if cur_line == info_lines:
                                         break
-                            # the final line ... 
+                            # the final line ...
                             if text != "":
                                 local_y -= line_height
                                 cur_line += 1
@@ -1197,13 +1198,13 @@ class ExportPdf:
         start_index: int - where to start in the skill list ...
         """
 
-        # localize variables for easy use ... 
+        # localize variables for easy use ...
         limit = 30
         info_line = INFO_LINE
         width = SINGLE_WIDTH
-        o_rad = OUTER_RADIUS
-        i_rad = INNER_RADIUS
-        padding = Y_PADDING
+        o_rad = self.outer_radius
+        i_rad = self.inner_radius
+        padding = self.y_padding
 
         # type cleanup ...
         start_index = int(start_index)
@@ -1235,21 +1236,12 @@ class ExportPdf:
         line_count = int(inner_height / MINLINE_HEIGHT)
         line_height = 1.0 * inner_height / line_count
 
-        # draw the outer box ... 
+        # draw the outer box ...
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(
-            x,
-            y-height,
-            width,
-            height,
-            o_rad,
-            stroke,
-            1
-        )
-        
+        self.drawBackground(canvas, x, y, width, height)
         self.drawTitle(canvas, x, y, height, title)
 
-        # create the columns: 
+        # create the columns:
         spec_col = 12
         skill_col = 8
         desc_col = width - bar - spec_col - 3 * skill_col
@@ -1305,19 +1297,20 @@ class ExportPdf:
                 if skill.get("type") in skill_type:
                     skill_list.append(skill)
 
-        # draw the lines (and fill in skills if they exist ...                     
+        # draw the lines (and fill in skills if they exist ...
         skill_count = start_index
         i = line_count - 1
         canvas.setFont(FONT_NAME, 10)
 
+        y_pad = self.y_padding
         while i >= 0:
-            line_y = (y + 2 - height) + line_height * i
+            line_y = (y + y_pad - height) + line_height * i
             line_x = (x + bar)
-            
+
             # retrieve the skill data ...
             skill_spec = ""
             skill_name = ""
-            skill_value = 0            
+            skill_value = 0
             if skill_count < len(skill_list):
                 skill = skill_list[skill_count]
                 skill_value = int(skill.get("value", "0"))
@@ -1332,7 +1325,7 @@ class ExportPdf:
                 if skill_spec_val == "3":
                     skill_spec = "S"
 
-            # construct the line ... 
+            # construct the line ...
             canvas.setFillColorRGB(1, 1, 1)
             # spec box
 
@@ -1429,12 +1422,12 @@ class ExportPdf:
                 if you want to just exclude a few types from the "all" list ...
             """
 
-        # localize variables for easy use ... 
+        # localize variables for easy use ...
         width = SINGLE_WIDTH
-        o_rad = OUTER_RADIUS
-        i_rad = INNER_RADIUS
-        padding = Y_PADDING
-        
+        o_rad = self.outer_radius
+        i_rad = self.inner_radius
+        padding = self.y_padding
+
         limit = 48
         stroke = STROKE
         bar = BAR_WIDTH
@@ -1470,16 +1463,16 @@ class ExportPdf:
         if lines_per_entry > 1:
             spacer = 1
 
-        # draw the outer box ... 
+        # draw the outer box ...
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(x, y-height, width, height, o_rad, stroke, 1)
+        self.drawBackground(canvas, x, y, width, height)
 
         # set title
         title = msg.PDF_EQUIPMENT.upper()
         # based on item ...
         if item_id >= 0:
             item = self.char.getItemById(str(item_id))
-            if item is not None: 
+            if item is not None:
                 title = item.get("name").upper()
                 container = item.find("container")
                 if container is not None:
@@ -1516,10 +1509,10 @@ class ExportPdf:
         # construct the appropriate itemlist ...
         item_list = []
         virtual_quantities = {}
-        # for item_id ... 
-        if item_id >= 0: 
+        # for item_id ...
+        if item_id >= 0:
             item = self.char.getItemById(item_id)
-            if item is not None: 
+            if item is not None:
                 item_ids = item.get("content", "")
                 item_ids = item_ids.split()
                 for id in item_ids:
@@ -1527,7 +1520,7 @@ class ExportPdf:
                     if sub_item is not None:
                         item_list.append(sub_item)
         else:
-            # get the full list ... 
+            # get the full list ...
             items = self.char.getItems()
             if condensed:
                 condensed_items = []
@@ -1658,7 +1651,7 @@ class ExportPdf:
                 msg.PDF_VALUE
             )
 
-        # draw the lines (and fill in skills if they exist ...                     
+        # draw the lines (and fill in skills if they exist ...
         canvas.setFont(FONT_NAME, 10)
         local_y = y - padding - info_line
         i = line_count - 1
@@ -1677,7 +1670,7 @@ class ExportPdf:
                 i_rad
             )
             local_x = x + bar
-            if info_lines > 0: 
+            if info_lines > 0:
                 box_height = info_lines * line_height
                 temp_y = local_y - box_height
                 if i < 0:
@@ -1752,27 +1745,27 @@ class ExportPdf:
                     )
 
                 # info lines :
-                if info_lines > 0: 
+                if info_lines > 0:
                     cur_line = 0
                     local_x = x + bar
 
-                    # print selected options ... 
+                    # print selected options ...
                     options = item.findall("option")
                     text = ""
                     text_2 = ""
-                    for option in options: 
+                    for option in options:
                         o_name = option.get("name")
                         o_value = option.get("value")
                         text += o_name + ": " + o_value + "  "
                         text_2 += "[" + o_value + "]"
-                    
+
                     # shorten text if necessary
                     text = text.strip()
                     if len(text) > limit:
                         text = text_2
-                    
-                    # print text ... 
-                    if len(text) > 0: 
+
+                    # print text ...
+                    if len(text) > 0:
                         cur_line += 1
                         local_y -= line_height
                         canvas.drawString(
@@ -1793,7 +1786,7 @@ class ExportPdf:
                     while (word_count < len(desc_words)
                            and cur_line <= info_lines
                         ):
-                        while len(text) + len(desc_words[word_count]) <= limit: 
+                        while len(text) + len(desc_words[word_count]) <= limit:
                             text += desc_words[word_count] + " "
                             word_count += 1
                             if word_count == len(desc_words):
@@ -1809,17 +1802,17 @@ class ExportPdf:
                             local_y + 3,
                             text
                         )
-                            
+
                         text = ""
 
-                    # fill empty lines ... 
+                    # fill empty lines ...
                     local_y -= (info_lines - cur_line) * line_height
-            
+
             # ... or just move the cursor down ...
-            else: 
+            else:
                 local_y -= info_lines * line_height
 
-            # next item ... 
+            # next item ...
             item_selector += 1
 
     def moduleWeapons(
@@ -1846,11 +1839,11 @@ class ExportPdf:
         info_lines: int - number of additional info lines ... 
         """
 
-        # localize variables for easy use ... 
+        # localize variables for easy use ...
         width = SINGLE_WIDTH
-        o_rad = OUTER_RADIUS
-        i_rad = INNER_RADIUS
-        padding = Y_PADDING
+        o_rad = self.outer_radius
+        i_rad = self.inner_radius
+        padding = self.y_padding
 
         limit = 40
         stroke = STROKE
@@ -1869,7 +1862,7 @@ class ExportPdf:
         inner_height = height - 2*padding - info_line
         line_count = int(inner_height / MINLINE_HEIGHT)
         lines_per_entry = 1 + info_lines
-        
+
         while line_count % lines_per_entry != 0:
             line_count -= 1
         line_height = 1.0 * inner_height / line_count
@@ -1877,15 +1870,15 @@ class ExportPdf:
         if lines_per_entry > 1:
             spacer = 1
 
-        # draw the outer box ... 
+        # draw the outer box ...
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(x, y-height, width, height, o_rad, stroke, 1)
+        self.drawBackground(canvas, x, y, width, height)
 
         # set title
         title = msg.PDF_WEAPONS.upper()
         # based on variant ...
         if variant is not None:
-            if variant == "melee": 
+            if variant == "melee":
                 title = msg.PDF_MELEE.upper()
                 item_type = [
                     it.CLUBS,
@@ -1895,7 +1888,7 @@ class ExportPdf:
                     it.OTHER_MELEE,
                     it.TOOLS
                 ]
-            elif variant == "guns": 
+            elif variant == "guns":
                 title = msg.PDF_GUNS.upper()
                 item_type = [
                     it.PISTOLS,
@@ -1907,7 +1900,7 @@ class ExportPdf:
                     it.AUTOMATIC_WEAPON,
                     it.BLASTER
                 ]
-            elif variant == "ammo": 
+            elif variant == "ammo":
                 title = msg.PDF_AMMO
                 item_type = [it.AMMO]
 
@@ -1917,30 +1910,30 @@ class ExportPdf:
         item_list = []
         items = self.char.getItems()
         if not equipped:
-            for item in items: 
-                # check for item_type 
-                if item_type is None: 
+            for item in items:
+                # check for item_type
+                if item_type is None:
                     if item.find("damage") is not None:
                         if item.get("type") != it.AMMO:
                             item_list.append(item)
-                else: 
-                    if item.get("type") in item_type: 
+                else:
+                    if item.get("type") in item_type:
                         if item.find("damage") is not None:
                             item_list.append(item)
-        else:                
-            for item in items: 
+        else:
+            for item in items:
                 if item.get("equipped", "0") == "1":
-                    # check for item_list and exclude ... 
-                    if item_type is None: 
+                    # check for item_list and exclude ...
+                    if item_type is None:
                         if item.find("damage") is not None:
                             if item.get("type") != it.AMMO:
                                 item_list.append(item)
-                    else:    
-                        if item.get("type") in item_type: 
+                    else:
+                        if item.get("type") in item_type:
                             if item.find("damage") is not None:
                                 item_list.append(item)
 
-        # condense item_list ammo ... 
+        # condense item_list ammo ...
         if variant == "ammo":
             new_list = []
             for item in item_list:
@@ -1956,7 +1949,7 @@ class ExportPdf:
                 item_added = False
                 for new_item in new_list:
                     new_name = new_item.get("name")
-                    
+
                     # check for name
                     if new_name == name:
                         # retrieve additional information
@@ -1976,10 +1969,10 @@ class ExportPdf:
                             new_quantity = int(new_item.get("quantity"))
                             new_item.set("quantity", str(quantity+new_quantity))
                             item_added = True
-                # ... or add the item to the list ... 
+                # ... or add the item to the list ...
                 if not item_added:
                     new_list.append(item)
-            # return the filtered item list ... 
+            # return the filtered item list ...
             item_list = new_list
 
         # this renders the appropriate header bar
@@ -2000,7 +1993,7 @@ class ExportPdf:
         if not amount:
             del columns[0]
 
-        # limit characters per line... 
+        # limit characters per line...
         info_limit = limit + 8
         if quantity_width > 0:
             limit -= 8
@@ -2028,7 +2021,7 @@ class ExportPdf:
         info_x += name_width + damage_width/2 - offset
         canvas.drawCentredString(info_x, info_y, msg.PDF_DAMAGE)
 
-        # draw the lines (and fill in skills if they exist ...                     
+        # draw the lines (and fill in skills if they exist ...
         canvas.setFont(FONT_NAME, 10)
 
         offset = 3
@@ -2037,8 +2030,8 @@ class ExportPdf:
         item_selector = 0
         while i >= 0:
             i -= lines_per_entry
-            # render the boxes ... 
-            # for line 1 ... 
+            # render the boxes ...
+            # for line 1 ...
             local_y -= line_height
             local_x = x + bar
             self.drawLineBackground(
@@ -2070,7 +2063,7 @@ class ExportPdf:
 
             # check if there is an item in the inventory to write to that line
             if item_selector < len(item_list):
-                
+
                 # get the data ...
                 item = item_list[item_selector]
                 # name
@@ -2088,22 +2081,22 @@ class ExportPdf:
                     ammo_list = loaded_ammo.split()
                     chambered_id = ammo_list[active_chamber - 1]
                     chambered_item = self.char.getItemById(chambered_id)
-                    if chambered_item is not None: 
+                    if chambered_item is not None:
                         chambered_damage = chambered_item.find("damage")
-                        if chambered_damage is not None: 
+                        if chambered_damage is not None:
                             item_damage = chambered_damage.get("value")
                 # #caliber
                 caliber = None
                 caliber_tag = item.find("option[@name='"+it.OPTION_CALIBER+"']")
                 if caliber_tag is not None:
                     caliber = caliber_tag.get("value")
-                
+
                 # cleanup the damage text ...
                 damage_data = item_damage.split("/")
                 s = 0
                 d = 0
                 e = ""
-                if len(damage_data) >= 2: 
+                if len(damage_data) >= 2:
                     s = int(damage_data[0])
                     d = int(damage_data[1])
                 if len(damage_data) == 3:
@@ -2138,7 +2131,7 @@ class ExportPdf:
                     local_y + offset,
                     item_name
                 )
-                
+
                 local_x += name_width
                 canvas.drawCentredString(
                     local_x + damage_width/2,
@@ -2146,15 +2139,15 @@ class ExportPdf:
                     item_damage
                 )
 
-                # adding stuff to the info lines ... 
+                # adding stuff to the info lines ...
                 if info_lines > 0:
-                    # capacity ... 
+                    # capacity ...
                     capacity_text = ""
                     text_1 = ""
                     text_2 = ""
-                    if ammo_tag is not None: 
+                    if ammo_tag is not None:
                         number_chambers = int(ammo_tag.get("chambers", "1"))
-                        if number_chambers > 1: 
+                        if number_chambers > 1:
                             if info_lines == 1:
                                 capacity_text = str(number_chambers)
                             else:
@@ -2162,9 +2155,9 @@ class ExportPdf:
                                     num=str(number_chambers),
                                     txt=msg.PDF_CHAMBERS
                                 )
-                        else: 
+                        else:
                             content_ids = item.get("content", "-1").split()
-                            for id in content_ids: 
+                            for id in content_ids:
                                 sub_item = self.char.getItemById(id)
                                 if sub_item is not None:
                                     sub_type = sub_item.get("type")
@@ -2202,25 +2195,25 @@ class ExportPdf:
                     desc_text = []
                     word_count = 0
                     description = item.find("description")
-                    if description is not None: 
+                    if description is not None:
                         text = description.text
                         if text is not None:
                             desc_text = text.split()
                     cur_line = 0
 
                     canvas.setFillColorRGB(0, 0, 0)
-                    while cur_line < info_lines: 
+                    while cur_line < info_lines:
                         cur_line += 1
                         local_y -= line_height
                         text = ""
                         core_lines = False
-                        if len(text_1) > 1 and cur_line == 1: 
+                        if len(text_1) > 1 and cur_line == 1:
                             text = text_1
                             core_lines = True
-                        if len(text_2) > 1 and cur_line == 2: 
+                        if len(text_2) > 1 and cur_line == 2:
                             text = text_2
                             core_lines = True
-                            
+
                         if not core_lines:
                             while len(text) < info_limit and word_count < len(desc_text):
                                 next_word = desc_text[word_count]
@@ -2234,8 +2227,8 @@ class ExportPdf:
                         canvas.drawString(local_x+offset,local_y+offset,text)
             else:
                 local_y -= info_lines*line_height
-            
-            # #next entry .. 
+
+            # #next entry ..
             item_selector += 1
 
     def moduleContacts(self,canvas,x,y,size = SINGLE, contact_type = "all", extended = True, info_lines = 2):
@@ -2248,11 +2241,11 @@ class ExportPdf:
         desc_lines: int - how many lines to show ... 
         """
 
-        # localize variables for easy use ... 
+        # localize variables for easy use ...
         width = SINGLE_WIDTH
-        o_rad = OUTER_RADIUS
-        i_rad = INNER_RADIUS
-        padding = Y_PADDING
+        o_rad = self.outer_radius
+        i_rad = self.inner_radius
+        padding = self.y_padding
 
         stroke = STROKE
         bar = BAR_WIDTH
@@ -2278,10 +2271,11 @@ class ExportPdf:
 
         line_height = 1.0 * inner_height / line_count
 
-        # draw the outer box ... 
+        # draw the outer box ...
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(x,(y-height),width,height,o_rad,stroke,1)
-        self.drawTitle(canvas,x,y,height,title)        
+        self.drawBackground(canvas, x, y, width, height)
+
+        self.drawTitle(canvas,x,y,height,title)
 
         # this creates the appropriate header bar
         info_y = y - padding - info_line
@@ -2292,7 +2286,7 @@ class ExportPdf:
         competency_width = 0.5 * line_width
         competency_val_w = 0.5/3 * line_width
         loyality_width = 0.5/3 * line_width
-        frequency_width = 0.5/3 * line_width 
+        frequency_width = 0.5/3 * line_width
 
         columns_1 = [
             name_width,
@@ -2316,7 +2310,7 @@ class ExportPdf:
         canvas.drawString(info_x, info_y, "Name")
         info_x += name_width
         canvas.drawString(info_x, info_y, "Ort")
-        
+
         info_y -= info_line + offset
         info_x = x + bar
         columns_2 = [
@@ -2346,35 +2340,35 @@ class ExportPdf:
         info_x += frequency_width
         canvas.drawCentredString(info_x, info_y, msg.PDF_LOYALITY)
 
-        # draw the lines (and fill in skills if they exist ...                     
- 
+        # draw the lines (and fill in skills if they exist ...
+
         canvas.setFont(FONT_NAME, 10)
-        
+
         contacts = self.char.getContacts()
-        
+
         # filter contact based on contact_type
         contact_list = []
         if contact_type == "all": contact_list = contacts
-        else: 
+        else:
             for contact in contacts:
                 xp = int(contact.get("xp","0"))
-                if xp >= 0 and contact_type == "friends": 
+                if xp >= 0 and contact_type == "friends":
                     contact_list.append(contact)
-                elif xp < 0 and contact_type == "enemies": 
+                elif xp < 0 and contact_type == "enemies":
                     contact_list.append(contact)
 
         contact_index = 0
-        
+
         local_y = y - padding - 2*info_line
         i = line_count - 1
         contact_selector_selector = 0
         while i >= 0:
             local_y -= line_height
             local_x = x + bar
-  
-            if contact_index < len(contact_list): 
+
+            if contact_index < len(contact_list):
                 contact = contact_list[contact_index]
-            else: 
+            else:
                 contact = None
             contact_index += 1
             mod = 1
@@ -2386,7 +2380,7 @@ class ExportPdf:
                 line_height - mod,
                 i_rad
             )
-            
+
             if contact is not None:
                 name = contact.get("name", "")
                 location = contact.get("location", "")
@@ -2398,10 +2392,10 @@ class ExportPdf:
                 local_x += name_width
                 canvas.drawString(local_x, local_y, location)
                 local_y -= offset
-            
+
             # next line
             i -= 1
-            if i < 0: 
+            if i < 0:
                 break
 
             local_y -= line_height
@@ -2448,35 +2442,35 @@ class ExportPdf:
                 break
 
             # add additional desc_lines ...
-            if extended:  
+            if extended:
 
                 lines = 0
                 while lines < info_lines:
                     lines += 1
                     i -= 1
                     if i < 0: break
-                if i == 0: 
+                if i == 0:
                     lines += 1
                     i -= 1
                 temp_y = local_y
                 local_y -= line_height * lines
-                
+
                 local_x = x + bar
                 canvas.setFillColorRGB(1, 1, 1)
                 mod = 1
                 if i <= 0:
                     mod = 0
                 canvas.roundRect(local_x,local_y+mod,width - bar,line_height*lines-mod,i_rad,stroke,1)
-            
-                # add description to box ... 
+
+                # add description to box ...
                 # wrap if necessary
                 if contact is not None:
                     line_length = 50
                     canvas.setFillColorRGB(0, 0, 0)
-                
+
                     description = contact.find("description")
                     text = None
-                    if description is not None: 
+                    if description is not None:
                         text = description.text
                     if text == None: text = ""
                     words = text.split()
@@ -2485,14 +2479,14 @@ class ExportPdf:
 
                     for word in words:
                         if line_content == "": line_content = word
-                        else: 
+                        else:
                             if len(line_content) + len(word) < line_length:
                                 line_content += " " + word
-                            else: 
+                            else:
                                 text_lines.append(line_content)
                                 line_content = word
                     text_lines.append(line_content)
-                    
+
                     count = min(lines,len(text_lines))
 
                     num = 0
@@ -2501,7 +2495,7 @@ class ExportPdf:
                         temp_y -= line_height
                         temp_x = x + bar
                         num += 1
-                        if i == count and len(text_lines) >= count: 
+                        if i == count and len(text_lines) >= count:
                             line += "..."
                         canvas.drawString(temp_x + offset, temp_y + offset, line)
 
@@ -2512,16 +2506,16 @@ class ExportPdf:
         size: string - "single"
         """
 
-        # localize variables for easy use ... 
+        # localize variables for easy use ...
         line = 11
         col = 11
 
         width = SINGLE_WIDTH
         height = SINGLE_HEIGHT
-        o_rad = OUTER_RADIUS
-        i_rad = INNER_RADIUS
-        padding = Y_PADDING
-        
+        o_rad = self.outer_radius
+        i_rad = self.inner_radius
+        padding = self.y_padding
+
         stroke = STROKE
         bar = BAR_WIDTH
 
@@ -2530,16 +2524,15 @@ class ExportPdf:
         if size != SINGLE:
             raise TypeError("size: " + SINGLE)
 
-
-        # draw the outer box ... 
+        # draw the outer box ...
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.roundRect(x,(y-height),width,height,o_rad,stroke,1)
-        
+        self.drawBackground(canvas, x, y, width, height)
+
         self.drawTitle(canvas,x,y,height,title)
 
-        # draw the lines (and fill in skills if they exist ...                     
+        # draw the lines (and fill in skills if they exist ...
         ewt = config.EWT
-        
+
         ewt_20 = ImageReader("img/ewt_20.png")
         ewt_10 = ImageReader("img/ewt_10.png")
         ewt_05 = ImageReader("img/ewt_05.png")
@@ -2547,7 +2540,7 @@ class ExportPdf:
 
         roll_width = 10
         inner_width = width - bar
-        
+
         box_dims = (inner_width - roll_width) / 15.0
 
         firstline_height = height - 2*padding - 10*box_dims
@@ -2566,10 +2559,10 @@ class ExportPdf:
             canvas.setFillColorRGB(0, 0, 0)
             canvas.drawCentredString(local_x+(0.5*box_dims),local_y+3,str(i-7))
             local_x += box_dims
-        
+
         # the ewt matrix
         for line_count in range(10):
-            local_y -= box_dims 
+            local_y -= box_dims
             local_x = x + bar
             canvas.setFillColorRGB(1, 1, 1)
             canvas.roundRect(local_x,local_y,roll_width,box_dims,i_rad,stroke,1)
@@ -2635,7 +2628,7 @@ class ExportPdf:
             width = DOUBLE_WIDTH
         return width, height
 
-    # load and crop an image to place it on the canvas ... 
+    # load and crop an image to place it on the canvas ...
     def _loadImage(self, size, width, height):
                 # load the image ...
         image_tag = self.char.getImage()
@@ -2652,7 +2645,7 @@ class ExportPdf:
             image_ratio = 1.0 * image_width / image_height
 
             # get positioning data from xml ...
-            if size_tag is not None: 
+            if size_tag is not None:
                 x_start = float(size_tag.get("x"))
                 y_start = float(size_tag.get("y"))
                 scale = float(size_tag.get("scale"))
@@ -2667,7 +2660,7 @@ class ExportPdf:
                     x_start = 0.0
                     y_start = 0.5 - 0.5 / ratio
 
-            # crop image based on selection 
+            # crop image based on selection
             x1 = int(x_start * image_width)
             y1 = int(y_start * image_height)
             crop_width = int(1.0 * image_width * scale)
@@ -2695,3 +2688,28 @@ class ExportPdf:
                 1
             )
             local_x += column
+
+    def drawBackground(self, canvas, x, y, width, height):
+        if self.style == "round":
+            o_rad = self.outer_radius
+            stroke = STROKE
+            canvas.roundRect(x, (y - height), width, height, o_rad, stroke, 1)
+
+        if self.style == "straight":
+            pad = self.y_padding
+            x1 = x
+            x2 = x + width
+            y1 = y
+            y2 = y - height
+            canvas.setLineJoin(1)
+            path = canvas.beginPath()
+            path.moveTo(x1 + pad, y1)
+            path.lineTo(x2 - pad, y1)
+            path.lineTo(x2, y1 - pad)
+            path.lineTo(x2, y2 + pad)
+            path.lineTo(x2 - pad, y2)
+            path.lineTo(x1 + pad, y2)
+            path.lineTo(x1, y2 + pad)
+            path.lineTo(x1, y1 - pad)
+            path.close()
+            canvas.drawPath(path, stroke=1, fill=1)

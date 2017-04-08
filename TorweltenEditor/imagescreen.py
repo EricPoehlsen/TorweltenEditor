@@ -484,7 +484,8 @@ class ImageScreen(tk.Frame):
         et.SubElement(page2,"module",{"row":"0", "col":"0", "size":"wide","type":"image","id":"7"})
         et.SubElement(page2,"module",{"row":"1", "col":"0", "size":"big","type":"image","id":"8"})
         et.SubElement(page2,"module",{"row":"0", "col":"2", "size":"half","type":"image","id":"9"})
+        tree = et.ElementTree(template)
 
-        exportpdf.ExportPdf("test.pdf",self.char,self.app.traits,template)
+        exportpdf.ExportPdf("test.pdf",self.char,self.app.traits,tree)
 
 
