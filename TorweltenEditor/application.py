@@ -35,6 +35,7 @@ class Application(tk.Frame):
     def __init__(self, main):
         tk.Frame.__init__(self, main)
         self.main = main
+        main.title(msg.TITLE)
         self.style = tk.Style()
         self._setStyle()
 
@@ -398,10 +399,27 @@ class Application(tk.Frame):
             lambda event: self._switchEditMode("view")
         )
 
-
     def _switchEditMode(self, mode):
         self.char.setEditMode(mode)
+        self.updateTitle()
         self._switchWindow(msg.TOOLBAR_CHAR_DATA)
+
+    def updateTitle(self):
+        modes = {
+                "generation": msg.TITLE_EM_GENERATION,
+                "edit": msg.TITLE_EM_EDIT,
+                "view": msg.TITLE_EM_VIEW,
+                "simulation": msg.TITLE_EM_SIMULATION,
+            }
+
+        title = [
+            msg.TITLE,
+            self.char.getData("name"),
+            modes.get(self.char.getEditMode(), "")
+        ]
+        title = " - ".join(title)
+        self.main.title(title)
+
 
     def _reloadData(self):
         """ Reloading data files

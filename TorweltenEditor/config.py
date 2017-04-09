@@ -23,7 +23,11 @@ EWT = [[2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,0.5],  # 1
 class Messages:
     """ Messages provides a variety of strings for the UI and PDF Export """
 
-    title = "Torwelten Charaktergenerator"
+    TITLE = "Torwelten Charaktergenerator"
+    TITLE_EM_GENERATION = "[Charaktererschaffung]"
+    TITLE_EM_EDIT = "[Bearbeitungsmodus]"
+    TITLE_EM_VIEW = "[Ansichtsmodus]"
+    TITLE_EM_SIMULATION = "[Simulation]"
 
     # #####GENERIC UI TEXT # ######
     NAME = "Name"
@@ -1166,7 +1170,7 @@ class ItemTypes:
     IMPLANT_PART = "implant_part"
 
     OPTION_CALIBER = "caliber"
-    OPTION_COLOR = "Farbe"
+    OPTION_COLOR = "color"
 
 
 class TraitGroups:

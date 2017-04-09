@@ -335,6 +335,8 @@ class CharScreen(tk.Frame):
         data_name = self.char.data_trace[var_name]
         data_value = self.char.data_values[data_name].get()
         self.char.updateData(data_name, data_value)
+        if data_name == "name":
+            self.app.updateTitle()
 
     def updateTraitList(self):
         """ Fill the traits text widget with content. """
@@ -536,8 +538,8 @@ class CharScreen(tk.Frame):
                 )
             else:
                 canvas.create_text(
-                    190,            # x
-                    y_pos*height + 3,   # y^
+                    190,                # x
+                    y_pos*height + 3,   # y
                     anchor=tk.NE,
                     text=value_text,
                     font="Arial 10 bold")
