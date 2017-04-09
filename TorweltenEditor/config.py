@@ -110,6 +110,13 @@ class Messages:
     TS_XS = "Extraspatiales"
     TS_PSI = "Psionik"
 
+    # TRAIT INFO
+    TI_REMOVE = "{type} löschen"
+    TI_LESSEN = "{type} um eins senken"
+    TI_INTENSIFY = "{type} um eins steigern"
+    TI_ADVANTAGE = "Vorteil"
+    TI_DISADVANTAGE = "Nachteil"
+
     # SKILL SELECTOR
     SS_TITLE = "Fertigkeiten wählen"
     SS_ADD_REMOVE_SKILLS = "Fertigkeiten hinzufügen/entfernen"

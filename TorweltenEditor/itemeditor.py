@@ -144,6 +144,8 @@ class ItemEditor(tk.Toplevel):
             command=self.destroyItem
         )
         destroy_button.image = destroy_icon
+        if self.char.getEditMode() == "generation":
+            destroy_button.state(["disabled"])
         destroy_button.pack(side=tk.LEFT)
         ToolTip(destroy_button, msg.IE_TT_DESTROY)
 
@@ -728,7 +730,7 @@ class ItemEditor(tk.Toplevel):
             command=self.fireWeapon
         )
 
-        if chambered_item is None:
+        if chambered_item is None or self.char.getEditMode() == "generation":
             fire_button.config(state=tk.DISABLED)
         fire_button.pack(fill=tk.X)
 
@@ -817,7 +819,7 @@ class ItemEditor(tk.Toplevel):
             text=msg.IE_FIRE_WEAPON,
             command=self.fireWeapon
         )
-        if chambered_item is None:
+        if chambered_item is None or self.char.getEditMode() == "generation":
             fire_button.config(state=tk.DISABLED)
         fire_button.pack(fill=tk.X)
 

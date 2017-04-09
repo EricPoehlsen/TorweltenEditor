@@ -1,6 +1,9 @@
 import tk_ as tk
 import config
+from tooltip import ToolTip
+from PIL import ImageTk
 
+msg = config.Messages()
 # Display additional information about selected traits ... # #
 
 
@@ -27,7 +30,6 @@ class TraitInfo(tk.Toplevel):
         self.specification = self.char_trait.findall("./specification")
         self.ranks = self.char_trait.findall("./rank")
         self.variables = self.char_trait.findall("./variable")
-        self.trait = self.traits.getTrait(self.trait_name)
         self.id = self.char_trait.get("id")
 
         self.trait_xp = self.char_trait.get("xp")
@@ -60,23 +62,72 @@ class TraitInfo(tk.Toplevel):
     def drawTitle(self):
         """ Renders the title of the window """
 
-        x = 5
+        x = 2
         title_width = 250
-        if self.char.getEditMode() == "generation":
-            remove_button = tk.Button(
+        edit_mode = self.char.getEditMode()
+        i_xp = int(self.trait_xp)
+        if i_xp > 0: trait_type = msg.TI_ADVANTAGE
+        else: trait_type = msg.TI_DISADVANTAGE
+        if edit_mode == "generation":
+            icon = ImageTk.PhotoImage(file="img/del_s.png")
+            remove_button = tk.Label(
                 self.canvas,
-                text="Entfernen",
-                command=self.removeTrait
+                image=icon,
+            )
+            remove_button.image = icon
+            ToolTip(remove_button, msg.TI_REMOVE.format(type=trait_type))
+            remove_button.bind(
+                "<Button-1>",
+                self.removeTrait
             )
             self.canvas.create_window(
-                0,
+                x,
                 0,
                 window=remove_button,
                 anchor=tk.NW
             )
-            x += remove_button.winfo_reqwidth() + 5
-            title_width -= x
+            x += remove_button.winfo_reqwidth() + 2
 
+        if edit_mode != "view":
+            minus = ImageTk.PhotoImage(file="img/minus_s.png")
+            plus = ImageTk.PhotoImage(file="img/plus_s.png")
+            m_button = tk.Label(
+                self.canvas,
+                image=minus,
+            )
+            m_button.image = minus
+            m_button.bind(
+                "<Button-1>",
+                lambda event: self.modTrait(event, -1)
+            )
+
+            ToolTip(m_button, msg.TI_LESSEN.format(type=trait_type))
+            self.canvas.create_window(
+                x,
+                0,
+                window=m_button,
+                anchor=tk.NW
+            )
+            x += m_button.winfo_reqwidth() + 2
+            p_button = tk.Label(
+                self.canvas,
+                image=plus,
+            )
+            p_button.image = plus
+            ToolTip(p_button, msg.TI_INTENSIFY.format(type=trait_type))
+            p_button.bind(
+                "<Button-1>",
+                self.modTrait
+            )
+            self.canvas.create_window(
+                x,
+                0,
+                window=p_button,
+                anchor=tk.NW
+            )
+            x += p_button.winfo_reqwidth() + 2
+
+        title_width -= x
         title = tk.Label(
             self.canvas,
             font="Arial 12 bold",
@@ -126,8 +177,6 @@ class TraitInfo(tk.Toplevel):
         """ Finds the description and draws it """
 
         description = self.char_trait.find("description")
-        if description is None:
-            description = self.trait.find("./description")
         if description.text:
             self.drawText(description.text)
 
@@ -184,15 +233,29 @@ class TraitInfo(tk.Toplevel):
         )
         self.y += label.winfo_reqheight()
 
-    def updateTraitRank(self, rank_id, delta):
-        rank_tag = self.trait.find("./rank[@id='"+rank_id+"']")
-
-    def removeTrait(self):
+    def removeTrait(self, event=None):
         """ Removing the trait """
 
         self.char.removeTraitByID(self.id)
         self.destroy()
         self.app.updateTraitList()
+
+    def modTrait(self, event=None, factor=1):
+        cur_xp = int(self.trait_xp)
+        if cur_xp < 0:
+            xp = -1 * factor
+        else:
+            xp = 1 * factor
+
+        new_xp = cur_xp + xp
+
+        self.trait_xp = str(new_xp)
+        self.char.updateTraitById(self.id, xp)
+        self.drawTitle()
+        self.app.updateTraitList()
+
+        if new_xp == 0:
+            self.removeTrait()
 
     def finalize(self):
         """ Called at the end of layout to set scroll area"""

@@ -320,6 +320,13 @@ class Application(tk.Frame):
             "green.TLabel",
             foreground=config.Colors.DARK_GREEN
         )
+        self.style.configure(
+            "attr.TLabel",
+            font="Arial 14 bold",
+            justify=tk.CENTER,
+            anchor=tk.CENTER
+
+        )
 
         self.style.configure(
             "test.TFrame",
@@ -374,7 +381,28 @@ class Application(tk.Frame):
             "<Control-F5>",
             lambda event: self._reloadData()
         )
-        
+        self.main.bind_all(
+            "<F9>",
+            lambda event: self._switchEditMode("generation")
+        )
+        self.main.bind_all(
+            "<F10>",
+            lambda event: self._switchEditMode("edit")
+        )
+        self.main.bind_all(
+            "<F11>",
+            lambda event: self._switchEditMode("simulation")
+        )
+        self.main.bind_all(
+            "<F12>",
+            lambda event: self._switchEditMode("view")
+        )
+
+
+    def _switchEditMode(self, mode):
+        self.char.setEditMode(mode)
+        self._switchWindow(msg.TOOLBAR_CHAR_DATA)
+
     def _reloadData(self):
         """ Reloading data files
 

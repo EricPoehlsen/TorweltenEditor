@@ -565,6 +565,18 @@ class Character(object):
             traits.remove(trait)
             self.updateAvailableXP(xp)
 
+    def updateTraitById(self, id, xp=None, description=None):
+        traits = self.xml_char.find("traits")
+        trait = traits.find("trait[@id='" + id + "']")
+
+        if xp:
+            cur_trait_xp = int(trait.get("xp"))
+            trait.set("xp", str(cur_trait_xp + xp))
+
+            self.updateAvailableXP(-xp)
+
+
+
     def getSkills(self):
         """ Get all character skill elements
 

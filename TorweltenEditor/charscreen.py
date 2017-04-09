@@ -47,6 +47,7 @@ class CharScreen(tk.Frame):
         attr_frame = tk.Frame(frame_1)
         attr_list = self.char.ATTRIB_LIST
 
+        edit_mode = self.char.getEditMode()
         for attr in attr_list:
             frame = tk.LabelFrame(
                 attr_frame,
@@ -59,7 +60,7 @@ class CharScreen(tk.Frame):
             attrib_values[attr].set(self.char.getAttributeValue(attr))
             
             # in generation mode we have spinboxes ...             
-            if self.char.getEditMode() == "generation":
+            if edit_mode == "generation":
                 self.char.attrib_trace[str(attrib_values[attr])] = attr
 
                 self.widgets[attr] = tk.Spinbox(
@@ -79,29 +80,44 @@ class CharScreen(tk.Frame):
                 )
 
             # in edit mode there are buttons and labels
-            if self.char.getEditMode() == "edit":
+            if edit_mode == "edit":
+                frame.columnconfigure(0, weight=100)
                 value_field = tk.Label(
                     frame, 
-                    textvariable=attrib_values[attr], 
+                    textvariable=attrib_values[attr],
+                    style="attr.TLabel",
                     width=3
                 )
-                value_field.pack(side=tk.LEFT)
-                self.widgets[attr+"_inc"] = tk.Button(
+                value_field.grid(
+                    row=0,
+                    column=0,
+                    sticky=tk.EW
+                )
+                plus = ImageTk.PhotoImage(file="img/plus_s.png")
+                self.widgets[attr+"_inc"] = tk.Label(
                     frame, 
-                    text="+",
-                    command=lambda attr=attr:
+                    image=plus,
+                )
+                self.widgets[attr + "_inc"].image = plus
+                self.widgets[attr + "_inc"].bind(
+                    "<Button-1>",
+                    lambda event, attr=attr:
                         self.increaseAttribute(attr)
                 )
-                self.widgets[attr+"_inc"].pack(side=tk.RIGHT)
-            
-            # in view mode there is only a label ...
-            if self.char.getEditMode() in ["view", "simulation"]:
+                self.widgets[attr+"_inc"].grid(
+                    row=0,
+                    column=1,
+                    sticky=tk.EW
+                )
+            # in view and sim mode there is only a label ...
+            if edit_mode in ["view", "simulation"]:
                 value_field = tk.Label(
                     frame,
-                    textvariable=attrib_values[attr], 
+                    textvariable=attrib_values[attr],
+                    style="attr.TLabel",
                     width=3
                 )
-                value_field.pack(fill=tk.X)
+                value_field.pack(fill=tk.X, expand=1)
 
             frame.pack(fill=tk.X)
         attr_frame.pack(fill=tk.X, anchor=tk.N)
@@ -165,7 +181,10 @@ class CharScreen(tk.Frame):
                 textvariable=value_var,
                 width=width
             )
-            entry.bind("<FocusOut>", self.dataUpdated)
+            if edit_mode in ["view", "simulation"]:
+                entry.state(["disabled"])
+            else:
+                entry.bind("<FocusOut>", self.dataUpdated)
             entry.pack(fill=tk.X, expand=1)
             frame.grid(
                 row=data[2],
@@ -201,13 +220,16 @@ class CharScreen(tk.Frame):
         traits_frame.pack(fill=tk.BOTH, expand=1)
 
         new_traits_button = tk.Button(
-            traits_frame, 
-            text=msg.CS_ADD_TRAIT, 
+            traits_frame,
+            text=msg.CS_ADD_TRAIT,
             command=self.showTraitWindow
         )
-        new_traits_button.pack(fill=tk.X)
-        traits_frame.pack(fill=tk.BOTH, expand=1)
 
+        if edit_mode in ["view", "simulation"]:
+            new_traits_button.state(["disabled"])
+        new_traits_button.pack(fill=tk.X)
+
+        traits_frame.pack(fill=tk.BOTH, expand=1)
         frame_2.pack(side=tk.LEFT, anchor=tk.N, fill=tk.Y, expand=1)
 
         # this frame holds the character skills ... 
@@ -272,6 +294,9 @@ class CharScreen(tk.Frame):
             text=msg.CS_ADD_SKILLS, 
             command=self.showSkillWindow
         )
+        if edit_mode in ["view", "simulation"]:
+            new_skill_button.state(["disabled"])
+
         new_skill_button.grid(row=1, column=0, columnspan=2, sticky="nsew")
 
         frame_3.rowconfigure(0, weight=100)
@@ -442,11 +467,16 @@ class CharScreen(tk.Frame):
                 font="Arial 10 bold"
                 )
             # or a button just to increase skill
-            value_button = self.widgets[skill_text+"_inc"] = tk.Button(
+            plus = ImageTk.PhotoImage(file="img/plus_s.png")
+            value_button = self.widgets[skill_text+"_inc"] = tk.Label(
                 canvas,
-                text="+",
-                command=lambda canvas=canvas, skill_text=skill_text:
-                    self.increaseSkill(skill_text, canvas)
+                image=plus,
+            )
+            value_button.image = plus
+            value_button.bind(
+                "<Button-1>",
+                lambda event, canvas=canvas, skill_text=skill_text:
+                self.increaseSkill(skill_text, canvas)
             )
             value_text = self.char.skill_values[skill_text].get()
  
@@ -464,11 +494,15 @@ class CharScreen(tk.Frame):
                     outline="#ddddff"
                 )
             # name
+
+            show_text = skill_text
+            if len(show_text) > 22:
+                show_text = show_text[0:20] +  "..."
             text = canvas.create_text(
                 2,                  # x
-                y_pos*height + 2,   # y
+                y_pos*height + 3,   # y
                 anchor=tk.NW,
-                text=skill_text,
+                text=show_text,
                 font=skill_font
             )
             canvas.tag_bind(
@@ -481,8 +515,8 @@ class CharScreen(tk.Frame):
             # value
             if edit_mode == "generation": 
                 canvas.create_window(
-                    190,            # x
-                    y_pos*height,   # y
+                    190,                # x
+                    y_pos*height + 2,   # y
                     anchor=tk.NE,
                     window=value_spinner
                 )
@@ -494,8 +528,8 @@ class CharScreen(tk.Frame):
                     window=value_button
                 )
                 self.widgets[skill_text+"_txt"] = canvas.create_text(
-                    170,            # x
-                    y_pos*height,   # y
+                    170,                # x
+                    y_pos*height + 3,   # y
                     anchor=tk.NE,
                     text=value_text,
                     font="Arial 10 bold"
@@ -503,7 +537,7 @@ class CharScreen(tk.Frame):
             else:
                 canvas.create_text(
                     190,            # x
-                    y_pos*height,   # y^
+                    y_pos*height + 3,   # y^
                     anchor=tk.NE,
                     text=value_text,
                     font="Arial 10 bold")
