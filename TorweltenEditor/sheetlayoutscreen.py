@@ -1,10 +1,8 @@
-# coding=utf-8
-
 import xml.etree.ElementTree as et
 import tkinter.filedialog as tkfd
 from moduleeditor import ModuleEditor
 from PIL import ImageTk, Image, PngImagePlugin
-import tkinter as tk
+import tk_ as tk
 import config
 from tooltip import ToolTip
 page = config.Page()
@@ -38,9 +36,11 @@ class LayoutScreen(tk.Frame):
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
         self.app = app
+        self.style = app.style
         self.char = app.char
         self.open_windows = app.open_windows
-        
+        self.widgets = {}
+
         self.template = None
         self.grid = []
 
@@ -60,8 +60,6 @@ class LayoutScreen(tk.Frame):
             pages=str(self.pages)
         )
         self.cur_page.set(page_label)
-
-        self.widgets = {}
 
         self.center_frame = tk.Frame(self)
         
@@ -257,6 +255,31 @@ class LayoutScreen(tk.Frame):
         pages.pack(side=tk.LEFT)
 
         tk.Label(frame, text=" ").pack(side=tk.LEFT)
+
+        style_frame = tk.LabelFrame(frame, text=msg.SL_STYLE)
+        s_icon = ImageTk.PhotoImage(file="img/style_straight.png")
+        if self.template.getroot().get("style") == "straight":
+            s_icon = ImageTk.PhotoImage(file="img/style_straight_sel.png")
+        self.widgets["straight"] = straight_button = tk.Button(
+            style_frame,
+            image=s_icon,
+            command=lambda: self._setStyle("straight")
+        )
+        ToolTip(straight_button, msg.SL_TT_STYLE_STRAIGHT)
+        straight_button.image = s_icon
+        straight_button.pack(side=tk.LEFT)
+        r_icon = ImageTk.PhotoImage(file="img/style_round.png")
+        if self.template.getroot().get("style") == "round":
+            r_icon = ImageTk.PhotoImage(file="img/style_round_sel.png")
+        self.widgets["round"] = round_button = tk.Button(
+            style_frame,
+            image=r_icon,
+            command=lambda: self._setStyle("round")
+        )
+        ToolTip(round_button, msg.SL_TT_STYLE_ROUND)
+        round_button.image = r_icon
+        round_button.pack(side=tk.LEFT)
+        style_frame.pack(side=tk.LEFT)
 
         img = ImageTk.PhotoImage(file="img/pdf.png")
         export = tk.Button(
@@ -512,6 +535,26 @@ class LayoutScreen(tk.Frame):
             self._switchPage(1, goto=True)
         else:
             return template
+
+    def _setStyle(self, style=None):
+        if not style:
+            return
+        if style == "round":
+            r_icon = ImageTk.PhotoImage(file="img/style_round_sel.png")
+            s_icon = ImageTk.PhotoImage(file="img/style_straight.png")
+            self.widgets["round"].config(image=r_icon)
+            self.widgets["round"].image = r_icon
+            self.widgets["straight"].config(image=s_icon)
+            self.widgets["straight"].image = s_icon
+        if style == "straight":
+            r_icon = ImageTk.PhotoImage(file="img/style_round.png")
+            s_icon = ImageTk.PhotoImage(file="img/style_straight_sel.png")
+            self.widgets["round"].config(image=r_icon)
+            self.widgets["round"].image = r_icon
+            self.widgets["straight"].config(image=s_icon)
+            self.widgets["straight"].image = s_icon
+        root = self.template.getroot()
+        root.set("style", style)
 
     # load a template from disk ... 
     def _loadTemplate(self):

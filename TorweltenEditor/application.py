@@ -1,9 +1,10 @@
 import re
 import tkinter.filedialog as tkfd
-import char_xml as character
-import item_xml
-import skill_xml
-import trait_xml
+from setting_xml import Settings
+from char_xml import Character
+from item_xml import ItemTree
+from skill_xml import SkillTree
+from trait_xml import TraitTree
 import config
 from charscreen import CharScreen
 from equipmentscreen import EquipmentScreen
@@ -15,9 +16,10 @@ from sheetlayoutscreen import LayoutScreen
 from exportpdf import ExportPdf
 from imagescreen import ImageScreen
 from notesscreen import NotesScreen
+from aboutscreen import About
 from improvewindow import Improve
 from PIL import ImageTk, Image, PngImagePlugin
-import tkinter as tk
+import tk_ as tk
 
 msg = config.Messages()
 
@@ -32,16 +34,18 @@ class Application(tk.Frame):
 
     def __init__(self, main):
         tk.Frame.__init__(self, main)
-        # maybe important later ... 
-        self.dimensions = None
-        
-        # create the character instance # #
-        self.char = character.Character()
-        self.skills = skill_xml.SkillTree()
-        self.traits = trait_xml.TraitTree()
-        self.itemlist = item_xml.ItemTree()
-
         self.main = main
+        self.style = tk.Style()
+        self._setStyle()
+
+        # setting up data
+        self.settings = Settings()
+
+        self.char = Character()
+        self.skills = SkillTree(self.settings)
+        self.traits = TraitTree(self.settings)
+        self.itemlist = ItemTree(self.settings)
+
         self._setHotkeys()
 
         # creating the menu
@@ -159,7 +163,7 @@ class Application(tk.Frame):
             (msg.TOOLBAR_CHAR_IMAGE, "img/char_image.png"),
             (msg.TOOLBAR_CHAR_LAYOUT, "img/pdf.png")
         ]
-        width = 122
+        width = 20
 
         for i, label in enumerate(buttons):
             image = ImageTk.PhotoImage(file=label[1])
@@ -179,9 +183,10 @@ class Application(tk.Frame):
 
     def newChar(self):
         """ Creating a new empty character template """
-        self.char = character.Character()
+        self.char = Character()
+        init_xp = int(self.settings.getInitialXP())
         self.char.addXP(
-            amount=300, 
+            amount=init_xp,
             reason=msg.CHAR_INITIAL_XP
         )
         self._switchWindow(msg.TOOLBAR_CHAR_DATA)
@@ -285,6 +290,7 @@ class Application(tk.Frame):
             msg.MENU_SETTINGS: SettingScreen,
             msg.MENU_EWT: EWTScreen,
             msg.MENU_CHAR_LOG: LogScreen,
+            msg.MENU_ABOUT: About,
         }
 
         # display the new module
@@ -295,7 +301,7 @@ class Application(tk.Frame):
         window = Improve(self)
 
     def about(self):
-        print("About")
+        self._switchWindow(msg.MENU_ABOUT)
 
     # TODO this is a currently unused
     def startScreenImage(self):
@@ -304,7 +310,58 @@ class Application(tk.Frame):
         label = tk.Label(self.main_frame, image=photo)
         label.image = photo
         label.pack()
-        
+
+    def _setStyle(self):
+        self.style.configure(
+            "red.TLabel",
+            foreground = config.Colors.DARK_RED
+        )
+        self.style.configure(
+            "green.TLabel",
+            foreground=config.Colors.DARK_GREEN
+        )
+        self.style.configure(
+            "attr.TLabel",
+            font="Arial 14 bold",
+            justify=tk.CENTER,
+            anchor=tk.CENTER
+
+        )
+
+        self.style.configure(
+            "test.TFrame",
+            background = "#ff0000"
+        )
+        self.style.configure(
+            "selected.TButton",
+            foreground="#000000",
+            font="Arial 10 bold"
+        )
+
+        self.style.configure(
+            "destroy.TButton",
+            background="#ff0000",
+            foreground="#ff0000"
+        )
+
+        # edit_entry - editable labels for the itemeditor
+        self.style.layout(
+            "edit_entry",
+            [('edit_entry', {'sticky': 'nswe', 'children':
+                [('Entry.background', {'sticky': 'nswe', 'children':
+                    [('Entry.padding', {'sticky': 'nswe', 'children':
+                        [('Entry.textarea', {'sticky': 'nswe'})]}
+                    )]}
+                )]}
+            )]
+        )
+        self.style.map(
+            "edit_entry",
+            foreground=[("active", "#000000"), ("disabled", "#000000")],
+            background=[("active", "#ffffff"), ("disabled", "#eeeeee")],
+            borderwidth=[("active", 0), ("disabled", 0)],
+        )
+
     def _setHotkeys(self):
         """ Binding global hotkeys """
 
@@ -324,16 +381,37 @@ class Application(tk.Frame):
             "<Control-F5>",
             lambda event: self._reloadData()
         )
-        
+        self.main.bind_all(
+            "<F9>",
+            lambda event: self._switchEditMode("generation")
+        )
+        self.main.bind_all(
+            "<F10>",
+            lambda event: self._switchEditMode("edit")
+        )
+        self.main.bind_all(
+            "<F11>",
+            lambda event: self._switchEditMode("simulation")
+        )
+        self.main.bind_all(
+            "<F12>",
+            lambda event: self._switchEditMode("view")
+        )
+
+
+    def _switchEditMode(self, mode):
+        self.char.setEditMode(mode)
+        self._switchWindow(msg.TOOLBAR_CHAR_DATA)
+
     def _reloadData(self):
         """ Reloading data files
 
         called by menu entry or hotkey
         """
 
-        self.itemlist.loadTree()
-        self.skills.loadTree()
-        self.traits.loadTree()
+        self.itemlist.buildTree()
+        self.skills.buildTree()
+        self.traits.buildTree()
 
     # this will later be used to prepare the screen for high resolution screens
     def _resolution(self):

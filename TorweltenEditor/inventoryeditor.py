@@ -1,5 +1,4 @@
-import tkinter as tk
-import tkinter.ttk as ttk
+import tk_ as tk
 from PIL import ImageTk
 import xml.etree.ElementTree as et
 import config
@@ -46,7 +45,7 @@ class InventoryEditor(tk.Toplevel):
         self.toolbar.pack(fill=tk.X, expand=1)
 
         self.selector_list_frame = tk.Frame(self.selection_frame)
-        self.selector_list = ttk.Treeview(
+        self.selector_list = tk.Treeview(
             self.selector_list_frame,
             selectmode=tk.BROWSE,
             show="tree",
@@ -362,8 +361,16 @@ class NewItem(tk.Frame):
 
             # are there values???
             option_values = option.get("values")
-            
-            option_text = tk.Label(self.item_add_frame, text=option_name)
+
+            display_name = ""
+            if option_name == it.OPTION_CALIBER:
+                display_name = msg.IE_CALIBER
+            elif option_name == it.OPTION_COLOR:
+                display_name = msg.IE_CE_FABRIC_COLOR
+            else:
+                display_name = option_name
+
+            option_text = tk.Label(self.item_add_frame, text=display_name)
             option_text.pack(side=tk.LEFT)
 
             option_widget = tk.Entry(
@@ -377,6 +384,7 @@ class NewItem(tk.Frame):
                 option_widget = tk.OptionMenu(
                     self.item_add_frame,
                     self.item_data[option_name],
+                    option_values[0],
                     *option_values)
             option_widget.pack(side=tk.LEFT)
 
@@ -1451,7 +1459,6 @@ class CustomClothing(tk.Frame):
             onvalue=1,
             offvalue=0,
             state=tk.DISABLED,
-            anchor=tk.W
         )
         ToolTip(self.trousers, msg.IE_TT_PANTS)
         self.trousers.pack(

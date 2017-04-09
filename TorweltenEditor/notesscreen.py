@@ -1,7 +1,9 @@
-# coding=utf-8
-import tkinter as tk
+import tk_ as tk
 from PIL import ImageTk
 import config
+from tooltip import ToolTip
+
+msg = config.Messages()
 
 
 class NotesScreen(tk.Frame):
@@ -13,9 +15,11 @@ class NotesScreen(tk.Frame):
 
     def __init__(self, main, app):
         tk.Frame.__init__(self,main)
+        self.style = app.style
         self.app = app
         self.char = app.char
         self.open_windows = app.open_windows
+        self.unlocked = -1
 
         self.notes = {}
 
@@ -77,6 +81,7 @@ class NotesScreen(tk.Frame):
             command=self.addNote
         )
         new_note.image = new_icon
+        ToolTip(new_note, msg.NS_TT_NEW)
         canvas.create_window(
             x,
             y,
@@ -108,27 +113,29 @@ class NotesScreen(tk.Frame):
         title.bind("<FocusOut>", update)
         title.bind("<Return>", update)
         title.bind("<Tab>", update)
-
         title.pack(fill=tk.BOTH, expand=1, side=tk.LEFT)
 
         del_icon = ImageTk.PhotoImage(file="img/cross_small.png")
         delete_button = tk.Button(
             title_frame,
             image=del_icon,
-            command=lambda id=id: self._delNote(id),
-            state=tk.DISABLED
         )
-        delete_button.bind("<Button-1>", self._unlockDelete)
+        delete_button.bind(
+            "<Button-1>",
+            lambda event, id=id: self._delNote(event, id))
+        ToolTip(delete_button, msg.NS_TT_DELETE)
         delete_button.image = del_icon
-        delete_button.pack(side=tk.LEFT)
+        delete_button.pack(side=tk.LEFT, fill=tk.BOTH)
 
-        title_frame.pack(fill=tk.X, expand=1)
-
+        title_frame.pack(padx=2, pady=2, fill=tk.X, expand=1)
         text_widget = tk.Text(
             frame,
             width=20,
             height=12,
             wrap=tk.WORD,
+            borderwidth=0,
+            highlightthickness=1,
+            highlightbackground="#666666",
             font="Arial 10"
         )
         text_widget.insert("0.0", text)
@@ -137,22 +144,20 @@ class NotesScreen(tk.Frame):
         text_widget.bind("<Return>", update)
         text_widget.bind("<Tab>", update)
 
-        text_widget.pack(fill=tk.X)
+        text_widget.pack(padx=2, fill=tk.X)
 
         height = title.winfo_reqheight() + text_widget.winfo_reqheight()
 
         return frame, height
 
-    def _unlockDelete(self, event):
-        widget = event.widget
-        def unlock(widget):
-            widget.config(state=tk.NORMAL)
-
-        widget.after(500, lambda widget=widget: unlock(widget))
-
-    def _delNote(self, id):
-        self.char.delNote(id)
-        self.showNotes(self.notes_canvas)
+    def _delNote(self, event, id):
+        if id == self.unlocked:
+            self.char.delNote(id)
+            self.showNotes(self.notes_canvas)
+            self.unlocked = -1
+        else:
+            self.unlocked = id
+            event.widget.config(style="destroy.TButton")
 
     def _update(self, event=None, id=""):
         text = ""

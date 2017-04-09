@@ -182,7 +182,7 @@ class Character(object):
             skill.set("value", "0")
             charskills = self.xml_char.find('skills')
             charskills.append(skill)
-            self.logEvent(skill, op=msg.CHAR_SKILL_ADDED)
+            self.logEvent(skill, op=msg.CHAR_ADDED)
 
     def delSkill(self, name):
         """ Removing a skill from a character
@@ -200,7 +200,7 @@ class Character(object):
             if skill_type == "language" or skill_type == "passive":
                 xp /= 2
             self.updateAvailableXP(xp)
-            self.logEvent(skill, op=msg.CHAR_SKILL_REMOVED)
+            self.logEvent(skill, op=msg.CHAR_REMOVED)
             skills.remove(skill)
     
     def addTrait(self, full_trait, variables, xp_var, description=None):
@@ -271,7 +271,7 @@ class Character(object):
         char_traits.append(trait)
         self.updateAvailableXP(-int(xp))
         
-        self.logEvent(trait, op=msg.CHAR_TRAIT_ADDED, mod=trait_name)
+        self.logEvent(trait, op=msg.CHAR_ADDED, mod=trait_name)
 
     def resetTraitIDs(self):
         """ Reset trait ids if necessary """
@@ -310,13 +310,13 @@ class Character(object):
             cur_value = dataset.get("value")
             if data_value != cur_value:
                 dataset.set("value", str(data_value))
-                self.logEvent(dataset, op=msg.CHAR_DATA_UPDATED)
+                self.logEvent(dataset, op=msg.CHAR_UPDATED, mod=cur_value)
         elif data_value != "":
             dataset = et.Element("data")
             dataset.set("name", str(data_name))
             dataset.set("value", str(data_value))
             basics.append(dataset)
-            self.logEvent(dataset, op=msg.CHAR_DATA_CREATED)
+            self.logEvent(dataset, op=msg.CHAR_ADDED)
 
     def getData(self, data_name):
         """ Retrieve basic data about the character
@@ -375,7 +375,7 @@ class Character(object):
             xp_cost = new_xp_cost - old_xp_cost
             self.updateAvailableXP(-xp_cost)
             xml_skill.set("value", str(new_value))
-            self.logEvent(xml_skill, op=msg.CHAR_SKILL_CHANGED)
+            self.logEvent(xml_skill, op=msg.CHAR_UPDATED)
 
     def increaseAttribute(self, attr):
         """ Incremental increase of an attribute
@@ -441,7 +441,7 @@ class Character(object):
             self.updateAvailableXP(-xp_cost)
             self.skill_values[skill_name].set(new_value)
             xml_skill.set("value", str(new_value))
-            self.logEvent(xml_skill, op=msg.CHAR_SKILL_CHANGED)
+            self.logEvent(xml_skill, op=msg.CHAR_UPDATED)
 
     def sortSkills(self):
         """ Sorting skills by id"""
@@ -505,7 +505,7 @@ class Character(object):
         xml_attr = self.xml_char.find(search)
         xml_attr.set("value", str(value))
         self.attrib_values[attr].set(value)
-        self.logEvent(xml_attr, op=msg.CHAR_ATTRIBUTE_CHANGED)
+        self.logEvent(xml_attr, op=msg.CHAR_UPDATED)
 
     def getTraits(self):
         """ Retrieving the characters traits
@@ -561,9 +561,21 @@ class Character(object):
         trait = traits.find("trait[@id='"+id+"']")
         xp = int(trait.get("xp"))
         if trait is not None:
-            self.logEvent(trait, op=msg.CHAR_TRAIT_REMOVED)
+            self.logEvent(trait, op=msg.CHAR_REMOVED)
             traits.remove(trait)
             self.updateAvailableXP(xp)
+
+    def updateTraitById(self, id, xp=None, description=None):
+        traits = self.xml_char.find("traits")
+        trait = traits.find("trait[@id='" + id + "']")
+
+        if xp:
+            cur_trait_xp = int(trait.get("xp"))
+            trait.set("xp", str(cur_trait_xp + xp))
+
+            self.updateAvailableXP(-xp)
+
+
 
     def getSkills(self):
         """ Get all character skill elements
@@ -631,7 +643,7 @@ class Character(object):
         new_value = int(old_value + value)
         xp_element.set("available", str(new_value))
         self.xp_avail.set(new_value)
-        self.logEvent(xp_element, mod=value, op="upd")
+        self.logEvent(xp_element, mod=value, op=msg.CHAR_UPDATED)
 
     def getInventory(self):
         """ Retrieve the characters inverntory
@@ -698,15 +710,27 @@ class Character(object):
             item_quantity = int(item.get("quantity"))
             new_quantity = old_quantity + item_quantity
             identical_item.set("quantity", str(new_quantity))
-            self.logEvent(identical_item, op=msg.CHAR_ITEM_ADDED)
+            self.logEvent(
+                identical_item,
+                op=msg.CHAR_ADDED,
+                mod=item.get("quantity")
+            )
         else:
             new_id = self.getHighestItemID() + 1
             item.set("id", str(new_id))
             inventory = self.getInventory()
             inventory.append(item)
-            self.logEvent(item, op=msg.CHAR_ITEM_ADDED)
+            self.logEvent(
+                item,
+                op=msg.CHAR_ADDED,
+                mod=item.get("quantity")
+            )
         # pay for item
-        self.updateAccount(-item_price, account)
+        self.updateAccount(
+            -item_price,
+            account,
+            reason=msg.LOG_ACCOUNT_PAY_ITEM
+        )
     
     def splitItemStack(self, item, amount):
         """ Splits an item stack
@@ -787,7 +811,7 @@ class Character(object):
             inventory = self.getInventory()
             inventory.remove(item) 
 
-    def setActiveChamber(self, weapon, value=1):
+    def setActiveChamber(self, weapon, chamber=1):
         """ Setting the active chamber of a weapon
 
         Note:
@@ -796,33 +820,36 @@ class Character(object):
 
         Args:
             weapon (Element<item>): A weapon item
-            value (int): the chamber to set as active
-            value (str): "next", "random"
+            chamber (int): the chamber to set as active
+            chamber (str): "next", "random"
         """
 
         ammo_tag = weapon.find("ammo")
         if ammo_tag is not None:
             chambers = int(ammo_tag.get("chambers", "1"))
-            number = 0
-            valid = ["next", "random"]
-            if type(value) == str and value not in valid:
-                number = int(value)
 
-            if 1 <= number <= chambers:
-                ammo_tag.set("active", str(number))
+            actions = ["next", "random"]
+            if type(chamber) == str and chamber not in actions:
+                try:
+                    chamber = int(chamber)
+                except ValueError as e:
+                    print(e)
+                    pass
 
-            if value == "next":
+            if chamber == "next":
                 current = int(ammo_tag.get("active", "1"))
-                next_chamber = current + 1
-                if next_chamber > chambers:
-                    next_chamber = 1
-                ammo_tag.set("active", str(next_chamber))
-
-            if value == "random":
-                random_chamber = random.randint(1, chambers)
-                ammo_tag.set("active", str(random_chamber))
+                chamber = current + 1
+                if chamber > chambers:
+                    chamber = 1
+                ammo_tag.set("active", str(chamber))
+            elif chamber == "random":
+                chamber = random.randint(1, chambers)
+                ammo_tag.set("active", str(chamber))
+            elif 1 <= chamber <= chambers:
+                ammo_tag.set("active", str(chamber))
 
             self.logEvent(weapon, op=msg.CHAR_ITEM_ROTATECHAMBER)
+            return chamber
 
     @staticmethod
     def getActiveChamber(weapon):
@@ -1533,14 +1560,16 @@ class Character(object):
             event.set("name", name)
             event.set("value", value)
         elif tag.tag == "skill":
-            id = tag.get("id")
+            name = tag.get("name")
             value = tag.get("value")
+            id = tag.get("id")
             event.set("id", id)
+            event.set("name", name)
             event.set("value", value)
         elif tag.tag == "trait":
             name = tag.get("name")
             xp = tag.get("xp")
-            if op == msg.CHAR_TRAIT_REMOVED:
+            if op == msg.CHAR_REMOVED:
                 xp = str(-int(xp))
             event.set("name", name)
             event.set("xp", xp)

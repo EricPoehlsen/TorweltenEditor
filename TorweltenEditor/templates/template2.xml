@@ -1,2 +1,2 @@
 <?xml version='1.0' encoding='utf-8'?>
-<template><page num="1"><module col="2" id="1" row="2" type="generic" /></page></template>
+<template><page num="1"><module col="0" id="1" row="0" size="double" type="attributes" /></page></template>

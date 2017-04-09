@@ -1,5 +1,7 @@
-import tkinter as tk
+import tk_ as tk
 import config
+from PIL import ImageTk
+from tooltip import ToolTip
 import re
 
 it = config.ItemTypes()
@@ -9,13 +11,16 @@ msg = config.Messages()
 class ItemEditor(tk.Toplevel):
     def __init__(self, app, item):
         tk.Toplevel.__init__(self)
+        self.style = app.style
         self.app = app
         self.char = app.char
         self.item = item
+        self.widgets = {}
 
         self.item_name = item.get("name")
-        self.item_quantity = int(item.get("quantity"))
-        self.item_price = float(item.get("price"))
+        self.item_quantity = int(item.get("quantity", "1"))
+        self.item_price = float(item.get("price", "0"))
+        self.item_quality = int(item.get("quality","6"))
 
         self.description_content = ""
 
@@ -25,9 +30,13 @@ class ItemEditor(tk.Toplevel):
         self.item_body = tk.Frame(self.item_screen)
         self.item_title.pack(fill=tk.X, expand=1, anchor=tk.N)
         self.item_body.pack(fill=tk.BOTH, expand=1, anchor=tk.N)
-        self.bottom_menu = tk.Frame(self)
-        self.item_screen.pack(fill=tk.BOTH, expand=1, anchor=tk.NW)
-        self.bottom_menu.pack(side=tk.BOTTOM, anchor=tk.S, fill=tk.X)
+        self.item_menu = tk.Frame(self)
+        self.item_screen.pack(
+            fill=tk.BOTH,
+            expand=1,
+            anchor=tk.NW
+        )
+        self.item_menu.pack(side=tk.BOTTOM, anchor=tk.SW, fill=tk.X)
         self.setMinHeight()
  
         # important variables:
@@ -37,6 +46,8 @@ class ItemEditor(tk.Toplevel):
 
         self._showItemInfo()
         self.addMenuIcons()
+        self.update_idletasks()
+        self.minsize(self.winfo_reqwidth(), self.winfo_reqheight())
 
     def setMinHeight(self):
         height = self.winfo_height()
@@ -44,7 +55,7 @@ class ItemEditor(tk.Toplevel):
         self.minsize(width=width, height=height)
 
     def addMenuIcons(self):
-        widgets = self.bottom_menu.winfo_children()
+        widgets = self.item_menu.winfo_children()
         for widget in widgets:
             widget.destroy()
 
@@ -52,60 +63,91 @@ class ItemEditor(tk.Toplevel):
         self.destroy_check = 0
 
         if self.item.get("equipped", "0") == "1":
+            unequip_icon = ImageTk.PhotoImage(file="img/unequip_l.png")
             unequip_button = tk.Button(
-                self.bottom_menu,
-                text=msg.IE_UNEQUIP,
+                self.item_menu,
+                image=unequip_icon,
                 command=self.unequipItem
             )
+            unequip_button.image = unequip_icon
             if self.item.get("type") != it.IMPLANT:
                 unequip_button.pack(side=tk.LEFT)
-        else: 
-            if self.item.get("type", "") in self.app.itemlist.EQUIPPABLE:
+                ToolTip(unequip_button, msg.IE_TT_UNEQUIP)
+        else:
+            item_type = self.item.get("type", "")
+            if item_type in self.app.itemlist.EQUIPPABLE:
+                show = True
+                # tools are not always equippable ...
+                if item_type == config.ItemTypes.TOOLS:
+                    container = self.item.find("container")
+                    damage = self.item.find("damage")
+                    if container is None and damage is None:
+                        show = False
+
+                equip_icon = ImageTk.PhotoImage(file="img/equip_l.png")
                 equip_button = tk.Button(
-                    self.bottom_menu,
-                    text=msg.IE_EQUIP,
+                    self.item_menu,
+                    image=equip_icon,
                     command=self.equipItem
                 )
-                equip_button.pack(side=tk.LEFT)
+                equip_button.image = equip_icon
+                if show:
+                    equip_button.pack(side=tk.LEFT)
+                    ToolTip(equip_button, msg.IE_TT_EQUIP)
 
         if int(self.item_quantity) > 1:
-            
+            self.split_number.set("1")
             split_scroller = tk.Spinbox(
-                self.bottom_menu,
+                self.item_menu,
                 textvariable=self.split_number,
                 width=2,
                 from_=1,
                 to=int(self.item_quantity) - 1
             )
+            ToolTip(split_scroller, msg.IE_TT_SPLIT_AMOUNT)
             split_scroller.pack(side=tk.LEFT, fill=tk.Y)
+            split_icon = ImageTk.PhotoImage(file="img/split.png")
             split_button = tk.Button(
-                self.bottom_menu,
-                text=msg.IE_SPLIT,
+                self.item_menu,
+                image=split_icon,
                 command=self.split
             )
+            split_button.image = split_icon
             split_button.pack(side=tk.LEFT)
+            ToolTip(split_button, msg.IE_TT_SPLIT)
         
         if self.char.getIdenticalItem(self.item) is not None:
+            condense_icon = ImageTk.PhotoImage(file="img/join.png")
             condense_button = tk.Button(
-                self.bottom_menu,
-                text=msg.IE_CONDENSE,
+                self.item_menu,
+                image=condense_icon,
                 command=self.condense
             )
+            condense_button.image = condense_icon
             condense_button.pack(side=tk.LEFT)
+            ToolTip(condense_button, msg.IE_TT_CONDENSE)
 
+        sell_icon = ImageTk.PhotoImage(file="img/money.png")
         sell_button = tk.Button(
-            self.bottom_menu,
-            text=msg.IE_SELL,
+            self.item_menu,
+            image=sell_icon,
             command=self.sellItem
         )
+        sell_button.image = sell_icon
         sell_button.pack(side=tk.LEFT)
+        ToolTip(sell_button, msg.IE_TT_SELL)
 
+        destroy_icon = ImageTk.PhotoImage(file="img/cross.png")
         destroy_button = tk.Button(
-            self.bottom_menu,
-            text=msg.IE_DESTROY,
+            self.item_menu,
+            image=destroy_icon,
             command=self.destroyItem
         )
+        destroy_button.image = destroy_icon
+        if self.char.getEditMode() == "generation":
+            destroy_button.state(["disabled"])
         destroy_button.pack(side=tk.LEFT)
+        ToolTip(destroy_button, msg.IE_TT_DESTROY)
 
     # This method shows the information for that item 
     def _showItemInfo(self):
@@ -130,14 +172,13 @@ class ItemEditor(tk.Toplevel):
             font="Helvetica 12 bold")
         quant_label.pack(side=tk.LEFT)
 
-        name_label = tk.Entry(item_title, font="Helvetica 12 bold")
-        name_label.insert(0, self.item_name)
-        name_label.config(
-            relief=tk.FLAT,
-            state=tk.DISABLED,
-            disabledbackground="#eeeeee",
-            disabledforeground="#000000"
+        name_label = tk.Entry(
+            item_title,
+            font="Helvetica 12 bold",
+            style="edit_entry"
         )
+        name_label.insert(0, self.item_name)
+        name_label.state(["disabled"])
         name_label.pack(side=tk.LEFT, expand=1)
         name_label.bind("<Double-Button-1>", self._activateEntryField)
         name_label.bind(
@@ -158,26 +199,84 @@ class ItemEditor(tk.Toplevel):
         weight_label = tk.Label(item_body, text=weight_str)
         weight_label.pack(fill=tk.X)
 
+        price = round(self.item_price * self.item_quantity, 2)
+        price = str(price)
+        if "." in price:
+            price = price.split(".")
+            price[1] = price[1] + "0000"
+            price[1] = price[1][0:2]
+            price = msg.MONEYSPLIT.join(price)
+        price_str = msg.IE_PRICE_VALUE + price
+        price_label = tk.Label(item_body, text=price_str)
+        price_label.pack(fill=tk.X)
+
+        qualtities = {
+            1: msg.IE_QUALITY_1,
+            2: msg.IE_QUALITY_2,
+            3: msg.IE_QUALITY_3,
+            4: msg.IE_QUALITY_4,
+            5: msg.IE_QUALITY_5,
+            6: msg.IE_QUALITY_6,
+            7: msg.IE_QUALITY_7,
+            8: msg.IE_QUALITY_8,
+            9: msg.IE_QUALITY_9,
+        }
+        quality_str = msg.IE_QUALITY + ": " + qualtities[self.item_quality]
+        quality_frame = tk.Frame(item_body)
+        quality_label = tk.Label(
+            quality_frame,
+            text=quality_str,
+        )
+        quality_label.pack(side=tk.LEFT)
+        rep_icon = ImageTk.PhotoImage(file="img/repair.png")
+        rep_label = tk.Label(quality_frame, image=rep_icon)
+        rep_label.bind("<Button-1>", self.repair)
+        rep_label.image = rep_icon
+        ToolTip(rep_label, msg.IE_TT_REPAIR)
+        if self.item_quality >= 9:
+            rep_label.state(["disabled"])
+
+        rep_label.pack(side=tk.RIGHT, anchor=tk.W)
+        dmg_icon = ImageTk.PhotoImage(file="img/damage.png")
+        dmg_label = tk.Label(quality_frame, image=dmg_icon)
+        dmg_label.bind("<Button-1>", self.damage)
+        dmg_label.image = dmg_icon
+        dmg_label.pack(side=tk.RIGHT, anchor=tk.W)
+        ToolTip(dmg_label, msg.IE_TT_DAMAGE_ITEM)
+        if self.item_quality <= 1:
+            dmg_label.state(["disabled"])
+
+        quality_frame.pack(fill=tk.X)
+
         options = self.item.findall("option")
         for option in options:
             name = option.get("name", "")
             value = option.get("value", "")
             frame = tk.Frame(self.item_body)
-            tk.Label(frame, text=name + ":").pack(side=tk.LEFT, anchor=tk.W)
-            entry = tk.Entry(frame, width=len(value)+2)
+            display_name = ""
+            if name == it.OPTION_CALIBER:
+                display_name = msg.IE_CALIBER
+            elif name == it.OPTION_COLOR:
+                display_name = msg.IE_CE_FABRIC_COLOR
+            else:
+                display_name = name
+            tk.Label(
+                frame,
+                text=display_name
+            ).pack(side=tk.LEFT, anchor=tk.W)
+            entry = tk.Entry(
+                frame,
+                width=len(value)+2,
+                style="edit_entry"
+            )
             entry.delete(0, tk.END)
             entry.insert(0, value)
+            entry.state(["disabled"])
             entry.bind("<Double-Button-1>", self._activateEntryField)
             entry.bind(
                 "<Return>",
                 lambda event, name=name:
                     self._updateTag(event, tagname="option", name=name)
-            )
-            entry.config(
-                relief=tk.FLAT,
-                state=tk.DISABLED,
-                disabledbackground="#eeeeee",
-                disabledforeground="#000000"
             )
             entry.pack(side=tk.RIGHT, anchor=tk.E)
             frame.pack()
@@ -205,7 +304,9 @@ class ItemEditor(tk.Toplevel):
         containers = [
             it.BAG,
             it.BOX,
-            it.CONTAINER
+            it.CONTAINER,
+            it.TOOLS,
+            it.HARNESS
         ]
         sa_weapons = [
             it.REVOLVERS,
@@ -232,7 +333,9 @@ class ItemEditor(tk.Toplevel):
         ]
 
         if item_type in containers:
-            self.showContent(frame)
+            container_tag = self.item.find("container")
+            if container_tag is not None:
+                self.showContent(frame)
         elif item_type in melee_weapons:
             self.getMeleeInfo(frame)
         elif item_type == it.CLIP:
@@ -252,9 +355,14 @@ class ItemEditor(tk.Toplevel):
         event: an event as normally called by a button click
         number: int - the intended chamber
         """
-        selected = self.char.setActiveChamber(self.item, number+1)
+
+        selected = self.char.setActiveChamber(self.item, number)
         if selected:
-            self._showItemInfo()
+            widgets = self.widgets["chambers"].winfo_children()
+            for widget in widgets:
+                widget.state(["!pressed"])
+            active = self.widgets["chamber"+str(number)]
+            active.state(["pressed"])
 
     # load a round into the active chamber
     def loadRoundInChamber(self, event, item, mode="weapon"):
@@ -465,30 +573,34 @@ class ItemEditor(tk.Toplevel):
     def unequipItem(self):
         self.char.unequipItem(self.item)
         self.app.updateItemList()
-        self.close(load=self.item)
+        self._showItemInfo()
+        self.addMenuIcons()
 
     # equip an item: called by equip_button
     def equipItem(self):
         self.char.unpackItem(self.item, equip=True)
         self.app.updateItemList()
-        self.close(load=self.item)
+        self._showItemInfo()
+        self.addMenuIcons()
+
+        # self.close(load=self.item)
 
     def destroyItem(self):
         if self.destroy_check == 0: 
-            widgets = self.bottom_menu.winfo_children()
+            widgets = self.item_menu.winfo_children()
             for widget in widgets:
                 widget.destroy()
             self.destroy_check = 1
             nope = tk.Button(
-                self.bottom_menu,
+                self.item_menu,
                 text=msg.IE_CANCEL,
                 command=self.addMenuIcons
             )
             nope.pack(side=tk.RIGHT)
             confirm = tk.Button(
-                self.bottom_menu,
+                self.item_menu,
                 text=msg.IE_DESTROY,
-                foreground="#dd0000",
+                style="destroy.TButton",
                 command=self.destroyItem
             )
             confirm.pack(side=tk.LEFT, fill=tk.X)
@@ -553,7 +665,10 @@ class ItemEditor(tk.Toplevel):
                         self.close(load=load_item)
                 )
                 label.pack(side=tk.LEFT)
-                unpack_button = tk.Button(line, text="U")
+                unpack_icon = ImageTk.PhotoImage(file="img/unpack.png")
+                unpack_button = tk.Button(line, image=unpack_icon)
+                unpack_button.image = unpack_icon
+                ToolTip(unpack_button, msg.IE_TT_UNPACK)
                 unpack_button.bind(
                     "<Button-1>",
                     lambda event, sub=sub_item, line_widget=line:
@@ -582,6 +697,7 @@ class ItemEditor(tk.Toplevel):
         chamber_frame = tk.LabelFrame(frame, text=msg.IE_CHAMBERS)
             
         i = 0
+        self.widgets["chambers"] = chamber_frame
         while i < number_chambers:
             loaded_item = None
             if len(ammo_list) > i:
@@ -591,16 +707,15 @@ class ItemEditor(tk.Toplevel):
                 text = loaded_item.get("name")
                 
             chamber_button = tk.Button(chamber_frame, text=text)
-            if text == msg.IE_EMPTY:
-                chamber_button.config(background="#aaaaaa")
+            self.widgets["chamber"+str(i+1)] = chamber_button
             chamber_button.bind(
                 "<Button-1>",
-                lambda event, i=i:
-                    self.selectChamber(event, i)
+                lambda event, chamber=i+1:
+                    self.selectChamber(event, chamber)
             )
             chamber_button.pack(fill=tk.X, expand=1)
             if i == active_chamber - 1:
-                chamber_button.config(relief=tk.SUNKEN)
+                chamber_button.state(["pressed"])
             i += 1
         chamber_frame.pack(fill=tk.X, expand=1)
 
@@ -615,7 +730,7 @@ class ItemEditor(tk.Toplevel):
             command=self.fireWeapon
         )
 
-        if chambered_item is None:
+        if chambered_item is None or self.char.getEditMode() == "generation":
             fire_button.config(state=tk.DISABLED)
         fire_button.pack(fill=tk.X)
 
@@ -704,7 +819,7 @@ class ItemEditor(tk.Toplevel):
             text=msg.IE_FIRE_WEAPON,
             command=self.fireWeapon
         )
-        if chambered_item is None:
+        if chambered_item is None or self.char.getEditMode() == "generation":
             fire_button.config(state=tk.DISABLED)
         fire_button.pack(fill=tk.X)
 
@@ -896,7 +1011,7 @@ class ItemEditor(tk.Toplevel):
                         command=lambda sub_item=sub_item:
                             self.packItem(sub_item)
                     )
-                    button.pack(side=tk.RIGHT,anchor=tk.E)
+                    button.pack(side=tk.RIGHT, anchor=tk.E)
                     sub_frame.pack(fill=tk.X)
 
         if item_type == it.IMPLANT and not implanted:
@@ -931,6 +1046,39 @@ class ItemEditor(tk.Toplevel):
                     if available:
                         ammo.append(item)
         return ammo
+
+    def damage(self, event):
+        if "disabled" in event.widget.state():
+            return
+        self.item_quality -= 1
+        self.item_price *= .666
+        self.item.set("quality", str(self.item_quality))
+        self.item.set("price", str(self.item_price))
+        self.char.logEvent(
+            self.item,
+            op=msg.CHAR_ITEM_DAMAGED,
+            mod=str(self.item_quality)
+        )
+
+        self._showItemInfo()
+        pass
+
+    def repair(self, event):
+        if "disabled" in event.widget.state():
+            return
+        self.item_quality += 1
+        self.item_price *= 1.25
+        self.item.set("quality", str(self.item_quality))
+        self.item.set("price", str(self.item_price))
+        self.char.logEvent(
+            self.item,
+            op=msg.CHAR_ITEM_REPAIRED,
+            mod=str(self.item_quality)
+        )
+
+        self._showItemInfo()
+        pass
+
 
     # this is called to close the window (or switch the item ...)
     def close(self, load=None, destroy=False):
@@ -977,13 +1125,13 @@ class ItemEditor(tk.Toplevel):
                     op = msg.CHAR_ITEM_RENAMED
                 else:
                     mod_info = attribute+":"+new_value
-                    op = msg.CHAR_ITEM_UPDATE
+                    op = msg.CHAR_UPDATE
                     
                 self.item.set(attribute, new_value)
                 self.char.logEvent(
                     self.item,
                     mod=mod_info,
-                    op=msg.CHAR_ITEM_UPDATE
+                    op=msg.CHAR_UPDATE
                 )
                 self.app.updateItemList()
 
@@ -1020,5 +1168,5 @@ class ItemEditor(tk.Toplevel):
                 self.char.logEvent(
                     self.item,
                     mod=mod_info,
-                    op=msg.CHAR_ITEM_UPDATE
+                    op=msg.CHAR_UPDATE
                 )

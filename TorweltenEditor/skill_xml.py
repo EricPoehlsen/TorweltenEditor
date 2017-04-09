@@ -4,18 +4,25 @@ import tkinter as tk
 
 
 class SkillTree(object):
-    def __init__(self):
-        # this is the xml interpretation of the character
-        self.xml_skills = self.loadTree()
-        self.addToTree("data/own_skills.xml")
-        self.addToTree("data/the_linguist.xml")
+    def __init__(self, settings):
+        # this is the xml interpretation of the Skills
+        self.xml_skills = None
+        self.settings = settings
+        self.buildTree()
 
-    def loadTree(self, filename='data/skills.xml'):
+    def loadTree(self, filename=None):
         tree = None
         try:
             tree = et.parse(filename)
-        except FileNotFoundError:
-            pass
+            root = tree.getroot()
+            if root.tag == "expansion":
+                skills = root.find("skills")
+                if skills is not None:
+                    tree = et.ElementTree(skills)
+                else:
+                    tree = None
+        except (FileNotFoundError, et.ParseError) as e:
+            print(str(e))
         return tree
 
     def addToTree(self, filename=None):
@@ -26,9 +33,11 @@ class SkillTree(object):
         """
 
         if filename is None:
-            filename = "data/demo_skills.xml"
+            return
 
         local_tree = self.loadTree(filename)
+        if local_tree is None:
+            return
 
         skills = local_tree.findall(".//skill")
         groups = self.xml_skills.findall("skillgroup")
@@ -47,6 +56,13 @@ class SkillTree(object):
                         break
                 relevant_group.append(skill)
                 self.sortSkills(relevant_group)
+
+    def buildTree(self):
+        self.xml_skills = self.loadTree("data/skills_de.xml")
+        self.addToTree("data/own_skills.xml")
+        active_expansions = self.settings.getExpansions()
+        for expansion in active_expansions:
+            self.addToTree("data/"+expansion)
 
     def getList(self, minspec=1, maxspec=3):
         """ Get a list of skills

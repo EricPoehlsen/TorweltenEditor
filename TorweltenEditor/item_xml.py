@@ -1,16 +1,17 @@
-# coding=utf-8
-
 import xml.etree.ElementTree as et
 import config
+
 
 it = config.ItemTypes()
 
 
 class ItemTree(object):
-    def __init__(self):
+    def __init__(self, settings):
         # this is the xml interpretation of the available items
+        self.settings = settings
         self.xml_items = None
-        self.loadTree()
+        self.buildTree()
+
         self.EQUIPPABLE = [
             it.CLOTHING,
             it.BAG,
@@ -31,18 +32,57 @@ class ItemTree(object):
             it.TOOLS,
             it.NATURAL,
         ]
-                           
+
+    def buildTree(self):
+        self.xml_items = self.loadTree('data/items_de.xml')
+        active_expansions = self.settings.getExpansions()
+        for expansion in active_expansions:
+            self.addToTree("data/"+expansion)
+
     def loadTree(self, filename=None):
+        tree = None
+        if filename:
+            try:
+                tree = et.parse(filename)
+                root = tree.getroot()
+                if root.tag == "expansion":
+                    items = root.find("items")
+                    if items is not None:
+                        tree = et.ElementTree(items)
+                    else:
+                        tree = None
+            except (FileNotFoundError, et.ParseError) as e:
+                print(str(e))
+        return tree
+
+    def addToTree(self, filename=None):
+        """ Adding another set of skills to the skill tree
+
+        Args:
+            filename (str): the file to parse
+        """
+
         if filename is None:
-            try: 
-                self.xml_items = et.parse('data/items.xml')
-            except (et.ParseError, IOError) as error:
-                print(error)
-        else: 
-            try: 
-                module = et.parse(filename)
-            except (et.ParseError, IOError) as error:
-                print(error)
+            return
+
+        local_tree = self.loadTree(filename)
+        if local_tree is None:
+            return
+
+        items = local_tree.findall(".//item")
+        groups = self.xml_items.findall(".//group")
+        for item in items:
+            name = item.get("name")
+            existing_item = self.getItem(name)
+            if existing_item is None:
+                parent = item.get("parent", "0")
+                relevant_group = None
+                for group in groups:
+                    id = group.get("id", "")
+                    if parent == id:
+                        relevant_group = group
+                        break
+                relevant_group.append(item)
 
     def getGroup(self,group_name):
         result = list()
@@ -64,6 +104,6 @@ class ItemTree(object):
         return items
 
     def getItem(self,name):
-        skill = self.xml_skills.find(".//item[@name='"+name+"']") 
+        skill = self.xml_items.find(".//item[@name='"+name+"']")
         return skill
 

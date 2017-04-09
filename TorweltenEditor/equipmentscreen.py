@@ -1,7 +1,7 @@
 # coding=utf-8
-import tkinter as tk
-import xml.etree.ElementTree as et
+import tk_ as tk
 from PIL import ImageTk
+from tooltip import ToolTip
 from itemeditor import ItemEditor
 from inventoryeditor import InventoryEditor
 import config
@@ -15,6 +15,7 @@ class EquipmentScreen(tk.Frame):
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
         self.app = app
+        self.style = app.style
         self.char = app.char
         self.itemlist = app.itemlist
 
@@ -42,7 +43,6 @@ class EquipmentScreen(tk.Frame):
         self.buy_button = tk.Button(
             self.left_frame,
             text=msg.ES_BUY_BUTTON,
-            font="Arial 12 bold",
             command=self.displayInventoryEditor
         )
         self.buy_button.pack(fill=tk.BOTH, expand=1)
@@ -51,7 +51,7 @@ class EquipmentScreen(tk.Frame):
         self.equipped_frame = tk.LabelFrame(
             self.left_frame,
             text=msg.ES_EQUIPPED,
-            font="Arial 10 bold"
+            font=config.Style.TITLE_LF_FONT
         )
         self.equipped_canvas = tk.Canvas(
             self.equipped_frame,
@@ -79,7 +79,7 @@ class EquipmentScreen(tk.Frame):
         self.melee_frame = tk.LabelFrame(
             self.center_frame,
             text=msg.ES_MELEE,
-            font="Arial 10 bold"
+            font=config.Style.TITLE_LF_FONT
         )
         self.melee_canvas = tk.Canvas(
             self.melee_frame,
@@ -103,7 +103,7 @@ class EquipmentScreen(tk.Frame):
         self.guns_frame = tk.LabelFrame(
             self.center_frame,
             text=msg.ES_GUNS,
-            font="Arial 10 bold"
+            font=config.Style.TITLE_LF_FONT
         )
         self.guns_canvas = tk.Canvas(
             self.guns_frame,
@@ -133,7 +133,7 @@ class EquipmentScreen(tk.Frame):
         self.unassigned_frame = tk.LabelFrame(
             self.right_frame,
             text=msg.ES_UNASSIGNED,
-            font="Arial 10 bold"
+            font=config.Style.TITLE_LF_FONT
         )
         self.unassigned_canvas = tk.Canvas(
             self.unassigned_frame,
@@ -285,21 +285,38 @@ class EquipmentScreen(tk.Frame):
                         self.displayItemEditor(event, item_id)
                 )
                 name_label.grid(row=0, column=1, sticky=tk.W)
-                    
-                if item.get("type") in equippable_types: 
-                    equip_button = tk.Button(item_frame, text="E")
+                item_type = item.get("type")
+                if item_type in equippable_types:
+                    show = True
+                    if item_type == it.TOOLS:
+                        container = item.find("container")
+                        damage = item.find("damage")
+                        if damage is None and container is None:
+                            show = False
+
+                    equip_icon = ImageTk.PhotoImage(file="img/equip.png")
+                    equip_button = tk.Button(item_frame, image=equip_icon)
+                    ToolTip(equip_button, msg.ES_TT_EQUIP)
+                    equip_button.image = equip_icon
                     equip_button.bind(
                         "<Button-1>",
                         lambda event, item_id=item_id:
                             self.equipItem(event, item_id)
                     )
-                    equip_button.grid(row=0, column=2)
+                    if show:
+                        equip_button.grid(row=0, column=2)
+                    else:
+                        empty = tk.Label(item_frame, text=" ", width=2)
+                        empty.grid(row=0, column=2)
                 else:
                     empty = tk.Label(item_frame, text=" ", width=2)
                     empty.grid(row=0, column=2)
                     
-                if self.active_bag_id >= 0: 
-                    pack_button = tk.Button(item_frame, text="P")
+                if self.active_bag_id >= 0:
+                    pack_icon = ImageTk.PhotoImage(file="img/pack.png")
+                    pack_button = tk.Button(item_frame, image=pack_icon)
+                    ToolTip(pack_button, msg.ES_TT_PACK)
+                    pack_button.image = pack_icon
                     pack_button.bind(
                         "<Button-1>",
                         lambda event, item_id=item_id:
@@ -392,7 +409,12 @@ class EquipmentScreen(tk.Frame):
         bag_frame = tk.LabelFrame(frame, text=bag_tag.get("name"))
             
         if self.active_bag_id == bag_id:
-            bag_frame.config(foreground="#0000ff")
+            bag_frame.config(
+                font=config.Style.BAG_LF_FONT,
+            )
+            ToolTip(bag_frame, msg.ES_TT_ACTIVE_BAG)
+        else:
+            ToolTip(bag_frame, msg.ES_TT_INACTIVE_BAG)
 
         # retrieve bag content and display ...
         item_ids = bag.get("content")
@@ -417,7 +439,10 @@ class EquipmentScreen(tk.Frame):
                         lambda event, id=item_id:
                             self.displayItemEditor(event, id))
                     item_label.pack(side=tk.LEFT, fill=tk.X, expand=1)
-                    item_unpack = tk.Button(item_line, text="U")
+                    unpack_icon = ImageTk.PhotoImage(file="img/unpack.png")
+                    item_unpack = tk.Button(item_line, image=unpack_icon)
+                    ToolTip(item_unpack, msg.ES_TT_UNPACK)
+                    item_unpack.image = unpack_icon
                     item_unpack.bind(
                         "<Button-1>",
                         lambda event, id=item_id:
@@ -425,16 +450,12 @@ class EquipmentScreen(tk.Frame):
                     )
                     item_unpack.pack(side=tk.RIGHT, anchor=tk.E)
                     item_line.pack(fill=tk.X, expand=1)
-        
-        # unequip bag ...                    
-        bag_unequip = tk.Button(bag_frame, text=msg.ES_UNEQUIP)
-        bag_unequip.bind(
-            "<Button-1>",
-            lambda event, id=str(bag_id):
-                self.unequipItem(event, id)
-        )
-        bag_unequip.pack(fill=tk.X)
-        
+
+        children = bag_frame.winfo_children()
+        # for empty bag ...
+        if not children:
+            tk.Label(bag_frame, text=" ").pack()
+
         bag_frame.pack(fill=tk.BOTH, expand=1)
         bag_frame.bind(
             "<Button-1>",
@@ -446,39 +467,60 @@ class EquipmentScreen(tk.Frame):
     def showEquippedClothing(self, frame):
         items = self.char.getItems()
         row = 0
+        frame.columnconfigure(0, weight=100)
         name_label = tk.Label(frame, text=msg.ES_ITEMNAME)
-        name_label.grid(row=row, column=0, columnspan=3, sticky=tk.W)
+        name_label.grid(row=row, column=0, sticky=tk.W)
         sd_label = tk.Label(frame, text=msg.ES_DAMAGE_S)
-        sd_label.grid(row=row, column=3, sticky=tk.EW)
+        sd_label.grid(row=row, column=1, sticky=tk.EW)
         qual_label = tk.Label(frame, text=msg.ES_QUALITY_S)
-        qual_label.grid(row=row, column=4, sticky=tk.EW)
+        qual_label.grid(row=row, column=2, sticky=tk.EW)
         row = 1
+        clothing_and_bags = [
+            it.CLOTHING,
+            it.ARMOR,
+            it.HARNESS,
+            it.BAG,
+            it.CONTAINER,
+            it.TOOLS
+        ]
+
         for item in items:
-            
             if (item.get("equipped", "0") == "1" and
-                (item.get("type") == it.CLOTHING or
-                item.get("type") == it.ARMOR or
-                item.get("type") == it.HARNESS)
+                item.get("type") in clothing_and_bags
             ):
+                # only show tools that are containers ...
+                if item.get("type") == it.TOOLS:
+                    container = item.find("container")
+                    if container is None:
+                        continue
                 name = item.get("name")
+                item_id = item.get("id")
                 name_label = tk.Label(frame, text=name)
-                name_label.grid(row=row, column=0, columnspan=3, sticky=tk.W)
+                name_label.bind(
+                    "<Button-1>",
+                    lambda event, item_id=item_id:
+                        self.displayItemEditor(event, item_id)
+                )
+                name_label.grid(row=row, column=0, sticky=tk.W)
                 sd = ""
                 damage = item.find("damage")
                 if damage is not None:
                     sd = damage.get("value", "")
                 sd_label = tk.Label(frame, text=sd)
-                sd_label.grid(row=row, column=3, sticky=tk.EW)
+                sd_label.grid(row=row, column=1, sticky=tk.EW)
                 quality = item.get("quality")
                 qual_label = tk.Label(frame, text=quality)
-                qual_label.grid(row=row, column=4, sticky=tk.EW)
-                unequip_button = tk.Button(frame, text=msg.ES_UNEQUIP_S)
+                qual_label.grid(row=row, column=2, sticky=tk.EW)
+                unequip_icon = ImageTk.PhotoImage(file="img/unequip.png")
+                unequip_button = tk.Button(frame, image=unequip_icon)
+                ToolTip(unequip_button, msg.ES_TT_UNEQUIP)
+                unequip_button.image = unequip_icon
                 item_id = item.get("id")
                 unequip_button.bind(
                     "<Button-1>", lambda event, item_id=item_id:
                         self.unequipItem(event, item_id)
                 )
-                unequip_button.grid(row=row, column=5, sticky=tk.EW)
+                unequip_button.grid(row=row, column=3, sticky=tk.EW)
                 row += 1
         return row
 

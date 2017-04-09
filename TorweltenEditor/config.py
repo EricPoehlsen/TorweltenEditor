@@ -21,10 +21,7 @@ EWT = [[2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,0.5],  # 1
 
 # THIS CLASS CONTAINS MESSAGES TO BE DISPLAYED ON THE UI OR PDF EXPORTS
 class Messages:
-    """ Messages provides a variety of strings for the UI and PDF Export
-    WARNING: some strings are used as keys in dicts so make sure unicode
-    strings are correctly defined otherwise you will be out of "Glück" ...
-    """
+    """ Messages provides a variety of strings for the UI and PDF Export """
 
     title = "Torwelten Charaktergenerator"
 
@@ -92,12 +89,33 @@ class Messages:
     TS_SEARCH_NAME = "nach Name suchen ..."
     TS_NAME = "Name"
     TS_GROUP = "Gruppe"
-    TS_CLASS = "Klasse"
     TS_SEARCH = "Suche"
     TS_TRAIT = "Eigenschaft"
     TS_DESCRIPTION = "Beschreibung ..."
     TS_ADD_TRAIT = "Ausgewählte Eigenschaft hinzufügen ..."
-    TS_JUST_SCROLL = "einfach durchblättern..."
+    TS_JUST_SCROLL = "Gruppe wählen ..."
+    TS_POSITIVE = "pos."
+    TS_NEGATIVE = "neg."
+
+    TS_BODY = "Körperbau"
+    TS_MIND = "Geistig"
+    TS_SOCIAL = "Sozial"
+    TS_PERCEPTION = "Wahrnehmung"
+    TS_FINANCIAL = "Vermögen"
+    TS_FIGHTING = "Kampf"
+    TS_ILLNESS = "Erkrankung"
+    TS_TEMPORAL = "Temporales"
+    TS_SKILL = "Fertigkeiten"
+    TS_BEHAVIOR = "Verhalten"
+    TS_XS = "Extraspatiales"
+    TS_PSI = "Psionik"
+
+    # TRAIT INFO
+    TI_REMOVE = "{type} löschen"
+    TI_LESSEN = "{type} um eins senken"
+    TI_INTENSIFY = "{type} um eins steigern"
+    TI_ADVANTAGE = "Vorteil"
+    TI_DISADVANTAGE = "Nachteil"
 
     # SKILL SELECTOR
     SS_TITLE = "Fertigkeiten wählen"
@@ -152,17 +170,21 @@ class Messages:
     ES_G = " g"
     ES_WEIGHT = "Gewicht: "
     ES_CLIP = "{name} - {number} / {capacity}"
+    ES_TT_EQUIP = "Gegenstand anlegen."
+    ES_TT_UNEQUIP = "Gegenstand ablegen."
+    ES_TT_PACK = "Gegenstand in Tasche packen."
+    ES_TT_UNPACK = "Gegenstand auspacken."
+    ES_TT_ACTIVE_BAG = "Aktiver Behälter, gewählte Gegenstände\n"\
+                       "werden hier eingelegt"
+    ES_TT_INACTIVE_BAG = "Behälter ist derzeit inaktiv,\n"\
+                         "anklicken zum aktivieren ..."
 
     # ####ITEM EDITOR and INVENTORY EDITOR # ####
-    IE_UNEQUIP = "Ablegen"
-    IE_EQUIP = "Anlegen"
-    IE_SPLIT = "Teilen"
-    IE_CONDENSE = "Zusammenführen"
     IE_DESTROY = "Zerstören"
-    IE_SELL = "Verkaufen"
     IE_KG = " kg"
     IE_G = " g"
     IE_WEIGHT = "Gewicht: "
+    IE_PRICE_VALUE = "Wert: "
     IE_CANCEL = "Abbrechen"
     IE_CONTENT = "Inhalt: "
     IE_CHAMBERS = "Kammern: "
@@ -184,6 +206,8 @@ class Messages:
     IE_ADD_ONE = "+1"
     IE_INSERT_CARTRIDGE = "Patrone einlegen ..."
     IE_QUALITY = "Qualität"
+    IE_QUALITY_1 = "kaputt"
+    IE_QUALITY_2 = "beschädigt"
     IE_QUALITY_3 = "miserabel"
     IE_QUALITY_4 = "schlecht"
     IE_QUALITY_5 = "gebraucht"
@@ -753,6 +777,17 @@ class Messages:
                     "Wert übereinstimmt."
     IE_TT_CONTAINER = "Anzeigename der Taschen\n(z.B. Hosentaschen)"
 
+    IE_TT_EQUIP = "Gegenstand anlegen."
+    IE_TT_UNEQUIP = "Gegenstand ablegen."
+    IE_TT_UNPACK = "Gegenstand auspacken."
+    IE_TT_SPLIT = "Stapel teilen"
+    IE_TT_SPLIT_AMOUNT = "Welche Menge abteilen"
+    IE_TT_CONDENSE = "Gleiche Gegenstände zusammenführen"
+    IE_TT_DESTROY = "zerstören / verbrauchen"
+    IE_TT_SELL = "Gegenstand verkaufen"
+    IE_TT_REPAIR = "Gegenstand reparieren / verbessern"
+    IE_TT_DAMAGE_ITEM = "Gegenstand beschädigen"
+
 
     # IMPROVE WINDOW
     IW_TITLE = "Steigern ..."
@@ -803,9 +838,16 @@ class Messages:
     IS_LOAD_IMAGE_TITLE = "Bilddatei laden ..."
     IS_LOAD_MIME = "Bilddateien ..."
 
+    # NOTESCREEN
+    NS_TT_DELETE = "zum Löschen 2x klicken ..."
+    NS_TT_NEW = "Neue Charakternotiz anlegen."
+
     # for the sheetlayoutscreen
     SL_EMPTY = "[ L E E R ]"
     SL_EXPORT = "PDF Exportieren"
+    SL_STYLE = "Style"
+    SL_TT_STYLE_ROUND = "abgerundete Ecken"
+    SL_TT_STYLE_STRAIGHT = "abgeschrägte Ecken"
     SL_TT_NEW = "Neues Template erstellen ..."
     SL_TT_LOAD = "Template laden ..."
     SL_TT_SAVE = "Template speichern ..."
@@ -904,46 +946,78 @@ class Messages:
     PDF_HALF = "2x4 - halbe Seite"
     PDF_ATTRIB_IMAGE = "im Attributsmodul"
 
+    # SettingScreen
+    SET_CORE_SETTINGS = "Programmoptionen"
+    SET_INITIAL_XP = "Erfahrungspunkte für neue Charaktere"
+    SET_INIT_XP_INVALID = "UNGÜLTIG"
+    SET_CHAR_SETTINGS = "Charakteroptionen"
+    SET_EDIT_MODE = "Bearbeitungsmodus wählen"
+    SET_EDIT_GENERATION = "Charaktergenerierung"
+    SET_EDIT_EDIT = "Bearbeitungsmodus"
+    SET_EDIT_VIEW = "Ansichtsmodus"
+    SET_EDIT_SIM = "Simulation"
+    SET_EDIT_SWITCH = "Modus wechseln"
+    SET_EXPANSIONS = "Erweiterungen auswählen: "
+
     # these strings are used in the character xml 
-    CHAR_CREATED = "Charaktergenerierung gestartet ..."
-    CHAR_INITIAL_XP = "Initiale Generierungspunkte"
-    CHAR_STARTING_CAPITAL = "Startkapital"
-    CHAR_LOADED = "Charakter geladen ..."
-    CHAR_SAVED = "Charakter gespeichert ..."
-    CHAR_SWITCHED_EDIT_MODE = "Bearbeitungsmodus gewechselt"
-    CHAR_ATTRIBUTE_CHANGED = "verändert"
-    CHAR_SKILL_ADDED = "aktiviert"
-    CHAR_SKILL_REMOVED = "entfernt"
-    CHAR_SKILL_CHANGED = "geändert"
-    CHAR_TRAIT_ADDED = "hinzugefügt"
-    CHAR_TRAIT_REMOVED = "entfernt"
-    CHAR_DATA_CREATED = "erstellt"
-    CHAR_DATA_UPDATED = "aktualisiert"
-    CHAR_ITEM_ADDED = "erworben"
-    CHAR_ITEM_DESTROY = "zerstört"
-    CHAR_ITEM_SELL = "verkauft"
-    CHAR_ITEM_SPLIT = "abgeteilt"
-    CHAR_ITEM_CONDENSED = "zusammengeführt"
-    CHAR_ITEM_ROTATECHAMBER = "Kammer gewechselt"
+    CHAR_CREATED = "created"
+    CHAR_INITIAL_XP = "init_xp"
+    CHAR_STARTING_CAPITAL = "init_money"
+    CHAR_LOADED = "loaded"
+    CHAR_SAVED = "saved"
+    CHAR_SWITCHED_EDIT_MODE = "editmode"
+    CHAR_UPDATED = "updated"
+    CHAR_ADDED = "added"
+    CHAR_REMOVED = "removed"
+    CHAR_ITEM_DESTROY = "destroyed"
+    CHAR_ITEM_SELL = "sold"
+    CHAR_ITEM_SPLIT = "split"
+    CHAR_ITEM_CONDENSED = "joined"
+    CHAR_ITEM_ROTATECHAMBER = "rotate_chamber"
     CHAR_ITEM_BAG = "bag"
-    CHAR_ITEM_PACKED = "eingepackt"
-    CHAR_ITEM_UNPACKED = "entnommen"
-    CHAR_ITEM_EQUIP = "angelegt"
-    CHAR_ITEM_UNEQUIP = "abgelegt"
-    CHAR_ITEM_UPDATE = "geändert"
-    CHAR_ITEM_DESCRIPTION = "Beschreibung geändert"
-    CHAR_ITEM_RENAMED = "umbenannt"
-    CHAR_CONTACT_NEW = "erstellt"
+    CHAR_ITEM_PACKED = "packed"
+    CHAR_ITEM_UNPACKED = "unpacked"
+    CHAR_ITEM_EQUIP = "equipped"
+    CHAR_ITEM_UNEQUIP = "unequipped"
+    CHAR_ITEM_DESCRIPTION = "description"
+    CHAR_ITEM_RENAMED = "renamed"
+    CHAR_ITEM_REPAIRED = "repaired"
+    CHAR_ITEM_DAMAGED = "damaged"
 
     # LOG DISPLAY
     LOG_HEADER = " ΔXP     Zeitpunkt:                  Ereignis:"
+    LOG_CHAR_CREATED = "Der Charakter wurde erstellt."
+    LOG_CHAR_LOADED = "Charakterdatei geladen."
+    LOG_CHAR_SAVED = "Charakterdatei gespeichert."
     LOG_XP_CHANGED = "Verfügbare XP: {total} ({delta})"
-    LOG_ITEM_ADDED = "%s zum Inventar hinzugefügt - Gesamtmenge: %d"
+    LOG_ATTRIBUTE_CHANGED = "{name} Attribut geändert, neuer Wert: {value}"
+    LOG_INITIAL_XP = "Erfahrungspunkte zur Charaktererschaffung: "
+    LOG_DATA_ADDED = "{name} wurde neu gesetzt: {value}"
+    LOG_DATA_UPDATED = "{name} wurde von {old} in {value} geändert."
+    LOG_DATA_REMOVED = "Der Eintrag {name}: {old} wurde gelöscht."
+    LOG_EDIT_GENERATION = "Charakter wurde in den Generierungsmodus gesetzt."
+    LOG_EDIT_EDIT = "Charakter wurde in den Bearbeitungsmodus gesetzt."
+    LOG_EDIT_VIEW = "Charakter wurde in den Ansichtsmodus versetzt."
+    LOG_EDIT_SIM = "Charakter wurde in den Simulationsmodus gesetzt."
+    LOG_SKILL_ADDED = "Fertigkeit {name} aktiviert."
+    LOG_SKILL_UPDATED = "Fertigkeit {name} geändert. Neuer Wert ist {value}"
+    LOG_SKILL_REMOVED = "Fertigkeit {name} entfernt."
+    LOG_ITEM_ADDED = "{new} x {name} zum Inventar hinzugefügt"\
+                     " insgesamt: {total}"
+    LOG_ITEM_SPLIT = "{quantity}x {name} abgeteilt."
+    LOG_ITEM_JOIN = "{name} zusammengeführt - Gesamtstapel: {quantity}"
+    LOG_ITEM_SELL = "{quantity}x {name} verkauft."
+    LOG_ITEM_DESTROY = "{quantity}x {name} zerstört."
     LOG_ITEM_RENAMED = "%s in %s umbenannt."
     LOG_ITEM_PACKED = "{name} in {container} eingelegt."
     LOG_ITEM_UNPACKED = "{name} aus {container} entnommen."
     LOG_ITEM_EQUIPPED = "{name} angelegt."
     LOG_ITEM_UNKNOWN = "[UNBEKANNT]"
+    LOG_ITEM_DAMAGED = "{name} beschädigt, neue Qualität: {value}"
+    LOG_ITEM_REPAIRED = "{name} repariert, neue Qualität: {value}"
+    LOG_ACCOUNT_CAP_INC = "Startkapital um {amount} gesteigert."
+    LOG_ACCOUNT_CAP_DEC = "Startkapital um {amount} reduziert."
+    LOG_ACCOUNT_PAY_ITEM = "Ausrüstung bezahlt"
     LOG_CONTACT_CHANGED = "ID: {id} - {name} {diff}"
     LOG_CONTACT_RENAMED = "umbenannt in: "
     LOG_CONTACT_COMPETENCY = "Kompetenz: "
@@ -953,6 +1027,7 @@ class Messages:
     LOG_CONTACT_DESC = "Beschreibung"
     LOG_CONTACT_DESC_CHANGED = " geändert"
     LOG_CONTACT_DESC_DELETED = " gelöscht"
+    LOG_CONTACT_UNKNOWN = "Ereignis zu gelöschtem Kontakt mit ID: "
     LOG_INTEGRITY = "Datenintegrität"
     LOG_OKAY = "Die gespeicherte Datei scheint in Ordnung zu sein."
     LOG_WARN = "Die gespeicherte Datei wurde extern bearbeitet!"
@@ -1016,7 +1091,7 @@ class Page:
     BAR_WIDTH = 20
     OUTER_RADIUS = 4
     INNER_RADIUS = 2
-    Y_PADDING = 2
+    Y_PADDING = 4
     SPACER = 14
     MINLINE_HEIGHT = 14
     INFO_LINE = 9
@@ -1038,8 +1113,14 @@ class Page:
     MOD_IMAGE = "image"
 
 
-# this class handles the names of item types that are imported via xml
 class ItemTypes:
+    """ handling item import from xml files 
+    
+    Note:
+        This handles how data from xml is parsed, changing it might
+        break import of data files!
+    """
+
     #  clothing and armor
     CLOTHING = "clothing"
     HARNESS = "harness"
@@ -1076,16 +1157,35 @@ class ItemTypes:
 
     #  other stuff
     SERVICES = "service"
+    FOOD = "food"
+    DRUG = "drug"
 
     #biotech
     IMPLANT = "implant"
     PROSTHESIS = "prosthesis"
     IMPLANT_PART = "implant_part"
 
-    OPTION_CALIBER = "Kaliber"
+    OPTION_CALIBER = "caliber"
     OPTION_COLOR = "Farbe"
 
 
+class TraitGroups:
+
+    BODY = "body"
+    MIND = "mind"
+    SOCIAL = "social"
+    PERCEPTION = "perception"
+    FINANCIAL = "financial"
+    FIGHTING = "fighting"
+    ILLNESS = "illness"
+    TEMPORAL = "temporal"
+    SKILL = "skill"
+    BEHAVIOR = "behavior"
+    PSI = "psi"
+    XS = "xs"
+
+
+"""
 # this class handles character XML data names
 class Character:
     # attributes
@@ -1112,6 +1212,7 @@ class Character:
     EYES = "eyes"
     SKIN = "skin"
     SKIN_TYPE = "skintype"
+"""
 
 
 class Colors:
@@ -1122,5 +1223,8 @@ class Colors:
 
 
 class Style:
-    FONT = "Arial"
-    SIZE = "10"
+    ATTR_FONT = "Arial 14 bold"
+
+    ATTR_LF_FONT = "Arial 12 bold"
+    TITLE_LF_FONT = "Arial 10 bold"
+    BAG_LF_FONT = "Arial 9 bold"

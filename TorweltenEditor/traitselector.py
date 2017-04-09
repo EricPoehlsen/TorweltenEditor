@@ -1,4 +1,4 @@
-import tkinter as tk
+import tk_ as tk
 import config
 
 msg = config.Messages()
@@ -13,7 +13,7 @@ class TraitSelector(tk.Toplevel):
 
     def __init__(self, app):
         tk.Toplevel.__init__(self, app)
-        
+        self.style = app.style
         # point to character and traitstree
         self.char = app.char
         self.all_traits = app.traits
@@ -41,22 +41,17 @@ class TraitSelector(tk.Toplevel):
         self.search = tk.StringVar()
         self.search.set(msg.TS_SEARCH_NAME)
         self.search_mode = "name"
+        self.search_neg = tk.IntVar(value=1)
+        self.search_pos = tk.IntVar(value=1)
         self.upper_search_frame = tk.Frame(self.search_frame)
         self.search_mode_name = tk.Button(
             self.upper_search_frame,
             text=msg.TS_NAME,
-            relief=tk.SUNKEN,
             command=lambda:
                 self.switchSearchMode("name")
         )
+        self.search_mode_name.state(["pressed"])
         self.search_mode_name.pack(side=tk.LEFT, fill=tk.X, expand=1)
-        self.search_mode_cls = tk.Button(
-            self.upper_search_frame,
-            text=msg.TS_CLASS,
-            command=lambda:
-                self.switchSearchMode("cls")
-        )
-        self.search_mode_cls.pack(side=tk.LEFT, fill=tk.X, expand=1)
         self.search_mode_grp = tk.Button(
             self.upper_search_frame,
             text=msg.TS_GROUP,
@@ -64,13 +59,32 @@ class TraitSelector(tk.Toplevel):
                 self.switchSearchMode("grp")
         )
         self.search_mode_grp.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        self.pos_button = tk.Checkbutton(
+            self.upper_search_frame,
+            text=msg.TS_POSITIVE,
+            var=self.search_pos,
+            onvalue=1,
+            offvalue=0,
+            command=self.searchTraits
+        )
+        self.pos_button.pack(side=tk.LEFT)
+        self.neg_button = tk.Checkbutton(
+            self.upper_search_frame,
+            text=msg.TS_NEGATIVE,
+            var=self.search_neg,
+            onvalue=1,
+            offvalue=0,
+            command=self.searchTraits
+        )
+        self.neg_button.pack(side=tk.LEFT)
+
         self.upper_search_frame.pack(fill=tk.X, expand=1)
         self.lower_search_frame = tk.Frame(self.search_frame)
         self.search_box = tk.Entry(
             self.lower_search_frame,
             textvariable=self.search)
         self.search_box.bind("<Control-a>", self.searchSelectAll)
-        self.search_box.bind("<Return>", lambda event: self.searchTraits())
+        self.search_box.bind("<Return>", self.searchTraits)
         self.search_box.pack(side=tk.LEFT, fill=tk.X, expand=1)
         self.search_button = tk.Button(
             self.lower_search_frame,
@@ -93,8 +107,8 @@ class TraitSelector(tk.Toplevel):
         self.scrollbar_select.config(command=self.list_box.yview)
         self.list_box.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.list_box.bind("<<ListboxSelect>>", self.displayTraitInfo)
-        self.scrollbar_select.pack(side=tk.RIGHT, fill=tk.Y, expand=1)
-        self.select_frame.pack(fill=tk.Y, expand=1)
+        self.scrollbar_select.pack(side=tk.RIGHT, fill=tk.Y)
+        self.select_frame.pack(fill=tk.BOTH, expand=1)
         self.left_frame.pack(fill=tk.Y, side=tk.LEFT, expand=1)
         
         # the info frame displays the information about the selected trait.
@@ -114,10 +128,8 @@ class TraitSelector(tk.Toplevel):
         )
         self.info_title.pack(fill=tk.X, side=tk.LEFT)
         self.info_title_frame.pack(fill=tk.X)
-        self.info_subtrait_container = tk.Frame(self.info_frame)
-        self.info_subtrait = tk.Frame(self.info_subtrait_container)
-        self.info_subtrait.pack(fill=tk.X)
-        self.info_subtrait_container.pack(fill=tk.X)
+        self.info_subtrait = tk.Frame(self.info_frame)
+        self.info_subtrait.pack(fill=tk.X, expand=1)
         self.info_subtrait_widgets = {}
         self.info_subtrait_vars = {}
         self.info_subtrait_tcl = {}
@@ -153,20 +165,44 @@ class TraitSelector(tk.Toplevel):
         # clear the listbox
         self.list_box.delete(0, tk.END)
 
-        cur_traits = [trait.get("name") for trait in self.char.getTraits()]
         for trait in traits:
+            # filter positive and negative traits if not selected
+            xp = int(trait[1])
+            if not self.search_neg.get() and xp < 0:
+                continue
+            if not self.search_pos.get() and xp > 0:
+                continue
+
+            search_term = self.search.get()
+            if search_term in [msg.TS_SEARCH_NAME, msg.TS_JUST_SCROLL]:
+                search = False
+
             if search is False:
                 self.list_box.insert(tk.END, trait[0])
             if search is True:
                 selector = 0
                 if self.search_mode == "name":
                     selector = 0
-                if self.search_mode == "cls":
-                    selector = 1
                 if self.search_mode == "grp":
                     selector = 2
-                
-                search_term = self.search.get()
+                    # translate search term to xml name
+                    grp = config.TraitGroups
+                    groups = {
+                        msg.TS_BODY: grp.BODY,
+                        msg.TS_MIND: grp.MIND,
+                        msg.TS_SOCIAL: grp.SOCIAL,
+                        msg.TS_PERCEPTION: grp.PERCEPTION,
+                        msg.TS_FINANCIAL: grp.FINANCIAL,
+                        msg.TS_FIGHTING: grp.FIGHTING,
+                        msg.TS_ILLNESS: grp.ILLNESS,
+                        msg.TS_TEMPORAL: grp.TEMPORAL,
+                        msg.TS_SKILL: grp.SKILL,
+                        msg.TS_BEHAVIOR: grp.BEHAVIOR,
+                        msg.TS_XS: grp.XS,
+                        msg.TS_PSI: grp.PSI,
+                    }
+                    search_term = groups[search_term]
+
                 if trait[selector]:
                     if search_term.lower() in trait[selector].lower():
                         self.list_box.insert(tk.END, trait[0])
@@ -196,19 +232,22 @@ class TraitSelector(tk.Toplevel):
         self.setDescription()
 
         # destroy the subtrait frame and recreate it
-        self.info_subtrait.destroy()
-        self.info_subtrait = tk.Frame(self.info_subtrait_container)
-        self.info_subtrait.pack(fill=tk.X)
+        widgets = self.info_subtrait.winfo_children()
+        for widget in widgets:
+            widget.destroy()
 
         # check if the trait has a specification: 
         specification = self.trait.find("specification")
+        data_frame = tk.Frame(self.info_subtrait)
+        data_frame.columnconfigure(1, weight=100)
+        row = -1
         if specification is not None:
-            specification_frame = tk.Frame(self.info_subtrait)
+            row += 1
             specification_label_text = specification.get("name")
             specification_label = tk.Label(
-                specification_frame,
+                data_frame,
                 text=specification_label_text+": ")
-            specification_label.pack(side=tk.LEFT)
+            specification_label.grid(row=row, column=0, sticky=tk.E)
             # create a stringvar
             spec_var = tk.StringVar()
             self.info_subtrait_vars["spec"] = spec_var
@@ -217,25 +256,24 @@ class TraitSelector(tk.Toplevel):
             # bind the tcl_name of the variable to the variable
             self.info_subtrait_tcl[str(spec_var)] = "spec"
             specification_entry = tk.Entry(
-                specification_frame,
+                data_frame,
                 textvariable=self.info_subtrait_vars["spec"]
             )
             self.info_subtrait_widgets["spec"] = specification_entry
-            specification_entry.pack(side=tk.LEFT, fill=tk.X)
-            specification_frame.pack(fill=tk.X)
-        
+            specification_entry.grid(row=row, column=1, sticky=tk.NSEW)
+
         # check for a rank tag:
         ranks = self.trait.findall("rank")
         if ranks is not None:
             for rank in ranks:
+                row +=1
                 rank_name = rank.get("name")
                 rank_id = rank.get("id")
                 xp_factor = int(rank.get("xp"))
                 min_rank = int(rank.get("min", "1"))
                 max_rank = int(rank.get("max", "10"))
-                rank_frame = tk.Frame(self.info_subtrait)
-                rank_label = tk.Label(rank_frame, text=rank_name)
-                rank_label.pack(side=tk.LEFT)
+                rank_label = tk.Label(data_frame, text=rank_name+": ")
+                rank_label.grid(row=row, column=0, sticky=tk.E)
                 var = tk.StringVar()
                 self.info_subtrait_vars["rank"+"_"+rank_id] = var
                 var.set(min_rank)
@@ -245,29 +283,27 @@ class TraitSelector(tk.Toplevel):
                     self.info_subtrait_vars["rank_"+rank_id]
                 )] = "rank_"+rank_id
                 spinbox = tk.Spinbox(
-                    rank_frame,
+                    data_frame,
                     textvariable=var,
                     from_=min_rank,
                     to=max_rank
                 )
                 self.info_subtrait_widgets["rank"+rank_id] = spinbox
-                spinbox.pack(side=tk.RIGHT)
-                rank_frame.pack()
+                spinbox.grid(row=row, column=1)
 
         # check if there are variables
         variables = self.trait.findall("variable")
         if variables is not None:
-            rownum = 0
-            variable_frame = tk.Frame(self.info_subtrait)
             for variable in variables:
-                variable_label_text = variable.get("name")
+                row += 1
+                variable_label_text = variable.get("name") + ": "
                 variable_id = variable.get("id")
                 variable_values_string = variable.get("values")
                 variable_values = variable_values_string.split(",")
                 variable_label = tk.Label(
-                    variable_frame,
+                    data_frame,
                     text=variable_label_text)
-                variable_label.grid(row=rownum, column=0)
+                variable_label.grid(row=row, column=0, sticky=tk.E)
                 # create a string_var for the variable
                 var = tk.StringVar()
                 self.info_subtrait_vars["var"+"_"+variable_id] = var
@@ -275,14 +311,15 @@ class TraitSelector(tk.Toplevel):
                 # bind the label to the tcl_name
 
                 self.info_subtrait_tcl[str(var)] = "var"+"_"+variable_id
-                spinbox = tk.Spinbox(
-                    variable_frame,
+                var.set(variable_values[0])
+                combobox = tk.Combobox(
+                    data_frame,
                     textvariable=var,
                     values=variable_values)
-                self.info_subtrait_widgets["var"+"_"+variable_id] = spinbox
-                spinbox.grid(row=rownum, column=1)
-                rownum += 1
-            variable_frame.pack()
+                self.info_subtrait_widgets["var"+"_"+variable_id] = combobox
+                combobox.grid(row=row, column=1, sticky=tk.NSEW)
+
+            data_frame.pack(fill=tk.X, expand=1)
     
     def updateDescription(self, event):
         self.trait_description = self.info_description.get("0.0", tk.END)
@@ -293,14 +330,14 @@ class TraitSelector(tk.Toplevel):
         try:
             xp = int(xp_string)
             if xp == 0:
-                self.info_xp.config(fg=config.Colors.BLACK)
-                self.submit.config(state=tk.DISABLED)
+                self.info_xp.config(style="TLabel")
+                self.submit.state(["disabled"])
             if xp < 0:
-                self.info_xp.config(fg=config.Colors.DARK_RED)
-                self.submit.config(state=tk.NORMAL)
+                self.info_xp.config(style="red.TLabel")
+                self.submit.state(["!disabled"])
             if xp > 0:
-                self.info_xp.config(fg=config.Colors.DARK_GREEN)
-                self.submit.config(state=tk.NORMAL)
+                self.info_xp.config(style="green.TLabel")
+                self.submit.state(["!disabled"])
         except ValueError:
             pass
         
@@ -398,11 +435,11 @@ class TraitSelector(tk.Toplevel):
         self.trait_cost.set("(" + str(int(trait_cost)) + ")")
 
         if trait_cost < 0:
-            self.info_xp.config(fg=config.Colors.DARK_RED)
+            self.info_xp.config(style="red.TLabel")
         elif trait_cost == 0:
-            self.info_xp.config(fg=config.Colors.BLACK)
+            self.info_xp.config(style="TLabel")
         else:
-            self.info_xp.config(fg=config.Colors.DARK_GREEN)
+            self.info_xp.config(style="green.TLabel")
 
     # add the text    
     def setDescription(self):
@@ -414,9 +451,8 @@ class TraitSelector(tk.Toplevel):
         if mode != self.search_mode:
             self.search_mode = mode
             if mode == "name":
-                self.search_mode_name.config(relief=tk.SUNKEN)
-                self.search_mode_cls.config(relief=tk.RAISED)
-                self.search_mode_grp.config(relief=tk.RAISED)
+                self.search_mode_name.state(["pressed"])
+                self.search_mode_grp.state(["!pressed"])
                 self.search_box.pack_forget()
                 self.search_box = tk.Entry(
                     self.lower_search_frame,
@@ -424,65 +460,41 @@ class TraitSelector(tk.Toplevel):
                 )
                 self.search_box.pack(fill=tk.BOTH)
                 self.search_box.bind("<Control-a>", self.searchSelectAll)
-                self.search_box.bind(
-                    "<Return>",
-                    lambda event:
-                        self.searchTraits()
-                )
+                self.search_box.bind("<Return>", self.searchTraits)
                 self.search.set(msg.TS_SEARCH_NAME)
-            if mode == "cls":
-                self.search_mode_name.config(relief=tk.RAISED)
-                self.search_mode_cls.config(relief=tk.SUNKEN)
-                self.search_mode_grp.config(relief=tk.RAISED)
 
-                self.search_box.pack_forget()
-                self.search_box = tk.Spinbox(
-                    self.lower_search_frame,
-                    textvariable=self.search
-                )
-                self.search_box.pack(fill=tk.BOTH)
-                self.search_box.bind(
-                    "<Return>",
-                    lambda event:
-                        self.searchTraits()
-                )
-
-                traits = self.all_traits.getList()
-                trait_set = set()
-                for trait in traits:
-                    if trait[1]:
-                        trait_set.add(trait[1])
-                trait_list = list(trait_set)
-                self.search_box.config(values=trait_list)
-                self.search.set(msg.TS_JUST_SCROLL)
-                
             if mode == "grp":
-                self.search_mode_name.config(relief=tk.RAISED)
-                self.search_mode_cls.config(relief=tk.RAISED)
-                self.search_mode_grp.config(relief=tk.SUNKEN)
+                self.search_mode_name.state(["!pressed"])
+                self.search_mode_grp.state(["pressed"])
 
                 self.search_box.pack_forget()
-                self.search_box = tk.Spinbox(
+                self.search_box = tk.Combobox(
                     self.lower_search_frame,
                     textvariable=self.search
                 )
                 self.search_box.pack(fill=tk.BOTH)
-                self.search_box.bind(
-                    "<Return>",
-                    lambda event:
-                    self.searchTraits()
-                )
+                self.search_box.bind("<Return>", self.searchTraits)
+                self.search_box.bind("<<ComboboxSelected>>", self.searchTraits)
 
-                traits = self.all_traits.getList()
-                trait_set = set()
-                for trait in traits:
-                    if trait[2]:
-                        trait_set.add(trait[2])
-                trait_list = list(trait_set)
-                self.search_box.config(values=trait_list)
+                groups = [
+                    msg.TS_BODY,
+                    msg.TS_MIND,
+                    msg.TS_SOCIAL,
+                    msg.TS_PERCEPTION,
+                    msg.TS_FINANCIAL,
+                    msg.TS_FIGHTING,
+                    msg.TS_ILLNESS,
+                    msg.TS_TEMPORAL,
+                    msg.TS_SKILL,
+                    msg.TS_BEHAVIOR,
+                    msg.TS_XS,
+                    msg.TS_PSI,
+                ]
+
+                self.search_box.config(values=groups)
                 self.search.set(msg.TS_JUST_SCROLL)
 
-    def searchTraits(self):
+    def searchTraits(self, event=None):
         self.listTraits(True)
 
     # player presses the add trait button
@@ -503,7 +515,7 @@ class TraitSelector(tk.Toplevel):
         widget = event.widget
         widget.select_range(0, tk.END)
         return "break"
-    
+
     def close(self):
         self.destroy()
         self.app.open_windows["trait"] = 0

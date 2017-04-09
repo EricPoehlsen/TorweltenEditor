@@ -1,4 +1,4 @@
-import tkinter as tk
+import tk_ as tk
 import xml.etree.ElementTree as et
 import config
 
@@ -41,7 +41,7 @@ class ModuleEditor(tk.Toplevel):
             self._newModule(self.frame)
         else:
             self._editModule(self.frame)
-        self.frame.pack(fill=tk.BOTH, anchor=tk.N)
+        self.frame.pack(fill=tk.BOTH)
 
         self.protocol("WM_DELETE_WINDOW", self.close)
 
@@ -76,6 +76,7 @@ class ModuleEditor(tk.Toplevel):
         select_button = tk.OptionMenu(
             frame,
             selected_type,
+            mod_types[0],
             *mod_types)
         selected_type.set(mod_types[0])
         select_button.pack(fill=tk.X, expand=1)
@@ -92,7 +93,7 @@ class ModuleEditor(tk.Toplevel):
 
         sub_frame.pack(fill=tk.BOTH, expand=1)
         add_button = tk.Button(frame, text=msg.ME_ADD, command=self._addModule)
-        add_button.pack(fill=tk.X, anchor=tk.S)
+        add_button.pack(fill=tk.X)
 
     # edit or delete a module ...
     def _editModule(self, frame):
@@ -134,7 +135,12 @@ class ModuleEditor(tk.Toplevel):
         }
         cur_size = size_names[cur_size]
         
-        size_button = tk.OptionMenu(frame, size, *tuple(sizes))
+        size_button = tk.OptionMenu(
+            frame,
+            size,
+            sizes[0],
+            *sizes
+        )
         size.set(cur_size)
         size_button.pack(fill=tk.X)
         if mod_type in [
@@ -293,7 +299,8 @@ class ModuleEditor(tk.Toplevel):
             size_button = tk.OptionMenu(
                 frame,
                 size,
-                *tuple(sizes)
+                sizes[0],
+                *sizes
             )
             size.set(sizes[0])
             size_button.pack(fill=tk.X)
@@ -315,10 +322,11 @@ class ModuleEditor(tk.Toplevel):
                 trait_type_button = tk.OptionMenu(
                     frame,
                     trait_type,
-                    *tuple(trait_types)
+                    trait_types[0],
+                    *trait_types
                 )
                 trait_type.set(trait_types[0])
-                trait_type_button.pack()
+                trait_type_button.pack(fill=tk.X)
 
                 info_lines = tk.StringVar()
                 self.vars[str(info_lines)] = info_lines
@@ -356,10 +364,11 @@ class ModuleEditor(tk.Toplevel):
                 skill_type_button = tk.OptionMenu(
                     frame,
                     skill_type,
-                    *tuple(skill_types)
+                    skill_types[0],
+                    *skill_types
                 )
                 skill_type.set(skill_types[0])
-                skill_type_button.pack()
+                skill_type_button.pack(fill=tk.X)
 
             if selected == msg.PDF_WEAPONS:
                 variants = [
@@ -372,9 +381,13 @@ class ModuleEditor(tk.Toplevel):
                 variant = tk.StringVar()
                 self.vars[str(variant)] = variant
                 self.var_names["variant"] = str(variant)
-                variant_button = tk.OptionMenu(frame, variant, *tuple(variants))
+                variant_button = tk.OptionMenu(
+                    frame,
+                    variant,
+                    variants[0],
+                    *variants)
                 variant.set(variants[0])
-                variant_button.pack()
+                variant_button.pack(fill=tk.X)
 
                 equipped = tk.IntVar()
                 self.vars[str(equipped)] = equipped
@@ -387,7 +400,7 @@ class ModuleEditor(tk.Toplevel):
                     variable=equipped,
                     offvalue=0,
                     onvalue=1
-                ).pack()
+                ).pack(fill=tk.X)
 
                 amount = tk.IntVar()
                 self.vars[str(amount)] = amount
@@ -400,7 +413,7 @@ class ModuleEditor(tk.Toplevel):
                     variable=amount,
                     offvalue=0,
                     onvalue=1
-                ).pack()
+                ).pack(fill=tk.X)
 
                 info_lines = tk.StringVar()
                 self.vars[str(info_lines)] = info_lines
@@ -436,7 +449,12 @@ class ModuleEditor(tk.Toplevel):
                 self.var_names["item_group"] = str(item_group)
                 item_group.set(groups[0])
                 labelframe = tk.LabelFrame(frame, text="Gruppe wählen")
-                tk.OptionMenu(labelframe, item_group, *groups).pack(fill=tk.X)
+                tk.OptionMenu(
+                    labelframe,
+                    item_group,
+                    groups[0],
+                    *groups
+                ).pack(fill=tk.X)
                 labelframe.pack(fill=tk.X)
 
                 # condense items selection ... 
@@ -450,7 +468,6 @@ class ModuleEditor(tk.Toplevel):
                     variable=condensed,
                     offvalue=0,
                     onvalue=1,
-                    anchor=tk.W
                 ).pack(fill=tk.X, expand=1)
 
                 # show only equipped stuff selection
@@ -464,7 +481,6 @@ class ModuleEditor(tk.Toplevel):
                     variable=equipped,
                     offvalue=0,
                     onvalue=1,
-                    anchor=tk.W
                 ).pack(fill=tk.X, expand=1)
 
                 # display content selection
@@ -478,7 +494,6 @@ class ModuleEditor(tk.Toplevel):
                     variable=content,
                     offvalue=0,
                     onvalue=1,
-                    anchor=tk.W
                 ).pack(fill=tk.X, expand=1)
 
                 # display weapons selection
@@ -492,7 +507,6 @@ class ModuleEditor(tk.Toplevel):
                     variable=display_weapons,
                     offvalue=0,
                     onvalue=1,
-                    anchor=tk.W
                 ).pack(fill=tk.X, expand=1)
 
                 # use item_id selector
@@ -506,8 +520,6 @@ class ModuleEditor(tk.Toplevel):
                     variable=use_item_id,
                     offvalue=0,
                     onvalue=1,
-                    anchor=tk.NW,
-                    justify=tk.LEFT
                 )
                 use_item_id_button.pack(fill=tk.X, expand=1)
 
@@ -539,7 +551,8 @@ class ModuleEditor(tk.Toplevel):
                     bag_list_button = tk.OptionMenu(
                         frame,
                         bag_list,
-                        *tuple(bag_lists)
+                        bag_lists[0],
+                        *bag_lists
                     )
                     bag_list.set(bag_lists[0])
                     bag_list_button.pack()
@@ -611,10 +624,11 @@ class ModuleEditor(tk.Toplevel):
                 contact_type_button = tk.OptionMenu(
                     frame,
                     contact_type,
-                    *tuple(contact_types)
+                    contact_types[0],
+                    *contact_types
                 )
                 contact_type.set(contact_types[0])
-                contact_type_button.pack()
+                contact_type_button.pack(fill=tk.X)
 
                 info_lines = tk.StringVar()
                 self.vars[str(info_lines)] = info_lines
@@ -656,6 +670,7 @@ class ModuleEditor(tk.Toplevel):
                     button = tk.OptionMenu(
                         sub_frame,
                         var,
+                        entries[0],
                         *entries
                     )
                     button.pack(fill=tk.X)
