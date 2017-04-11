@@ -23,12 +23,13 @@ EWT = [[2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,0.5],  # 1
 class Messages:
     """ Messages provides a variety of strings for the UI and PDF Export """
 
-    TITLE = "Torwelten Charaktergenerator"
+    TITLE = "Torwelten Editor"
     TITLE_EM_GENERATION = "[Charaktererschaffung]"
     TITLE_EM_EDIT = "[Bearbeitungsmodus]"
     TITLE_EM_VIEW = "[Ansichtsmodus]"
     TITLE_EM_SIMULATION = "[Simulation]"
 
+    ERROR = "Fehler!"
     # #####GENERIC UI TEXT # ######
     NAME = "Name"
     SPECIES = "Spezies"
@@ -62,6 +63,7 @@ class Messages:
 
     # TOOLS MENU
     MENU_TOOLS = "Werkzeuge"
+    MENU_EDIT_EXPANSION = "Expansion bearbeiten"
     MENU_IMPROVE = "Charakter steigern ..."
     MENU_EWT = "EWT Tabelle"
     MENU_SETTINGS = "Einstellungen"
@@ -831,6 +833,31 @@ class Messages:
     SE_FREQUENCY_3 = "regelmäßig"
     SE_FREQUENCY_4 = "häufig"
     SE_FREQUENCY_5 = "dauernd"
+
+    # EXPANSION SCREEN
+    EX_CONTINUE = "Weiter"
+    EX_BACK = "Zurück"
+    EX_FINISH = "Hinzufügen"
+    EX_ABORT = "Abbrechen"
+    EX_SKILL_EXISTS = "Name bereits vergeben"
+    EX_SUPER_SKILL = "Übergeordnete Fertigkeit"
+    EX_NO_SUPER_SKILL = "Es muss eine übergeordnete\n"\
+                        "Fertigkeit gewählt werden!"
+
+    EX_ACTIVE_SKILL = "Aktive Fertigkeit"
+    EX_PASSIVE_SKILL = "Passive Fertigkeit"
+    EX_LANGUAGE_SKILL = "Sprachfertigkeit"
+    EX_SPEC2 = "Fertigkeit in "
+    EX_SPEC3 = "Spezialisierung von "
+    EX_NEW_SKILL = "Neue Fertigkeit"
+    EX_ID = "ID: "
+
+
+    EX_TT_NEW = "Neue Expansion erstellen ..."
+    EX_TT_LOAD = "Expansion laden ..."
+    EX_TT_SAVE = "Expansion speichern ..."
+
+
 
     # IMAGE SCREEN
     IS_ERROR = "Dateifehler!"

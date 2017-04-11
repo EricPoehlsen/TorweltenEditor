@@ -82,14 +82,15 @@ class NotesScreen(tk.Frame):
         )
         new_note.image = new_icon
         ToolTip(new_note, msg.NS_TT_NEW)
-        canvas.create_window(
-            x,
-            y,
-            width=64,
-            height=64,
-            window=new_note,
-            anchor=tk.NW,
-        )
+        if self.char.getEditMode() != "view":
+            canvas.create_window(
+                x,
+                y,
+                width=64,
+                height=64,
+                window=new_note,
+                anchor=tk.NW,
+            )
 
         self.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
@@ -145,6 +146,17 @@ class NotesScreen(tk.Frame):
         text_widget.bind("<Tab>", update)
 
         text_widget.pack(padx=2, fill=tk.X)
+
+        if self.char.getEditMode() == "view":
+            title.state(["disabled"])
+            delete_button.state(["disabled"])
+            text_widget.config(
+                state=tk.DISABLED,
+                background="#eeeeee",
+                borderwidth=0,
+                highlightthickness=1,
+                highlightbackground="#cccccc",
+            )
 
         height = title.winfo_reqheight() + text_widget.winfo_reqheight()
 

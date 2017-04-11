@@ -16,6 +16,7 @@ from sheetlayoutscreen import LayoutScreen
 from exportpdf import ExportPdf
 from imagescreen import ImageScreen
 from notesscreen import NotesScreen
+from expansionscreen import ExpansionScreen
 from aboutscreen import About
 from improvewindow import Improve
 from PIL import ImageTk, Image, PngImagePlugin
@@ -35,9 +36,10 @@ class Application(tk.Frame):
     def __init__(self, main):
         tk.Frame.__init__(self, main)
         self.main = main
-        main.title(msg.TITLE)
         self.style = tk.Style()
         self._setStyle()
+
+        self.module = None
 
         # setting up data
         self.settings = Settings()
@@ -100,6 +102,10 @@ class Application(tk.Frame):
             label=msg.MENU_CHAR_LOG,
             command=lambda: self._switchWindow(msg.MENU_CHAR_LOG)
         )
+        self.toolmenu.add_command(
+            label=msg.MENU_EDIT_EXPANSION,
+            command=lambda: self._switchWindow(msg.MENU_EDIT_EXPANSION)
+        )
         self.menubar.add_cascade(
             label=msg.MENU_TOOLS,
             menu=self.toolmenu
@@ -152,6 +158,8 @@ class Application(tk.Frame):
         # self.startScreenImage()
         self.newChar()
         self.showToolbar()
+        self.updateTitle()
+
 
     def showToolbar(self):
         """ Rendering the toolbar """
@@ -292,11 +300,12 @@ class Application(tk.Frame):
             msg.MENU_EWT: EWTScreen,
             msg.MENU_CHAR_LOG: LogScreen,
             msg.MENU_ABOUT: About,
+            msg.MENU_EDIT_EXPANSION: ExpansionScreen,
         }
 
         # display the new module
-        window = ProgramModule[label](frame, app=self)
-        window.pack()
+        self.module = ProgramModule[label](frame, app=self)
+        self.module.pack()
 
     def _displayImprove(self):
         window = Improve(self)
