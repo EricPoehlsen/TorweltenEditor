@@ -835,10 +835,16 @@ class Messages:
     SE_FREQUENCY_5 = "dauernd"
 
     # EXPANSION SCREEN
+    EX_TRAITS = "Eigenschaften"
+    EX_SKILLS = "Fertigkeiten"
+    EX_ITEMS = "Ausrüstung"
     EX_CONTINUE = "Weiter"
     EX_BACK = "Zurück"
     EX_FINISH = "Hinzufügen"
     EX_ABORT = "Abbrechen"
+    EX_NEW = "Neu ..."
+    EX_EDIT = "Bearbeiten"
+    EX_DEL = "Entfernen"
     EX_SKILL_EXISTS = "Name bereits vergeben"
     EX_SUPER_SKILL = "Übergeordnete Fertigkeit"
     EX_NO_SUPER_SKILL = "Es muss eine übergeordnete\n"\

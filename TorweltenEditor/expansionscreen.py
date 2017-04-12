@@ -36,12 +36,12 @@ class ExpansionScreen(tk.Frame):
         trait_frame = self.showTraits(self.frame)
         skill_frame = self.showSkills(self.frame)
         item_frame = self.showItems(self.frame)
-        trait_frame.pack(side=tk.LEFT)
-        skill_frame.pack(side=tk.LEFT)
-        item_frame.pack(side=tk.LEFT)
+        trait_frame.pack(side=tk.LEFT, anchor=tk.N)
+        skill_frame.pack(side=tk.LEFT, anchor=tk.N)
+        item_frame.pack(side=tk.LEFT, anchor=tk.N)
 
     def showTraits(self, frame):
-        trait_frame = tk.Frame(frame)
+        trait_frame = tk.LabelFrame(frame, text=msg.EX_TRAITS)
         list_frame = tk.Frame(trait_frame)
         self.widgets["traits"] = trait_list = tk.Listbox(list_frame)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
@@ -60,7 +60,7 @@ class ExpansionScreen(tk.Frame):
         return trait_frame
 
     def showSkills(self, frame):
-        skill_frame = tk.Frame(frame)
+        skill_frame = tk.LabelFrame(frame, text=msg.EX_SKILLS)
         list_frame = tk.Frame(skill_frame)
         self.widgets["skills"] = skill_list = tk.Listbox(list_frame)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
@@ -70,17 +70,28 @@ class ExpansionScreen(tk.Frame):
         scroll.pack(side=tk.LEFT, fill=tk.Y)
         list_frame.pack()
 
-        button = tk.Button(
+        add = tk.Button(
             skill_frame,
-            text="edit skills",
+            text=msg.EX_NEW,
+            command=self._addSkill
+        )
+        add.pack(fill=tk.X)
+        edit = tk.Button(
+            skill_frame,
+            text=msg.EX_EDIT,
             command=self._editSkill
         )
-        button.pack()
+        edit.pack(fill=tk.X)
+        remove = tk.Button(
+            skill_frame,
+            text=msg.EX_DEL,
+            command=self._delSkill
+        )
+        remove.pack(fill=tk.X)
 
         return skill_frame
 
     def updateSkills(self):
-        print("UPDATING ::::")
         listbox = self.widgets["skills"]
         skills = self.expansion.findall(".//skill")
         listbox.delete(0, tk.END)
@@ -88,11 +99,8 @@ class ExpansionScreen(tk.Frame):
         print(l)
         listbox.insert(0, *l)
 
-
-
-
     def showItems(self, frame):
-        item_frame = tk.Frame(frame)
+        item_frame = tk.LabelFrame(frame, text=msg.EX_ITEMS)
         list_frame = tk.Frame(item_frame)
         self.widgets["items"] = item_list = tk.Listbox(list_frame)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
@@ -112,9 +120,6 @@ class ExpansionScreen(tk.Frame):
         item_list.insert(0, *l)
 
         return item_frame
-
-
-
 
     def showToolbar(self, frame):
 
@@ -148,9 +153,43 @@ class ExpansionScreen(tk.Frame):
     def _editTrait(self):
         a = TraitEditor(None, self.app, None)
 
-    def _editSkill(self):
-        a = SkillEditor(None, self.app, None)
+    def _addSkill(self):
+        if self.app.open_windows["skill"] != 0:
+            self.app.open_windows["skill"].close()
+        self.app.open_windows["skill"] = SkillEditor(
+            self.app.main,
+            self.app,
+            None
+        )
 
+    def _editSkill(self):
+        listbox = self.widgets["skills"]
+        selected = listbox.curselection()
+        if len(selected) != 1:
+            return
+        name = listbox.get(selected[0])
+        skill = self.expansion.find(".//skill[@name='"+name+"']")
+
+        if self.app.open_windows["skill"] != 0:
+            self.app.open_windows["skill"].close()
+        self.app.open_windows["skill"] = SkillEditor(
+            self.app.main,
+            self.app,
+            skill
+        )
+
+    def _delSkill(self):
+        listbox = self.widgets["skills"]
+        selected = listbox.curselection()
+        if len(selected) != 1:
+            return
+        name = listbox.get(selected[0])
+        skills = self.expansion.find(".//skills")
+        skill = skills.find(".//skill[@name='"+name+"']")
+
+        if skill is not None:
+            skills.remove(skill)
+            self.updateSkills()
 
     @staticmethod
     def _newExpansion():
@@ -202,7 +241,6 @@ class ExpansionScreen(tk.Frame):
                     encoding="utf-8",
                     xml_declaration=True
                 )
-                self.char.setPDFTemplate(filename)
 
 
 class ItemEditor(tk.Toplevel):
@@ -211,14 +249,14 @@ class ItemEditor(tk.Toplevel):
         master=None,
         app=None,
         item=None,
-        expansion=None,
         **kwargs
     ):
         super().__init__(master, **kwargs)
+        self.protocol("WM_DELETE_WINDOW", self.close)
+
         self.app = app
         self.loaded_items = app.itemlist
         self.item = item
-        self.expansion = expansion
 
         self.groups = self._getGroups()
         print(self.groups)
@@ -228,8 +266,20 @@ class ItemEditor(tk.Toplevel):
         groups = [(grp.get("name"), grp.get("id")) for grp in groups]
         return groups
 
+    def close(self):
+        self.app.open_windows["skill"] = 0
+        self.destroy()
+
 
 class SkillEditor(tk.Toplevel):
+    """ The skill editor is used to create or edit skills in an expansion
+    
+    Args: 
+        master(tk.Widget): tkinter master widget
+        app(Application): the main application instance
+        skill(et.Element<skill>): the skill to edit (None is new)
+    """
+
     def __init__(
         self,
         master=None,
@@ -238,23 +288,47 @@ class SkillEditor(tk.Toplevel):
         **kwargs
     ):
         super().__init__(master, **kwargs)
+        self.protocol("WM_DELETE_WINDOW", self.close)
         self.app = app
         self.style = app.style
-        self.loaded_skills = [s[0] for s in app.skills.getList()]
         self.skill = skill
+        if self.skill is None:
+            self.skill = et.Element("skill")
+
+        self.loaded_skills = self._list()
 
         self.data = {}
 
         self.minsize(200, 100)
         self._nameSkill()
 
+    def _list(self):
+        """ get a list of all used skill names """
+
+        cur = [s[0] for s in self.app.skills.getList()]
+        exp = self.app.module.expansion.findall(".//skill")
+        name = self.skill.get("name")
+        exp = [s.get("name") for s in exp if s.get("name") != name]
+        return cur + exp
+
     def _clear(self):
+        """ clears the window for the next step """
         widgets = self.winfo_children()
         for widget in widgets:
             widget.destroy()
 
     def _nameSkill(self):
+        """ first step, give it a name ..."""
+
         self._clear()
+
+        # the button is declared here because the var.trace() will call it
+        self.button = tk.Button(
+            self,
+            text=msg.EX_CONTINUE,
+            command=self._selectParent
+        )
+
         frame = tk.LabelFrame(self, text=msg.NAME)
 
         if self.data.get("name"):
@@ -262,20 +336,21 @@ class SkillEditor(tk.Toplevel):
         else:
             self.data["name"] = var = tk.StringVar()
         var.trace("w", lambda n, e, m, var=var: self._checkName(var))
+
+        # set name if the skill already has a name
+        if self.skill.get("name"):
+            var.set(self.skill.get("name"))
+
         entry = tk.Entry(frame, textvariable=var)
         entry.pack(side=tk.LEFT, fill=tk.X, expand=1)
         frame.pack(fill=tk.X)
-        self.button = tk.Button(
-            self,
-            text=msg.EX_CONTINUE,
-            command=self._selectParent
-        )
         self.button.pack(fill=tk.X)
 
     def _checkName(self, var):
+        """ disables 'continue button' if name exists """
+
         cur_name = var.get()
         if cur_name in self.loaded_skills:
-            print="YAY"
             self.button.config(text=msg.EX_SKILL_EXISTS)
             self.button.state(["disabled"])
         else:
@@ -283,13 +358,27 @@ class SkillEditor(tk.Toplevel):
             self.button.state(["!disabled"])
 
     def _selectParent(self):
+        """ next step, select parent skill """
+
         self._clear()
         super_frame = tk.LabelFrame(self, text=msg.EX_SUPER_SKILL)
         if self.data.get("super_search"):
             var = self.data.get("super_search")
         else:
             self.data["super_search"] = var = tk.StringVar()
+
+        # set parent, if it is an edit
+        if self.skill.get("parent"):
+            p_id = self.skill.get("parent")
+            parent = self.app.skills.getSkillById(p_id)
+            if parent is None:
+                search = ".//skill[@id='"+p_id+"']"
+                parent = self.app.module.expansion.find(search)
+            if parent is not None:
+                var.set(parent.get("name"))
+
         var.trace("w", lambda n, e, m, var=var: self._searchSuper(var))
+
         entry = tk.Entry(super_frame, textvariable=var)
         entry.pack(fill=tk.X, expand=1)
         list_frame = tk.Frame(super_frame)
@@ -313,25 +402,46 @@ class SkillEditor(tk.Toplevel):
 
         super_frame.pack(fill=tk.BOTH)
 
+        # fill the list
         skills = self.app.skills.getList(maxspec=2)
         l = [s[0] if s[1] == 1 else "    "+s[0] for s in skills]
         self.skill_list.insert(0, *l)
 
+        # select parent, if it is an edit
+        if var.get() in l:
+            index = l.index(var.get())
+            self.skill_list.select_set(index)
+        if "    "+var.get() in l:
+            index = l.index("    "+var.get())
+            self.skill_list.select_set(index)
+
     def _searchSuper(self, var):
-        search = var.get().lower()
-        l = [s for s in self.loaded_skills if search in s.lower()]
-        self.skill_list.delete(0, tk.END)
-        self.skill_list.insert(0, *l)
+        """ filter list by entry field """
+
+        # for some reason an error is thrown on going back to
+        # the parent selection so this makes sure it doesn't ...
+        try:
+            search = var.get().lower()
+            l = [s for s in self.loaded_skills if search in s.lower()]
+            self.skill_list.delete(0, tk.END)
+            self.skill_list.insert(0, *l)
+        except tk.TclError:
+            pass
 
     def _finalizeSkill(self):
+        """ last step, skill metadata and display ... """
+
         selected = self.skill_list.curselection()
         if len(selected) != 1:
             tkmb.showerror(msg.ERROR, msg.EX_NO_SUPER_SKILL, parent=self)
             return
+
+        # there we go ...
         else:
             super_name = self.skill_list.get(selected[0]).strip()
             self.parent = self.app.skills.getSkill(super_name)
-            parent_id = int(self.parent.get("id"))
+            self.data["parent"] = parent_id = int(self.parent.get("id"))
+            self.skill.set("parent", str(parent_id))
             new_id = parent_id
             exists = True
             spec = int(self.parent.get("spec")) + 1
@@ -355,10 +465,13 @@ class SkillEditor(tk.Toplevel):
 
             self._clear()
 
+            # from here we build the new display
             frame = tk.LabelFrame(self, text=msg.EX_NEW_SKILL)
+            name = self.data["name"].get()
+            self.skill.set("name", name)
             tk.Label(
                 frame,
-                text=self.data["name"].get(),
+                text=name,
                 font="Arial 12 bold"
             ).pack(anchor=tk.CENTER)
             tk.Label(
@@ -369,9 +482,14 @@ class SkillEditor(tk.Toplevel):
                 frame,
                 text=specs[spec] + super_name
             ).pack(anchor=tk.CENTER)
+
+            # the id is editable but disabled ...
             id_frame = tk.Frame(frame)
             tk.Label(id_frame, text=msg.EX_ID).pack(side=tk.LEFT)
-            self.data["id"] = id_var = tk.StringVar()
+            if self.data.get("id"):
+                id_var = self.data["id"]
+            else:
+                self.data["id"] = id_var = tk.StringVar()
             id_var.set(str(new_id))
             id_entry = tk.Entry(
                 id_frame,
@@ -398,20 +516,35 @@ class SkillEditor(tk.Toplevel):
                 text=msg.EX_FINISH,
                 command=self._addSkill
             ).pack(fill=tk.X)
+            tk.Button(
+                self,
+                text=msg.EX_BACK,
+                command=self._selectParent
+            ).pack(fill=tk.X)
+            tk.Button(
+                self,
+                text=msg.EX_ABORT,
+                command=self.close
+            ).pack(fill=tk.X)
 
     def _addSkill(self):
-        skill = et.Element("skill")
-        skill.set("name", self.data["name"].get())
-        skill.set("id", self.data["id"].get())
-        skill.set("parent", self.parent.get("id"))
-        skill.set("type", self.parent.get("type"))
-        skill.set("spec", str(int(self.parent.get("spec")) + 1))
-# HIER
+        """ updating the final data and writing the skill to the tree """
+
+        self.skill.set("id", self.data["id"].get())
+        self.skill.set("type", self.parent.get("type"))
+        self.skill.set("spec", str(int(self.parent.get("spec")) + 1))
 
         skills = self.app.module.expansion.find("skills")
-        print(skills)
-        skills.append(skill)
+        if self.skill in skills:
+            skills.remove(self.skill)
+        skills.append(self.skill)
         self.app.module.updateSkills()
+
+        self.close()
+
+    def close(self):
+        self.app.open_windows["skill"] = 0
+        self.destroy()
 
 
 class TraitEditor(tk.Toplevel):
@@ -420,11 +553,15 @@ class TraitEditor(tk.Toplevel):
         master=None,
         app=None,
         trait=None,
-        expansion=None,
         **kwargs
     ):
         super().__init__(master, **kwargs)
+        self.protocol("WM_DELETE_WINDOW", self.close)
+
         self.app = app
         self.trait = trait
-        self.expansion = expansion
     pass
+
+    def close(self):
+        self.app.open_windows["skill"] = 0
+        self.destroy()
