@@ -949,15 +949,15 @@ class ModuleEditor(tk.Toplevel):
                     )
                 if show_weapons_var == 0:
                     weapons = [
-                        it.CLUBS,
-                        it.BLADES,
-                        it.STAFFS,
-                        it.PISTOLS,
-                        it.REVOLVERS,
-                        it.RIFLES,
-                        it.RIFLES_SA,
-                        it.SHOT_GUNS,
-                        it.SHOT_GUNS_SA,
+                        it.CLUB,
+                        it.BLADE,
+                        it.STAFF,
+                        it.PISTOL,
+                        it.REVOLVER,
+                        it.RIFLE,
+                        it.RIFLE_SA,
+                        it.SHOT_GUN,
+                        it.SHOT_GUN_SA,
                         it.BLASTER
                     ]
                     weapons_string = ",".join(weapons)

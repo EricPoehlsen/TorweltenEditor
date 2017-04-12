@@ -1033,7 +1033,7 @@ class CustomItem(tk.Frame):
                         "damage",
                         {"value": str(damage)}
                     )
-                    new_item.set("type", it.CLUBS)
+                    new_item.set("type", it.CLUB)
             # any gun
             elif item_type == msg.IE_TYPE_GUNS:
                 if add_damage == "1":
@@ -1055,9 +1055,9 @@ class CustomItem(tk.Frame):
                          "value": str(caliber)}
                     )
                     if chambers > 1:
-                        new_item.set("type", it.REVOLVERS)
+                        new_item.set("type", it.REVOLVER)
                     else:
-                        new_item.set("type", it.PISTOLS)
+                        new_item.set("type", it.PISTOL)
             # any container
             elif item_type == msg.IE_TYPE_CONTAINER:
                 if add_container == "1":

@@ -1165,20 +1165,21 @@ class ItemTypes:
 
     #  melee weapons 
     NATURAL = "natural"
-    CLUBS = "club"
-    BLADES = "blade"
-    STAFFS = "staff"
+    CLUB = "club"
+    BLADE = "blade"
+    STAFF = "staff"
     OTHER_MELEE = "other_melee"
 
     #  guns 
-    REVOLVERS = "revolver"
-    PISTOLS = "pistol"
-    RIFLES = "rifle"
-    SHOT_GUNS = "shotgun"
-    RIFLES_SA = "rifle_sa"
-    SHOT_GUNS_SA = "shotgun_sa"
+    REVOLVER = "revolver"
+    PISTOL = "pistol"
+    RIFLE = "rifle"
+    SHOT_GUN = "shotgun"
+    RIFLE_SA = "rifle_sa"
+    SHOT_GUN_SA = "shotgun_sa"
     AUTOMATIC_WEAPON = "automatic_weapon"
     BLASTER = "blaster"
+    BLASTER_SA = "blaster_sa"
 
     #  various
     TOOLS = "tool"
@@ -1193,7 +1194,7 @@ class ItemTypes:
     CONTAINER = "container"
 
     #  other stuff
-    SERVICES = "service"
+    SERVICE = "service"
     FOOD = "food"
     DRUG = "drug"
 

@@ -566,9 +566,9 @@ class EquipmentScreen(tk.Frame):
             if item.get("equipped", "0") == "1":
                 item_type = item.get("type")
                 weapons = [
-                    it.CLUBS,
-                    it.BLADES,
-                    it.STAFFS,
+                    it.CLUB,
+                    it.BLADE,
+                    it.STAFF,
                     it.OTHER_MELEE,
                     it.TOOLS,
                     it.NATURAL
@@ -616,12 +616,12 @@ class EquipmentScreen(tk.Frame):
             if item.get("equipped", "0") == "1":
                 item_type = item.get("type")
                 weapons = [
-                    it.PISTOLS,
-                    it.REVOLVERS,
-                    it.RIFLES,
-                    it.SHOT_GUNS,
-                    it.RIFLES_SA,
-                    it.SHOT_GUNS_SA,
+                    it.PISTOL,
+                    it.REVOLVER,
+                    it.RIFLE,
+                    it.SHOT_GUN,
+                    it.RIFLE_SA,
+                    it.SHOT_GUN_SA,
                     it.AUTOMATIC_WEAPON,
                 ]
                 if item_type in weapons:

@@ -256,10 +256,43 @@ class ItemEditor(tk.Toplevel):
 
         self.app = app
         self.loaded_items = app.itemlist
+        self.data = {}
+
         self.item = item
+
+        if self.item is None:
+            self.item = et.Element("item")
+
+        self._setName()
 
         self.groups = self._getGroups()
         print(self.groups)
+
+    def _setName(self):
+        """ first step of item creation name and item type """
+
+        if self.data.get("name"):
+            name = self.data["name"]
+        else:
+            self.data["name"] = name = tk.StringVar()
+
+        if self.item.get("name"):
+            name.set(self.item.get("name"))
+
+        name.trace("w", lambda n, e, m, var=name: self._checkName(var))
+
+        name_frame = tk.LabelFrame(self, text=msg.NAME)
+        entry = tk.Entry(name_frame, textvariable=name)
+        entry.pack(fill=tk.X, expand=1)
+        name_frame.pack(fill=tk.X, expand=1)
+
+        type_frame = tk.LabelFrame()
+
+    def _checkName(self, var):
+        """ make sure no item with this name exists ... """
+
+        pass
+
 
     def _getGroups(self):
         groups = self.loaded_items.getGroups()

@@ -309,20 +309,20 @@ class ItemEditor(tk.Toplevel):
             it.HARNESS
         ]
         sa_weapons = [
-            it.REVOLVERS,
-            it.RIFLES_SA,
-            it.SHOT_GUNS_SA
+            it.REVOLVER,
+            it.RIFLE_SA,
+            it.SHOT_GUN_SA
         ]
         ha_weapons = [
-            it.PISTOLS,
-            it.RIFLES,
-            it.SHOT_GUNS,
+            it.PISTOL,
+            it.RIFLE,
+            it.SHOT_GUN,
             it.AUTOMATIC_WEAPON
         ]
         melee_weapons = [
-            it.CLUBS,
-            it.BLADES,
-            it.STAFFS,
+            it.CLUB,
+            it.BLADE,
+            it.STAFF,
             it.OTHER_MELEE,
             it.NATURAL
         ]
@@ -488,14 +488,14 @@ class ItemEditor(tk.Toplevel):
             loaded_round.set("weight", str(weight))
             value = float(float(loaded_round.get("price", "0")) / 10)
             loaded_round.find("damage").set("value", "0/0")
-        sa_weapons = [it.REVOLVERS, it.RIFLES_SA, it.SHOT_GUNS_SA]
+        sa_weapons = [it.REVOLVER, it.RIFLE_SA, it.SHOT_GUN_SA]
         if self.item.get("type") in sa_weapons:
             self.char.setActiveChamber(self.item, "next")
             self._showItemInfo()
         ha_weapons = [
-            it.PISTOLS,
-            it.RIFLES,
-            it.SHOT_GUNS,
+            it.PISTOL,
+            it.RIFLE,
+            it.SHOT_GUN,
             it.AUTOMATIC_WEAPON
         ]
         if self.item.get("type") in ha_weapons:

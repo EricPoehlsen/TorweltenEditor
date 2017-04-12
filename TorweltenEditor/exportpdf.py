@@ -1480,18 +1480,18 @@ class ExportPdf:
         # based on item_type
         elif item_type is not None:
             melee = [
-                it.CLUBS,
+                it.CLUB,
                 it.NATURAL,
-                it.STAFFS,
-                it.BLADES
+                it.STAFF,
+                it.BLADE
             ]
             guns = [
-                it.PISTOLS,
-                it.REVOLVERS,
-                it.RIFLES,
-                it.RIFLES_SA,
-                it.SHOT_GUNS,
-                it.SHOT_GUNS_SA,
+                it.PISTOL,
+                it.REVOLVER,
+                it.RIFLE,
+                it.RIFLE_SA,
+                it.SHOT_GUN,
+                it.SHOT_GUN_SA,
                 it.AUTOMATIC_WEAPON,
                 it.BLASTER
             ]
@@ -1881,22 +1881,22 @@ class ExportPdf:
             if variant == "melee":
                 title = msg.PDF_MELEE.upper()
                 item_type = [
-                    it.CLUBS,
+                    it.CLUB,
                     it.NATURAL,
-                    it.STAFFS,
-                    it.BLADES,
+                    it.STAFF,
+                    it.BLADE,
                     it.OTHER_MELEE,
                     it.TOOLS
                 ]
             elif variant == "guns":
                 title = msg.PDF_GUNS.upper()
                 item_type = [
-                    it.PISTOLS,
-                    it.REVOLVERS,
-                    it.RIFLES,
-                    it.RIFLES_SA,
-                    it.SHOT_GUNS,
-                    it.SHOT_GUNS_SA,
+                    it.PISTOL,
+                    it.REVOLVER,
+                    it.RIFLE,
+                    it.RIFLE_SA,
+                    it.SHOT_GUN,
+                    it.SHOT_GUN_SA,
                     it.AUTOMATIC_WEAPON,
                     it.BLASTER
                 ]
