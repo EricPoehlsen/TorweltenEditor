@@ -96,7 +96,6 @@ class ExpansionScreen(tk.Frame):
         skills = self.expansion.findall(".//skill")
         listbox.delete(0, tk.END)
         l = [s.get("name") for s in skills]
-        print(l)
         listbox.insert(0, *l)
 
     def showItems(self, frame):
@@ -116,10 +115,15 @@ class ExpansionScreen(tk.Frame):
         )
         button.pack()
 
-        l = ["Test1", "Test2", "Test3"]
-        item_list.insert(0, *l)
-
+        self.updateItems()
         return item_frame
+
+    def updateItems(self):
+        listbox = self.widgets["items"]
+        items = self.expansion.findall(".//item")
+        listbox.delete(0, tk.END)
+        l = [i.get("name") for i in items]
+        listbox.insert(0, *l)
 
     def showToolbar(self, frame):
 
@@ -263,13 +267,17 @@ class ItemEditor(tk.Toplevel):
         if self.item is None:
             self.item = et.Element("item")
 
+        self.page = 1
         self._setName()
 
-        self.groups = self._getGroups()
-        print(self.groups)
+    def _clear(self):
+        widgets = self.winfo_children()
+        for widget in widgets:
+            widget.destroy()
 
     def _setName(self):
         """ first step of item creation name and item type """
+        self._clear()
 
         if self.data.get("name"):
             name = self.data["name"]
@@ -286,18 +294,753 @@ class ItemEditor(tk.Toplevel):
         entry.pack(fill=tk.X, expand=1)
         name_frame.pack(fill=tk.X, expand=1)
 
-        type_frame = tk.LabelFrame()
+        type_frame = tk.LabelFrame(self, text=msg.EX_ITEM_TYPE)
+        groups = [
+            msg.EX_IT_GRP_CLOTHING,
+            msg.EX_IT_GRP_MELEE,
+            msg.EX_IT_GRP_GUN,
+            msg.EX_IT_GRP_OTHER,
+            msg.EX_IT_GRP_BIOTECH,
+        ]
+        tk.Label(type_frame, text=msg.EX_IT_GRP).pack(fill=tk.X)
+        if self.data.get("grp"):
+            grp = self.data["grp"]
+            start_group = grp.get()
+        else:
+            self.data["grp"] = grp = tk.StringVar()
+            start_group = groups[0]
+
+        self.grp = tk.OptionMenu(
+            type_frame,
+            grp,
+            groups[0],
+            *groups
+        )
+        self.grp.pack(fill=tk.X, expand=1)
+
+        tk.Label(type_frame, text=msg.EX_IT_TYPE).pack(fill=tk.X)
+
+        if self.data.get("type"):
+            tp = self.data["type"]
+        else:
+            self.data["type"] = tp = tk.StringVar()
+
+        self.tp = tk.OptionMenu(
+            type_frame,
+            tp,
+            "",
+            ""
+        )
+        self.tp.pack(fill=tk.X, expand=1)
+        type_frame.pack(fill=tk.X, expand=1)
+
+        grp.trace("w", lambda n, e, m, var=grp: self._updateTypes(var))
+        grp.set(start_group)
+
+        self.c_button = tk.Button(
+            self,
+            text=msg.EX_CONTINUE,
+            command=self._nextPage
+        )
+        self.c_button.pack(fill=tk.X)
+
+        return True
+
+    def _updateTypes(self, var):
+        selected = var.get()
+
+        clothing = [
+            msg.EX_IT_CLOTHING,
+            msg.EX_IT_HARNESS,
+            msg.EX_IT_ARMOR,
+            msg.EX_IT_BAG,
+            msg.EX_IT_BOX,
+            msg.EX_IT_CONTAINER,
+        ]
+        melee = [
+            msg.EX_IT_NATURAL,
+            msg.EX_IT_CLUB,
+            msg.EX_IT_BLADE,
+            msg.EX_IT_STAFF,
+            msg.EX_IT_OTHER_MELEE,
+        ]
+        guns = [
+            msg.EX_IT_REVOLVER,
+            msg.EX_IT_PISTOL,
+            msg.EX_IT_RIFLE,
+            msg.EX_IT_SHOT_GUN,
+            msg.EX_IT_RIFLE_SA,
+            msg.EX_IT_SHOT_GUN_SA,
+            msg.EX_IT_AUTOMATIC_WEAPON,
+            msg.EX_IT_BLASTER,
+            msg.EX_IT_BLASTER_SA,
+            msg.EX_IT_CLIP,
+            msg.EX_IT_AMMO,
+        ]
+        other = [
+            msg.EX_IT_TOOLS,
+            msg.EX_IT_MONEY,
+            msg.EX_IT_SERVICE,
+            msg.EX_IT_FOOD,
+            msg.EX_IT_DRUG,
+            msg.EX_IT_GENERIC
+        ]
+        biotech = [
+            msg.EX_IT_IMPLANT,
+            msg.EX_IT_PROSTHESIS,
+            msg.EX_IT_IMPLANT_PART
+        ]
+
+        groups = {
+            msg.EX_IT_GRP_CLOTHING: clothing,
+            msg.EX_IT_GRP_MELEE: melee,
+            msg.EX_IT_GRP_GUN: guns,
+            msg.EX_IT_GRP_OTHER: other,
+            msg.EX_IT_GRP_BIOTECH: biotech,
+        }
+
+        try:
+            value = None
+            if self.data.get("type"):
+                value = self.data["type"].get()
+            if not value or value not in groups[selected]:
+                value = groups[selected][0]
+            self.tp.set_menu(value, *groups[selected])
+
+        except tk.TclError:
+            pass
 
     def _checkName(self, var):
         """ make sure no item with this name exists ... """
-
         pass
 
+    def _basicData(self):
+        self._clear()
+        tk.Label(
+            self,
+            text=self.data["name"].get(),
+            font="Arial 12 bold"
+        ).pack()
+        tk.Label(self, text=self.data["type"].get()).pack()
 
-    def _getGroups(self):
-        groups = self.loaded_items.getGroups()
-        groups = [(grp.get("name"), grp.get("id")) for grp in groups]
-        return groups
+        if self.data.get("price"):
+            price = self.data["price"]
+        else: 
+            self.data["price"] = price = tk.StringVar()
+            price.set("0")
+        if self.data.get("weight"):
+            weight = self.data["weight"]
+        else: 
+            self.data["weight"] = weight = tk.StringVar()
+            weight.set("0")
+        if self.data.get("avail"):
+            avail = self.data["avail"]
+        else:
+            self.data["avail"] = avail = tk.StringVar()
+            avail.set("0")
+
+        p_frame = tk.LabelFrame(self, text=msg.EX_ITEM_PRICE)
+        self.p_entry = tk.Entry(p_frame, textvariable=price)
+        self.p_entry.pack(fill=tk.X, expand=1)
+        p_frame.pack(fill=tk.X)
+
+        w_frame = tk.LabelFrame(self, text=msg.EX_ITEM_WEIGHT)
+        self.w_entry = tk.Entry(w_frame, textvariable=weight)
+        self.w_entry.pack(fill=tk.X, expand=1)
+        w_frame.pack(fill=tk.X)
+    
+        a_frame = tk.LabelFrame(self, text=msg.EX_ITEM_AVAIL)
+        self.a_entry = tk.Entry(a_frame, textvariable=avail)
+        self.a_entry.pack(fill=tk.X, expand=1)
+        a_frame.pack(fill=tk.X)
+
+        self.c_button = tk.Button(
+            self,
+            text=msg.EX_CONTINUE,
+            command=self._nextPage
+        )
+        self.c_button.pack()
+        self.b_button = tk.Button(
+            self,
+            text=msg.EX_BACK,
+            command=self._lastPage
+        )
+        self.b_button.pack()
+
+        price.trace("w", lambda n, e, m, var=price: self._priceCheck(var))
+        weight.trace("w", lambda n, e, m, var=weight: self._weightCheck(var))
+        avail.trace("w", lambda n, e, m, var=avail: self._availCheck(var))
+
+        return True
+
+    def _priceCheck(self, var):
+        price = var.get()
+        try:
+            price = price.replace(",", ".")
+            price = float(price)
+            if price < 0: raise ValueError
+            self.p_entry.config(style="TEntry")
+        except ValueError:
+            self.p_entry.config(style="invalid.TEntry")
+
+    def _weightCheck(self, var):
+        weight = var.get()
+        try:
+            weight = int(weight)
+            if weight < 0: raise ValueError
+            self.w_entry.config(style="TEntry")
+        except ValueError:
+            self.w_entry.config(style="invalid.TEntry")
+
+    def _availCheck(self, var):
+        avail = var.get()
+        try:
+            avail = int(avail)
+            if not -6 <= avail <= 6: raise ValueError
+            self.a_entry.config(style="TEntry")
+        except ValueError:
+            self.a_entry.config(style="invalid.TEntry")
+
+    def _addDamage(self):
+        """ add weapon properties ... """
+
+        # these types can have a damage setting
+        damage_types = [
+            msg.EX_IT_ARMOR,
+            msg.EX_IT_NATURAL,
+            msg.EX_IT_CLUB,
+            msg.EX_IT_BLADE,
+            msg.EX_IT_STAFF,
+            msg.EX_IT_OTHER_MELEE,
+            msg.EX_IT_REVOLVER,
+            msg.EX_IT_PISTOL,
+            msg.EX_IT_RIFLE,
+            msg.EX_IT_SHOT_GUN,
+            msg.EX_IT_RIFLE_SA,
+            msg.EX_IT_SHOT_GUN_SA,
+            msg.EX_IT_AUTOMATIC_WEAPON,
+            msg.EX_IT_BLASTER,
+            msg.EX_IT_BLASTER_SA,
+            msg.EX_IT_TOOLS,
+            msg.EX_IT_IMPLANT_PART
+        ]
+
+        # these need a caliber
+        caliber_types = [
+            msg.EX_IT_REVOLVER,
+            msg.EX_IT_PISTOL,
+            msg.EX_IT_RIFLE,
+            msg.EX_IT_SHOT_GUN,
+            msg.EX_IT_RIFLE_SA,
+            msg.EX_IT_SHOT_GUN_SA,
+            msg.EX_IT_AUTOMATIC_WEAPON,
+            msg.EX_IT_BLASTER,
+            msg.EX_IT_BLASTER_SA,
+            msg.EX_IT_CLIP,
+            msg.EX_IT_AMMO,
+        ]
+
+        # these need an ammo tag
+        ammo_types = [
+            msg.EX_IT_REVOLVER,
+            msg.EX_IT_PISTOL,
+            msg.EX_IT_RIFLE,
+            msg.EX_IT_SHOT_GUN,
+            msg.EX_IT_RIFLE_SA,
+            msg.EX_IT_SHOT_GUN_SA,
+            msg.EX_IT_AUTOMATIC_WEAPON,
+            msg.EX_IT_BLASTER,
+            msg.EX_IT_BLASTER_SA,
+        ]
+
+        # these should have a chamber value
+        chamber_types = [
+            msg.EX_IT_REVOLVER,
+            msg.EX_IT_RIFLE_SA,
+            msg.EX_IT_SHOT_GUN_SA,
+            msg.EX_IT_BLASTER_SA,
+        ]
+
+        selected_type = self.data["type"].get()
+
+        if selected_type not in damage_types + caliber_types:
+            return False
+
+        self._clear()
+
+        if self.data.get("damage"):
+            damage = self.data["damage"]
+        else:
+            self.data["damage"] = damage = tk.StringVar()
+
+        damage.trace("w", lambda n, e, m, var=damage: self._checkDamage(var))
+        label = msg.EX_DAMAGE
+        if selected_type == msg.EX_IT_ARMOR:
+            label = msg.EX_DEFENSE
+        d_frame = tk.LabelFrame(self, text=label)
+        self.d_entry = tk.Entry(d_frame, textvariable=damage)
+        self.d_entry.pack(fill=tk.X, expand=1)
+        d_frame.pack(fill=tk.X, expand=1)
+
+        cals = [
+            ".22 long",
+            ".38 short",
+            ".38 Special",
+            "9x19 mm",
+            ".357 ParaTec",
+            ".500 OMG",
+            "5.56x45mm NA",
+            ".223 SMI",
+            "7.62x51mm NA",
+            ".308FuDW",
+            ".50 OMG",
+            "HLK II",
+            "HLK III"
+        ]
+
+        a_frame = tk.Frame(self)
+        if selected_type in caliber_types:
+            if self.data.get("caliber"):
+                cal = self.data["caliber"]
+            else:
+                self.data["caliber"] = cal = tk.StringVar()
+
+            cal_frame = tk.LabelFrame(a_frame, text=msg.EX_CALIBER)
+            cal_box = tk.Combobox(cal_frame, textvariable=cal, values=cals)
+            cal_box.pack(fill=tk.X, expand=1)
+            cal_frame.pack(side=tk.LEFT, fill=tk.X, expand=1)
+
+            if selected_type in ammo_types:
+                if self.data.get("ammo"):
+                    ammo = self.data["ammo"]
+                else:
+                    self.data["ammo"] = ammo = tk.StringVar()
+                    ammo.set("1")
+
+                if selected_type in chamber_types:
+                    chamber_frame = tk.LabelFrame(a_frame, text=msg.EX_CHAMBERS)
+                    chamber_sel = tk.Spinbox(
+                        chamber_frame,
+                        from_=1,
+                        to=100,
+                        width=4,
+                        textvariable=ammo
+                    )
+                    chamber_sel.pack(fill=tk.X, expand=1)
+                    chamber_frame.pack(side=tk.LEFT)
+        a_frame.pack()
+
+        self.c_button = tk.Button(
+            self,
+            text=msg.EX_CONTINUE,
+            command=self._nextPage
+        )
+        self.c_button.pack()
+        self.b_button = tk.Button(
+            self,
+            text=msg.EX_BACK,
+            command=self._lastPage
+        )
+        self.b_button.pack()
+
+        return True
+
+    def _checkDamage(self, var):
+        damage = var.get()
+        try:
+            if "/" not in damage:
+                raise ValueError
+
+            damage = damage.split("/")
+            if len(damage) >= 2:
+                s = int(damage[0])
+                d = int(damage[1])
+
+                if not -7 <= d <= 7:
+                    raise ValueError
+            if len(damage) == 3:
+                e = damage[2]
+                if e.lower() != "e":
+                    raise ValueError
+            if len(damage) > 3:
+                raise ValueError
+
+            self.d_entry.config(style="TEntry")
+        except ValueError:
+            self.d_entry.config(style="invalid.TEntry")
+
+    def _addContainer(self):
+        self._clear()
+
+        containers = [
+            msg.EX_IT_CLOTHING,
+            msg.EX_IT_HARNESS,
+            msg.EX_IT_ARMOR,
+            msg.EX_IT_BAG,
+            msg.EX_IT_BOX,
+            msg.EX_IT_CONTAINER,
+            msg.EX_IT_CLIP,
+            msg.EX_IT_TOOLS,
+            msg.EX_IT_PROSTHESIS,
+            msg.EX_IT_IMPLANT_PART
+        ]
+
+        selected_type = self.data["type"].get()
+
+        if selected_type not in containers:
+            return False
+        
+        if self.data.get("container"):
+            use = self.data["container"]
+        else:
+            self.data["container"] = use = tk.IntVar()
+            use.set(1)
+        
+        if self.data.get("container_name"):
+            name = self.data["container_name"]
+        else:
+            self.data["container_name"] = name = tk.StringVar()
+            
+        if self.data.get("container_size"):
+            size = self.data["container_size"]
+        else:
+            self.data["container_size"] = size = tk.StringVar()
+            size.set("0")
+
+        if self.data.get("container_limit"):
+            limit = self.data["container_limit"]
+        else:
+            self.data["container_limit"] = limit = tk.StringVar()
+            limit.set("0")
+
+        use_container = tk.Checkbutton(
+            self,
+            text=msg.EX_USE_CONTAINER,
+            onvalue=1,
+            offvalue=0,
+            variable=use
+        )
+        use_container.pack(fill=tk.X)
+        name_frame = tk.LabelFrame(self, text=msg.NAME)
+        n_entry = tk.Entry(name_frame, textvariable=name)
+        n_entry.pack(fill=tk.X, expand=1)
+        name_frame.pack(fill=tk.X, expand=1)
+        frame = tk.Frame(self)
+        size_frame = tk.LabelFrame(frame, text=msg.EX_CONTAINER_SIZE)
+        self.s_entry = tk.Entry(size_frame, textvariable=size)
+        self.s_entry.pack(fill=tk.X, expand=1)
+        size_frame.grid(row=0, column=0, sticky=tk.NSEW)
+        limit_frame = tk.LabelFrame(frame, text=msg.EX_CONTAINER_LIMIT)
+        self.l_entry = tk.Entry(limit_frame, textvariable=limit)
+        self.l_entry.pack(fill=tk.X, expand=1)
+        limit_frame.grid(row=0, column=1, sticky=tk.NSEW)
+        frame.pack(fill=tk.X, expand=1)
+
+        limit.trace("w", lambda n, e, m: self._checkContainer())
+        size.trace("w", lambda n, e, m: self._checkContainer())
+
+        self.c_button = tk.Button(
+            self,
+            text=msg.EX_CONTINUE,
+            command=self._nextPage
+        )
+        self.c_button.pack()
+        self.b_button = tk.Button(
+            self,
+            text=msg.EX_BACK,
+            command=self._lastPage
+        )
+        self.b_button.pack()
+
+        return True
+
+    def _checkContainer(self):
+        try:
+            limit = self.data["container_limit"].get()
+            limit = int(limit)
+            if limit < 0:
+                raise ValueError
+            self.l_entry.config(style="TEntry")
+        except ValueError:
+            self.l_entry.config(style="invalid.TEntry")
+
+        try:
+            size = self.data["container_size"].get()
+            size = int(size)
+            if size < 0:
+                raise ValueError
+            self.s_entry.config(style="TEntry")
+        except ValueError:
+            self.s_entry.config(style="invalid.TEntry")
+
+    def _addDescription(self):
+        self._clear()
+        if self.data.get("description"):
+            desc = self.data["description"]
+        else:
+            self.data["description"] = desc = ""
+
+        textfield = tk.Text(
+            self,
+            width=20,
+            height=8,
+            wrap=tk.WORD,
+
+        )
+        textfield.insert("0.0", desc)
+        textfield.bind("<KeyRelease>", self._updateDescription)
+        textfield.pack()
+
+        self.c_button = tk.Button(
+            self,
+            text=msg.EX_CONTINUE,
+            command=self._nextPage
+        )
+        self.c_button.pack()
+        self.b_button = tk.Button(
+            self,
+            text=msg.EX_BACK,
+            command=self._lastPage
+        )
+        self.b_button.pack()
+
+        return True
+
+    def _updateDescription(self, event):
+        self.data["description"] = event.widget.get("0.0", tk.END)
+
+    def _addMenuPosition(self):
+
+        self._clear()
+
+        selector_list_frame = tk.LabelFrame(self, text=msg.EX_MENU_POS)
+        self.selector_list = tk.Treeview(
+            selector_list_frame,
+            selectmode=tk.BROWSE,
+            show="tree",
+            height=8
+        )
+        self.selector_list.bind("<<TreeviewSelect>>", self._menuSelect)
+        self.selector_scroll = tk.Scrollbar(
+            selector_list_frame,
+            orient=tk.VERTICAL,
+            command=self.selector_list.yview
+        )
+        self.selector_list.config(yscrollcommand=self.selector_scroll.set)
+        self.selector_scroll.pack(side=tk.RIGHT, fill=tk.Y, expand=1)
+        self.selector_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+        selector_list_frame.pack(
+            fill=tk.BOTH,
+            expand=1,
+            anchor=tk.W
+        )
+        self.selector_list.focus()
+
+        groups = self.app.itemlist.getGroups()
+
+        self.foldericon = ImageTk.PhotoImage(file="img/folder.png")
+
+        nodes = {}
+        for group in groups:
+            group_id = group.get("id", "0")
+            parent_id = group.get("parent", "")
+            parent = nodes.get(parent_id, "")
+            nodes[group_id] = self.selector_list.insert(
+                parent,
+                1000,
+                image=self.foldericon,
+                text=group.get("name", "...")
+            )
+
+        self.c_button = tk.Button(
+            self,
+            text=msg.EX_CONTINUE,
+            command=self._nextPage
+        )
+        self.c_button.pack()
+        self.b_button = tk.Button(
+            self,
+            text=msg.EX_BACK,
+            command=self._lastPage
+        )
+        self.b_button.pack()
+
+        return True
+
+    def _menuSelect(self, event):
+        if self.data.get("menu"):
+            menu = self.data["menu"]
+        else:
+            self.data["menu"] = menu = tk.StringVar()
+
+    def _finalizeItem(self):
+        name = self.data["name"].get()
+        weight = self.data["weight"].get()
+        price = self.data["price"].get()
+        avail = self.data["avail"].get()
+        item_type = self._itemtypes()[self.data["type"].get()]
+        self.item.set("name", name)
+        self.item.set("weight", weight)
+        self.item.set("price", price)
+        self.item.set("avail", avail)
+        self.item.set("type", item_type)
+
+        if self.data.get("damage"):
+            damage_tag = self.item.find("damage")
+            if damage_tag is not None:
+                damage_tag.set("value", self.data["damage"].get())
+            else:
+                et.SubElement(
+                    self.item,
+                    "damage",
+                    {"value": self.data["damage"].get()}
+                )
+
+        if self.data.get("ammo"):
+            ammo_tag = self.item.find("ammo")
+            chambers = self.data["ammo"].get()
+            if ammo_tag is not None:
+                ammo_tag.set("chambers", chambers)
+            else:
+                et.SubElement(
+                    self.item,
+                    "ammo",
+                    {"chambers": chambers}
+                )
+
+        if self.data.get("caliber"):
+            cal_name = config.ItemTypes.OPTION_CALIBER
+
+            cal_tag = self.item.find("option[@name='"+cal_name+"']")
+            if cal_tag is not None:
+                cal_tag.set("values", self.data["caliber"].get())
+            else:
+                et.SubElement(
+                    self.item,
+                    "option",
+                    {"name": cal_name,
+                     "values": self.data["caliber"].get()}
+                )
+
+        if self.data.get("container"):
+            if self.data["container"].get() == 1:
+                container_tag = self.item.find("container")
+                c_name = self.data["container_name"].get()
+                limit = self.data["container_limit"].get()
+                size = self.data["container_size"].get()
+
+                if container_tag is not None:
+                    container_tag.set("name", c_name)
+                    container_tag.set("size", size)
+                    container_tag.set("limit", limit)
+                else:
+                    et.SubElement(
+                        self.item,
+                        "container",
+                        {"name": c_name,
+                         "size": size,
+                         "limit": limit}
+                    )
+
+        desc = self.item.get("description")
+        if desc is not None:
+            desc.text = self.data["description"]
+        else:
+            desc = et.SubElement(self.item, "description")
+            desc.text = self.data["description"]
+
+        items = self.app.module.expansion.find(".//items")
+        if self.item in items:
+            items.remove(self.item)
+        items.append(self.item)
+
+        self.app.module.updateItems()
+        self.close()
+
+    @staticmethod
+    def _itemtypes():
+        it = config.ItemTypes()
+        types = {
+            msg.EX_IT_CLOTHING: it.CLOTHING,
+            msg.EX_IT_HARNESS: it.HARNESS,
+            msg.EX_IT_ARMOR: it.ARMOR,
+            msg.EX_IT_BAG: it.BAG,
+            msg.EX_IT_BOX: it.BOX,
+            msg.EX_IT_CONTAINER: it.CONTAINER,
+            msg.EX_IT_NATURAL: it.NATURAL,
+            msg.EX_IT_CLUB: it.CLUB,
+            msg.EX_IT_BLADE: it.BLADE,
+            msg.EX_IT_STAFF: it.STAFF ,
+            msg.EX_IT_OTHER_MELEE: it.OTHER_MELEE,
+            msg.EX_IT_REVOLVER: it.REVOLVER,
+            msg.EX_IT_PISTOL: it.PISTOL,
+            msg.EX_IT_RIFLE: it.RIFLE,
+            msg.EX_IT_SHOT_GUN: it.SHOT_GUN,
+            msg.EX_IT_RIFLE_SA: it.RIFLE_SA,
+            msg.EX_IT_SHOT_GUN_SA: it.SHOT_GUN_SA,
+            msg.EX_IT_AUTOMATIC_WEAPON: it.AUTOMATIC_WEAPON,
+            msg.EX_IT_BLASTER: it.BLASTER,
+            msg.EX_IT_BLASTER_SA: it.BLASTER_SA,
+            msg.EX_IT_CLIP: it.CLIP,
+            msg.EX_IT_AMMO: it.AMMO,
+            msg.EX_IT_TOOLS: it.TOOLS,
+            msg.EX_IT_MONEY: it.MONEY,
+            msg.EX_IT_SERVICE: it.SERVICE,
+            msg.EX_IT_FOOD: it.FOOD,
+            msg.EX_IT_DRUG: it.DRUG,
+            msg.EX_IT_GENERIC: it.GENERIC,
+            msg.EX_IT_IMPLANT: it.IMPLANT,
+            msg.EX_IT_PROSTHESIS: it.PROSTHESIS,
+            msg.EX_IT_IMPLANT_PART: it.IMPLANT_PART
+        }
+
+        return types
+
+        """
+        rev_types = {v: k for k, v in types.items()}
+        """
+
+    def _nextPage(self):
+        self.page += 1
+        try:
+            pages = {
+                1: self._setName,
+                2: self._basicData,
+                3: self._addDamage,
+                4: self._addContainer,
+                5: self._addDescription,
+                6: self._addMenuPosition,
+                7: self._finalizeItem,
+
+            }
+
+            switch = pages[self.page]()
+
+            if not switch:
+                self._nextPage()
+
+        except KeyError:
+            self.close()
+
+    def _lastPage(self):
+        self.page -= 1
+        try:
+            pages = {
+                1: self._setName,
+                2: self._basicData,
+                3: self._addDamage,
+                4: self._addContainer,
+                5: self._addDescription,
+                6: self._addMenuPosition,
+            }
+
+            switch = pages[self.page]()
+
+            if not switch:
+                self._lastPage()
+
+        except KeyError:
+            self.close()
 
     def close(self):
         self.app.open_windows["skill"] = 0

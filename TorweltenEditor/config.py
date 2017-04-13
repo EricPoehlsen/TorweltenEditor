@@ -858,6 +858,66 @@ class Messages:
     EX_NEW_SKILL = "Neue Fertigkeit"
     EX_ID = "ID: "
 
+    EX_MENU_POS = "Wo im Menü einsortieren?"
+    EX_ITEM_TYPE = "Typ festlegen: "
+    EX_ITEM_PRICE = "Preis: "
+    EX_ITEM_WEIGHT = "Gewicht: "
+    EX_ITEM_AVAIL = "Verfügbarkeit: "
+    EX_DAMAGE = "Schadenswert: "
+    EX_DEFENSE = "Schutzwert: "
+    EX_CALIBER = "Kaliber: "
+    EX_CHAMBERS = "Kammern: "
+    EX_USE_CONTAINER = "als Behälter verwenden."
+    EX_CONTAINER_SIZE = "Kapazität"
+    EX_CONTAINER_LIMIT = "Traglast"
+
+
+    EX_IT_GRP = "Gruppe:"
+    EX_IT_TYPE = "Typ: "
+    # item types
+    # groups
+    EX_IT_GRP_CLOTHING = "Bekleidung und Behälter"
+    EX_IT_GRP_MELEE = "Nahkampfwaffe"
+    EX_IT_GRP_GUN = "Fernkampfwaffe"
+    EX_IT_GRP_OTHER = "Werkzeug und mehr"
+    EX_IT_GRP_BIOTECH = "Biotech"
+
+    # clothing and more
+    EX_IT_CLOTHING = "Bekleidung"
+    EX_IT_HARNESS = "Harnisch"
+    EX_IT_ARMOR = "Rüstung"
+    EX_IT_BAG = "Tasche"
+    EX_IT_BOX = "Kiste"
+    EX_IT_CONTAINER = "Container"
+    #  melee weapons
+    EX_IT_NATURAL = "Natürliche Waffe"
+    EX_IT_CLUB = "Hiebwaffe"
+    EX_IT_BLADE = "Klingenwaffe"
+    EX_IT_STAFF = "Stabwaffe"
+    EX_IT_OTHER_MELEE = "sonstige Nahkampfwaffe"
+    #  guns
+    EX_IT_REVOLVER = "Revoler"
+    EX_IT_PISTOL = "Pistole"
+    EX_IT_RIFLE = "Gewehr mit Magazin"
+    EX_IT_SHOT_GUN = "Flinte mit Magazin"
+    EX_IT_RIFLE_SA = "Gewehr mit Kammern"
+    EX_IT_SHOT_GUN_SA = "Flinte mit Kammern"
+    EX_IT_AUTOMATIC_WEAPON = "Automatikwaffen"
+    EX_IT_BLASTER = "Blaster mit Magazin"
+    EX_IT_BLASTER_SA = "Blaster mit Kammern"
+    EX_IT_CLIP = "Magazin"
+    EX_IT_AMMO = "Munition"
+    #  various
+    EX_IT_TOOLS = "Werkzeug"
+    EX_IT_MONEY = "Wertgegenstand"
+    EX_IT_SERVICE = "Dienstleistung"
+    EX_IT_FOOD = "Nahrungsmittel"
+    EX_IT_DRUG = "Drogen"
+    EX_IT_GENERIC = "Sonstiges"
+    #biotech
+    EX_IT_IMPLANT = "Implantat"
+    EX_IT_PROSTHESIS = "Prothese"
+    EX_IT_IMPLANT_PART = "Einbauteil"
 
     EX_TT_NEW = "Neue Expansion erstellen ..."
     EX_TT_LOAD = "Expansion laden ..."
