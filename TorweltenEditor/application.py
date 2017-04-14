@@ -356,7 +356,8 @@ class Application(tk.Frame):
 
         self.style.configure(
             "invalid.TEntry",
-            foreground="#ff0000"
+            foreground="#ff0000",
+
         )
 
         # edit_entry - editable labels for the itemeditor

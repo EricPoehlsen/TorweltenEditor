@@ -243,6 +243,11 @@ class Messages:
     IE_USE = "verwenden"
     IE_CALIBER_HEAD = "Kaliber und Kammern (für Fernkampfwaffen ...)"
     IE_CALIBER = "Kaliber: "
+    IE_OPTION_CALIBER = "Kailiber"
+    IE_OPTION_COLOR = "Farbe"
+    IE_OPTION_MATERIAL = "Material"
+    IE_OPTION_SIZE = "Größe"
+    IE_OPTION_VARIANT = "Variante"
     IE_CONTAINER = "Container (Taschen, Kisten, Behälter, ...)"
     IE_DESCRIPTION = "Beschreibung"
     IE_ADD_ITEM = "Gegenstand hinzufügen"
@@ -870,7 +875,11 @@ class Messages:
     EX_USE_CONTAINER = "als Behälter verwenden."
     EX_CONTAINER_SIZE = "Kapazität"
     EX_CONTAINER_LIMIT = "Traglast"
-
+    EX_MIN_QUALITY = "Schlechteste Qualität: "
+    EX_MAX_QUALITY = "Beste Qualität: "
+    EX_OPTIONS = "Weitere Optionen"
+    EX_PACK_UNITS = "Verpackungseinheiten:"
+    EX_DESCRIPTION = "Beschreibung"
 
     EX_IT_GRP = "Gruppe:"
     EX_IT_TYPE = "Typ: "
@@ -923,7 +932,20 @@ class Messages:
     EX_TT_LOAD = "Expansion laden ..."
     EX_TT_SAVE = "Expansion speichern ..."
 
-
+    EX_ERROR_NAME_EMPTY = "Der Name darf nicht leer sein."
+    EX_ERROR_NAME_EXISTS = "Ein Gegenstand mit diesem Namen existiert bereits."
+    EX_ERROR_NAME_INVALID = "Der Name enthält ungültige Zeichen."
+    EX_ERROR_WEIGHT = "Das Gewicht muss ein positive ganzzahliger Wert sein."
+    EX_ERROR_PRICE = "Der Preis muss eine positive Zahl sein."
+    EX_ERROR_AVAIL = "Die Verfügbarkeit muss zwischen -6 und +6 liegen"
+    EX_ERROR_DAMAGE = "Der angegebene Schadenswert ist ungültig."
+    EX_ERROR_CHAMBERS = "Die Anzahl der Kammern muss ein"\
+                        " positiver ganzzahliger Wert sein."
+    EX_ERROR_CONTAINER = "Die angegebene Behältergröße und/oder Lastgrenze"\
+                         "ist ungültig."
+    EX_ERROR_INVALID_OPTION = "Mindestens eine Option enthält ungültige Werte."
+    EX_ERROR_INVALID_DESC = "Ungültige Zeichen in der Beschreibung."
+    EX_ITEM_NOT_SAVED = "Speichern fehlgeschlagen!"
 
     # IMAGE SCREEN
     IS_ERROR = "Dateifehler!"
@@ -1265,6 +1287,9 @@ class ItemTypes:
 
     OPTION_CALIBER = "caliber"
     OPTION_COLOR = "color"
+    OPTION_MATERIAL = "material"
+    OPTION_SIZE = "size"
+    OPTION_VARIANT = "variant"
 
 
 class TraitGroups:

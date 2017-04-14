@@ -3,7 +3,7 @@ import tkinter.filedialog as tkfd
 import tkinter.messagebox as tkmb
 import config
 from PIL import ImageTk
-import os
+import re
 from tooltip import ToolTip
 import xml.etree.ElementTree as et
 
@@ -108,12 +108,18 @@ class ExpansionScreen(tk.Frame):
         item_list.pack(side=tk.LEFT)
         scroll.pack(side=tk.LEFT, fill=tk.Y)
         list_frame.pack()
-        button = tk.Button(
+        new_item = tk.Button(
             item_frame,
-            text="edit items",
+            text=msg.EX_NEW,
+            command=self._addItem
+        )
+        new_item.pack(fill=tk.X)
+        edit_item = tk.Button(
+            item_frame,
+            text=msg.EX_EDIT,
             command=self._editItem
         )
-        button.pack()
+        edit_item.pack(fill=tk.X)
 
         self.updateItems()
         return item_frame
@@ -149,10 +155,30 @@ class ExpansionScreen(tk.Frame):
 
         tk.Label(frame, text=" ").pack(side=tk.LEFT)
 
+    def _addItem(self, event=None):
+        if self.app.open_windows["itemedit"] != 0:
+            self.app.open_windows["itemedit"].close()
+        self.app.open_windows["itemedit"] = ItemEditor(
+            self.app.main,
+            self.app,
+            None
+        )
+
     def _editItem(self, event=None):
-        if event:
-            pass
-        a = ItemEditor(None, self.app, None)
+        listbox = self.widgets["items"]
+        selected = listbox.curselection()
+        if len(selected) != 1:
+            return
+        name = listbox.get(selected[0])
+        item = self.expansion.find(".//item[@name='"+name+"']")
+
+        if self.app.open_windows["itemedit"] != 0:
+            self.app.open_windows["itemedit"].close()
+        self.app.open_windows["itemedit"] = ItemEditor(
+            self.app.main,
+            self.app,
+            item
+        )
 
     def _editTrait(self):
         a = TraitEditor(None, self.app, None)
@@ -248,6 +274,14 @@ class ExpansionScreen(tk.Frame):
 
 
 class ItemEditor(tk.Toplevel):
+    """ The item editor is used to create or modify items 
+    
+    Args:
+        master (tk.Widget): parent widget
+        app (Applicaion): program instance
+        item (et.Element<item>): an item ot modify - None => new item
+    """
+
     def __init__(
         self,
         master=None,
@@ -262,21 +296,130 @@ class ItemEditor(tk.Toplevel):
         self.loaded_items = app.itemlist
         self.data = {}
 
+        self.minsize(250, 100)
         self.item = item
 
         if self.item is None:
             self.item = et.Element("item")
+        else:
+            self._readItem()
+
+        self.existing_names = self._allNames()
 
         self.page = 1
-        self._setName()
+        self._addName()
+
+    def _allNames(self):
+        items = self.app.itemlist.getAllItems()
+        items = [i.get("name") for i in items]
+        exp_items = self.app.module.expansion.findall(".//item")
+        exp_items = [i.get("name") for i in exp_items]
+        items = items + exp_items
+        items = list(set(items))
+        try:
+            del items[items.index(self.item.get("name"))]
+        except ValueError:
+            pass
+        return items
+
+    def _readItem(self):
+        """ distribute loaded item to the variables """
+
+        # read basic data
+        basic = ["name", "weight", "price", "avail", "parent"]
+        for b in basic:
+            self.data[b] = tk.StringVar()
+            self.data[b].set(self.item.get(b))
+
+        # retrieve the item type
+        if self.item.get("type"):
+            self.data["type"] = tk.StringVar()
+            self.data["grp"] = tk.StringVar()
+            self._updateTypes(item_type=self.item.get("type"))
+
+        # check for quality range
+        if self.item.get("quality"):
+            self.data["min_q"] = tk.IntVar()
+            self.data["max_q"] = tk.IntVar()
+
+            min_q, max_q = self.item.get("quality").split(" ")
+            self.data["min_q"].set(int(min_q))
+            self.data["max_q"].set(int(max_q))
+
+        # check for damage tag
+        damage = self.item.find("damage")
+        if damage is not None:
+            self.data["damage"] = tk.StringVar()
+            self.data["damage"].set(damage.get("value"))
+
+        # read ammo tag
+        ammo = self.item.find("ammo")
+        if ammo is not None:
+            self.data["ammo"] = tk.StringVar()
+            self.data["ammo"].set(ammo.get("chambers"))
+
+        # parse the option tags
+        o_tags = self.item.findall("option")
+        for option in o_tags:
+            if option.get("name") == config.ItemTypes.OPTION_CALIBER:
+                self.data["caliber"] = tk.StringVar()
+                self.data["caliber"].set(option.get("values"))
+            else:
+                if not self.data.get("options"):
+                    self.data["options"] = {}
+                name = option.get("name")
+                self.data["options"][name] = [
+                    tk.IntVar(),
+                    tk.StringVar()
+                ]
+                self.data["options"][name][0].set(1)
+                values = option.get("values")
+                if values:
+                    self.data["options"][name][1].set(values)
+
+        # read container information
+        container = self.item.find("container")
+        if container is not None:
+            c_name = container.get("name", "")
+            size = container.get("size", "0")
+            limit = container.get("limit", "0")
+            self.data["container"] = tk.IntVar()
+            self.data["container"].set(1)
+            self.data["container_name"] = tk.StringVar()
+            self.data["container_name"].set(c_name)
+            self.data["container_size"] = tk.StringVar()
+            self.data["container_size"].set(size)
+            self.data["container_limit"] = tk.StringVar()
+            self.data["container_limit"].set(limit)
+
+        # check if the item is sold in packs
+        p_tags = self.item.findall("pack")
+        self.data["packs"] = ""
+        packs = []
+        for pack in p_tags:
+            q = pack.get("quantity")
+            name = pack.get("name")
+            q_label = re.findall("\(*\)", name)
+            print(q_label)
+            packs.append(q+": "+name)
+        self.data["packs"] = "\n".join(packs)
+
+        # get the description
+        description = self.item.find("description")
+        if description is not None:
+            self.data["description"] = tk.StringVar()
+            if description.text:
+                self.data["description"].set(description.text)
 
     def _clear(self):
+        """ clears the widget """
+
         widgets = self.winfo_children()
         for widget in widgets:
             widget.destroy()
 
-    def _setName(self):
-        """ first step of item creation name and item type """
+    def _addName(self):
+        """ First step: Setting a name and selecting an item type. """
         self._clear()
 
         if self.data.get("name"):
@@ -290,10 +433,11 @@ class ItemEditor(tk.Toplevel):
         name.trace("w", lambda n, e, m, var=name: self._checkName(var))
 
         name_frame = tk.LabelFrame(self, text=msg.NAME)
-        entry = tk.Entry(name_frame, textvariable=name)
-        entry.pack(fill=tk.X, expand=1)
+        self.name = tk.Entry(name_frame, textvariable=name)
+        self.name.pack(fill=tk.X, expand=1)
         name_frame.pack(fill=tk.X, expand=1)
 
+        # item type is split into groups for better usability ...
         type_frame = tk.LabelFrame(self, text=msg.EX_ITEM_TYPE)
         groups = [
             msg.EX_IT_GRP_CLOTHING,
@@ -337,17 +481,23 @@ class ItemEditor(tk.Toplevel):
         grp.trace("w", lambda n, e, m, var=grp: self._updateTypes(var))
         grp.set(start_group)
 
-        self.c_button = tk.Button(
-            self,
-            text=msg.EX_CONTINUE,
-            command=self._nextPage
-        )
-        self.c_button.pack(fill=tk.X)
-
+        self._navigation()
         return True
 
-    def _updateTypes(self, var):
-        selected = var.get()
+    def _updateTypes(self, var=None, item_type=None):
+        """ updating item type 
+        
+        Note: 
+            This is used for two things - reading item type from existing
+            item and switching item types during creation
+            
+            use only one of the args!
+            
+        Args:
+            var (tk.StringVar): the changed variable [in trace mode]
+            item_type (str): the stored item type from the <item>
+            
+        """
 
         clothing = [
             msg.EX_IT_CLOTHING,
@@ -399,29 +549,60 @@ class ItemEditor(tk.Toplevel):
             msg.EX_IT_GRP_BIOTECH: biotech,
         }
 
-        try:
-            value = None
-            if self.data.get("type"):
-                value = self.data["type"].get()
-            if not value or value not in groups[selected]:
-                value = groups[selected][0]
-            self.tp.set_menu(value, *groups[selected])
+        # this switches the item_type menu based on the selected group
+        if var:
+            try:
+                selected = var.get()
+                value = None
+                if self.data.get("type"):
+                    value = self.data["type"].get()
+                if not value or value not in groups[selected]:
+                    value = groups[selected][0]
+                self.tp.set_menu(value, *groups[selected])
 
-        except tk.TclError:
-            pass
+            except tk.TclError:
+                pass
+
+        # this translates the stored item type in the xml to the language
+        # specific name used during editing.
+        if item_type:
+            types = {v: k for k, v in self._itemtypes().items()}
+            item_type = types[item_type]
+            self.data["type"].set(item_type)
+            groups = [clothing, melee, guns, other, biotech]
+            group_names = [
+                msg.EX_IT_GRP_CLOTHING,
+                msg.EX_IT_GRP_MELEE,
+                msg.EX_IT_GRP_GUN,
+                msg.EX_IT_GRP_OTHER,
+                msg.EX_IT_GRP_BIOTECH,
+            ]
+            for i, group in enumerate(groups):
+                if item_type in group:
+                    self.data["grp"].set(group_names[i])
+                    break
 
     def _checkName(self, var):
         """ make sure no item with this name exists ... """
+
+        name = var.get()
+        if name in self.existing_names:
+            self.name.config(style="invalid.TEntry")
+        else:
+            self.name.config(style="TEntry")
         pass
 
-    def _basicData(self):
-        self._clear()
+    def _showName(self):
         tk.Label(
             self,
             text=self.data["name"].get(),
             font="Arial 12 bold"
         ).pack()
         tk.Label(self, text=self.data["type"].get()).pack()
+
+    def _addData(self):
+        self._clear()
+        self._showName()
 
         if self.data.get("price"):
             price = self.data["price"]
@@ -454,18 +635,7 @@ class ItemEditor(tk.Toplevel):
         self.a_entry.pack(fill=tk.X, expand=1)
         a_frame.pack(fill=tk.X)
 
-        self.c_button = tk.Button(
-            self,
-            text=msg.EX_CONTINUE,
-            command=self._nextPage
-        )
-        self.c_button.pack()
-        self.b_button = tk.Button(
-            self,
-            text=msg.EX_BACK,
-            command=self._lastPage
-        )
-        self.b_button.pack()
+        self._navigation()
 
         price.trace("w", lambda n, e, m, var=price: self._priceCheck(var))
         weight.trace("w", lambda n, e, m, var=weight: self._weightCheck(var))
@@ -478,7 +648,8 @@ class ItemEditor(tk.Toplevel):
         try:
             price = price.replace(",", ".")
             price = float(price)
-            if price < 0: raise ValueError
+            if price < 0.01:
+                raise ValueError
             self.p_entry.config(style="TEntry")
         except ValueError:
             self.p_entry.config(style="invalid.TEntry")
@@ -487,7 +658,8 @@ class ItemEditor(tk.Toplevel):
         weight = var.get()
         try:
             weight = int(weight)
-            if weight < 0: raise ValueError
+            if weight < 1:
+                raise ValueError
             self.w_entry.config(style="TEntry")
         except ValueError:
             self.w_entry.config(style="invalid.TEntry")
@@ -496,7 +668,8 @@ class ItemEditor(tk.Toplevel):
         avail = var.get()
         try:
             avail = int(avail)
-            if not -6 <= avail <= 6: raise ValueError
+            if not -6 <= avail <= 6:
+                raise ValueError
             self.a_entry.config(style="TEntry")
         except ValueError:
             self.a_entry.config(style="invalid.TEntry")
@@ -568,6 +741,8 @@ class ItemEditor(tk.Toplevel):
 
         self._clear()
 
+        self._showName()
+
         if self.data.get("damage"):
             damage = self.data["damage"]
         else:
@@ -630,19 +805,7 @@ class ItemEditor(tk.Toplevel):
                     chamber_frame.pack(side=tk.LEFT)
         a_frame.pack()
 
-        self.c_button = tk.Button(
-            self,
-            text=msg.EX_CONTINUE,
-            command=self._nextPage
-        )
-        self.c_button.pack()
-        self.b_button = tk.Button(
-            self,
-            text=msg.EX_BACK,
-            command=self._lastPage
-        )
-        self.b_button.pack()
-
+        self._navigation()
         return True
 
     def _checkDamage(self, var):
@@ -671,6 +834,8 @@ class ItemEditor(tk.Toplevel):
 
     def _addContainer(self):
         self._clear()
+
+        self._showName()
 
         containers = [
             msg.EX_IT_CLOTHING,
@@ -739,19 +904,7 @@ class ItemEditor(tk.Toplevel):
         limit.trace("w", lambda n, e, m: self._checkContainer())
         size.trace("w", lambda n, e, m: self._checkContainer())
 
-        self.c_button = tk.Button(
-            self,
-            text=msg.EX_CONTINUE,
-            command=self._nextPage
-        )
-        self.c_button.pack()
-        self.b_button = tk.Button(
-            self,
-            text=msg.EX_BACK,
-            command=self._lastPage
-        )
-        self.b_button.pack()
-
+        self._navigation()
         return True
 
     def _checkContainer(self):
@@ -773,15 +926,150 @@ class ItemEditor(tk.Toplevel):
         except ValueError:
             self.s_entry.config(style="invalid.TEntry")
 
+    def _addOptions(self):
+        self._clear()
+        self._showName()
+
+        if self.data.get("min_q"):
+            min_q = self.data["min_q"]
+        else:
+            self.data["min_q"] = min_q = tk.IntVar()
+            min_q.set(3)
+        
+        if self.data.get("max_q"):
+            max_q = self.data["max_q"]
+        else:
+            self.data["max_q"] = max_q = tk.IntVar()
+            max_q.set(9)
+
+        q_frame = tk.Frame(self)
+        q_frame.columnconfigure(0, weight=1)
+        q_frame.columnconfigure(1, weight=1)
+        min_q_frame = tk.LabelFrame(q_frame, text=msg.EX_MIN_QUALITY)
+        self.min_q_label = tk.Label(min_q_frame, text=" ")
+        self.min_q_label.pack()
+        self.min_q = tk.Scale(
+            min_q_frame,
+            from_=3,
+            to=9,
+            variable=min_q,
+            command=lambda v, var=min_q: self._updateQuality(var)
+        )
+        self.min_q.pack(fill=tk.X)
+        min_q_frame.grid(row=0, column=0, sticky=tk.NSEW)
+
+        max_q_frame = tk.LabelFrame(q_frame, text=msg.EX_MAX_QUALITY)
+        self.max_q_label = tk.Label(max_q_frame, text=" ")
+        self.max_q_label.pack()
+        self.max_q = tk.Scale(
+            max_q_frame,
+            from_=3,
+            to=9,
+            variable=max_q,
+            command=lambda v, var=max_q: self._updateQuality(var)
+        )
+        self.max_q.pack(fill=tk.X)
+        max_q_frame.grid(row=0, column=1, sticky=tk.NSEW)
+        q_frame.pack(fill=tk.X)
+
+        if self.data.get("options"):
+            options = self.data["options"]
+        else:
+            self.data["options"] = options = {
+                "color": [tk.IntVar(), tk.StringVar()],
+                "size": [tk.IntVar(), tk.StringVar()],
+                "material": [tk.IntVar(), tk.StringVar()],
+                "variant": [tk.IntVar(), tk.StringVar()],
+            }
+
+            options["color"][0].set(0)
+            options["size"][0].set(0)
+            options["material"][0].set(0)
+            options["variant"][0].set(0)
+
+        o_frame = tk.LabelFrame(self, text=msg.EX_OPTIONS)
+        l = [
+            ("color", msg.IE_OPTION_COLOR),
+            ("material", msg.IE_OPTION_MATERIAL),
+            ("size", msg.IE_OPTION_SIZE),
+            ("variant", msg.IE_OPTION_VARIANT),
+        ]
+        o_frame.columnconfigure(1, weight=100)
+        for i, o in enumerate(l):
+            cb = tk.Checkbutton(
+                o_frame,
+                text=o[1],
+                onvalue=1,
+                offvalue=0,
+                variable=options[o[0]][0]
+            )
+            cb.grid(row=i, column=0, sticky=tk.W)
+            entry = tk.Entry(
+                o_frame,
+                textvariable=options[o[0]][1]
+            )
+            entry.grid(row=i, column=1, sticky=tk.NSEW)
+
+        o_frame.pack(fill=tk.X, expand=1)
+
+        if self.data.get("packs"):
+            packs = self.data["packs"]
+        else:
+            self.data["packs"] = packs = ""
+
+        p_frame = tk.LabelFrame(self, text=msg.EX_PACK_UNITS)
+        p_text = tk.Text(
+            p_frame,
+            width=10,
+            height=3
+        )
+        p_text.insert("0.0", packs)
+        p_text.bind("<KeyRelease>", self._updatePacks)
+        p_text.pack(fill=tk.BOTH, expand=1)
+
+        p_frame.pack(fill=tk.X)
+        self._navigation()
+        self._updateQuality()
+        return True
+
+    def _updatePacks(self, event):
+        self.data["packs"] = event.widget.get("0.0", tk.END)
+
+    def _updateQuality(self, var=None):
+        min_q = self.data["min_q"]
+        max_q = self.data["max_q"]
+
+        if var is min_q and min_q.get() > max_q.get():
+            max_q.set(min_q.get())
+
+        if var is max_q and max_q.get() < min_q.get():
+            min_q.set(max_q.get())
+
+        qualities = {
+            3: msg.IE_QUALITY_3,
+            4: msg.IE_QUALITY_4,
+            5: msg.IE_QUALITY_5,
+            6: msg.IE_QUALITY_6,
+            7: msg.IE_QUALITY_7,
+            8: msg.IE_QUALITY_8,
+            9: msg.IE_QUALITY_9,
+        }
+
+        self.min_q_label.config(text=qualities[min_q.get()])
+        self.max_q_label.config(text=qualities[max_q.get()])
+
     def _addDescription(self):
         self._clear()
+        self._showName()
+
         if self.data.get("description"):
             desc = self.data["description"]
         else:
             self.data["description"] = desc = ""
 
+        t_frame = tk.LabelFrame(self, text=msg.EX_DESCRIPTION)
         textfield = tk.Text(
-            self,
+            t_frame,
             width=20,
             height=8,
             wrap=tk.WORD,
@@ -789,20 +1077,10 @@ class ItemEditor(tk.Toplevel):
         )
         textfield.insert("0.0", desc)
         textfield.bind("<KeyRelease>", self._updateDescription)
-        textfield.pack()
+        textfield.pack(fill=tk.BOTH, expand=1)
+        t_frame.pack(fill=tk.BOTH, expand=1)
 
-        self.c_button = tk.Button(
-            self,
-            text=msg.EX_CONTINUE,
-            command=self._nextPage
-        )
-        self.c_button.pack()
-        self.b_button = tk.Button(
-            self,
-            text=msg.EX_BACK,
-            command=self._lastPage
-        )
-        self.b_button.pack()
+        self._navigation()
 
         return True
 
@@ -812,6 +1090,12 @@ class ItemEditor(tk.Toplevel):
     def _addMenuPosition(self):
 
         self._clear()
+        self._showName()
+
+        if self.data.get("parent"):
+            menu = self.data["parent"]
+        else:
+            self.data["parent"] = menu = tk.StringVar()
 
         selector_list_frame = tk.LabelFrame(self, text=msg.EX_MENU_POS)
         self.selector_list = tk.Treeview(
@@ -841,8 +1125,11 @@ class ItemEditor(tk.Toplevel):
         self.foldericon = ImageTk.PhotoImage(file="img/folder.png")
 
         nodes = {}
+        active = None
         for group in groups:
             group_id = group.get("id", "0")
+            if self.data["parent"].get() == group_id:
+                active = group_id
             parent_id = group.get("parent", "")
             parent = nodes.get(parent_id, "")
             nodes[group_id] = self.selector_list.insert(
@@ -852,39 +1139,78 @@ class ItemEditor(tk.Toplevel):
                 text=group.get("name", "...")
             )
 
-        self.c_button = tk.Button(
-            self,
-            text=msg.EX_CONTINUE,
-            command=self._nextPage
-        )
-        self.c_button.pack()
-        self.b_button = tk.Button(
-            self,
-            text=msg.EX_BACK,
-            command=self._lastPage
-        )
-        self.b_button.pack()
+        if active:
+            self.selector_list.see(nodes[active])
+            self.selector_list.selection_set(nodes[active])
 
+        self._navigation()
         return True
 
     def _menuSelect(self, event):
-        if self.data.get("menu"):
-            menu = self.data["menu"]
+
+        sel = self.selector_list.selection()
+        if sel:
+            name = self.selector_list.item(sel)["text"]
+            groups = self.app.itemlist.getGroups()
+            for group in groups:
+                if group.get("name") == name:
+                    id = group.get("id")
+                    self.data["parent"].set(id)
         else:
-            self.data["menu"] = menu = tk.StringVar()
+            self.data["parent"].set("")
 
     def _finalizeItem(self):
+        errors = self._checkAll()
+        if errors:
+            errors = "\n".join(errors)
+            tkmb.showerror(msg.EX_ITEM_NOT_SAVED, errors, parent=self)
+            self.page = 7
+            self._lastPage()
+            return
+
         name = self.data["name"].get()
         weight = self.data["weight"].get()
         price = self.data["price"].get()
         avail = self.data["avail"].get()
+        parent = self.data["parent"].get()
+
         item_type = self._itemtypes()[self.data["type"].get()]
         self.item.set("name", name)
         self.item.set("weight", weight)
         self.item.set("price", price)
         self.item.set("avail", avail)
         self.item.set("type", item_type)
+        self.item.set("parent", parent)
 
+        valid_q = ["3", "4", "5", "6", "7", "8", "9"]
+        if self.data["min_q"] in valid_q and self.data["max_q"] in valid_q:
+            qual_range = self.data["min_q"] + " " + self.data["max_q"]
+            self.item.set("quality", qual_range)
+
+        self._setDamage()
+
+        self._setContainer()
+
+        self._setOptions()
+
+        self._setPacks()
+
+        desc = self.item.get("description")
+        if desc is not None:
+            desc.text = self.data["description"]
+        else:
+            desc = et.SubElement(self.item, "description")
+            desc.text = self.data["description"]
+
+        items = self.app.module.expansion.find(".//items")
+        if self.item in items:
+            items.remove(self.item)
+        items.append(self.item)
+
+        self.app.module.updateItems()
+        self.close()
+
+    def _setDamage(self):
         if self.data.get("damage"):
             damage_tag = self.item.find("damage")
             if damage_tag is not None:
@@ -922,10 +1248,13 @@ class ItemEditor(tk.Toplevel):
                      "values": self.data["caliber"].get()}
                 )
 
+    def _setContainer(self):
         if self.data.get("container"):
             if self.data["container"].get() == 1:
                 container_tag = self.item.find("container")
                 c_name = self.data["container_name"].get()
+                if not c_name:
+                    c_name = self.data["name"].get()
                 limit = self.data["container_limit"].get()
                 size = self.data["container_size"].get()
 
@@ -934,7 +1263,7 @@ class ItemEditor(tk.Toplevel):
                     container_tag.set("size", size)
                     container_tag.set("limit", limit)
                 else:
-                    et.SubElement(
+                    container_tag = et.SubElement(
                         self.item,
                         "container",
                         {"name": c_name,
@@ -942,20 +1271,178 @@ class ItemEditor(tk.Toplevel):
                          "limit": limit}
                     )
 
-        desc = self.item.get("description")
-        if desc is not None:
-            desc.text = self.data["description"]
-        else:
-            desc = et.SubElement(self.item, "description")
-            desc.text = self.data["description"]
+                if limit == "0":
+                    del container_tag.attrib["limit"]
+                if size == "0":
+                    del container_tag.attrib["size"]
 
-        items = self.app.module.expansion.find(".//items")
-        if self.item in items:
-            items.remove(self.item)
-        items.append(self.item)
+            else:
+                container_tag = self.item.find("container")
+                if container_tag is not None:
+                    self.item.remove(container_tag)
 
-        self.app.module.updateItems()
-        self.close()
+    def _setOptions(self):
+        it = config.ItemTypes
+        options = [
+            it.OPTION_COLOR,
+            it.OPTION_MATERIAL,
+            it.OPTION_SIZE,
+            it.OPTION_VARIANT
+        ]
+        for option in options:
+            use = self.data["options"][option][0].get()
+            values = self.data["options"][option][1].get()
+
+            option_tag = self.item.find("option[@name='"+option+"']")
+            if use:
+                if option_tag is None:
+                    option_tag = et.SubElement(
+                        self.item,
+                        "option",
+                        {"name": option}
+                    )
+
+                if values and "," in values:
+                    values = values.split(",")
+                    for value in values:
+                        value = value.strip()
+                    values = ",".join(values)
+                    option_tag.set("values", values)
+                elif len(values) > 0:
+                    option_tag.set("values", values)
+                else:
+                    if option_tag.get("values"):
+                        option_tag.pop("values")
+            else:
+                if option_tag is not None:
+                    self.item.remove(option_tag)
+
+    def _setPacks(self):
+        packs = self.item.findall("pack")
+        for pack in packs:
+            self.item.remove(pack)
+
+        if len(self.data["packs"]) > 0:
+            packs = self.data["packs"].split("\n")
+            for pack in packs:
+                if ":" not in pack: continue
+                q, name = pack.split(":")
+                name = name.strip()
+                name = name + " (" + q + ")"
+                et.SubElement(
+                    self.item,
+                    "pack",
+                    {"name": name,
+                     "quantity": q}
+                )
+
+    def _checkAll(self):
+        # basic data:
+
+        errors = []
+
+        name = self.data["name"].get()
+        invalid = re.findall("[\"\'&§<>]", name)
+        if len(name) == 0:
+            errors.append(msg.EX_ERROR_NAME_EMPTY)
+        if len(invalid) > 0:
+            errors.append(msg.EX_ERROR_NAME_INVALID)
+
+        weight = self.data["weight"].get()
+        try:
+            weight = int(weight)
+            if weight < 0: 
+                raise ValueError
+        except ValueError:
+            errors.append(msg.EX_ERROR_WEIGHT)
+
+        price = self.data["price"].get()
+        try: 
+            price = price.replace(",", ".")
+            price = float(price)
+            if price < 0: 
+                raise ValueError
+        except ValueError:
+            errors.append(msg.EX_ERROR_PRICE)
+
+        avail = self.data["avail"].get()
+        try:
+            avail = int(avail)
+            if not -6 <= avail < 6:
+                raise ValueError
+        except ValueError:
+            errors.append(msg.EX_ERROR_AVAIL)
+
+        damage = self.data.get("damage")
+        if damage:
+            damage = damage.get()
+            try:
+                if "/" not in damage:
+                    raise ValueError
+
+                damage = damage.split("/")
+                if len(damage) >= 2:
+                    s = int(damage[0])
+                    d = int(damage[1])
+
+                    if not -7 <= d <= 7:
+                        raise ValueError
+                if len(damage) == 3:
+                    e = damage[2]
+                    if e.lower() != "e":
+                        raise ValueError
+                if len(damage) > 3:
+                    raise ValueError
+
+            except ValueError:
+                errors.append(msg.EX_ERROR_DAMAGE)
+
+            ammo = self.data.get("ammo")
+            if ammo:
+                ammo = ammo.get()
+                try:
+                    ammo = int(ammo)
+                    if ammo < 1:
+                        raise ValueError
+                except ValueError:
+                    errors.append(msg.EX_ERROR_CHAMBERS)
+
+        container = self.data.get("container")
+        if container:
+            use = container.get()
+            if use:
+                size = self.data["container_size"].get()
+                limit = self.data["container_limit"].get()
+                try:
+                    size = int(size)
+                    limit = int(limit)
+                    if size < 0: raise ValueError
+                    if limit < 0: raise ValueError
+                except ValueError:
+                    errors.append(msg.EX_ERROR_CONTAINER)
+
+        it = config.ItemTypes()
+        options = [
+            it.OPTION_VARIANT,
+            it.OPTION_MATERIAL,
+            it.OPTION_SIZE,
+            it.OPTION_SIZE
+        ]
+        for option in options:
+            values = self.data["options"][option][1].get()
+            invalid = re.findall("[\"\'&§<>]", values)
+            if len(invalid) > 0:
+                if msg.EX_ERROR_INVALID_OPTION not in errors:
+                    errors.append(msg.EX_ERROR_INVALID_OPTION)
+
+        desc = self.data["description"]
+        invalid = re.findall("[&§<>]", desc)
+        if len(invalid) > 0:
+            errors.append(msg.EX_ERROR_INVALID_DESC)
+
+        return errors
+
+
 
     @staticmethod
     def _itemtypes():
@@ -996,21 +1483,34 @@ class ItemEditor(tk.Toplevel):
 
         return types
 
-        """
-        rev_types = {v: k for k, v in types.items()}
-        """
+    def _navigation(self):
+
+        self.c_button = tk.Button(
+            self,
+            text=msg.EX_CONTINUE,
+            command=self._nextPage
+        )
+        self.c_button.pack(fill=tk.X, expand=1)
+        self.b_button = tk.Button(
+            self,
+            text=msg.EX_BACK,
+            command=self._lastPage
+        )
+        if self.page != 1:
+            self.b_button.pack(fill=tk.X, expand=1)
 
     def _nextPage(self):
         self.page += 1
         try:
             pages = {
-                1: self._setName,
-                2: self._basicData,
+                1: self._addName,
+                2: self._addData,
                 3: self._addDamage,
                 4: self._addContainer,
-                5: self._addDescription,
-                6: self._addMenuPosition,
-                7: self._finalizeItem,
+                5: self._addOptions,
+                6: self._addDescription,
+                7: self._addMenuPosition,
+                8: self._finalizeItem,
 
             }
 
@@ -1026,12 +1526,13 @@ class ItemEditor(tk.Toplevel):
         self.page -= 1
         try:
             pages = {
-                1: self._setName,
-                2: self._basicData,
+                1: self._addName,
+                2: self._addData,
                 3: self._addDamage,
                 4: self._addContainer,
-                5: self._addDescription,
-                6: self._addMenuPosition,
+                5: self._addOptions,
+                6: self._addDescription,
+                7: self._addMenuPosition,
             }
 
             switch = pages[self.page]()
