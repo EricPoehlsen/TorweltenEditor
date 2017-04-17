@@ -84,7 +84,7 @@ class TraitTree(object):
         Returns:
             [(name, class, group),...]:
                 name (str): name of trait
-                class (str): class of trait
+                xp (str): base cost of trait
                 group (str): group of trait
         """
 

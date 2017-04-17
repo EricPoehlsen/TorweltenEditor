@@ -50,14 +50,27 @@ class ExpansionScreen(tk.Frame):
         trait_list.pack(side=tk.LEFT)
         scroll.pack(side=tk.LEFT, fill=tk.Y)
         list_frame.pack()
-        button=tk.Button(
+        new_trait = tk.Button(
             trait_frame,
-            text="edit trait",
+            text=msg.EX_NEW,
+            command=self._addTrait
+        )
+        new_trait.pack(fill=tk.X)
+        edit_trait = tk.Button(
+            trait_frame,
+            text=msg.EX_EDIT,
             command=self._editTrait
         )
-        button.pack()
+        edit_trait.pack(fill=tk.X)
 
         return trait_frame
+
+    def updateTraits(self):
+        listbox = self.widgets["traits"]
+        skills = self.expansion.findall(".//trait")
+        listbox.delete(0, tk.END)
+        l = [s.get("name") for s in skills]
+        listbox.insert(0, *l)
 
     def showSkills(self, frame):
         skill_frame = tk.LabelFrame(frame, text=msg.EX_SKILLS)
@@ -180,8 +193,30 @@ class ExpansionScreen(tk.Frame):
             item
         )
 
+    def _addTrait(self, event=None):
+        if self.app.open_windows["trait"] != 0:
+            self.app.open_windows["trait"].close()
+        self.app.open_windows["trait"] = TraitEditor(
+            self.app.main,
+            self.app,
+            None
+        )
+
     def _editTrait(self):
-        a = TraitEditor(None, self.app, None)
+        listbox = self.widgets["traits"]
+        selected = listbox.curselection()
+        if len(selected) != 1:
+            return
+        name = listbox.get(selected[0])
+        trait = self.expansion.find(".//trait[@name='"+name+"']")
+
+        if self.app.open_windows["trait"] != 0:
+            self.app.open_windows["trait"].close()
+        self.app.open_windows["trait"] = TraitEditor(
+            self.app.main,
+            self.app,
+            trait
+        )
 
     def _addSkill(self):
         if self.app.open_windows["skill"] != 0:
@@ -295,6 +330,7 @@ class ItemEditor(tk.Toplevel):
         self.app = app
         self.loaded_items = app.itemlist
         self.data = {}
+        self.tt = {}
 
         self.minsize(250, 100)
         self.item = item
@@ -435,10 +471,12 @@ class ItemEditor(tk.Toplevel):
         name_frame = tk.LabelFrame(self, text=msg.NAME)
         self.name = tk.Entry(name_frame, textvariable=name)
         self.name.pack(fill=tk.X, expand=1)
+        self.tt["name"] = ToolTip(self.name, msg.EX_TT_NAME, variant="info")
         name_frame.pack(fill=tk.X, expand=1)
 
         # item type is split into groups for better usability ...
         type_frame = tk.LabelFrame(self, text=msg.EX_ITEM_TYPE)
+        ToolTip(type_frame, msg.EX_TT_TYPE, "info")
         groups = [
             msg.EX_IT_GRP_CLOTHING,
             msg.EX_IT_GRP_MELEE,
@@ -583,16 +621,35 @@ class ItemEditor(tk.Toplevel):
                     break
 
     def _checkName(self, var):
-        """ make sure no item with this name exists ... """
+        """ Checking the name for validity 
+        
+        Updates field and tooltip as necessary.
+        """
 
         name = var.get()
+        invalid = re.findall("[\"\'&§<>]", name)
+
         if name in self.existing_names:
             self.name.config(style="invalid.TEntry")
+            self.tt["name"].msg = msg.EX_TT_NAME_EXISTS
+            self.tt["name"].variant = "error"
+        elif len(invalid) > 0:
+            self.name.config(style="invalid.TEntry")
+            self.tt["name"].msg = msg.EX_TT_NAME_INVALID
+            self.tt["name"].variant = "error"
+        elif len(name) == 0:
+            self.name.config(style="invalid.TEntry")
+            self.tt["name"].msg = msg.EX_TT_NAME
+            self.tt["name"].variant = "error"
+
         else:
             self.name.config(style="TEntry")
-        pass
+            self.tt["name"].msg = msg.EX_TT_NAME_OKAY
+            self.tt["name"].variant = "okay"
 
     def _showName(self):
+        """ Displays name and type """
+
         tk.Label(
             self,
             text=self.data["name"].get(),
@@ -601,6 +658,8 @@ class ItemEditor(tk.Toplevel):
         tk.Label(self, text=self.data["type"].get()).pack()
 
     def _addData(self):
+        """ This screen is used to set basic data """
+
         self._clear()
         self._showName()
 
@@ -608,12 +667,12 @@ class ItemEditor(tk.Toplevel):
             price = self.data["price"]
         else: 
             self.data["price"] = price = tk.StringVar()
-            price.set("0")
+            price.set("0.01")
         if self.data.get("weight"):
             weight = self.data["weight"]
         else: 
             self.data["weight"] = weight = tk.StringVar()
-            weight.set("0")
+            weight.set("1")
         if self.data.get("avail"):
             avail = self.data["avail"]
         else:
@@ -622,16 +681,19 @@ class ItemEditor(tk.Toplevel):
 
         p_frame = tk.LabelFrame(self, text=msg.EX_ITEM_PRICE)
         self.p_entry = tk.Entry(p_frame, textvariable=price)
+        self.tt["p"] = ToolTip(self.p_entry, msg.EX_TT_PRICE, "info")
         self.p_entry.pack(fill=tk.X, expand=1)
         p_frame.pack(fill=tk.X)
 
         w_frame = tk.LabelFrame(self, text=msg.EX_ITEM_WEIGHT)
         self.w_entry = tk.Entry(w_frame, textvariable=weight)
+        self.tt["w"] = ToolTip(self.w_entry, msg.EX_TT_WEIGHT, "info")
         self.w_entry.pack(fill=tk.X, expand=1)
         w_frame.pack(fill=tk.X)
     
         a_frame = tk.LabelFrame(self, text=msg.EX_ITEM_AVAIL)
         self.a_entry = tk.Entry(a_frame, textvariable=avail)
+        self.tt["a"] = ToolTip(self.a_entry, msg.EX_TT_AVAIL, "info")
         self.a_entry.pack(fill=tk.X, expand=1)
         a_frame.pack(fill=tk.X)
 
@@ -644,6 +706,8 @@ class ItemEditor(tk.Toplevel):
         return True
 
     def _priceCheck(self, var):
+        """ Trace price variable - check for validity """
+
         price = var.get()
         try:
             price = price.replace(",", ".")
@@ -651,31 +715,58 @@ class ItemEditor(tk.Toplevel):
             if price < 0.01:
                 raise ValueError
             self.p_entry.config(style="TEntry")
+            self.tt["p"].update(
+                msg.EX_TT_PRICE_OKAY,
+                "okay"
+            )
         except ValueError:
             self.p_entry.config(style="invalid.TEntry")
+            self.tt["p"].update(
+                msg.EX_TT_PRICE_INVALID,
+                "error"
+            )
 
     def _weightCheck(self, var):
+        """ Trace weight variable - check for validity """
         weight = var.get()
         try:
             weight = int(weight)
             if weight < 1:
                 raise ValueError
             self.w_entry.config(style="TEntry")
+            self.tt["w"].update(
+                msg.EX_TT_WEIGHT_OKAY,
+                "okay"
+            )
         except ValueError:
             self.w_entry.config(style="invalid.TEntry")
+            self.tt["w"].update(
+                msg.EX_TT_WEIGHT_INVALID,
+                "error"
+            )
 
     def _availCheck(self, var):
+        """ Trace availability variable - check for validity"""
         avail = var.get()
         try:
             avail = int(avail)
             if not -6 <= avail <= 6:
                 raise ValueError
             self.a_entry.config(style="TEntry")
+            self.tt["a"].update(
+                msg.EX_TT_AVAIL_OKAY,
+                "okay"
+            )
+
         except ValueError:
             self.a_entry.config(style="invalid.TEntry")
+            self.tt["a"].update(
+                msg.EX_TT_AVAIL,
+                "error"
+            )
 
     def _addDamage(self):
-        """ add weapon properties ... """
+        """ Screen defining damage values for an item """
 
         # these types can have a damage setting
         damage_types = [
@@ -734,13 +825,12 @@ class ItemEditor(tk.Toplevel):
             msg.EX_IT_BLASTER_SA,
         ]
 
+        # break for items that don't have damage values
         selected_type = self.data["type"].get()
-
         if selected_type not in damage_types + caliber_types:
             return False
 
         self._clear()
-
         self._showName()
 
         if self.data.get("damage"):
@@ -755,6 +845,11 @@ class ItemEditor(tk.Toplevel):
         d_frame = tk.LabelFrame(self, text=label)
         self.d_entry = tk.Entry(d_frame, textvariable=damage)
         self.d_entry.pack(fill=tk.X, expand=1)
+        self.tt["d"] = ToolTip(
+            self.d_entry,
+            msg.EX_TT_DAMAGE,
+            "info"
+        )
         d_frame.pack(fill=tk.X, expand=1)
 
         cals = [
@@ -809,7 +904,13 @@ class ItemEditor(tk.Toplevel):
         return True
 
     def _checkDamage(self, var):
+        """ Trace the damage variable - check for validity """
+
         damage = var.get()
+        if "e" in damage:
+            damage = damage.replace("e", "E")
+            var.set(damage)
+
         try:
             if "/" not in damage:
                 raise ValueError
@@ -823,19 +924,25 @@ class ItemEditor(tk.Toplevel):
                     raise ValueError
             if len(damage) == 3:
                 e = damage[2]
-                if e.lower() != "e":
+                if e != "E":
                     raise ValueError
             if len(damage) > 3:
                 raise ValueError
 
             self.d_entry.config(style="TEntry")
+            self.tt["d"].update(
+                msg.EX_TT_DAMAGE_OKAY,
+                "okay"
+            )
         except ValueError:
             self.d_entry.config(style="invalid.TEntry")
+            self.tt["d"].update(
+                msg.EX_TT_DAMAGE,
+                "error"
+            )
 
     def _addContainer(self):
-        self._clear()
-
-        self._showName()
+        """ screen for setting container properties of the item """
 
         containers = [
             msg.EX_IT_CLOTHING,
@@ -850,8 +957,11 @@ class ItemEditor(tk.Toplevel):
             msg.EX_IT_IMPLANT_PART
         ]
 
-        selected_type = self.data["type"].get()
+        self._clear()
+        self._showName()
 
+        # break for items that don't have containers
+        selected_type = self.data["type"].get()
         if selected_type not in containers:
             return False
         
@@ -886,36 +996,52 @@ class ItemEditor(tk.Toplevel):
             variable=use
         )
         use_container.pack(fill=tk.X)
-        name_frame = tk.LabelFrame(self, text=msg.NAME)
-        n_entry = tk.Entry(name_frame, textvariable=name)
-        n_entry.pack(fill=tk.X, expand=1)
+        name_frame = tk.LabelFrame(self, text=msg.EX_DISPLAY_NAME)
+        self.n_entry = tk.Entry(name_frame, textvariable=name)
+        self.n_entry.pack(fill=tk.X, expand=1)
+        self.tt["n"] = ToolTip(self.n_entry, msg.EX_TT_CONT_NO_NAME, "info")
+
         name_frame.pack(fill=tk.X, expand=1)
         frame = tk.Frame(self)
         size_frame = tk.LabelFrame(frame, text=msg.EX_CONTAINER_SIZE)
         self.s_entry = tk.Entry(size_frame, textvariable=size)
         self.s_entry.pack(fill=tk.X, expand=1)
+        self.tt["s"] = ToolTip(self.s_entry, msg.EX_TT_CONT_SIZE, "info")
+
         size_frame.grid(row=0, column=0, sticky=tk.NSEW)
         limit_frame = tk.LabelFrame(frame, text=msg.EX_CONTAINER_LIMIT)
         self.l_entry = tk.Entry(limit_frame, textvariable=limit)
         self.l_entry.pack(fill=tk.X, expand=1)
+        self.tt["l"] = ToolTip(self.l_entry, msg.EX_TT_CONT_LIMIT, "info")
         limit_frame.grid(row=0, column=1, sticky=tk.NSEW)
         frame.pack(fill=tk.X, expand=1)
 
         limit.trace("w", lambda n, e, m: self._checkContainer())
         size.trace("w", lambda n, e, m: self._checkContainer())
-
+        name.trace("w", lambda n, e, m: self._checkContainer())
         self._navigation()
         return True
 
     def _checkContainer(self):
+        """ Trace container variables - validate values"""
+
         try:
             limit = self.data["container_limit"].get()
             limit = int(limit)
             if limit < 0:
                 raise ValueError
             self.l_entry.config(style="TEntry")
+            self.tt["l"].update(
+                msg.EX_TT_CONT_LIMIT,
+                "okay"
+            )
+
         except ValueError:
             self.l_entry.config(style="invalid.TEntry")
+            self.tt["l"].update(
+                msg.EX_TT_CONT_ERROR,
+                "error"
+            )
 
         try:
             size = self.data["container_size"].get()
@@ -923,10 +1049,42 @@ class ItemEditor(tk.Toplevel):
             if size < 0:
                 raise ValueError
             self.s_entry.config(style="TEntry")
+            self.tt["s"].update(
+                msg.EX_TT_CONT_SIZE,
+                "okay"
+            )
         except ValueError:
             self.s_entry.config(style="invalid.TEntry")
+            self.tt["s"].update(
+                msg.EX_TT_CONT_ERROR,
+                "error"
+            )
+
+        name = self.data["container_name"].get()
+        invalid = re.findall("[\"\'&§<>]", name)
+        if len(invalid) > 0:
+            self.tt["n"].update(
+                msg.EX_TT_CONT_NAME_INVALID,
+                "error"
+            )
+            self.n_entry.config(style="invalid.TEntry")
+        elif len(name) == 0:
+            self.tt["n"].update(
+                msg.EX_TT_CONT_NO_NAME,
+                "okay"
+            )
+            self.n_entry.config(style="TEntry")
+
+        else:
+            self.tt["n"].update(
+                msg.EX_TT_CONT_NAME_OKAY,
+                "okay"
+            )
+            self.n_entry.config(style="TEntry")
 
     def _addOptions(self):
+        """ Screen for adding additonal item options and packs. """
+
         self._clear()
         self._showName()
 
@@ -943,6 +1101,7 @@ class ItemEditor(tk.Toplevel):
             max_q.set(9)
 
         q_frame = tk.Frame(self)
+        ToolTip(q_frame, msg.EX_TT_QUALITY, "info")
         q_frame.columnconfigure(0, weight=1)
         q_frame.columnconfigure(1, weight=1)
         min_q_frame = tk.LabelFrame(q_frame, text=msg.EX_MIN_QUALITY)
@@ -1008,6 +1167,12 @@ class ItemEditor(tk.Toplevel):
                 o_frame,
                 textvariable=options[o[0]][1]
             )
+            self.tt[o[0]] = ToolTip(entry, msg.EX_TT_OPTION, "info")
+            options[o[0]][1].trace(
+                "w",
+                lambda n, e, w, name=o[0], var=options[o[0]][1], widget=entry:
+                    self._checkOptions(name, var, widget)
+            )
             entry.grid(row=i, column=1, sticky=tk.NSEW)
 
         o_frame.pack(fill=tk.X, expand=1)
@@ -1026,16 +1191,97 @@ class ItemEditor(tk.Toplevel):
         p_text.insert("0.0", packs)
         p_text.bind("<KeyRelease>", self._updatePacks)
         p_text.pack(fill=tk.BOTH, expand=1)
+        self.tt["p"] = ToolTip(p_text, msg.EX_TT_PACKS, "info")
 
         p_frame.pack(fill=tk.X)
         self._navigation()
         self._updateQuality()
         return True
 
+    def _checkOptions(self, name, var, widget):
+        """ Trace option variables and validate the values """
+
+        value = var.get()
+
+        invalid = re.findall("[\"\'&§<>]", value)
+        count = len(value.split(","))
+
+        if len(invalid) > 0:
+            widget.config(style="invalid.TEntry")
+            self.tt[name].update(
+                msg.EX_TT_OPT_INVALID,
+                "error"
+            )
+        else:
+            widget.config(style="TEntry")
+
+        if len(value) == 0:
+            self.tt[name].update(
+                msg.EX_TT_OPT_EMPTY,
+                "okay"
+            )
+        elif count == 1:
+            self.tt[name].update(
+                msg.EX_TT_OPT_SINGLE,
+                "okay"
+            )
+        elif count > 1:
+            info = msg.EX_TT_OPT_OKAY.format(n=count)
+            self.tt[name].update(info, "okay")
+
     def _updatePacks(self, event):
-        self.data["packs"] = event.widget.get("0.0", tk.END)
+        """ handles changes in the packs field and validate content """
+
+        self.data["packs"] = packs = event.widget.get("0.0", tk.END)
+
+        l = packs.split("\n")
+        l = l[0:-1]
+        for line in l:
+            if not line and len(l) == 1:
+                self.tt["p"].update(
+                    msg.EX_TT_PACKS_NONE,
+                    "okay"
+                )
+                return
+            if ":" in line:
+                count, name = line.split(":")
+                invalid = re.findall("[\"\'&§<>]", name)
+                if len(invalid) > 0:
+                    self.tt["p"].update(
+                        msg.EX_TT_PACKS,
+                        "error"
+                    )
+                    return
+                try:
+                    count = int(count)
+                    if count < 1: raise ValueError
+                except ValueError:
+                    self.tt["p"].update(
+                        msg.EX_TT_PACKS,
+                        "error"
+                    )
+                    return
+            else:
+                self.tt["p"].update(
+                    msg.EX_TT_PACKS,
+                    "error"
+                )
+                return
+
+        if len(l) == 1:
+            self.tt["p"].update(
+                msg.EX_TT_PACKS_SINGLE,
+                "okay"
+            )
+        else:
+            self.tt["p"].update(
+                msg.EX_TT_PACKS_MULTI.format(n=len(l)),
+                "okay"
+            )
 
     def _updateQuality(self, var=None):
+        """ Updating the quality variables and info widgets """
+
         min_q = self.data["min_q"]
         max_q = self.data["max_q"]
 
@@ -1059,6 +1305,8 @@ class ItemEditor(tk.Toplevel):
         self.max_q_label.config(text=qualities[max_q.get()])
 
     def _addDescription(self):
+        """ Screen for adding a item description. """
+
         self._clear()
         self._showName()
 
@@ -1085,9 +1333,11 @@ class ItemEditor(tk.Toplevel):
         return True
 
     def _updateDescription(self, event):
+        """ Handles changes in the item description and stores it """
         self.data["description"] = event.widget.get("0.0", tk.END)
 
-    def _addMenuPosition(self):
+    def _addParent(self):
+        """Screen for setting the items parent """
 
         self._clear()
         self._showName()
@@ -1104,7 +1354,7 @@ class ItemEditor(tk.Toplevel):
             show="tree",
             height=8
         )
-        self.selector_list.bind("<<TreeviewSelect>>", self._menuSelect)
+        self.selector_list.bind("<<TreeviewSelect>>", self._parentSelect)
         self.selector_scroll = tk.Scrollbar(
             selector_list_frame,
             orient=tk.VERTICAL,
@@ -1146,7 +1396,8 @@ class ItemEditor(tk.Toplevel):
         self._navigation()
         return True
 
-    def _menuSelect(self, event):
+    def _parentSelect(self, event):
+        """ Handles changes it parent selection"""
 
         sel = self.selector_list.selection()
         if sel:
@@ -1440,9 +1691,12 @@ class ItemEditor(tk.Toplevel):
         if len(invalid) > 0:
             errors.append(msg.EX_ERROR_INVALID_DESC)
 
+        parent = self.data["parent"].get()
+        print(parent)
+        if parent == "":
+            errors.append(msg.EX_ERROR_NO_PARENT)
+
         return errors
-
-
 
     @staticmethod
     def _itemtypes():
@@ -1509,7 +1763,7 @@ class ItemEditor(tk.Toplevel):
                 4: self._addContainer,
                 5: self._addOptions,
                 6: self._addDescription,
-                7: self._addMenuPosition,
+                7: self._addParent,
                 8: self._finalizeItem,
 
             }
@@ -1532,7 +1786,7 @@ class ItemEditor(tk.Toplevel):
                 4: self._addContainer,
                 5: self._addOptions,
                 6: self._addDescription,
-                7: self._addMenuPosition,
+                7: self._addParent,
             }
 
             switch = pages[self.page]()
@@ -1825,6 +2079,15 @@ class SkillEditor(tk.Toplevel):
 
 
 class TraitEditor(tk.Toplevel):
+    """ The trait editor is used to create and modify character traits
+    
+    Args: 
+        master (tk.Widget): The parent widget
+        app (Application): The main program instance
+        trait (et.Element<trait>): The trait to edit - new if None
+        
+    """
+
     def __init__(
         self,
         master=None,
@@ -1834,11 +2097,1158 @@ class TraitEditor(tk.Toplevel):
     ):
         super().__init__(master, **kwargs)
         self.protocol("WM_DELETE_WINDOW", self.close)
+        self.minsize(250, 100)
 
         self.app = app
         self.trait = trait
-    pass
+
+        self.name = tk.StringVar()
+        self.spec = tk.StringVar()
+        self.xp = tk.StringVar()
+        self.group = tk.StringVar()
+        self.group.set(self._traitGroupsList()[0])
+        self.description = ""
+        self.vars = []
+
+        if self.trait is None:
+            self.trait = et.Element("trait")
+
+        self._displayTrait()
+        self._readTrait()
+
+    def _existingNames(self):
+        """ Get a list of already existing trait names """
+
+        traits = self.app.traits.getTraits()
+        names = [t.get("name") for t in traits]
+        exp_traits = self.app.module.expansion.findall(".//trait")
+        names += [t.get("name") for t in exp_traits]
+
+        if self.trait.get("name"):
+            names.remove(self.trait.get("name"))
+
+        return names
+
+    def _displayTrait(self):
+        """ Display the trait """
+
+        def checkName(var, tt):
+            """ inline check for the name run as trace on the name var."""
+
+            name = var.get()
+            invalid = re.findall("[\"\'§<>&]", name)
+
+            if len(name) < 1:
+                tt.update(msg.EX_TT_TRAIT_NAME, "error")
+            elif len(invalid) > 0:
+                tt.update(msg.EX_TT_NAME_INVALID, "error")
+                tt.widget.config(style="invalid.TEntry")
+
+            elif name in self._existingNames():
+                tt.update(msg.EX_TT_NAME_EXISTS, "error")
+                tt.widget.config(style="invalid.TEntry")
+            else:
+                tt.update(msg.EX_TT_NAME_OKAY, "okay")
+                tt.widget.config(style="TEntry")
+
+        def checkXP(var, tt):
+            """ Inline check for the given xp value run as trace. """
+
+            xp = var.get()
+            try:
+                xp = int(xp)
+                if xp == 0:
+                    raise ValueError
+                tt.widget.config(style="TEntry")
+                tt.variant = "okay"
+            except ValueError:
+                tt.widget.config(style="invalid.TEntry")
+                tt.variant = "error"
+
+        def checkSpec(var, tt):
+            """ inline check for the specification, run as trace """
+
+            spec = var.get()
+            invalid = re.findall("[\"\'§<>&]", spec)
+
+            if len(spec) < 1:
+                tt.update(msg.EX_TT_TRAIT_SPEC_NONE, "okay")
+            elif len(invalid) > 0:
+                tt.update(msg.EX_TT_NAME_INVALID, "error")
+                tt.widget.config(style="invalid.TEntry")
+            else:
+                tt.update(msg.EX_TT_TRAIT_SPEC_OKAY, "okay")
+                tt.widget.config(style="TEntry")
+
+        t_frame = tk.Frame(self)
+        name_frame = tk.LabelFrame(t_frame, text=msg.NAME)
+        name_entry = tk.Entry(
+            name_frame,
+            textvariable=self.name
+        )
+        tt = ToolTip(name_entry, msg.EX_TT_TRAIT_NAME, "info")
+        self.name.trace(
+            "w",
+            lambda n, e, m, v=self.name, tt=tt:
+                checkName(v, tt)
+        )
+        name_entry.pack(fill=tk.X, expand=1)
+        name_frame.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        xp_frame = tk.LabelFrame(t_frame, text=msg.XP)
+        xp_entry = tk.Entry(
+            xp_frame,
+            textvariable=self.xp,
+            width=3
+        )
+        tt = ToolTip(xp_entry, msg.EX_TT_TRAIT_XP, "info")
+        self.xp.trace(
+            "w",
+            lambda n, e, m, v=self.xp, tt=tt:
+            checkXP(v, tt)
+        )
+
+        xp_entry.pack(fill=tk.X, expand=1)
+        xp_frame.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        t_frame.pack(fill=tk.X, expand=1)
+
+        group_frame = tk.LabelFrame(self, text=msg.EX_TRAIT_GROUP)
+        ToolTip(group_frame, msg.EX_TT_TRAIT_GROUP, "info")
+        group_button = tk.OptionMenu(
+            group_frame,
+            self.group,
+            self.group.get(),
+            *self._traitGroupsList()
+        )
+
+        group_button.pack(fill=tk.X, expand=1)
+        group_frame.pack(fill=tk.X, expand=1)
+
+        spec_frame = tk.LabelFrame(self, text=msg.EX_SPECIFICATION)
+        spec_entry = tk.Entry(
+            spec_frame,
+            textvariable=self.spec
+        )
+        tt = ToolTip(spec_entry, msg.EX_TT_TRAIT_SPEC, "info")
+        self.spec.trace(
+            "w",
+            lambda n, e, m, v=self.spec, tt=tt:
+            checkSpec(v, tt)
+        )
+
+        spec_entry.pack(fill=tk.X, expand=1)
+        spec_frame.pack(fill=tk.X, expand=1)
+
+        vars_frame = tk.LabelFrame(self, text=msg.EX_ADD_VARIABLES)
+        var_button = tk.Button(
+            vars_frame,
+            text=msg.EX_VARIABLE,
+            command=self._addVariable
+        )
+        ToolTip(var_button, msg.EX_TT_ADD_VAR)
+        var_button.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        rank_button = tk.Button(
+            vars_frame,
+            text=msg.EX_RANK,
+            command=self._addRank
+        )
+        ToolTip(var_button, msg.EX_TT_ADD_RANK)
+        rank_button.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        vars_frame.pack(fill=tk.X, expand=1)
+
+        self.frame = tk.Frame(self)
+        self.frame.pack(fill=tk.BOTH, expand=1)
+
+        self.desc_frame = tk.LabelFrame(self, text=msg.EX_DESCRIPTION)
+        self.desc_text = tk.Text(
+            self.desc_frame,
+            width=10,
+            height=4,
+        )
+        ToolTip(self.desc_text, msg.EX_TT_TRAIT_DESC)
+        self.desc_text.insert("0.0", self.description)
+        self.desc_text.pack(fill=tk.BOTH, expand=1)
+        self.desc_text.bind(
+            "<KeyRelease>",
+            self._updateDescription
+        )
+        self.desc_frame.pack(fill=tk.X, expand=1)
+
+        finish = tk.Button(self, text=msg.EX_FINISH,command=self._finalize)
+        finish.pack(fill=tk.X)
+
+        self.state = tk.StringVar()
+        self.info = tk.Label(self, textvariable=self.state)
+        self.info.pack(fill=tk.X)
+
+    def _updateDescription(self, event):
+        """ updates the description variable if the field is changed. """
+
+        self.description = event.widget.get("0.0", tk.END)
+
+    def _addVariable(self, load=False):
+        """ Adding a trait variable 
+        
+        Args:
+            load (bool): set true if called while parsing an existing trait.
+            
+        """
+
+        var = VarFrame(self.frame)
+        self.vars.append(var)
+        if not load:
+            var.pack(fill=tk.X)
+
+    def _addRank(self, load=False):
+        """ Adding a rank variable 
+
+        Args:
+            load (bool): set true if called while parsing an existing trait.
+
+        """
+
+        rank = RankFrame(self.frame)
+        self.vars.append(rank)
+        if not load:
+            rank.pack(fill=tk.X)
+
+    def varUp(self, var):
+        """ moving a variable up """
+
+        index = self.vars.index(var)
+        if index > 0:
+            self.vars.pop(index)
+            index -= 1
+            self.vars.insert(index, var)
+            self._redrawVars()
+
+    def varDown(self, var):
+        """ moving a variable down """
+
+        index = self.vars.index(var)
+        if index < len(self.vars) - 1:
+            self.vars.pop(index)
+            index += 1
+            self.vars.insert(index, var)
+            self._redrawVars()
+
+    def varRemove(self, var):
+        """ removing a variable"""
+
+        index = self.vars.index(var)
+        self.vars.pop(index)
+        var.destroy()
+        self._redrawVars()
+
+    def _redrawVars(self):
+        """ redrawing the variable frame as needed """
+
+        # remove everything
+        widgets = self.frame.winfo_children()
+        for widget in widgets:
+            widget.pack_forget()
+
+        # redraw the existing variables
+        for var in self.vars:
+            var.pack(fill=tk.X)
+
+        # makes sure that the frame resizes if the last variable is deleted
+        if len(self.vars) == 0:
+            tk.Frame(self.frame).pack()
+
+    def _check(self):
+        """ Extensive check for the data integrity of the trait 
+
+        Returns: 
+            [(str), ...] a list of errors (empty if no errors found)
+        """
+
+        errors = []
+
+        # checking the name ...
+        name = self.name.get()
+        if len(name) < 1:
+            errors.append(msg.EX_ERROR_NAME_EMPTY)
+        elif name in self._existingNames():
+            errors.append(msg.EX_ERROR_TRAIT_EXISTS)
+        invalid = re.findall("[\"\'<>§&]", name)
+        if len(invalid) > 0:
+            errors.append(msg.EX_ERROR_NAME_INVALID)
+
+        # checking xp
+        xp = 0
+        try:
+            xp = int(self.xp.get())
+            print(xp)
+            if xp == 0:
+                raise ValueError
+        except ValueError:
+            errors.append(msg.EX_ERROR_XP_VALUE)
+
+        # checking spec
+        spec = self.spec.get()
+        invalid = re.findall("[\"\'<>§&]", spec)
+        if len(invalid) > 0:
+            errors.append(msg.EX_ERROR_INVALID_SPEC)
+
+        # go through the variables and check them individually ...
+        for var in self.vars:
+            if type(var) == VarFrame:
+                errors = self._checkVar(var, xp, errors)
+            if type(var) == RankFrame:
+                errors = self._checkRank(var, xp, errors)
+
+        return errors
+
+    @staticmethod
+    def _checkVar(var, xp, errors):
+        """ checks a variable for valid data 
+        
+        Args: 
+            var (VarFrame): the variable to check
+            xp (int): the base xp value for the trait
+            errors [(str), ...]: List of errors already found
+            
+        Returns: 
+            [(str), ...] a list of errors
+        
+        """
+
+        # check the name
+        name = var.name.get()
+        invalid = re.findall("[\"\'<>§&]", name)
+        if len(name) < 1 or len(invalid) > 0:
+            if msg.EX_ERROR_INVALID_VAR_NAME not in errors:
+                errors.append(msg.EX_ERROR_INVALID_VAR_NAME)
+
+        # get the data
+        mode = var.mode
+        o_names = []
+        o_vals = []
+        for option in var.options:
+            o_names.append(option[0].get())
+            o_vals.append(option[1].get())
+
+        # check the xp values
+        for val in o_vals:
+            try:
+                val = float(val)
+                if val == 0:
+                    raise ValueError
+            except ValueError:
+                if msg.EX_ERROR_XP_VALUE not in errors:
+                    errors.append(msg.EX_ERROR_XP_VALUE)
+                val = 0
+
+            if mode == "add":
+                if xp > 0 > val:
+                    if msg.EX_ERROR_NEG_ADV not in errors:
+                        errors.append(msg.EX_ERROR_NEG_ADV)
+                if xp < 0 < val:
+                    if msg.EX_ERROR_POS_DIS not in errors:
+                        errors.append(msg.EX_ERROR_POS_DIS)
+            else:
+                if val < 0:
+                    if msg.EX_ERROR_NEG_MULT not in errors:
+                        errors.append(msg.EX_ERROR_NEG_MULT)
+
+        # check the names
+        for name in o_names:
+            invalid = re.findall("[\"\'<>§&,]", name)
+            if len(name) < 1 or len(invalid) > 0:
+                if msg.EX_ERROR_INVALID_OPTION not in errors:
+                    errors.append(msg.EX_ERROR_INVALID_OPTION)
+
+        # and number of options
+        if len(o_names) < 2:
+            if msg.EX_ERROR_OPTION_LENGTH not in errors:
+                errors.append(msg.EX_ERROR_OPTION_LENGTH)
+
+        return errors
+
+    @staticmethod
+    def _checkRank(var, xp, errors):
+        """ Checking a rank variable for data integrity 
+        
+        Args: 
+            var (RankFrame): the variable to check
+            xp (int): the base xp value for the trait
+            errors [(str), ...]: List of errors already found
+            
+        Returns: 
+            [(str), ...] a list of errors
+        
+        """
+
+        # checking the name
+        name = var.name.get()
+        invalid = re.findall("[\"\'<>,]", name)
+        if len(name) < 1 or len(invalid) > 0:
+            if msg.EX_ERROR_INVALID_RANK_NAME not in errors:
+                errors.append(msg.EX_ERROR_INVALID_RANK_NAME)
+
+        # get the data
+        mode = var.mode
+        min_rank = 0
+        max_rank = 0
+        r_xp = 0
+        try:
+            min_rank = int(var.min.get())
+            max_rank = int(var.max.get())
+            r_xp = int(var.xp.get())
+        except ValueError:
+            pass
+
+        # check for rank and xp errors
+        if min_rank < 1:
+            if msg.EX_ERROR_RANK_MIN not in errors:
+                errors.append(msg.EX_ERROR_RANK_MIN)
+        if max_rank <= min_rank:
+            if msg.EX_ERROR_RANK_MAX not in errors:
+                errors.append(msg.EX_ERROR_RANK_MAX)
+
+        if mode == "add":
+            if xp > 0 > r_xp:
+                if msg.EX_ERROR_NEG_ADV not in errors:
+                    errors.append(msg.EX_ERROR_NEG_ADV)
+            if xp < 0 < r_xp:
+                if msg.EX_ERROR_POS_DIS not in errors:
+                    errors.append(msg.EX_ERROR_POS_DIS)
+        else:
+            if r_xp < 0:
+                if msg.EX_ERROR_NEG_MULT not in errors:
+                    errors.append(msg.EX_ERROR_NEG_MULT)
+
+        return errors
+
+    def _finalize(self):
+        """ Storing the trait and closing the window """
+
+        # first check for errors and break if necessary
+        errors = self._check()
+        if errors:
+            # display and return
+            errors = "\n".join(errors)
+            tkmb.showerror(
+                msg.EX_ITEM_NOT_SAVED,
+                errors,
+                parent=self
+            )
+            return
+
+        # clear the trait ...
+        sub_elements = list(self.trait)
+        for element in sub_elements:
+            self.trait.remove(element)
+
+        # now write the data ...
+        # ... basics ...
+        self.trait.set("name", self.name.get())
+        self.trait.set("xp", self.xp.get())
+        self.trait.set("group", self._traitGroupsDict()[self.group.get()])
+
+        # ... description ...
+        description = et.SubElement(
+            self.trait,
+            "description"
+        )
+        description.text = self.description
+
+        # ... specification ...
+        if len(self.spec.get()) > 0:
+            et.SubElement(
+                self.trait,
+                "specification",
+                {"name": self.spec.get()}
+            )
+
+        # now the variables
+        for i, var in enumerate(self.vars, 1):
+            if type(var) == VarFrame:
+                var_tag = et.SubElement(
+                    self.trait,
+                    "variable",
+                    {"name": var.name.get(),
+                     "factor": var.mode,
+                     "id": str(i)}
+                )
+                values = []
+                xp = []
+                for option in var.options:
+                    values.append(option[0].get())
+                    xp.append(option[1].get())
+                value_attr = ",".join(values)
+                xp = ",".join(xp)
+                var_tag.set("values", value_attr)
+                var_tag.set("xp", xp)
+
+                if ":" in var.description:
+                    lines = var.description.split("\n")
+                    main_desc = []
+                    for line in lines:
+                        parts = line.split(":")
+                        name = parts[0].strip()
+
+                        if name in values:
+                            description = et.SubElement(
+                                var_tag,
+                                "description",
+                                {"value": name}
+                            )
+                            desc = parts[1].strip()
+                            description.text = desc
+                        else:
+                            main_desc.append(line)
+                    main_desc = "\n".join(main_desc)
+                    description = et.SubElement(
+                        var_tag,
+                        "description"
+                    )
+                    description.text = main_desc
+                elif len(var.description) > 1:
+                    description = et.SubElement(
+                        var_tag,
+                        "description"
+                    )
+                    description.text = var.description
+
+            if type(var) == RankFrame:
+                var_tag = et.SubElement(
+                    self.trait,
+                    "rank",
+                    {"name": var.name.get(),
+                     "factor": var.mode,
+                     "min": var.min.get(),
+                     "max": var.max.get(),
+                     "xp": var.xp.get(),
+                     "id": str(i)}
+                )
+
+        # append if necessary
+        traits = self.app.module.expansion.find("traits")
+        if self.trait not in traits:
+            traits.append(self.trait)
+
+        # update view and close
+        self.app.module.updateTraits()
+        self.close()
+
+    def _readTrait(self):
+        """ parsing an existing trait """
+
+        # first check if the trait is not new
+        if self.trait.get("name") is None:
+            return
+
+        # write data to the variables
+        self.name.set(self.trait.get("name"))
+        self.xp.set(self.trait.get("xp"))
+        grp = self._traitGroupsDict(reverse=True)[self.trait.get("group")]
+        self.group.set(grp)
+
+
+        # write the stuff stored in sub tags ...
+        sub_tags = list(self.trait)
+        for element in sub_tags:
+            # reading the specification ...
+            if element.tag == "specification":
+                self.spec.set(element.get("name"))
+
+            # handling variables ...
+            if element.tag == "variable":
+                self._addVariable(load=True)
+                var = self.vars[-1]
+                var.name.set(element.get("name"))
+                values = element.get("values").split(",")
+                xp = element.get("xp").split(",")
+                var.options = []
+                for value, xp_val in zip(values, xp):
+                    print(value, xp_val)
+                    val = tk.StringVar()
+                    val.set(value)
+                    xp_var = tk.StringVar()
+                    xp_var.set(xp_val)
+                    var.options.append([val, xp_var])
+                var.showOptions()
+
+                if element.get("factor") == "multiply":
+                    var.toggleMode()
+
+                desc = []
+                descriptions = element.findall("description")
+                for description in descriptions:
+                    text = ""
+                    if description.get("value"):
+                        text = description.get("value") + ": "
+                    text += description.text
+                    desc.append(text)
+                var.description = "\n".join(desc)
+
+                var.toggleView()
+
+            # handling ranks ...
+            if element.tag == "rank":
+                self._addRank(load=True)
+                var = self.vars[-1]
+                var.name.set(element.get("name"))
+                var.min.set(element.get("min"))
+                var.max.set(element.get("max"))
+                var.xp.set(element.get("xp"))
+                if element.get("factor") == "multiply":
+                    var.toggleMode()
+
+                var.toggleView()
+
+            if element.tag == "description":
+                self.description += element.text
+
+        # show it ...
+        self.desc_text.insert("0.0", self.description)
+        self._redrawVars()
+
+    @staticmethod
+    def _traitGroupsDict(reverse=False):
+        """ providing a dict of trait groups 
+        
+        Args: 
+            reverse (bool): switches key and values
+        
+        Returns: 
+            dict: trait groups 
+        
+        """
+
+        tg = config.TraitGroups()
+        groups = {
+            msg.TS_BODY: tg.BODY,
+            msg.TS_MIND: tg.MIND,
+            msg.TS_SOCIAL: tg.SOCIAL,
+            msg.TS_PERCEPTION: tg.PERCEPTION,
+            msg.TS_FINANCIAL: tg.FINANCIAL,
+            msg.TS_FIGHTING: tg.FIGHTING,
+            msg.TS_ILLNESS: tg.ILLNESS,
+            msg.TS_TEMPORAL: tg.TEMPORAL,
+            msg.TS_SKILL: tg.SKILL,
+            msg.TS_BEHAVIOR: tg.BEHAVIOR,
+            msg.TS_XS: tg.XS,
+            msg.TS_PSI: tg.PSI
+        }
+
+        if reverse:
+            groups = {v: k for k, v in groups.items()}
+
+        return groups
+
+    @staticmethod
+    def _traitGroupsList():
+        """ providing a (sorted) list of trait group names 
+        
+        Returns: 
+            list: names of trait groups
+        """
+
+        groups = [
+            msg.TS_BODY,
+            msg.TS_MIND,
+            msg.TS_SOCIAL,
+            msg.TS_PERCEPTION,
+            msg.TS_FINANCIAL,
+            msg.TS_FIGHTING,
+            msg.TS_ILLNESS,
+            msg.TS_TEMPORAL,
+            msg.TS_SKILL,
+            msg.TS_BEHAVIOR,
+            msg.TS_XS,
+            msg.TS_PSI,
+        ]
+        return groups
 
     def close(self):
+        """ closes the window """
+
         self.app.open_windows["skill"] = 0
         self.destroy()
+
+
+class VarFrame(tk.Frame):
+    """ A complex widget storing and displaying data for a trait variable """
+
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master=master, **kwargs)
+        self.master = master
+        self.name = tk.StringVar()
+        self.options = [
+            [tk.StringVar(), tk.StringVar()],
+            [tk.StringVar(), tk.StringVar()],
+        ]
+        self.description = ""
+
+        self.mode = "add"
+        self.remove_icon = ImageTk.PhotoImage(file="img/del_s.png")
+        self.add_icon = ImageTk.PhotoImage(file="img/plus_s.png")
+        self.plus_icon = ImageTk.PhotoImage(file="img/plus1_s.png")
+        self.mult_icon = ImageTk.PhotoImage(file="img/multi1_s.png")
+        self.up_icon = ImageTk.PhotoImage(file="img/up_s.png")
+        self.down_icon = ImageTk.PhotoImage(file="img/down_s.png")
+        self.min_icon = ImageTk.PhotoImage(file="img/minimize_s.png")
+
+        self.full = tk.LabelFrame(self, text=msg.EX_VARIABLE)
+        frame = tk.Frame(self.full)
+        self.mode_button = tk.Button(
+            frame,
+            image=self.plus_icon,
+            command=self.toggleMode
+        )
+        ToolTip(self.mode_button, msg.EX_TT_SWITCH_MODE, "info")
+        self.mode_button.pack(side=tk.LEFT)
+        name_entry = tk.Entry(frame, textvariable=self.name)
+        name_entry.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+
+        def checkName(var, tt):
+            """ inline check for the given name """
+
+            name = var.get()
+            invalid = re.findall("[\"\'§<>&]", name)
+
+            if len(name) < 1:
+                tt.update(msg.EX_TT_TRAIT_NAME, "error")
+            elif len(invalid) > 0:
+                tt.update(msg.EX_TT_NAME_INVALID, "error")
+                tt.widget.config(style="invalid.TEntry")
+            else:
+                tt.update(msg.EX_TT_NAME_OKAY, "okay")
+                tt.widget.config(style="TEntry")
+
+        tt = ToolTip(name_entry, msg.EX_TT_VAR_NAME, "info")
+        self.name.trace(
+            "w",
+            lambda n, e, m, v=self.name, tt=tt:
+                checkName(v, tt)
+        )
+
+        toplevel = self.winfo_toplevel()
+        d_label = tk.Label(frame, image=self.down_icon)
+        d_label.bind(
+            "<Button-1>",
+            lambda event, var=self: toplevel.varDown(var)
+        )
+        ToolTip(d_label, msg.EX_TT_MOVE_DOWN)
+        d_label.pack(side=tk.LEFT)
+        u_label = tk.Label(frame, image=self.up_icon)
+        u_label.bind(
+            "<Button-1>",
+            lambda event, var=self: toplevel.varUp(var)
+        )
+        ToolTip(u_label, msg.EX_TT_MOVE_DOWN)
+        u_label.pack(side=tk.LEFT)
+        m_label = tk.Label(frame, image=self.min_icon)
+        m_label.pack(side=tk.LEFT)
+        m_label.bind(
+            "<Button-1>",
+            lambda event: self.toggleView()
+        )
+        ToolTip(m_label, msg.EX_TT_MINIMIZE)
+
+        x_label = tk.Label(frame, image=self.remove_icon)
+        x_label.bind(
+            "<Button-1>",
+            lambda event, var=self: toplevel.varRemove(var)
+        )
+        ToolTip(x_label, msg.EX_TT_DEL_VAR, "info")
+        x_label.pack(side=tk.LEFT)
+        frame.pack(fill=tk.X, expand=1)
+
+        self.option_frame = tk.Frame(self.full)
+        self.option_frame.pack(fill=tk.X, expand=1)
+        self.option_frame.columnconfigure(0, weight=100)
+        self.showOptions()
+
+        desc_frame = tk.LabelFrame(self.full, text=msg.EX_DESCRIPTION)
+        self.desc_text = tk.Text(desc_frame,width=10, height=5)
+        self.desc_text.pack(fill=tk.BOTH, expand=1)
+        self.desc_text.bind("<KeyRelease>", self._updateDescription)
+        desc_frame.pack(fill=tk.X)
+        self.full.pack(fill=tk.X, expand=1)
+
+        self.button = tk.Button(
+            self,
+            textvariable=self.name,
+            command=self.toggleView
+        )
+        ToolTip(self.button, msg.EX_TT_RESTORE)
+
+    def _updateDescription(self, event):
+        """ updates the stored description, when the field changes. """
+
+        self.description = event.widget.get("0.0", tk.END)
+
+    def toggleView(self):
+        """ Minimizing to button or restoring full view """
+
+        if self.button.winfo_viewable():
+            self.button.pack_forget()
+            self.desc_text.delete("0.0", tk.END)
+            self.desc_text.insert("0.0", self.description)
+            self.full.pack(fill=tk.X)
+        else:
+            self.full.pack_forget()
+            self.button.pack(fill=tk.X)
+
+    def showOptions(self):
+        """ Displaying the current options """
+
+        def checkName(var, tt):
+            """ inline check for the given name, run as a trace on the variable 
+            
+            Note: 
+                Modifies widget style and tooltip 
+            
+            """
+
+            name = var.get()
+            invalid = re.findall("[\"\'§<>&]", name)
+
+            if len(name) < 1:
+                tt.update(msg.EX_TT_TRAIT_NAME, "error")
+            elif len(invalid) > 0:
+                tt.update(msg.EX_TT_NAME_INVALID, "error")
+                tt.widget.config(style="invalid.TEntry")
+            else:
+                tt.update(msg.EX_TT_NAME_OKAY, "okay")
+                tt.widget.config(style="TEntry")
+
+        def checkXP(var, tt):
+            """ inline check on the XP value. Run as a trace on the variable 
+                        
+            Note: 
+                Modifies widget style and tooltip 
+
+            """
+
+            p_xp = self.winfo_toplevel().xp.get()
+            try:
+                p_xp = float(p_xp)
+            except ValueError:
+                p_xp = 0
+
+            xp = var.get()
+            if "," in xp:
+                xp = xp.replace(",", ".")
+                var.set(xp)
+            try:
+                xp = float(xp)
+                if xp == 0:
+                    raise ValueError
+
+                if self.mode == "add":
+                    if p_xp < 0 < xp:
+                        tt.update(msg.EX_TT_POS_DIS, "error")
+                        tt.widget.config(style="invalid.TEntry")
+                    if p_xp > 0 > xp:
+                        tt.update(msg.EX_TT_NEG_ADV, "error")
+                        tt.widget.config(style="invalid.TEntry")
+                    else:
+                        tt.update(msg.EX_TT_XP_OKAY, "okay")
+                        tt.widget.config(style="TEntry")
+                else:
+                    if xp < 0:
+                        tt.update(msg.EX_TT_NEG_MULT, "error")
+                        tt.widget.config(style="invalid.TEntry")
+                    else:
+                        tt.update(msg.EX_TT_XP_OKAY, "okay")
+                        tt.widget.config(style="TEntry")
+
+            except ValueError:
+                tt.widget.config(style="invalid.TEntry")
+                tt.update(msg.EX_TT_INVALID_XP, "error")
+
+        # clear the frame
+        widgets = self.option_frame.winfo_children()
+        for widget in widgets:
+            widget.destroy()
+
+        # draw the header
+        tk.Label(self.option_frame, text=msg.EX_NAME).grid(row=0, column=0)
+        tk.Label(self.option_frame, text=msg.XP).grid(row=0, column=1)
+        add_button = tk.Label(self.option_frame, image=self.add_icon)
+        add_button.grid(row=0, column=2)
+        add_button.bind("<Button-1>", lambda event: self._addOption())
+        ToolTip(add_button, msg.EX_TT_ADD_OPTION, "info")
+
+        # go through the options and render them
+        for i, option in enumerate(self.options):
+            name_entry = tk.Entry(
+                self.option_frame,
+                textvariable=self.options[i][0]
+            )
+            tt = ToolTip(name_entry, msg.EX_TT_OPTION_NAME, "info")
+            self.options[i][0].trace(
+                "w",
+                lambda n, e, m, v=self.options[i][0], tt=tt:
+                    checkName(v, tt)
+            )
+            name_entry.grid(row=i + 1, column=0, sticky=tk.NSEW)
+            xp_entry = tk.Entry(
+                self.option_frame,
+                textvariable=self.options[i][1],
+                width=4
+            )
+            tt = ToolTip(xp_entry, msg.EX_TT_OPTION_XP, "info")
+            self.options[i][1].trace(
+                "w",
+                lambda n, e, m, v=self.options[i][1], tt=tt:
+                    checkXP(v, tt)
+            )
+
+            xp_entry.grid(row=i + 1, column=1, sticky=tk.NSEW)
+            del_button = tk.Label(
+                self.option_frame,
+                image=self.remove_icon,
+            )
+            del_button.grid(row=i + 1, column=2)
+            del_button.bind(
+                "<Button-1>",
+                lambda event, entry=i: self._delOption(entry)
+            )
+            ToolTip(del_button, msg.EX_TT_DEL_OPTION, "info")
+
+    def _delOption(self, entry):
+        """ Removes an option and redraws the widgets """
+
+        self.options.pop(entry)
+        self.showOptions()
+
+    def _addOption(self):
+        """ Adds a new option and redraws the widgets """
+
+        self.options.append([tk.StringVar(), tk.StringVar()])
+        self.showOptions()
+
+    def toggleMode(self):
+        """ toggles between add and multiply mode """
+
+        if self.mode == "add":
+            self.mode = "multiply"
+            self.mode_button.config(image=self.mult_icon)
+        else:
+            self.mode = "add"
+            self.mode_button.config(image=self.plus_icon)
+
+
+class RankFrame(tk.Frame):
+    """ A complex widget storing and displaying data for a rank variable. """
+
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master=master, **kwargs)
+        self.master = master
+        self.name = tk.StringVar()
+        self.min = tk.StringVar()
+        self.max = tk.StringVar()
+        self.xp = tk.StringVar()
+        self.mode = "add"
+
+        self.plus_icon = ImageTk.PhotoImage(file="img/plus1_s.png")
+        self.mult_icon = ImageTk.PhotoImage(file="img/multi1_s.png")
+        self.remove_icon = ImageTk.PhotoImage(file="img/del_s.png")
+        self.up_icon = ImageTk.PhotoImage(file="img/up_s.png")
+        self.down_icon = ImageTk.PhotoImage(file="img/down_s.png")
+        self.min_icon = ImageTk.PhotoImage(file="img/minimize_s.png")
+
+        def checkName(var, tt):
+            """ inline check for name - run as a trace 
+            
+            Note: 
+                sets widget style and tooltip 
+            """
+
+            name = var.get()
+            invalid = re.findall("[\"\'§<>&]", name)
+
+            if len(name) < 1:
+                tt.update(msg.EX_TT_TRAIT_NAME, "error")
+            elif len(invalid) > 0:
+                tt.update(msg.EX_TT_NAME_INVALID, "error")
+                tt.widget.config(style="invalid.TEntry")
+            else:
+                tt.update(msg.EX_TT_NAME_OKAY, "okay")
+                tt.widget.config(style="TEntry")
+
+        def checkXP(tt):
+            """ inline check for xp values - run as a trace 
+                        
+            Note: 
+                sets widget style and tooltip 
+            """
+
+            min_rank = self.min.get()
+            max_rank = self.max.get()
+            xp = self.xp.get()
+            error = []
+            p_xp = self.winfo_toplevel().xp.get()
+            try:
+                p_xp = int(p_xp)
+            except ValueError:
+                p_xp = 0
+
+            try:
+                xp = int(xp)
+                min_rank = int(min_rank)
+                max_rank = int(max_rank)
+
+                if min_rank < 1:
+                    error.append(msg.EX_TT_MIN_RANK)
+                if max_rank < min_rank:
+                    error.append(msg.EX_TT_MAX_RANK)
+
+                if self.mode == "add":
+                    if p_xp < 0 < xp:
+                        error.append(msg.EX_TT_POS_DIS)
+
+                    if p_xp > 0 > xp:
+                        error.append(msg.EX_TT_NEG_ADV)
+                    else:
+                        pass
+                else:
+                    if xp < 0:
+                        error.append(msg.EX_TT_NEG_MULT)
+                    else:
+                        pass
+
+                if xp == 0:
+                    raise ValueError
+            except ValueError:
+                error.append(msg.EX_TT_INVALID_RANKS)
+
+            entries = []
+            widgets = tt.widget.winfo_children()
+            for widget in widgets:
+                entries.append(widget.winfo_children()[0])
+
+            if error:
+                for entry in entries:
+                    entry.config(style="invalid.TEntry")
+                tt.update("\n".join(error), "error")
+            else:
+                for entry in entries:
+                    entry.config(style="TEntry")
+                tt.update(msg.EX_TT_RANKS_OKAY, "okay")
+
+        self.full = tk.LabelFrame(self, text=msg.EX_RANK)
+        frame = tk.Frame(self.full)
+        self.mode_button = tk.Button(
+            frame,
+            image=self.plus_icon,
+            command=self.toggleMode
+        )
+        self.mode_button.pack(side=tk.LEFT)
+        ToolTip(self.mode_button, msg.EX_TT_SWITCH_MODE, "info")
+
+        name_entry = tk.Entry(frame, textvariable=self.name)
+        tt = ToolTip(name_entry, msg.EX_TT_VAR_NAME, "info")
+        self.name.trace(
+            "w",
+            lambda n, e, m, var=self.name, tt=tt: checkName(var, tt)
+        )
+        name_entry.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+        toplevel = self.winfo_toplevel()
+        d_label = tk.Label(frame, image=self.down_icon)
+        d_label.bind(
+            "<Button-1>",
+            lambda event, var=self: toplevel.varDown(var)
+        )
+        ToolTip(d_label, msg.EX_TT_MOVE_DOWN)
+        d_label.pack(side=tk.LEFT)
+        u_label = tk.Label(frame, image=self.up_icon)
+        u_label.bind(
+            "<Button-1>",
+            lambda event, var=self: toplevel.varUp(var)
+        )
+        ToolTip(u_label, msg.EX_TT_MOVE_UP)
+        u_label.pack(side=tk.LEFT)
+        m_label = tk.Label(frame, image=self.min_icon)
+        m_label.pack(side=tk.LEFT)
+        m_label.bind(
+            "<Button-1>",
+            lambda event: self.toggleView()
+        )
+        ToolTip(m_label, msg.EX_TT_MINIMIZE)
+        x_label = tk.Label(frame, image=self.remove_icon)
+        x_label.bind(
+            "<Button-1>",
+            lambda event, var=self: toplevel.varRemove(var)
+        )
+        ToolTip(x_label, msg.EX_TT_DEL_RANK)
+        x_label.pack(side=tk.LEFT)
+        frame.pack(fill=tk.X, expand=1)
+        frame.pack(fill=tk.X, expand=1)
+
+        frame = tk.Frame(self.full)
+        tt = ToolTip(frame, msg.EX_TT_RANKS, "info")
+        self.min.trace(
+            "w",
+            lambda n, e, m, tt=tt: checkXP(tt)
+        )
+        self.max.trace(
+            "w",
+            lambda n, e, m, tt=tt: checkXP(tt)
+        )
+        self.xp.trace(
+            "w",
+            lambda n, e, m, tt=tt: checkXP(tt)
+        )
+
+        min_frame = tk.LabelFrame(frame, text=msg.EX_MIN_RANK)
+        min_entry = tk.Entry(
+            min_frame,
+            textvariable=self.min,
+            width=4
+        )
+        min_entry.pack(fill=tk.X, expand=1)
+        min_frame.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        
+        max_frame = tk.LabelFrame(frame, text=msg.EX_MAX_RANK)
+        max_entry = tk.Entry(
+            max_frame,
+            textvariable=self.max,
+            width=4
+        )
+        max_entry.pack(fill=tk.X, expand=1)
+        max_frame.pack(side=tk.LEFT, fill=tk.X, expand=1)
+
+        xp_frame = tk.LabelFrame(frame, text=msg.XP)
+        xp_entry = tk.Entry(
+            xp_frame,
+            textvariable=self.xp,
+            width=4
+        )
+        xp_entry.pack(fill=tk.X, expand=1)
+        xp_frame.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        frame.pack(fill=tk.X, expand=1)
+        self.full.pack(fill=tk.X, expand=1)
+
+        self.button = tk.Button(
+            self,
+            textvariable=self.name,
+            command=self.toggleView
+        )
+        ToolTip(self.button, msg.EX_TT_RESTORE)
+
+    def toggleView(self):
+        """ Minimizing to button or restoring full view """
+
+        if self.button.winfo_viewable():
+            self.button.pack_forget()
+            self.full.pack(fill=tk.X)
+        else:
+            self.full.pack_forget()
+            self.button.pack(fill=tk.X)
+
+    def toggleMode(self):
+        """ toggles between add and multiply mode """
+
+        if self.mode == "add":
+            self.mode = "multiply"
+            self.mode_button.config(image=self.mult_icon)
+        else:
+            self.mode = "add"
+            self.mode_button.config(image=self.plus_icon)
+

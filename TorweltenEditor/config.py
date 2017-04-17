@@ -873,6 +873,7 @@ class Messages:
     EX_CALIBER = "Kaliber: "
     EX_CHAMBERS = "Kammern: "
     EX_USE_CONTAINER = "als Behälter verwenden."
+    EX_DISPLAY_NAME = "Anzeigename"
     EX_CONTAINER_SIZE = "Kapazität"
     EX_CONTAINER_LIMIT = "Traglast"
     EX_MIN_QUALITY = "Schlechteste Qualität: "
@@ -880,6 +881,17 @@ class Messages:
     EX_OPTIONS = "Weitere Optionen"
     EX_PACK_UNITS = "Verpackungseinheiten:"
     EX_DESCRIPTION = "Beschreibung"
+
+    EX_NAME = "Bezeichnung"
+    EX_MODE_PLUS = "addieren"
+    EX_MODE_MULTIPLY = "multiplizieren"
+    EX_SPECIFICATION = "Spezifizierung: "
+    EX_ADD_VARIABLES = "Neuen Rang oder Variable hinzufügen."
+    EX_VARIABLE = "Variable"
+    EX_TRAIT_GROUP = "Eigenschaftsgruppe"
+    EX_RANK = "Rang"
+    EX_MIN_RANK = "Min"
+    EX_MAX_RANK = "Max"
 
     EX_IT_GRP = "Gruppe:"
     EX_IT_TYPE = "Typ: "
@@ -928,12 +940,9 @@ class Messages:
     EX_IT_PROSTHESIS = "Prothese"
     EX_IT_IMPLANT_PART = "Einbauteil"
 
-    EX_TT_NEW = "Neue Expansion erstellen ..."
-    EX_TT_LOAD = "Expansion laden ..."
-    EX_TT_SAVE = "Expansion speichern ..."
-
     EX_ERROR_NAME_EMPTY = "Der Name darf nicht leer sein."
     EX_ERROR_NAME_EXISTS = "Ein Gegenstand mit diesem Namen existiert bereits."
+    EX_ERROR_TRAIT_EXISTS = "Eine Eigenschaft mit diesem Namen gibt es bereits."
     EX_ERROR_NAME_INVALID = "Der Name enthält ungültige Zeichen."
     EX_ERROR_WEIGHT = "Das Gewicht muss ein positive ganzzahliger Wert sein."
     EX_ERROR_PRICE = "Der Preis muss eine positive Zahl sein."
@@ -943,9 +952,118 @@ class Messages:
                         " positiver ganzzahliger Wert sein."
     EX_ERROR_CONTAINER = "Die angegebene Behältergröße und/oder Lastgrenze"\
                          "ist ungültig."
-    EX_ERROR_INVALID_OPTION = "Mindestens eine Option enthält ungültige Werte."
+    EX_ERROR_INVALID_OPTION = "Mindestens ein Optionsname ist ungültig."
+    EX_ERROR_OPTION_LENGTH = "Variablen benötigen mindestens zwei Optionen."
+    EX_ERROR_INVALID_VAR_NAME = "Bezeichnungen der Variablen prüfen!"
+    EX_ERROR_INVALID_RANK_NAME = "Bezeichnungen der Ränge prüfen!"
+    EX_ERROR_RANK_MIN = "Der niedrigste mögliche Rang ist 'eins'."
+    EX_ERROR_RANK_MAX = "Der Maximalrang muss größer als der Minimalrang sein."
     EX_ERROR_INVALID_DESC = "Ungültige Zeichen in der Beschreibung."
+    EX_ERROR_INVALID_SPEC = "Ungültige Zeichen im Namen der Spezifierung"
+    EX_ERROR_NO_PARENT = "Kein "
+    EX_ERROR_XP_VALUE = "XP-Werte müssen Zahlen != 0 sein."
+    EX_ERROR_NEG_MULT = "Bei Multiplikator-Faktoren sind nur "\
+                        "positive XP-Werte zulässig!"
+    EX_ERROR_NEG_ADV = "Bei Vorteilen müssen kumulative Faktoren positiv sein."
+    EX_ERROR_POS_DIS = "Bei Nachteilen müssen kumulative Faktoren negativ sein."
+
     EX_ITEM_NOT_SAVED = "Speichern fehlgeschlagen!"
+
+    EX_TT_NEW = "Neue Expansion erstellen ..."
+    EX_TT_LOAD = "Expansion laden ..."
+    EX_TT_SAVE = "Expansion speichern ..."
+
+    EX_TT_NAME = "Jeder Gegenstand braucht einen Namen"
+    EX_TT_NAME_EXISTS = "Dieser Name wurde bereits verwendet!"
+    EX_TT_NAME_INVALID = "Dieser Name enthält ungültige Zeichen!"
+    EX_TT_NAME_OKAY = "Name in Ordnung."
+    EX_TT_TYPE = "Typ des Ausrüstungsgegenstands festlegen\n"\
+                 "Oben Gruppe wählen, unten den Typ aus dieser."
+    EX_TT_PRICE = "Preis festlegen!"
+    EX_TT_PRICE_OKAY = "Preis in Ordnung."
+    EX_TT_PRICE_INVALID = "Ungültiger Preis!"
+    EX_TT_WEIGHT = "Gewicht in Gramm."
+    EX_TT_WEIGHT_OKAY = "Gewicht in Ordnung."
+    EX_TT_WEIGHT_INVALID = "Ungültiges Gewicht!"
+    EX_TT_AVAIL = "Verfügbarkeit zwischen:\n"\
+                  "-6: allgegenwärtig\n"\
+                  "+6: extrem selten."
+    EX_TT_AVAIL_OKAY = "Verfügbarkeit in Ordnung"
+    EX_TT_DAMAGE = "Schadenswert S/D(/E)\n"\
+                   "S: Schadenswürfel (-X - +X)\n"\
+                   "D: Durchschlag (-7 bis +7)\n"\
+                   "E: 'E' für Energieschaden (optional)"
+    EX_TT_DAMAGE_OKAY = "Gültiger Schadenswert"
+    EX_TT_CONT_SIZE = "maximale Anzahl an Gegenständen\n"\
+                      "die Platz in dem Behälter finden.\n"\
+                      "0: unbegrenzt"
+    EX_TT_CONT_LIMIT = "Lastkapazität in Gramm.\n0: unbegrenzt"
+    EX_TT_CONT_ERROR = "Muss eine Zahl >= 0 sein."
+    EX_TT_CONT_NO_NAME = "Abweichender Anzeigename für den Inventar-\n"\
+                         "slot. Wird nichts angegeben, verwendet\n"\
+                         "das System den Namen des Gegenstands."
+    EX_TT_CONT_NAME_OKAY = "Anzeigename in Ordnung"
+    EX_TT_CONT_NAME_INVALID = "Der Name enthält ungültige Zeichen."
+    EX_TT_OPTION = "Kommagetrennte Liste an Optionen - oder leer lassen"
+    EX_TT_OPT_EMPTY = "Wenn Option aktiv, freies Auswahlfeld"
+    EX_TT_OPT_SINGLE = "Fixe Option (wirklich notwendig?)"
+    EX_TT_OPT_OKAY = "Liste mit {n} Optionen"
+    EX_TT_OPT_INVALID = "Liste enthält ungültige Zeichen!"
+    EX_TT_PACKS = "Falls der Gegenstand in Verpackungseinheiten\n"\
+                  "verkauft wird, werden diese hier definiert.\n"\
+                  "pro Zeile eine Verpackungseinheit im Format:\n"\
+                  "Anzahl:Bezeichnung"
+    EX_TT_PACKS_SINGLE = "Es wurde eine Verpackungseinheit definiert."
+    EX_TT_PACKS_MULTI = "Es wurden {n} Verpackungseinheiten definiert."
+    EX_TT_PACKS_NONE = "Keine Verpackungseinheiten festgelegt."
+    EX_TT_QUALITY = "Die Bandbreite der möglichen Qualitätsstufen festlegen."
+
+    EX_TT_TRAIT_NAME = "Jede Eigenschaft braucht einen Namen"
+    EX_TT_TRAIT_XP = "XP für diese Eigenschaft festlegen.\n"\
+                     "Negativ für Nachteile, positiv für Vorteile.\n"\
+                     "Wenn Ränge oder Variablen verwenden werden\n"\
+                     "sollte der Wert +1 bzw. -1 betragen."
+    EX_TT_TRAIT_GROUP = "Die Eigenschaftsgruppe kann bei der Auswahl\n"\
+                        "als Filter verwendet werden."
+    EX_TT_TRAIT_SPEC = "Eine Eigenschaftsspezifizierung kann verwendet\n"\
+                       "werden, um eine genauere Spezifizierung der\n"\
+                       "gewählten Eigenschaft zu fordern."
+    EX_TT_TRAIT_SPEC_OKAY = "Gültige Spezifizierung."
+    EX_TT_TRAIT_SPEC_NONE = "Keine Spezifizierung festgelegt."
+    EX_TT_TRAIT_DESC = "Allgemeine Beschreibung der Eigenschaft."
+    EX_TT_ADD_VAR = "Fügt eine Optionsvariable zur Eigenschaft hinzu."
+    EX_TT_ADD_RANK = "Fügt eine Rangvariable zur Eigenschaft hinzu."
+    EX_TT_VAR_NAME = "Name der Variable"
+    EX_TT_OPTION_NAME = "Name der Option"
+    EX_TT_OPTION_XP = "XP-Wert für diese Option"
+    EX_TT_POS_DIS = "Achtung:\n"\
+                    "Bei Nachteilen müssen kumulative Faktoren\n"\
+                    "negative XP-Werte haben."
+    EX_TT_NEG_ADV = "Achtung:\n"\
+                    "Bei Vorteilen müssen kumulative Faktoren\n"\
+                    "positive XP-Werte haben."
+    EX_TT_NEG_MULT = "Achtung:\n"\
+                     "Die XP-Werte für Multiplikatoren müssen\n"\
+                     "immer positiv sein!"
+    EX_TT_XP_OKAY = "XP in Ordnung."
+    EX_TT_INVALID_XP = "XP-Wert muss eine Zahl != 0 sein."
+    EX_TT_ADD_OPTION = "Option hinzufügen."
+    EX_TT_DEL_OPTION = "Option entfernen."
+    EX_TT_DEL_VAR = "Variable löschen!"
+    EX_TT_DEL_RANK = "Rang löschen!"
+    EX_TT_MINIMIZE = "Zusammenfalten."
+    EX_TT_RESTORE = "Zum Auffalten anklicken."
+    EX_TT_MOVE_UP = "nach oben schieben ..."
+    EX_TT_MOVE_DOWN = "nach unten schieben ..."
+    EX_TT_SWITCH_MODE = "Zum Wechsel zwischen kumulativen und\n"\
+                        "multiplikativen Modus der Variable."
+    EX_TT_MIN_RANK = "Die niedrigste Rank muss mindestens '1' betragen."
+    EX_TT_MAX_RANK = "Der höchste Rang muss größer als der niedrigste sein."
+    EX_TT_RANKS_OKAY = "Werte in Ordnung."
+    EX_TT_INVALID_RANKS = "Werte müssen Zahlen != 0 sein!"
+    EX_TT_RANKS = "Min: Niedrigster möglicher Rang.\n"\
+                  "Max: Höchster möglicher Rang.\n"\
+                  "XP: XP-Faktor pro Rang."
 
     # IMAGE SCREEN
     IS_ERROR = "Dateifehler!"
