@@ -1,4 +1,5 @@
 import tk_ as tk
+import tkinter.messagebox as tkmb
 from PIL import ImageTk
 import config
 from tooltip import ToolTip
@@ -163,13 +164,25 @@ class NotesScreen(tk.Frame):
         return frame, height
 
     def _delNote(self, event, id):
-        if id == self.unlocked:
+        note = self.char.findNoteById(id)
+        name = note.get("name")
+        text = msg.NS_DEL_TEXT
+        if name:
+            text = text.format(name="'" + name + "' ")
+        else:
+            text = text.format(name="")
+
+        delete = tkmb.askyesno(
+            msg.NS_DEL_TITLE,
+            text,
+            parent=self,
+            icon=tkmb.WARNING
+        )
+
+        if delete:
             self.char.delNote(id)
             self.showNotes(self.notes_canvas)
             self.unlocked = -1
-        else:
-            self.unlocked = id
-            event.widget.config(style="destroy.TButton")
 
     def _update(self, event=None, id=""):
         text = ""

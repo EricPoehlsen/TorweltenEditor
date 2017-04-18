@@ -1079,7 +1079,9 @@ class Messages:
     IS_LOAD_MIME = "Bilddateien ..."
 
     # NOTESCREEN
-    NS_TT_DELETE = "zum Löschen 2x klicken ..."
+    NS_DEL_TITLE = "Notiz löschen"
+    NS_DEL_TEXT = "Soll die Notiz {name}wirklich gelöscht werden?"
+    NS_TT_DELETE = "Löschen ..."
     NS_TT_NEW = "Neue Charakternotiz anlegen."
 
     # for the sheetlayoutscreen
