@@ -6,6 +6,7 @@ This module contains the Class for the character image selection
 import tk_ as tk
 import config
 import tkinter.filedialog as tkfd
+import tkinter.messagebox as tkmb
 import exportpdf
 import xml.etree.ElementTree as et
 from PIL import ImageTk,Image,PngImagePlugin,JpegImagePlugin
@@ -107,25 +108,11 @@ class ImageScreen(tk.Frame):
 
     # show an error when image file is not an image file ... 
     def imageError(self, filename):
-        window = tk.Toplevel()
-        window.title(msg.IS_ERROR)
-        img = ImageTk.PhotoImage(file="img/exclamation.png")
-        icon = tk.Label(window, image=img)
-        icon.image = img
-        icon.grid(row=0, column=0)
-        message = tk.Text(window, width=40, wrap=tk.WORD, height=5)
-        message.insert("0.0", msg.IS_ERROR_TEXT %(filename))
-        message.config(
-            font="Arial 10 bold",
-            state=tk.DISABLED,
-            background="#eeeeee"
+        tkmb.showerror(
+            msg.IS_ERROR,
+            msg.IS_ERROR_TEXT % filename,
+            parent=self
         )
-        message.grid(row=0, column=1)
-        button = tk.Button(
-            window,
-            text=msg.IS_ERROR_CLOSE,
-            command=window.destroy)
-        button.grid(row=1, column=0, columnspan=2)
 
     def _displayImage(self):
         if self.image is not None:
