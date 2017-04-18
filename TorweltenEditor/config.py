@@ -842,6 +842,10 @@ class Messages:
     SE_FREQUENCY_4 = "häufig"
     SE_FREQUENCY_5 = "dauernd"
 
+    SE_DEL_TITLE = "Kontakt löschen ..."
+    SE_DEL_TEXT = "Soll der Kontakt {name}wirklich gelöscht werden?"
+
+
     # EXPANSION SCREEN
     EX_TRAITS = "Eigenschaften"
     EX_SKILLS = "Fertigkeiten"
