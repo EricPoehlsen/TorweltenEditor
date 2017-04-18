@@ -1192,6 +1192,10 @@ class Messages:
     PDF_HALF = "2x4 - halbe Seite"
     PDF_ATTRIB_IMAGE = "im Attributsmodul"
 
+    PDF_ERROR_TITLE = "Fehler beim PDF Export"
+    PDF_ERROR_TEXT = "Schreiben der Datei ist fehlgeschlagen\n"\
+                     "vermutlich ist die Zieldatei geöffnet!"
+
     # SettingScreen
     SET_CORE_SETTINGS = "Programmoptionen"
     SET_INITIAL_XP = "Erfahrungspunkte für neue Charaktere"

@@ -1,8 +1,3 @@
-"""
-This module contains the Class for the character image selection
-"""
-
-
 import tk_ as tk
 import config
 import tkinter.filedialog as tkfd
@@ -19,6 +14,7 @@ class ImageScreen(tk.Frame):
     """ Create and Display a screen for selecting a character image and 
     fitting selections for different aspect ratios used in the PDF Export.
     """
+
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
         self.style = app.style

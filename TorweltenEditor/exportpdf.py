@@ -3,14 +3,13 @@ import os
 from threading import Thread
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
-from reportlab.lib.units import cm 
-from reportlab.pdfbase import pdfmetrics  
+from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont  
 from reportlab.lib.utils import ImageReader
 from reportlab import rl_settings,rl_config
 
 from PIL import Image,PngImagePlugin,JpegImagePlugin
-import tkinter as tk
+import tkinter.messagebox as tkmb
 
 page_data = config.Page()
 SINGLE = page_data.SINGLE
@@ -104,8 +103,14 @@ class ExportPdf:
     # write file
     @staticmethod
     def save(canvas):
-        canvas.save()
-        pass
+        try:
+            canvas.save()
+        except PermissionError:
+            tkmb.showerror(
+                msg.PDF_ERROR_TITLE,
+                msg.PDF_ERROR_TEXT
+            )
+
 
     # open pdf in os
     def display(self):
