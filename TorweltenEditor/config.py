@@ -187,6 +187,9 @@ class Messages:
 
     # ####ITEM EDITOR and INVENTORY EDITOR # ####
     IE_DESTROY = "Zerstören"
+    IE_DEL_TITLE = "Zerstoren ..."
+    IE_DEL_TEXT = "Soll der Gegenstand wirklich zerstört/verbraucht werden?"
+
     IE_KG = " kg"
     IE_G = " g"
     IE_WEIGHT = "Gewicht: "

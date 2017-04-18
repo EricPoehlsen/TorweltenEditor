@@ -1,4 +1,5 @@
 import tk_ as tk
+import tkinter.messagebox as tkmb
 import config
 from PIL import ImageTk
 from tooltip import ToolTip
@@ -586,26 +587,14 @@ class ItemEditor(tk.Toplevel):
         # self.close(load=self.item)
 
     def destroyItem(self):
-        if self.destroy_check == 0: 
-            widgets = self.item_menu.winfo_children()
-            for widget in widgets:
-                widget.destroy()
-            self.destroy_check = 1
-            nope = tk.Button(
-                self.item_menu,
-                text=msg.IE_CANCEL,
-                command=self.addMenuIcons
-            )
-            nope.pack(side=tk.RIGHT)
-            confirm = tk.Button(
-                self.item_menu,
-                text=msg.IE_DESTROY,
-                style="destroy.TButton",
-                command=self.destroyItem
-            )
-            confirm.pack(side=tk.LEFT, fill=tk.X)
-        elif self.destroy_check == 1:
-            self.destroy_check = 0
+        destroy = tkmb.askyesno(
+            msg.IE_DEL_TITLE,
+            msg.IE_DEL_TEXT,
+            parent=self,
+            icon=tkmb.WARNING
+        )
+
+        if destroy:
             sub_item_ids = self.item.get("content", "")
             sub_item_ids = sub_item_ids.split()
             for sub_item_id in sub_item_ids:
