@@ -27,12 +27,13 @@ class ExpansionScreen(tk.Frame):
 
         self.expansion = self._newExpansion()
 
-        self.rowconfigure(0, weight=100)
-        self.frame = tk.Frame(self)
-        self.frame.grid(row=0, column=0, sticky=tk.NSEW)
+        self.rowconfigure(1, weight=100)
         self.toolbar = tk.Frame(self)
-        self.toolbar.grid(row=1, column=0, sticky=tk.NSEW)
+        self.toolbar.grid(row=0, column=0, sticky=tk.NSEW)
         self.showToolbar(self.toolbar)
+        self.frame = tk.Frame(self)
+        self.frame.grid(row=1, column=0, sticky=tk.NSEW)
+
         trait_frame = self.showTraits(self.frame)
         skill_frame = self.showSkills(self.frame)
         item_frame = self.showItems(self.frame)
@@ -40,10 +41,13 @@ class ExpansionScreen(tk.Frame):
         skill_frame.pack(side=tk.LEFT, anchor=tk.N)
         item_frame.pack(side=tk.LEFT, anchor=tk.N)
 
+        self._select()
+        
     def showTraits(self, frame):
         trait_frame = tk.LabelFrame(frame, text=msg.EX_TRAITS)
         list_frame = tk.Frame(trait_frame)
         self.widgets["traits"] = trait_list = tk.Listbox(list_frame)
+        trait_list.bind("<<ListboxSelect>>", self._select)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
         scroll.config(command=trait_list.yview)
         trait_list.config(yscrollcommand=scroll.set)
@@ -56,12 +60,18 @@ class ExpansionScreen(tk.Frame):
             command=self._addTrait
         )
         new_trait.pack(fill=tk.X)
-        edit_trait = tk.Button(
+        self.widgets["edit_trait"] = edit_trait = tk.Button(
             trait_frame,
             text=msg.EX_EDIT,
             command=self._editTrait
         )
         edit_trait.pack(fill=tk.X)
+        self.widgets["del_trait"] = del_trait = tk.Button(
+            trait_frame,
+            text=msg.EX_DEL,
+            command=self._delTrait
+        )
+        del_trait.pack(fill=tk.X)
 
         return trait_frame
 
@@ -76,6 +86,7 @@ class ExpansionScreen(tk.Frame):
         skill_frame = tk.LabelFrame(frame, text=msg.EX_SKILLS)
         list_frame = tk.Frame(skill_frame)
         self.widgets["skills"] = skill_list = tk.Listbox(list_frame)
+        skill_list.bind("<<ListboxSelect>>", self._select)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
         scroll.config(command=skill_list.yview)
         skill_list.config(yscrollcommand=scroll.set)
@@ -83,24 +94,24 @@ class ExpansionScreen(tk.Frame):
         scroll.pack(side=tk.LEFT, fill=tk.Y)
         list_frame.pack()
 
-        add = tk.Button(
+        add_skill = tk.Button(
             skill_frame,
             text=msg.EX_NEW,
             command=self._addSkill
         )
-        add.pack(fill=tk.X)
-        edit = tk.Button(
+        add_skill.pack(fill=tk.X)
+        self.widgets["edit_skill"] = edit_skill = tk.Button(
             skill_frame,
             text=msg.EX_EDIT,
             command=self._editSkill
         )
-        edit.pack(fill=tk.X)
-        remove = tk.Button(
+        edit_skill.pack(fill=tk.X)
+        self.widgets["del_skill"] = del_skill = tk.Button(
             skill_frame,
             text=msg.EX_DEL,
             command=self._delSkill
         )
-        remove.pack(fill=tk.X)
+        del_skill.pack(fill=tk.X)
 
         return skill_frame
 
@@ -115,6 +126,7 @@ class ExpansionScreen(tk.Frame):
         item_frame = tk.LabelFrame(frame, text=msg.EX_ITEMS)
         list_frame = tk.Frame(item_frame)
         self.widgets["items"] = item_list = tk.Listbox(list_frame)
+        item_list.bind("<<ListboxSelect>>", self._select)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
         scroll.config(command=item_list.yview)
         item_list.config(yscrollcommand=scroll.set)
@@ -127,12 +139,18 @@ class ExpansionScreen(tk.Frame):
             command=self._addItem
         )
         new_item.pack(fill=tk.X)
-        edit_item = tk.Button(
+        self.widgets["edit_item"] = edit_item = tk.Button(
             item_frame,
             text=msg.EX_EDIT,
             command=self._editItem
         )
         edit_item.pack(fill=tk.X)
+        self.widgets["del_item"] = del_item = tk.Button(
+            item_frame,
+            text=msg.EX_DEL,
+            command=self._delItem
+        )
+        del_item.pack(fill=tk.X)
 
         self.updateItems()
         return item_frame
@@ -143,6 +161,40 @@ class ExpansionScreen(tk.Frame):
         listbox.delete(0, tk.END)
         l = [i.get("name") for i in items]
         listbox.insert(0, *l)
+
+    def _select(self, event=None):
+        """ enable and disable buttons based on selection of listboxes """
+
+        if event:
+            listbox = event.widget
+            selection = listbox.curselection()
+        else:
+            listbox = 1
+            selection = []
+
+        if listbox == self.widgets.get("traits") or not event:
+            if len(selection) < 1:
+                self.widgets.get("edit_trait").state(["disabled"])
+                self.widgets.get("del_trait").state(["disabled"])
+            else:
+                self.widgets.get("edit_trait").state(["!disabled"])
+                self.widgets.get("del_trait").state(["!disabled"])
+
+        if listbox == self.widgets.get("skills") or not event:
+            if len(selection) < 1:
+                self.widgets.get("edit_skill").state(["disabled"])
+                self.widgets.get("del_skill").state(["disabled"])
+            else:
+                self.widgets.get("edit_skill").state(["!disabled"])
+                self.widgets.get("del_skill").state(["!disabled"])
+
+        if listbox == self.widgets.get("items") or not event:
+            if len(selection) < 1:
+                self.widgets.get("edit_item").state(["disabled"])
+                self.widgets.get("del_item").state(["disabled"])
+            else:
+                self.widgets.get("edit_item").state(["!disabled"])
+                self.widgets.get("del_item").state(["!disabled"])
 
     def showToolbar(self, frame):
 
@@ -167,6 +219,12 @@ class ExpansionScreen(tk.Frame):
         exp.pack(side=tk.LEFT)
 
         tk.Label(frame, text=" ").pack(side=tk.LEFT)
+
+        self.data["name"] = name = tk.StringVar()
+        name_frame = tk.LabelFrame(frame, text=msg.EX_NAME)
+        name_entry = tk.Entry(name_frame, textvariable=name)
+        name_entry.pack(fill=tk.BOTH, expand=1)
+        name_frame.pack(fill=tk.BOTH, side=tk.LEFT, expand=1)
 
     def _addItem(self, event=None):
         if self.app.open_windows["itemedit"] != 0:
@@ -193,6 +251,19 @@ class ExpansionScreen(tk.Frame):
             item
         )
 
+    def _delItem(self):
+        listbox = self.widgets["items"]
+        selected = listbox.curselection()
+        if len(selected) != 1:
+            return
+        name = listbox.get(selected[0])
+        items = self.expansion.find(".//items")
+        item = items.find(".//item[@name='"+name+"']")
+
+        if item is not None:
+            items.remove(item)
+            self.updateItems()
+
     def _addTrait(self, event=None):
         if self.app.open_windows["trait"] != 0:
             self.app.open_windows["trait"].close()
@@ -217,6 +288,19 @@ class ExpansionScreen(tk.Frame):
             self.app,
             trait
         )
+
+    def _delTrait(self):
+        listbox = self.widgets["traits"]
+        selected = listbox.curselection()
+        if len(selected) != 1:
+            return
+        name = listbox.get(selected[0])
+        traits = self.expansion.find(".//traits")
+        trait = traits.find(".//trait[@name='"+name+"']")
+
+        if trait is not None:
+            traits.remove(trait)
+            self.updateTraits()
 
     def _addSkill(self):
         if self.app.open_windows["skill"] != 0:
