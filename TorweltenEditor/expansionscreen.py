@@ -46,7 +46,11 @@ class ExpansionScreen(tk.Frame):
     def showTraits(self, frame):
         trait_frame = tk.LabelFrame(frame, text=msg.EX_TRAITS)
         list_frame = tk.Frame(trait_frame)
-        self.widgets["traits"] = trait_list = tk.Listbox(list_frame)
+        self.widgets["traits"] = trait_list = tk.Listbox(
+            list_frame,
+            width=39,
+            height=21
+        )
         trait_list.bind("<<ListboxSelect>>", self._select)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
         scroll.config(command=trait_list.yview)
@@ -85,7 +89,11 @@ class ExpansionScreen(tk.Frame):
     def showSkills(self, frame):
         skill_frame = tk.LabelFrame(frame, text=msg.EX_SKILLS)
         list_frame = tk.Frame(skill_frame)
-        self.widgets["skills"] = skill_list = tk.Listbox(list_frame)
+        self.widgets["skills"] = skill_list = tk.Listbox(
+            list_frame,
+            width=39,
+            height=21
+        )
         skill_list.bind("<<ListboxSelect>>", self._select)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
         scroll.config(command=skill_list.yview)
@@ -133,7 +141,11 @@ class ExpansionScreen(tk.Frame):
     def showItems(self, frame):
         item_frame = tk.LabelFrame(frame, text=msg.EX_ITEMS)
         list_frame = tk.Frame(item_frame)
-        self.widgets["items"] = item_list = tk.Listbox(list_frame)
+        self.widgets["items"] = item_list = tk.Listbox(
+            list_frame,
+            width=39,
+            height=21
+        )
         item_list.bind("<<ListboxSelect>>", self._select)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
         scroll.config(command=item_list.yview)
@@ -410,7 +422,6 @@ class ExpansionScreen(tk.Frame):
                     name = root.get("name")
                     if name:
                         self.data["name"].set("name")
-
         else:
             pass
 
@@ -1961,7 +1972,7 @@ class SkillEditor(tk.Toplevel):
             self.loaded_skills = self._list()
             self._newSkill()
         else:
-            pass
+            self._editSkill()
 
     def _list(self):
         """ get a list of all used skill names """
@@ -2015,6 +2026,58 @@ class SkillEditor(tk.Toplevel):
             pass
         else:
             pass
+
+    def _editSkill(self):
+        self.loaded_skills = self._list()
+
+        frame = tk.LabelFrame(self, text=msg.NAME)
+
+        if self.data.get("name"):
+            var = self.data.get("name")
+        else:
+            self.data["name"] = var = tk.StringVar()
+        var.trace("w", lambda n, e, m, var=var: self._checkName(var))
+
+        # set name if the skill already has a name
+        if self.skill.get("name"):
+            var.set(self.skill.get("name"))
+
+        entry = tk.Entry(frame, textvariable=var)
+        entry.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        frame.pack(fill=tk.X)
+
+        self.data["parent"] = parent_id = self.skill.get("parent")
+
+        self.parent = self.app.skills.getSkillById(parent_id)
+
+        if self.parent is None:
+            exp = self.app.module.expansion
+            self.parent = exp.find(".//skill[@id='" + parent_id + "']")
+
+        self.data["parent_name"] = self.parent.get("name")
+
+        self.data["spec"] = int(self.skill.get("spec"))
+
+        if self.data.get("id"):
+            id_var = self.data["id"]
+        else:
+            self.data["id"] = id_var = tk.StringVar()
+            id_var.set(self.skill.get("id"))
+
+        self.data["type"] = self.skill.get("type")
+
+        self.frame = tk.Frame(self)
+        self.frame = self._showSkillData(self.frame, edit=True)
+        self.frame.pack(fill=tk.BOTH, expand=1)
+
+    def _editParent(self, event):
+        self.frame.destroy()
+        self._selectParent()
+        tk.Button(
+            self,
+            text=msg.EX_CONTINUE,
+            command=self._finalizeSkill
+        ).pack(fill=tk.X)
 
     def _selectParent(self):
 
@@ -2070,6 +2133,8 @@ class SkillEditor(tk.Toplevel):
             for skill in exp_skills:
                 name = skill.get("name")
                 spec = skill.get("spec")
+                if spec == "3":
+                    continue
                 id = int(skill.get("id"))
                 result.append((name, spec, id, 0))
             return result
@@ -2133,23 +2198,8 @@ class SkillEditor(tk.Toplevel):
 
             self._displaySkill()
 
-    def _editSkill(self):
-        pass
-
     def _displaySkill(self):
-
-
         self._clear()
-
-        types = {
-            "active": msg.EX_ACTIVE_SKILL,
-            "passive": msg.EX_PASSIVE_SKILL,
-            "lang": msg.EX_LANGUAGE_SKILL
-        }
-        specs = {
-            2: msg.EX_SPEC2,
-            3: msg.EX_SPEC3
-        }
 
         frame = tk.LabelFrame(self, text=msg.EX_NEW_SKILL)
         name = self.data["name"].get()
@@ -2159,35 +2209,8 @@ class SkillEditor(tk.Toplevel):
             text=name,
             font="Arial 12 bold"
         ).pack(anchor=tk.CENTER)
-        tk.Label(
-            frame,
-            text=types[self.data["type"]]
-        ).pack(anchor=tk.CENTER)
-        tk.Label(
-            frame,
-            text=specs[self.data["spec"]] + self.data["parent_name"]
-        ).pack(anchor=tk.CENTER)
 
-        # the id is editable but disabled ...
-        id_frame = tk.Frame(frame)
-        tk.Label(id_frame, text=msg.EX_ID).pack(side=tk.LEFT)
-        id_entry = tk.Entry(
-            id_frame,
-            textvariable=self.data["id"],
-            style="edit_entry",
-            width="7"
-        )
-        id_entry.state(["disabled"])
-
-        def enable(event):
-            event.widget.state(["!disabled"])
-        id_entry.bind(
-            "<Double-Button-1>",
-            enable
-        )
-
-        id_entry.pack(side=tk.LEFT)
-        id_frame.pack()
+        frame = self._showSkillData(frame)
 
         frame.pack(fill=tk.BOTH)
 
@@ -2207,9 +2230,65 @@ class SkillEditor(tk.Toplevel):
             command=self.close
         ).pack(fill=tk.X)
 
+    def _showSkillData(self, frame, edit=False):
+
+        types = {
+            "active": msg.EX_ACTIVE_SKILL,
+            "passive": msg.EX_PASSIVE_SKILL,
+            "lang": msg.EX_LANGUAGE_SKILL
+        }
+        specs = {
+            2: msg.EX_SPEC2,
+            3: msg.EX_SPEC3
+        }
+
+        tk.Label(
+            frame,
+            text=types[self.data["type"]]
+        ).pack(anchor=tk.CENTER)
+        parent = tk.Label(
+            frame,
+            text=specs[self.data["spec"]] + self.data["parent_name"]
+        )
+
+        if edit:
+            edit_icon = ImageTk.PhotoImage(file="img/edit_s.png")
+            parent.config(
+                image=edit_icon,
+                compound=tk.RIGHT
+            )
+            parent.bind("<Button-1>", self._editParent)
+            parent.image=edit_icon
+        parent.pack(anchor=tk.CENTER)
+
+        # the id is editable but disabled ...
+        id_frame = tk.Frame(frame)
+        tk.Label(id_frame, text=msg.EX_ID).pack(side=tk.LEFT)
+        id_entry = tk.Entry(
+            id_frame,
+            textvariable=self.data["id"],
+            style="edit_entry",
+            width="7"
+        )
+
+        id_entry.state(["disabled"])
+
+        def enable(event):
+            event.widget.state(["!disabled"])
+        id_entry.bind(
+            "<Double-Button-1>",
+            enable
+        )
+
+        id_entry.pack(side=tk.LEFT)
+        id_frame.pack()
+
+        return frame
+
     def _addSkill(self):
         """ updating the final data and writing the skill to the tree """
 
+        self.skill.set("name", self.data["name"].get())
         self.skill.set("id", self.data["id"].get())
         self.skill.set("type", self.parent.get("type"))
         self.skill.set("spec", str(int(self.parent.get("spec")) + 1))

@@ -189,7 +189,7 @@ class Application(tk.Frame):
                 command=lambda label=label[0]:
                 self._switchWindow(label)
             )
-            button.grid(row=0, column=i, sticky=tk.EW)
+            button.pack(side=tk.LEFT, fill=tk.X, expand=1)
 
     def newChar(self):
         """ Creating a new empty character template """
