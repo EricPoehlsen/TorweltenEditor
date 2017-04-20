@@ -37,7 +37,7 @@ class ItemTree(object):
         self.xml_items = self.loadTree('data/items_de.xml')
         active_expansions = self.settings.getExpansions()
         for expansion in active_expansions:
-            self.addToTree("data/"+expansion)
+            self.addToTree("expansion/"+expansion)
 
     def loadTree(self, filename=None):
         tree = None

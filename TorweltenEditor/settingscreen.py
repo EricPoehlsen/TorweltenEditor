@@ -138,7 +138,7 @@ class SettingScreen(tk.Frame):
         """ find available expansions """
 
         self.data["expansions"] = []
-        path = "data/"
+        path = "expansion/"
 
         files = []
         for (dirpath, dirnames, filenames) in os.walk(path):

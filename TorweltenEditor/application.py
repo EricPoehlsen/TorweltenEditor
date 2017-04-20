@@ -21,6 +21,7 @@ from aboutscreen import About
 from improvewindow import Improve
 from PIL import ImageTk, Image, PngImagePlugin
 import tk_ as tk
+import tkinter.messagebox as tkmb
 
 msg = config.Messages()
 
@@ -214,7 +215,14 @@ class Application(tk.Frame):
             }
         filename = tkfd.askopenfilename(**options)
         if filename:
-            self.char.load(filename)
+            error = self.char.load(filename)
+            if error:
+                errors = {
+                    -1: msg.ERROR_XML_UNKNOWN,
+                    1: msg.ERROR_XML_PARSE,
+                    2: msg.ERROR_XML_NO_CHAR
+                }
+                tkmb.showerror(msg.ERROR, errors[error], parent=self)
 
             self._switchWindow(msg.TOOLBAR_CHAR_DATA)
             self.status_bar.rebind(self)

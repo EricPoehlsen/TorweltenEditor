@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as et
 import tkinter.filedialog as tkfd
+import tkinter.messagebox as tkmb
 from moduleeditor import ModuleEditor
 from PIL import ImageTk, Image, PngImagePlugin
 import tk_ as tk
@@ -568,12 +569,27 @@ class LayoutScreen(tk.Frame):
         }
         filename = tkfd.askopenfilename(**options)
         if filename:
+            error = msg.ERROR_XML_UNKNOWN
             with open(filename, mode="rb") as file:
-                self.char.setPDFTemplate(filename)
-                self.template = et.parse(file)
-                self.pages = len(self.template.findall("page"))
-                self._generateGrid()
-                self._switchPage(0)
+                error = 0
+                try:
+                    template = et.parse(file)
+                    root = template.getroot()
+                    if root.tag != "template":
+                        error = msg.ERROR_XML_NO_TEMPLATE
+                except et.ParseError:
+                    error = msg.ERROR_XML_PARSE
+
+                if not error:
+
+                    self.char.setPDFTemplate(filename)
+                    self.template = template
+                    self.pages = len(self.template.findall("page"))
+                    self._generateGrid()
+                    self._switchPage(0)
+
+            if error:
+                tkmb.showerror(msg.ERROR, error, parent=self)
         else:
             pass
 

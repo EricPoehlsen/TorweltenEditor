@@ -30,6 +30,14 @@ class Messages:
     TITLE_EM_SIMULATION = "[Simulation]"
 
     ERROR = "Fehler!"
+    ERROR_XML_UNKNOWN = "Allgemeiner Dateifehler beim\n"\
+                        "Versuch die Datei zu laden."
+    ERROR_XML_PARSE = "Fehler beim Versuch die XML-Daten zu verarbeiten."
+    ERROR_XML_NO_CHAR = "Bei dieser Datei handelt es\n"\
+                        "sich nicht um einen Charakter."
+    ERROR_XML_NO_TEMPLATE = "Bei dieser Datei handelt es\n"\
+                            "sich um kein PDF-Template."
+
     # #####GENERIC UI TEXT # ######
     NAME = "Name"
     SPECIES = "Spezies"
@@ -845,8 +853,10 @@ class Messages:
     SE_DEL_TITLE = "Kontakt löschen ..."
     SE_DEL_TEXT = "Soll der Kontakt {name}wirklich gelöscht werden?"
 
-
     # EXPANSION SCREEN
+    EX_SAVE = "Erweiterung speichern ..."
+    EX_LOAD = "Erweiterung laden ..."
+
     EX_TRAITS = "Eigenschaften"
     EX_SKILLS = "Fertigkeiten"
     EX_ITEMS = "Ausrüstung"
