@@ -100,12 +100,20 @@ class ExpansionScreen(tk.Frame):
             command=self._addSkill
         )
         add_skill.pack(fill=tk.X)
+
+        self.widgets["sub_skill"] = sub_skill = SkillCopy(
+            skill_frame,
+            app=self.app
+        )
+        sub_skill.pack(fill=tk.X)
+
         self.widgets["edit_skill"] = edit_skill = tk.Button(
             skill_frame,
             text=msg.EX_EDIT,
             command=self._editSkill
         )
         edit_skill.pack(fill=tk.X)
+
         self.widgets["del_skill"] = del_skill = tk.Button(
             skill_frame,
             text=msg.EX_DEL,
@@ -184,9 +192,18 @@ class ExpansionScreen(tk.Frame):
             if len(selection) < 1:
                 self.widgets.get("edit_skill").state(["disabled"])
                 self.widgets.get("del_skill").state(["disabled"])
+
+                name_entry = self.widgets.get("sub_skill").name_entry
+                if str(self.focus_get()) != str(name_entry):
+                    self.widgets.get("sub_skill").state(["disabled"])
             else:
                 self.widgets.get("edit_skill").state(["!disabled"])
                 self.widgets.get("del_skill").state(["!disabled"])
+
+                name = listbox.get(selection)
+                skill = self.expansion.find(".//skill[@name='" + name + "']")
+                self.widgets.get("sub_skill").updateSource(skill)
+                self.widgets.get("sub_skill").state(["!disabled"])
 
         if listbox == self.widgets.get("items") or not event:
             if len(selection) < 1:
@@ -204,15 +221,21 @@ class ExpansionScreen(tk.Frame):
             (msg.EX_TT_SAVE, "img/tpl_save.png", self._saveExpansion)
         ]
 
+        new_icon = ImageTk.PhotoImage(file="img/tpl_new.png")
+        load_icon = ImageTk.PhotoImage(file="img/tpl_load.png")
+        save_icon = ImageTk.PhotoImage(file="img/tpl_save.png")
+
         exp = tk.LabelFrame(frame, text="Expansion")
         for op in exp_ops:
             img = ImageTk.PhotoImage(file=op[1])
-            button = tk.Button(
+            self.widgets[op[0]] = button = tk.Button(
                 exp,
                 text=op[0],
                 image=img,
                 command=op[2],
             )
+            if op[0] == msg.EX_TT_SAVE:
+                button.state(["disabled"])
             tt = ToolTip(button, op[0])
             button.image = img
             button.pack(side=tk.LEFT)
@@ -220,11 +243,24 @@ class ExpansionScreen(tk.Frame):
 
         tk.Label(frame, text=" ").pack(side=tk.LEFT)
 
-        self.data["name"] = name = tk.StringVar()
         name_frame = tk.LabelFrame(frame, text=msg.EX_NAME)
+        self.data["name"] = name = tk.StringVar()
         name_entry = tk.Entry(name_frame, textvariable=name)
+        name.trace("w", lambda n, e, m: self._updateName())
         name_entry.pack(fill=tk.BOTH, expand=1)
         name_frame.pack(fill=tk.BOTH, side=tk.LEFT, expand=1)
+
+    def _updateName(self):
+        name = self.data.get("name").get()
+        if len(name) < 1:
+            self.widgets[msg.EX_TT_SAVE].state(["disabled"])
+        else:
+            self.widgets[msg.EX_TT_SAVE].state(["!disabled"])
+
+
+        print(name)
+        root = self.expansion.getroot()
+        root.set("name", name)
 
     def _addItem(self, event=None):
         if self.app.open_windows["itemedit"] != 0:
@@ -356,10 +392,10 @@ class ExpansionScreen(tk.Frame):
         options = {
             'defaultextension': '.xml',
             'filetypes': [('Template', '.xml')],
-            'initialdir': './data',
+            'initialdir': './expansion',
             'initialfile': 'template.xml',
             'parent': self,
-            'title': 'Charakterbogentemplate laden ...',
+            'title': msg.EX_LOAD,
         }
         filename = tkfd.askopenfilename(**options)
         if filename:
@@ -368,6 +404,13 @@ class ExpansionScreen(tk.Frame):
                 root = expansion.getroot()
                 if root.tag == "expansion":
                     self.expansion = expansion
+                    self.updateTraits()
+                    self.updateSkills()
+                    self.updateItems()
+                    name = root.get("name")
+                    if name:
+                        self.data["name"].set("name")
+
         else:
             pass
 
@@ -376,11 +419,11 @@ class ExpansionScreen(tk.Frame):
 
         options = {
             "defaultextension": ".xml",
-            "filetypes": [("Template", ".xml")],
-            "initialdir": "./data",
+            "filetypes": [("Expansion", ".xml")],
+            "initialdir": "./expansion",
             "initialfile": "template.xml",
             "parent": self,
-            "title": "Charakterbogentemplate speichern ...",
+            "title": msg.EX_SAVE,
         }
         filename = tkfd.asksaveasfilename(**options)
         if filename:
@@ -1906,16 +1949,19 @@ class SkillEditor(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.app = app
         self.style = app.style
+
+        self.minsize(200, 100)
+
+        self.loaded_skills = None
+        self.data = {}
+
         self.skill = skill
         if self.skill is None:
             self.skill = et.Element("skill")
-
-        self.loaded_skills = self._list()
-
-        self.data = {}
-
-        self.minsize(200, 100)
-        self._nameSkill()
+            self.loaded_skills = self._list()
+            self._newSkill()
+        else:
+            pass
 
     def _list(self):
         """ get a list of all used skill names """
@@ -1932,17 +1978,10 @@ class SkillEditor(tk.Toplevel):
         for widget in widgets:
             widget.destroy()
 
-    def _nameSkill(self):
+    def _newSkill(self):
         """ first step, give it a name ..."""
 
         self._clear()
-
-        # the button is declared here because the var.trace() will call it
-        self.button = tk.Button(
-            self,
-            text=msg.EX_CONTINUE,
-            command=self._selectParent
-        )
 
         frame = tk.LabelFrame(self, text=msg.NAME)
 
@@ -1959,23 +1998,26 @@ class SkillEditor(tk.Toplevel):
         entry = tk.Entry(frame, textvariable=var)
         entry.pack(side=tk.LEFT, fill=tk.X, expand=1)
         frame.pack(fill=tk.X)
-        self.button.pack(fill=tk.X)
+
+        self._selectParent()
+
+        tk.Button(
+            self,
+            text=msg.EX_CONTINUE,
+            command=self._finalizeSkill
+        ).pack(fill=tk.X)
 
     def _checkName(self, var):
         """ disables 'continue button' if name exists """
 
         cur_name = var.get()
         if cur_name in self.loaded_skills:
-            self.button.config(text=msg.EX_SKILL_EXISTS)
-            self.button.state(["disabled"])
+            pass
         else:
-            self.button.config(text=msg.EX_CONTINUE)
-            self.button.state(["!disabled"])
+            pass
 
     def _selectParent(self):
-        """ next step, select parent skill """
 
-        self._clear()
         super_frame = tk.LabelFrame(self, text=msg.EX_SUPER_SKILL)
         if self.data.get("super_search"):
             var = self.data.get("super_search")
@@ -2004,22 +2046,12 @@ class SkillEditor(tk.Toplevel):
         self.skill_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         scroll.pack(side=tk.LEFT, fill=tk.Y)
         list_frame.pack(fill=tk.BOTH, expand=1)
-        tk.Button(
-            super_frame,
-            text=msg.EX_CONTINUE,
-            command=self._finalizeSkill
-        ).pack(fill=tk.X)
-        tk.Button(
-            super_frame,
-            text=msg.EX_BACK,
-            command=self._nameSkill
-        ).pack(fill=tk.X)
 
         super_frame.pack(fill=tk.BOTH)
 
         # fill the list
-        skills = self.app.skills.getList(maxspec=2)
-        l = [s[0] if s[1] == 1 else "    "+s[0] for s in skills]
+
+        l = self._getSkills()
         self.skill_list.insert(0, *l)
 
         # select parent, if it is an edit
@@ -2029,6 +2061,25 @@ class SkillEditor(tk.Toplevel):
         if "    "+var.get() in l:
             index = l.index("    "+var.get())
             self.skill_list.select_set(index)
+
+    def _getSkills(self):
+
+        def getExpSkills(self):
+            exp_skills = self.app.module.expansion.findall(".//skill")
+            result = []
+            for skill in exp_skills:
+                name = skill.get("name")
+                spec = skill.get("spec")
+                id = int(skill.get("id"))
+                result.append((name, spec, id, 0))
+            return result
+
+        skills = self.app.skills.getList(maxspec=2)
+        skills += getExpSkills(self)
+        skills = sorted(skills, key=lambda x: x[2])
+
+        result = [s[0] if s[1] == 1 else "    "+s[0] for s in skills]
+        return result
 
     def _searchSuper(self, var):
         """ filter list by entry field """
@@ -2055,11 +2106,16 @@ class SkillEditor(tk.Toplevel):
         else:
             super_name = self.skill_list.get(selected[0]).strip()
             self.parent = self.app.skills.getSkill(super_name)
+            if self.parent is None:
+                exp = self.app.module.expansion
+                self.parent = exp.find(".//skill[@name='" + super_name + "']")
             self.data["parent"] = parent_id = int(self.parent.get("id"))
+            self.data["parent_name"] = self.parent.get("name")
             self.skill.set("parent", str(parent_id))
             new_id = parent_id
+
             exists = True
-            spec = int(self.parent.get("spec")) + 1
+            self.data["spec"] = spec = int(self.parent.get("spec")) + 1
             factor = 1
             if spec == 2:
                 factor = 100
@@ -2067,80 +2123,89 @@ class SkillEditor(tk.Toplevel):
                 new_id += factor
                 exists = self.app.skills.getSkillById(new_id)
 
-            skill_type = self.parent.get("type")
-            types = {
-                "active": msg.EX_ACTIVE_SKILL,
-                "passive": msg.EX_PASSIVE_SKILL,
-                "lang": msg.EX_LANGUAGE_SKILL
-            }
-            specs = {
-                2: msg.EX_SPEC2,
-                3: msg.EX_SPEC3
-            }
-
-            self._clear()
-
-            # from here we build the new display
-            frame = tk.LabelFrame(self, text=msg.EX_NEW_SKILL)
-            name = self.data["name"].get()
-            self.skill.set("name", name)
-            tk.Label(
-                frame,
-                text=name,
-                font="Arial 12 bold"
-            ).pack(anchor=tk.CENTER)
-            tk.Label(
-                frame,
-                text=types[skill_type]
-            ).pack(anchor=tk.CENTER)
-            tk.Label(
-                frame,
-                text=specs[spec] + super_name
-            ).pack(anchor=tk.CENTER)
-
-            # the id is editable but disabled ...
-            id_frame = tk.Frame(frame)
-            tk.Label(id_frame, text=msg.EX_ID).pack(side=tk.LEFT)
             if self.data.get("id"):
                 id_var = self.data["id"]
             else:
                 self.data["id"] = id_var = tk.StringVar()
             id_var.set(str(new_id))
-            id_entry = tk.Entry(
-                id_frame,
-                textvariable=id_var,
-                style="edit_entry",
-                width="7"
-            )
-            id_entry.state(["disabled"])
 
-            def enable(event):
-                event.widget.state(["!disabled"])
-            id_entry.bind(
-                "<Double-Button-1>",
-                enable
-            )
+            self.data["type"] = self.parent.get("type")
 
-            id_entry.pack(side=tk.LEFT)
-            id_frame.pack()
+            self._displaySkill()
 
-            frame.pack(fill=tk.BOTH)
+    def _editSkill(self):
+        pass
 
-            tk.Button(
-                self,
-                text=msg.EX_FINISH,
-                command=self._addSkill
-            ).pack(fill=tk.X)
-            tk.Button(
-                self,
-                text=msg.EX_BACK,
-                command=self._selectParent
-            ).pack(fill=tk.X)
-            tk.Button(
-                self,
-                text=msg.EX_ABORT,
-                command=self.close
-            ).pack(fill=tk.X)
+    def _displaySkill(self):
+
+
+        self._clear()
+
+        types = {
+            "active": msg.EX_ACTIVE_SKILL,
+            "passive": msg.EX_PASSIVE_SKILL,
+            "lang": msg.EX_LANGUAGE_SKILL
+        }
+        specs = {
+            2: msg.EX_SPEC2,
+            3: msg.EX_SPEC3
+        }
+
+        frame = tk.LabelFrame(self, text=msg.EX_NEW_SKILL)
+        name = self.data["name"].get()
+        self.skill.set("name", name)
+        tk.Label(
+            frame,
+            text=name,
+            font="Arial 12 bold"
+        ).pack(anchor=tk.CENTER)
+        tk.Label(
+            frame,
+            text=types[self.data["type"]]
+        ).pack(anchor=tk.CENTER)
+        tk.Label(
+            frame,
+            text=specs[self.data["spec"]] + self.data["parent_name"]
+        ).pack(anchor=tk.CENTER)
+
+        # the id is editable but disabled ...
+        id_frame = tk.Frame(frame)
+        tk.Label(id_frame, text=msg.EX_ID).pack(side=tk.LEFT)
+        id_entry = tk.Entry(
+            id_frame,
+            textvariable=self.data["id"],
+            style="edit_entry",
+            width="7"
+        )
+        id_entry.state(["disabled"])
+
+        def enable(event):
+            event.widget.state(["!disabled"])
+        id_entry.bind(
+            "<Double-Button-1>",
+            enable
+        )
+
+        id_entry.pack(side=tk.LEFT)
+        id_frame.pack()
+
+        frame.pack(fill=tk.BOTH)
+
+        tk.Button(
+            self,
+            text=msg.EX_FINISH,
+            command=self._addSkill
+        ).pack(fill=tk.X)
+        tk.Button(
+            self,
+            text=msg.EX_BACK,
+            command=self._newSkill
+        ).pack(fill=tk.X)
+        tk.Button(
+            self,
+            text=msg.EX_ABORT,
+            command=self.close
+        ).pack(fill=tk.X)
 
     def _addSkill(self):
         """ updating the final data and writing the skill to the tree """
@@ -3336,3 +3401,120 @@ class RankFrame(tk.Frame):
             self.mode = "add"
             self.mode_button.config(image=self.plus_icon)
 
+
+class SkillCopy(tk.Frame):
+    """ Provides a widget for fast creation of skills """
+
+    def __init__(self, master=None, source=None, app=None, **kwargs):
+        super().__init__(master, **kwargs)
+        self.app = app
+        self.source = source
+
+        self.icon_child = ImageTk.PhotoImage(file="img/child_s.png")
+        self.icon_sibling = ImageTk.PhotoImage(file="img/sibling_s.png")
+
+        self.loaded_skills = None
+        self.mode = "sibling"
+
+        self.skill = et.Element("skill")
+
+        self.toggle_button=tk.Button(
+            self,
+            image=self.icon_sibling,
+            command=self._toggleMode
+        )
+        self.toggle_button.pack(side=tk.LEFT)
+        self.name_var = tk.StringVar()
+        self.name_var.trace("w", self._updateName)
+        self.name_entry = tk.Entry(self, textvariable=self.name_var)
+        self.name_entry.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        self.okay_button = tk.Button(
+            self,
+            text="OK",
+            width=4,
+            command=self._create
+        )
+        self.okay_button.pack(side=tk.LEFT)
+
+    def state(self, statespec=None):
+        self.toggle_button.state(statespec)
+        self.name_entry.state(statespec)
+        self.okay_button.state(statespec)
+
+    def updateSource(self, source):
+        self.source = source
+        self.name_var.set(source.get("name"))
+        self.loaded_skills = self._list()
+
+    def _updateName(self, *args):
+        name = self.name_var.get()
+
+        if not self.loaded_skills:
+            self.loaded_skills = self._list()
+
+        invalid = re.findall("[\"\'§&]", name)
+        if name in self.loaded_skills:
+            self.name_entry.config(style="invalid.TEntry")
+            self.okay_button.state(["disabled"])
+        elif len(invalid) > 0:
+            self.name_entry.config(style="invalid.TEntry")
+            self.okay_button.state(["disabled"])
+        else:
+            self.name_entry.config(style="TEntry")
+            self.okay_button.state(["!disabled"])
+            self.skill.set("name", name)
+
+    def _list(self):
+        """ get a list of all used skill names """
+
+        cur = [s[0] for s in self.app.skills.getList()]
+        exp = self.app.module.expansion.findall(".//skill")
+        exp = [s.get("name") for s in exp]
+        return cur + exp
+
+    def _create(self):
+        if self.mode == "sibling":
+            spec = self.source.get("spec")
+            self.skill.set("spec", spec)
+            self.skill.set("parent", self.source.get("parent"))
+            self.skill.set("type", self.source.get("type"))
+            spec = int(spec)
+            if spec == 2:
+                self.skill.set("id", str(int(self.source.get("id")) + 100))
+            if spec == 3:
+                self.skill.set("id", str(int(self.source.get("id")) + 1))
+
+        else:
+            spec = self.source.get("spec")
+            spec = int(spec) + 1
+            self.skill.set("spec", str(spec))
+            self.skill.set("parent", self.source.get("id"))
+            self.skill.set("type", self.source.get("type"))
+            id = int(self.source.get("id")) + 1
+            while id in self._expansionSkillIDs():
+                id += 1
+            self.skill.set("id", str(id))
+
+        skills = self.app.module.expansion.find("skills")
+        skills.append(self.skill)
+        self.app.module.updateSkills()
+
+        if spec == 3 and self.mode == "child":
+            self._toggleMode()
+        self.updateSource(self.skill)
+        self.skill = et.Element("skill")
+
+    def _expansionSkillIDs(self):
+        exp_skills = self.app.module.expansion.findall(".//skill")
+        return [int(s.get("id")) for s in exp_skills]
+
+    def _toggleMode(self):
+        if self.source is None:
+            return
+
+        if self.mode == "sibling" and self.source.get("spec") in ["1", "2"]:
+            self.mode = "child"
+            self.toggle_button.config(image=self.icon_child)
+        else:
+            self.mode = "sibling"
+            self.toggle_button.config(image=self.icon_sibling)
