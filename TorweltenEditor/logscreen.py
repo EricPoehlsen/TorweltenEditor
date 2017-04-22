@@ -13,7 +13,6 @@ class LogScreen(tk.Frame):
 
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
-        self.style = app.style
         self.app = app
         self.char = app.char
 

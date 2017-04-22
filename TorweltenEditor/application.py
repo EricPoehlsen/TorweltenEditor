@@ -37,8 +37,6 @@ class Application(tk.Frame):
     def __init__(self, main):
         tk.Frame.__init__(self, main)
         self.main = main
-        self.style = tk.Style()
-        self._setStyle()
 
         self.module = None
 
@@ -143,24 +141,40 @@ class Application(tk.Frame):
         self.widgets = {}
 
         # initializing the basic screen layout ...
-        self.columnconfigure(0, weight=100)
+        self.toolbar = tk.Frame(self)
+        self.toolbar.place(
+            x=0,
+            y=0,
+            relheight=.1,
+            relwidth=1,
+            anchor=tk.NW
+        )
 
         self.main_frame = tk.Frame(self)
-        self.main_frame.grid(row=1, sticky="nw")
-
+        self.main_frame.place(
+            x=0,
+            rely=.10,
+            relheight=.85,
+            relwidth=1,
+            anchor=tk.NW
+        )
         self.status_bar = StatusBar(self)
-        self.status_bar.grid(row=2, sticky="sw")
-
-        self.toolbar = tk.Frame(self)
-        self.toolbar.grid(row=0, sticky="we")
-
-        self.rowconfigure(1, weight=1000)
+        self.status_bar.place(
+            x=0,
+            rely=1,
+            relheight=.05,
+            relwidth=1,
+            anchor=tk.SW
+        )
 
         # self.startScreenImage()
         self.newChar()
         self.showToolbar()
         self.updateTitle()
-
+        self.size = (
+            self.winfo_toplevel().winfo_reqwidth(),
+            self.winfo_toplevel().winfo_reqheight()
+        )
 
     def showToolbar(self):
         """ Rendering the toolbar """
@@ -173,13 +187,11 @@ class Application(tk.Frame):
             (msg.TOOLBAR_CHAR_IMAGE, "img/char_image.png"),
             (msg.TOOLBAR_CHAR_LAYOUT, "img/pdf.png")
         ]
-        width = 20
 
         for i, label in enumerate(buttons):
             image = ImageTk.PhotoImage(file=label[1])
             button = tk.Button(
                 self.toolbar,
-                width=width,
                 text=label[0],
                 image=image,
                 compound=tk.TOP
@@ -189,7 +201,12 @@ class Application(tk.Frame):
                 command=lambda label=label[0]:
                 self._switchWindow(label)
             )
-            button.pack(side=tk.LEFT, fill=tk.X, expand=1)
+            button.place(
+                relx=i/6,
+                relwidth=1/6,
+                x=0,
+                relheight=1
+            )
 
     def newChar(self):
         """ Creating a new empty character template """
@@ -313,7 +330,7 @@ class Application(tk.Frame):
 
         # display the new module
         self.module = ProgramModule[label](frame, app=self)
-        self.module.pack()
+        self.module.place(x=0,y=0,relwidth=1,relheight=1,anchor=tk.NW)
 
     def _displayImprove(self):
         window = Improve(self)

@@ -37,7 +37,6 @@ class LayoutScreen(tk.Frame):
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
         self.app = app
-        self.style = app.style
         self.char = app.char
         self.open_windows = app.open_windows
         self.widgets = {}

@@ -14,7 +14,6 @@ msg = config.Messages()
 class SkillSelector(tk.Toplevel):
     def __init__(self, app):
         tk.Toplevel.__init__(self, app)
-        self.style = app.style
         #  point to character and skilltree
         self.char = app.char
         self.all_skills = app.skills
@@ -45,7 +44,7 @@ class SkillSelector(tk.Toplevel):
             text=msg.SS_BASE,
             command=self.toggleMinSpec
         )
-        self.search_gf.state(["pressed"])
+        self.search_gf.config(relief=tk.SUNKEN)
         ToolTip(self.search_gf, msg.SS_TT_SHOW_BASE)
         self.search_gf.pack(side=tk.LEFT)
         self.search_sp = tk.Button(
@@ -54,7 +53,7 @@ class SkillSelector(tk.Toplevel):
             text=msg.SS_SPEC,
             command=self.toggleMaxSpec
         )
-        self.search_sp.state(["pressed"])
+        self.search_sp.config(relief=tk.SUNKEN)
         ToolTip(self.search_sp, msg.SS_TT_SHOW_SPEC)
         self.search_sp.pack(side=tk.LEFT)
         self.search_box = tk.Entry(
@@ -181,10 +180,10 @@ class SkillSelector(tk.Toplevel):
 
         if self.minspec == 1:
             self.minspec = 2
-            self.search_gf.state(["!pressed"])
+            self.search_gf.config(relief=tk.RAISED)
         else:
             self.minspec = 1
-            self.search_gf.state(["pressed"])
+            self.search_gf.config(relief=tk.SUNKEN)
         self._showSkills(self.minspec, self.maxspec)
 
     def toggleMaxSpec(self):
@@ -196,10 +195,10 @@ class SkillSelector(tk.Toplevel):
 
         if self.maxspec == 3:
             self.maxspec = 2
-            self.search_sp.state(["!pressed"])
+            self.search_sp.config(relief=tk.RAISED)
         else:
             self.maxspec = 3
-            self.search_sp.state(["pressed"])
+            self.search_sp.config(relief=tk.SUNKEN)
         self._showSkills(self.minspec, self.maxspec)
 
     #  player presses the add skills button

@@ -462,7 +462,8 @@ class Character(object):
         skill_list = []
         for skill in skills:
             key = skill.get("id")
-            skill_list.append((key, skill))
+            name = skill.get("name")
+            skill_list.append((key, name, skill))
         skill_list.sort()
         # overwriting the skills ... 
         skills[:] = [new_skill[-1] for new_skill in skill_list]

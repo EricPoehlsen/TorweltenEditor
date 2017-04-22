@@ -826,6 +826,7 @@ class Messages:
 
     # SOCIAL EDITOR
 
+    SE_CONTACT_TITLE = "Kontakt"
     SE_CLOSE = "Schließen"
     SE_SAVE = "Speichern"
     SE_DELETE = "Löschen"
@@ -1487,7 +1488,27 @@ class Colors:
 
 
 class Style:
+    MINSIZE = (600, 500)
+
+    RED = {
+        "foreground": "#ff0000"
+    }
+    GREEN = {
+        "foreground": "#00aa00"
+    }
+    BLACK = {
+        "foreground": "#000000"
+    }
+
+    HIDDEN_ENTRY = {
+        "disabledbackground": "#eeeeee",
+        "relief": "flat",
+        "disabledforeground": "#000000",
+        "state": "disabled"
+    }
+
     ATTR_FONT = "Arial 14 bold"
+    SKILL_FONT = "Arial 12 bold"
 
     ATTR_LF_FONT = "Arial 12 bold"
     TITLE_LF_FONT = "Arial 10 bold"

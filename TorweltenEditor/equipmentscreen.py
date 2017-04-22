@@ -15,7 +15,6 @@ class EquipmentScreen(tk.Frame):
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
         self.app = app
-        self.style = app.style
         self.char = app.char
         self.itemlist = app.itemlist
 
@@ -26,11 +25,12 @@ class EquipmentScreen(tk.Frame):
 
         # define the three columns
         self.left_frame = tk.Frame(self)
-        self.left_frame.pack(
-            side=tk.LEFT,
-            anchor=tk.N,
-            fill=tk.Y,
-            expand=1
+        self.left_frame.place(
+            relx=0,
+            rely=0,
+            relwidth=1/3,
+            relheight=1,
+            anchor=tk.NW
         )
 
         # displaying the characters initial account
@@ -45,7 +45,7 @@ class EquipmentScreen(tk.Frame):
             text=msg.ES_BUY_BUTTON,
             command=self.displayInventoryEditor
         )
-        self.buy_button.pack(fill=tk.BOTH, expand=1)
+        self.buy_button.pack(fill=tk.X)
 
         # show equipped items 
         self.equipped_frame = tk.LabelFrame(
@@ -55,10 +55,10 @@ class EquipmentScreen(tk.Frame):
         )
         self.equipped_canvas = tk.Canvas(
             self.equipped_frame,
-            width=250,
-            height=450
+            width=1,
+            height=1
         )
-        self.equipped_canvas.pack(side=tk.LEFT)
+        self.equipped_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.equipped_scroll = tk.Scrollbar(
             self.equipped_frame,
             orient=tk.VERTICAL
@@ -70,7 +70,7 @@ class EquipmentScreen(tk.Frame):
         self.equipped_canvas.config(
             yscrollcommand=self.equipped_scroll.set
         )
-        self.equipped_frame.pack(fill=tk.Y)
+        self.equipped_frame.pack(fill=tk.BOTH, expand=1)
         self.showEquippedItems()
 
         # center frame
@@ -83,10 +83,10 @@ class EquipmentScreen(tk.Frame):
         )
         self.melee_canvas = tk.Canvas(
             self.melee_frame,
-            width=230,
-            height=250
+            width=1,
+            height=1
         )
-        self.melee_canvas.pack(side=tk.LEFT)
+        self.melee_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.melee_scroll = tk.Scrollbar(
             self.melee_frame,
             orient=tk.VERTICAL
@@ -98,7 +98,13 @@ class EquipmentScreen(tk.Frame):
         self.melee_canvas.config(
             yscrollcommand=self.melee_scroll.set
         )
-        self.melee_frame.pack()
+        self.melee_frame.place(
+            relx=0,
+            rely=0,
+            relwidth=1,
+            relheight=.5,
+            anchor=tk.NW
+        )
 
         self.guns_frame = tk.LabelFrame(
             self.center_frame,
@@ -107,10 +113,10 @@ class EquipmentScreen(tk.Frame):
         )
         self.guns_canvas = tk.Canvas(
             self.guns_frame,
-            width=230,
-            height=250
+            width=1,
+            height=1
         )
-        self.guns_canvas.pack(side=tk.LEFT)
+        self.guns_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.guns_scroll = tk.Scrollbar(
             self.guns_frame,
             orient=tk.VERTICAL
@@ -123,8 +129,20 @@ class EquipmentScreen(tk.Frame):
             yscrollcommand=self.guns_scroll.set
         )
 
-        self.guns_frame.pack()
-        self.center_frame.pack(side=tk.LEFT, anchor=tk.N)
+        self.guns_frame.place(
+            relx=0,
+            rely=0.5,
+            relwidth=1,
+            relheight=.5,
+            anchor=tk.NW
+        )
+        self.center_frame.place(
+            relx=1/3,
+            rely=0,
+            relwidth=1/3,
+            relheight=1,
+            anchor=tk.NW
+        )
         self.showEquippedGuns(self.guns_canvas)
         self.showEquippedMelee(self.melee_canvas)
         
@@ -137,10 +155,10 @@ class EquipmentScreen(tk.Frame):
         )
         self.unassigned_canvas = tk.Canvas(
             self.unassigned_frame,
-            height=500,
-            width=230
+            height=1,
+            width=1
         )
-        self.unassigned_canvas.pack(side=tk.LEFT)
+        self.unassigned_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.unassigned_scroll = tk.Scrollbar(
             self.unassigned_frame,
             orient=tk.VERTICAL
@@ -152,8 +170,20 @@ class EquipmentScreen(tk.Frame):
         self.unassigned_canvas.config(
             yscrollcommand=self.unassigned_scroll.set
         )
-        self.unassigned_frame.pack(fill=tk.BOTH, expand=1)
-        self.right_frame.pack(side=tk.LEFT, anchor=tk.N, fill=tk.BOTH)
+        self.unassigned_frame.place(
+            relx=0,
+            rely=0,
+            relwidth=1,
+            relheight=1,
+            anchor=tk.NW
+        )
+        self.right_frame.place(
+            relx=2/3,
+            rely=0,
+            relwidth=1/3,
+            relheight=1,
+            anchor=tk.NW
+        )
         self.showUnassignedItems()
 
     # handling the initial account ... 

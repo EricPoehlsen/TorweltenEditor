@@ -21,7 +21,6 @@ class CharScreen(tk.Frame):
 
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
-        self.style = app.style
         # localize data ...
         # create the character instance # #
         self.app = app
@@ -42,7 +41,13 @@ class CharScreen(tk.Frame):
 
         # column 1 ...
         self.frame_1 = frame_1 = tk.Frame(self)
-
+        frame_1.place(
+            relheight=1,
+            relwidth=1/12,
+            relx=0,
+            rely=0,
+            anchor=tk.NW
+        )
         # starting with the attribute frame ...
         attr_frame = tk.Frame(frame_1)
         attr_list = self.char.ATTRIB_LIST
@@ -85,7 +90,7 @@ class CharScreen(tk.Frame):
                 value_field = tk.Label(
                     frame, 
                     textvariable=attrib_values[attr],
-                    style="attr.TLabel",
+                    font=config.Style.ATTR_FONT,
                     width=3
                 )
                 value_field.grid(
@@ -114,7 +119,7 @@ class CharScreen(tk.Frame):
                 value_field = tk.Label(
                     frame,
                     textvariable=attrib_values[attr],
-                    style="attr.TLabel",
+                    font=config.Style.ATTR_FONT,
                     width=3
                 )
                 value_field.pack(fill=tk.X, expand=1)
@@ -135,8 +140,7 @@ class CharScreen(tk.Frame):
         self.xp_total.pack(side=tk.LEFT)
         xp_frame.pack()
         
-        frame_1.pack(side=tk.LEFT, anchor=tk.N)
-        
+
         # this makes the second block 
         frame_2 = tk.Frame(self)
         
@@ -182,15 +186,15 @@ class CharScreen(tk.Frame):
                 width=width
             )
             if edit_mode in ["view", "simulation"]:
-                entry.state(["disabled"])
+                entry.config(state=tk.DISABLED)
             else:
                 entry.bind("<FocusOut>", self.dataUpdated)
-            entry.pack(fill=tk.X, expand=1)
+            entry.pack(fill=tk.BOTH, expand=1)
             frame.grid(
                 row=data[2],
                 column=data[3],
                 columnspan=data[4],
-                sticky="WE"
+                sticky="NSWE"
             )
         
         for row in range(7):
@@ -210,7 +214,7 @@ class CharScreen(tk.Frame):
             bg="#eeeeee",
             font="Arial 10",
             wrap=tk.WORD,
-            height=10,
+            height=5,
             width=10
         )
         self.updateTraitList()
@@ -220,33 +224,41 @@ class CharScreen(tk.Frame):
         traits_frame.pack(fill=tk.BOTH, expand=1)
 
         new_traits_button = tk.Button(
-            traits_frame,
+            frame_2,
             text=msg.CS_ADD_TRAIT,
             command=self.showTraitWindow
         )
 
         if edit_mode in ["view", "simulation"]:
-            new_traits_button.state(["disabled"])
+            new_traits_button.config(state=tk.DISABLED)
         new_traits_button.pack(fill=tk.X)
 
         traits_frame.pack(fill=tk.BOTH, expand=1)
-        frame_2.pack(side=tk.LEFT, anchor=tk.N, fill=tk.Y, expand=1)
+        frame_2.place(
+            relheight=1,
+            relwidth=.4 - 1/12,
+            relx=1/12,
+            rely=0,
+            anchor=tk.NW
+        )
 
         # this frame holds the character skills ... 
         frame_3 = tk.Frame(self)
 
+        skill_frame = tk.Frame(frame_3)
+
         # active skills ...
         self.active_skill_frame = tk.LabelFrame(
-            frame_3,
+            skill_frame,
             font=config.Style.TITLE_LF_FONT,
             text=msg.CS_ACTIVE_SKILLS, 
         )
         self.active_skill_canvas = tk.Canvas(
             self.active_skill_frame,
-            width=190,
-            height=500
+            width=1,
+            height=1
         )
-        self.active_skill_canvas.pack(side=tk.LEFT)
+        self.active_skill_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.active_skill_scroll = tk.Scrollbar(
             self.active_skill_frame,
             orient=tk.VERTICAL
@@ -261,16 +273,16 @@ class CharScreen(tk.Frame):
 
         # passive skills
         self.passive_skill_frame = tk.LabelFrame(
-            frame_3,
+            skill_frame,
             font=config.Style.TITLE_LF_FONT,
             text=msg.CS_PASSIVE_SKILLS,
         )
         self.passive_skill_canvas = tk.Canvas(
             self.passive_skill_frame,
-            width=190,
-            height=500
+            width=1,
+            height=1
         )
-        self.passive_skill_canvas.pack(side=tk.LEFT)
+        self.passive_skill_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.passive_skill_scroll = tk.Scrollbar(
             self.passive_skill_frame,
             orient=tk.VERTICAL
@@ -285,9 +297,22 @@ class CharScreen(tk.Frame):
 
         # initialize the list and place it on screen ...
         self.updateSkillList()
-        self.active_skill_frame.grid(row=0, column=0, sticky="nsew")
-        self.passive_skill_frame.grid(row=0, column=1, sticky="nsew")
-        
+        self.active_skill_frame.place(
+            relx=0,
+            rely=0,
+            relwidth=.5,
+            relheight=1,
+            anchor=tk.NW
+        )
+        self.passive_skill_frame.place(
+            relx=0.5,
+            rely=0,
+            relwidth=.5,
+            relheight=1,
+            anchor=tk.NW
+        )
+
+        skill_frame.pack(fill=tk.BOTH, expand=1)
         # and a button to add skills
         new_skill_button = tk.Button(
             frame_3, 
@@ -295,12 +320,16 @@ class CharScreen(tk.Frame):
             command=self.showSkillWindow
         )
         if edit_mode in ["view", "simulation"]:
-            new_skill_button.state(["disabled"])
+            new_skill_button.config(state=tk.DISABLED)
 
-        new_skill_button.grid(row=1, column=0, columnspan=2, sticky="nsew")
-
-        frame_3.rowconfigure(0, weight=100)
-        frame_3.pack(side=tk.LEFT, anchor=tk.N, fill=tk.BOTH)
+        new_skill_button.pack(fill=tk.X)
+        frame_3.place(
+            relheight=1,
+            relwidth=.6,
+            relx=.4,
+            rely=0,
+            anchor=tk.NW
+        )
 
     def increaseAttribute(self, attr):
         """ Passing on a click to the 'increase attribute' button """
@@ -421,6 +450,7 @@ class CharScreen(tk.Frame):
         active_count = 0
         passive_count = 0
         skills = self.char.getSkills()
+
         for skill in skills:
 
             # decide which side this skill goes to ...
@@ -435,6 +465,7 @@ class CharScreen(tk.Frame):
                 passive_count += 1
                 y_pos = (passive_count - 1)
 
+            skill_frame = tk.Frame(canvas)
             # get skill name and specialization - set font accordingly
             skill_text = skill.get("name")
             skill_font = ""
@@ -461,7 +492,7 @@ class CharScreen(tk.Frame):
 
             # use a spinbox to move skill up and down
             value_spinner = tk.Spinbox(
-                canvas, 
+                skill_frame,
                 from_=0, 
                 to=3, 
                 textvariable=value_var,
@@ -471,7 +502,7 @@ class CharScreen(tk.Frame):
             # or a button just to increase skill
             plus = ImageTk.PhotoImage(file="img/plus_s.png")
             value_button = self.widgets[skill_text+"_inc"] = tk.Label(
-                canvas,
+                skill_frame,
                 image=plus,
             )
             value_button.image = plus
@@ -481,70 +512,97 @@ class CharScreen(tk.Frame):
                 self.increaseSkill(skill_text, canvas)
             )
             value_text = self.char.skill_values[skill_text].get()
+
+            value_label = tk.Label(
+                skill_frame,
+                font=config.Style.SKILL_FONT,
+                textvariable=value_var
+            )
  
             # render the line to the canvas
             height = 24
             # background
+            background = None
             if y_pos % 2 == 0:
-                local_y = y_pos * height - 2
-                canvas.create_rectangle(
-                    0,                  # x1
-                    local_y,            # y1
-                    190,                # x2
-                    local_y + height,   # y2
-                    fill="#ddddff",
-                    outline="#ddddff"
-                )
-            # name
+                background = "#ddddff"
 
-            show_text = skill_text
-            if len(show_text) > 22:
-                show_text = show_text[0:20] +  "..."
-            text = canvas.create_text(
-                2,                  # x
-                y_pos*height + 3,   # y
-                anchor=tk.NW,
-                text=show_text,
-                font=skill_font
+            name_label = tk.Label(
+                skill_frame,
+                text=skill_text,
+                font=skill_font,
+                anchor=tk.W
             )
-            canvas.tag_bind(
-                text,
+
+            if background:
+                name_label.config(background=background)
+                value_label.config(background=background)
+                value_button.config(background=background)
+
+            name_label.bind(
                 "<Button-1>",
                 lambda event, name=skill_text:
                     self.showSkillInfo(name)
             )
 
-            # value
-            if edit_mode == "generation": 
-                canvas.create_window(
-                    190,                # x
-                    y_pos*height + 2,   # y
-                    anchor=tk.NE,
-                    window=value_spinner
+            skill_frame.columnconfigure(0, weight=100)
+
+            if edit_mode == "generation":
+                skill_frame.columnconfigure(0,weight=100)
+                name_label.grid(
+                    row=0,
+                    column=0,
+                    sticky=tk.NSEW
                 )
+                value_spinner.grid(
+                    row=0,
+                    column=1,
+                    sticky=tk.NSEW
+
+                )
+
             elif edit_mode == "edit":
-                canvas.create_window(
-                    190,            # x
-                    y_pos*height,   # y
-                    anchor=tk.NE,
-                    window=value_button
+                name_label.grid(
+                    row=0,
+                    column=0,
+                    sticky=tk.NSEW
                 )
-                self.widgets[skill_text+"_txt"] = canvas.create_text(
-                    170,                # x
-                    y_pos*height + 3,   # y
-                    anchor=tk.NE,
-                    text=value_text,
-                    font="Arial 10 bold"
+                value_label.grid(
+                    row=0,
+                    column=1,
+                    sticky=tk.NSEW
+
+                )
+                value_button.grid(
+                    row=0,
+                    column=2,
+                    sticky=tk.NSEW
+
                 )
             else:
-                canvas.create_text(
-                    190,                # x
-                    y_pos*height + 3,   # y
-                    anchor=tk.NE,
-                    text=value_text,
-                    font="Arial 10 bold")
+                name_label.grid(
+                    row=0,
+                    column=0,
+                    sticky=tk.NSEW
+                )
+                value_label.grid(
+                    row=0,
+                    column=1,
+                    sticky=tk.NSEW
 
-        # set scroll regions based on content 
+                )
+
+            skill_frame.place(
+                x=0,
+                y=y_pos*height,
+                relwidth=1,
+                height=height,
+                anchor=tk.NW
+            )
+
+            print(name_label.winfo_reqwidth())
+            self.update_idletasks()
+            print(skill_frame.bbox())
+        # set scroll regions based on content
         self.active_skill_canvas.config(
             scrollregion=self.active_skill_canvas.bbox("all")
         )

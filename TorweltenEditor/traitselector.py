@@ -13,7 +13,6 @@ class TraitSelector(tk.Toplevel):
 
     def __init__(self, app):
         tk.Toplevel.__init__(self, app)
-        self.style = app.style
         # point to character and traitstree
         self.char = app.char
         self.all_traits = app.traits
@@ -50,7 +49,7 @@ class TraitSelector(tk.Toplevel):
             command=lambda:
                 self.switchSearchMode("name")
         )
-        self.search_mode_name.state(["pressed"])
+        self.search_mode_name.config(relief=tk.SUNKEN)
         self.search_mode_name.pack(side=tk.LEFT, fill=tk.X, expand=1)
         self.search_mode_grp = tk.Button(
             self.upper_search_frame,
@@ -330,14 +329,14 @@ class TraitSelector(tk.Toplevel):
         try:
             xp = int(xp_string)
             if xp == 0:
-                self.info_xp.config(style="TLabel")
-                self.submit.state(["disabled"])
+                self.info_xp.config(**config.Style.BLACK)
+                self.submit.config(state=tk.DISABLED)
             if xp < 0:
-                self.info_xp.config(style="red.TLabel")
-                self.submit.state(["!disabled"])
+                self.info_xp.config(**config.Style.RED)
+                self.submit.config(state=tk.DISABLED)
             if xp > 0:
-                self.info_xp.config(style="green.TLabel")
-                self.submit.state(["!disabled"])
+                self.info_xp.config(**config.Style.GREEN)
+                self.submit.config(state=tk.NORMAL)
         except ValueError:
             pass
         
@@ -435,11 +434,11 @@ class TraitSelector(tk.Toplevel):
         self.trait_cost.set("(" + str(int(trait_cost)) + ")")
 
         if trait_cost < 0:
-            self.info_xp.config(style="red.TLabel")
+            self.info_xp.config(**config.Style.RED)
         elif trait_cost == 0:
-            self.info_xp.config(style="TLabel")
+            self.info_xp.config(**config.Style.BLACK)
         else:
-            self.info_xp.config(style="green.TLabel")
+            self.info_xp.config(**config.Style.GREEN)
 
     # add the text    
     def setDescription(self):
@@ -451,8 +450,8 @@ class TraitSelector(tk.Toplevel):
         if mode != self.search_mode:
             self.search_mode = mode
             if mode == "name":
-                self.search_mode_name.state(["pressed"])
-                self.search_mode_grp.state(["!pressed"])
+                self.search_mode_name.config(relief=tk.SUNKEN)
+                self.search_mode_grp.config(relief=tk.RAISED)
                 self.search_box.pack_forget()
                 self.search_box = tk.Entry(
                     self.lower_search_frame,
@@ -464,8 +463,8 @@ class TraitSelector(tk.Toplevel):
                 self.search.set(msg.TS_SEARCH_NAME)
 
             if mode == "grp":
-                self.search_mode_name.state(["!pressed"])
-                self.search_mode_grp.state(["pressed"])
+                self.search_mode_name.config(relief=tk.RAISED)
+                self.search_mode_grp.config(relief=tk.SUNKEN)
 
                 self.search_box.pack_forget()
                 self.search_box = tk.Combobox(

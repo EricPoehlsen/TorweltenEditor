@@ -12,7 +12,6 @@ msg = config.Messages()
 class ItemEditor(tk.Toplevel):
     def __init__(self, app, item):
         tk.Toplevel.__init__(self)
-        self.style = app.style
         self.app = app
         self.char = app.char
         self.item = item
@@ -146,7 +145,7 @@ class ItemEditor(tk.Toplevel):
         )
         destroy_button.image = destroy_icon
         if self.char.getEditMode() == "generation":
-            destroy_button.state(["disabled"])
+            destroy_button.config(state=tk.DISABLED)
         destroy_button.pack(side=tk.LEFT)
         ToolTip(destroy_button, msg.IE_TT_DESTROY)
 
@@ -176,10 +175,9 @@ class ItemEditor(tk.Toplevel):
         name_label = tk.Entry(
             item_title,
             font="Helvetica 12 bold",
-            style="edit_entry"
         )
         name_label.insert(0, self.item_name)
-        name_label.state(["disabled"])
+        name_label.config(**config.Style.HIDDEN_ENTRY)
         name_label.pack(side=tk.LEFT, expand=1)
         name_label.bind("<Double-Button-1>", self._activateEntryField)
         name_label.bind(
@@ -268,11 +266,10 @@ class ItemEditor(tk.Toplevel):
             entry = tk.Entry(
                 frame,
                 width=len(value)+2,
-                style="edit_entry"
             )
             entry.delete(0, tk.END)
             entry.insert(0, value)
-            entry.state(["disabled"])
+            entry.config(**config.Style.HIDDEN_ENTRY)
             entry.bind("<Double-Button-1>", self._activateEntryField)
             entry.bind(
                 "<Return>",

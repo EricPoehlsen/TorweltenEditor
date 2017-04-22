@@ -9,7 +9,6 @@ msg = config.Messages()
 class Improve(tk.Toplevel):
     def __init__(self, app):
         tk.Toplevel.__init__(self)
-        self.style = app.style
         self.app = app
         self.char = app.char
 

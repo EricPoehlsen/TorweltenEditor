@@ -194,36 +194,36 @@ class ExpansionScreen(tk.Frame):
 
         if listbox == self.widgets.get("traits") or not event:
             if len(selection) < 1:
-                self.widgets.get("edit_trait").state(["disabled"])
-                self.widgets.get("del_trait").state(["disabled"])
+                self.widgets.get("edit_trait").config(state=tk.DISABLED)
+                self.widgets.get("del_trait").config(state=tk.DISABLED)
             else:
-                self.widgets.get("edit_trait").state(["!disabled"])
-                self.widgets.get("del_trait").state(["!disabled"])
+                self.widgets.get("edit_trait").config(state=tk.NORMAL)
+                self.widgets.get("del_trait").config(state=tk.NORMAL)
 
         if listbox == self.widgets.get("skills") or not event:
             if len(selection) < 1:
-                self.widgets.get("edit_skill").state(["disabled"])
-                self.widgets.get("del_skill").state(["disabled"])
+                self.widgets.get("edit_skill").config(state=tk.DISABLED)
+                self.widgets.get("del_skill").config(state=tk.DISABLED)
 
                 name_entry = self.widgets.get("sub_skill").name_entry
                 if str(self.focus_get()) != str(name_entry):
-                    self.widgets.get("sub_skill").state(["disabled"])
+                    self.widgets.get("sub_skill").config(state=tk.DISABLED)
             else:
-                self.widgets.get("edit_skill").state(["!disabled"])
-                self.widgets.get("del_skill").state(["!disabled"])
+                self.widgets.get("edit_skill").config(state=tk.NORMAL)
+                self.widgets.get("del_skill").config(state=tk.NORMAL)
 
                 name = listbox.get(selection)
                 skill = self.expansion.find(".//skill[@name='" + name + "']")
                 self.widgets.get("sub_skill").updateSource(skill)
-                self.widgets.get("sub_skill").state(["!disabled"])
+                self.widgets.get("sub_skill").config(state=tk.NORMAL)
 
         if listbox == self.widgets.get("items") or not event:
             if len(selection) < 1:
-                self.widgets.get("edit_item").state(["disabled"])
-                self.widgets.get("del_item").state(["disabled"])
+                self.widgets.get("edit_item").config(state=tk.DISABLED)
+                self.widgets.get("del_item").config(state=tk.DISABLED)
             else:
-                self.widgets.get("edit_item").state(["!disabled"])
-                self.widgets.get("del_item").state(["!disabled"])
+                self.widgets.get("edit_item").config(state=tk.NORMAL)
+                self.widgets.get("del_item").config(state=tk.NORMAL)
 
     def showToolbar(self, frame):
 
@@ -247,7 +247,7 @@ class ExpansionScreen(tk.Frame):
                 command=op[2],
             )
             if op[0] == msg.EX_TT_SAVE:
-                button.state(["disabled"])
+                button.config(state=tk.DISABLED)
             tt = ToolTip(button, op[0])
             button.image = img
             button.pack(side=tk.LEFT)
@@ -265,9 +265,9 @@ class ExpansionScreen(tk.Frame):
     def _updateName(self):
         name = self.data.get("name").get()
         if len(name) < 1:
-            self.widgets[msg.EX_TT_SAVE].state(["disabled"])
+            self.widgets[msg.EX_TT_SAVE].config(state=tk.DISABLED)
         else:
-            self.widgets[msg.EX_TT_SAVE].state(["!disabled"])
+            self.widgets[msg.EX_TT_SAVE].config(state=tk.NORMAL)
 
 
         print(name)
@@ -2271,10 +2271,10 @@ class SkillEditor(tk.Toplevel):
             width="7"
         )
 
-        id_entry.state(["disabled"])
+        id_entry.config(state=tk.DISABLED)
 
         def enable(event):
-            event.widget.state(["!disabled"])
+            event.widget.config(state=tk.NORMAL)
         id_entry.bind(
             "<Double-Button-1>",
             enable
@@ -3515,10 +3515,10 @@ class SkillCopy(tk.Frame):
         )
         self.okay_button.pack(side=tk.LEFT)
 
-    def state(self, statespec=None):
-        self.toggle_button.state(statespec)
-        self.name_entry.state(statespec)
-        self.okay_button.state(statespec)
+    def config(self, **kwargs):
+        self.toggle_button.config(**kwargs)
+        self.name_entry.config(**kwargs)
+        self.okay_button.config(**kwargs)
 
     def updateSource(self, source):
         self.source = source
@@ -3534,13 +3534,13 @@ class SkillCopy(tk.Frame):
         invalid = re.findall("[\"\'§&]", name)
         if name in self.loaded_skills:
             self.name_entry.config(style="invalid.TEntry")
-            self.okay_button.state(["disabled"])
+            self.okay_button.config(state=tk.DISABLED)
         elif len(invalid) > 0:
             self.name_entry.config(style="invalid.TEntry")
-            self.okay_button.state(["disabled"])
+            self.okay_button.config(state=tk.DISABLED)
         else:
             self.name_entry.config(style="TEntry")
-            self.okay_button.state(["!disabled"])
+            self.okay_button.config(state=tk.NORMAL)
             self.skill.set("name", name)
 
     def _list(self):
