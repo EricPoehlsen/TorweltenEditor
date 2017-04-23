@@ -195,7 +195,7 @@ class ItemEditor(tk.Toplevel):
 
         weight_str = msg.IE_WEIGHT + weight_str
         
-        weight_label = tk.Label(item_body, text=weight_str)
+        weight_label = tk.Label(item_body, text=weight_str, anchor=tk.W)
         weight_label.pack(fill=tk.X)
 
         price = round(self.item_price * self.item_quantity, 2)
@@ -206,7 +206,7 @@ class ItemEditor(tk.Toplevel):
             price[1] = price[1][0:2]
             price = msg.MONEYSPLIT.join(price)
         price_str = msg.IE_PRICE_VALUE + price
-        price_label = tk.Label(item_body, text=price_str)
+        price_label = tk.Label(item_body, text=price_str, anchor=tk.W)
         price_label.pack(fill=tk.X)
 
         qualtities = {
@@ -233,7 +233,7 @@ class ItemEditor(tk.Toplevel):
         rep_label.image = rep_icon
         ToolTip(rep_label, msg.IE_TT_REPAIR)
         if self.item_quality >= 9:
-            rep_label.state(["disabled"])
+            rep_label.config(state=tk.DISABLED)
 
         rep_label.pack(side=tk.RIGHT, anchor=tk.W)
         dmg_icon = ImageTk.PhotoImage(file="img/damage.png")
@@ -243,7 +243,7 @@ class ItemEditor(tk.Toplevel):
         dmg_label.pack(side=tk.RIGHT, anchor=tk.W)
         ToolTip(dmg_label, msg.IE_TT_DAMAGE_ITEM)
         if self.item_quality <= 1:
-            dmg_label.state(["disabled"])
+            dmg_label.config(state=tk.DISABLED)
 
         quality_frame.pack(fill=tk.X)
 
@@ -276,8 +276,8 @@ class ItemEditor(tk.Toplevel):
                 lambda event, name=name:
                     self._updateTag(event, tagname="option", name=name)
             )
-            entry.pack(side=tk.RIGHT, anchor=tk.E)
-            frame.pack()
+            entry.pack(side=tk.RIGHT, anchor=tk.E, fill=tk.X, expand=1)
+            frame.pack(fill=tk.X, expand=1, anchor=tk.W)
 
         # display stuff according to item type ...
         self.showMore(item_body)
@@ -1034,7 +1034,7 @@ class ItemEditor(tk.Toplevel):
         return ammo
 
     def damage(self, event):
-        if "disabled" in event.widget.state():
+        if event.widget.cget("state") == tk.DISABLED:
             return
         self.item_quality -= 1
         self.item_price *= .666
@@ -1050,7 +1050,7 @@ class ItemEditor(tk.Toplevel):
         pass
 
     def repair(self, event):
-        if "disabled" in event.widget.state():
+        if event.widget.cget("state") == tk.DISABLED:
             return
         self.item_quality += 1
         self.item_price *= 1.25

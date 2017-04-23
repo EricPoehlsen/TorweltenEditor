@@ -183,7 +183,8 @@ class CharScreen(tk.Frame):
             entry = tk.Entry(
                 frame, 
                 textvariable=value_var,
-                width=width
+                width=width,
+                **config.Style.DATA_STYLE
             )
             if edit_mode in ["view", "simulation"]:
                 entry.config(state=tk.DISABLED)

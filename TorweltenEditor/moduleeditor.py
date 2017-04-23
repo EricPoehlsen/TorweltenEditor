@@ -76,7 +76,6 @@ class ModuleEditor(tk.Toplevel):
         select_button = tk.OptionMenu(
             frame,
             selected_type,
-            mod_types[0],
             *mod_types)
         selected_type.set(mod_types[0])
         select_button.pack(fill=tk.X, expand=1)
@@ -138,7 +137,6 @@ class ModuleEditor(tk.Toplevel):
         size_button = tk.OptionMenu(
             frame,
             size,
-            sizes[0],
             *sizes
         )
         size.set(cur_size)
@@ -299,7 +297,6 @@ class ModuleEditor(tk.Toplevel):
             size_button = tk.OptionMenu(
                 frame,
                 size,
-                sizes[0],
                 *sizes
             )
             size.set(sizes[0])
@@ -322,7 +319,6 @@ class ModuleEditor(tk.Toplevel):
                 trait_type_button = tk.OptionMenu(
                     frame,
                     trait_type,
-                    trait_types[0],
                     *trait_types
                 )
                 trait_type.set(trait_types[0])
@@ -364,7 +360,6 @@ class ModuleEditor(tk.Toplevel):
                 skill_type_button = tk.OptionMenu(
                     frame,
                     skill_type,
-                    skill_types[0],
                     *skill_types
                 )
                 skill_type.set(skill_types[0])
@@ -384,7 +379,6 @@ class ModuleEditor(tk.Toplevel):
                 variant_button = tk.OptionMenu(
                     frame,
                     variant,
-                    variants[0],
                     *variants)
                 variant.set(variants[0])
                 variant_button.pack(fill=tk.X)
@@ -452,7 +446,6 @@ class ModuleEditor(tk.Toplevel):
                 tk.OptionMenu(
                     labelframe,
                     item_group,
-                    groups[0],
                     *groups
                 ).pack(fill=tk.X)
                 labelframe.pack(fill=tk.X)
@@ -551,7 +544,6 @@ class ModuleEditor(tk.Toplevel):
                     bag_list_button = tk.OptionMenu(
                         frame,
                         bag_list,
-                        bag_lists[0],
                         *bag_lists
                     )
                     bag_list.set(bag_lists[0])
@@ -624,7 +616,6 @@ class ModuleEditor(tk.Toplevel):
                 contact_type_button = tk.OptionMenu(
                     frame,
                     contact_type,
-                    contact_types[0],
                     *contact_types
                 )
                 contact_type.set(contact_types[0])
@@ -670,7 +661,6 @@ class ModuleEditor(tk.Toplevel):
                     button = tk.OptionMenu(
                         sub_frame,
                         var,
-                        entries[0],
                         *entries
                     )
                     button.pack(fill=tk.X)

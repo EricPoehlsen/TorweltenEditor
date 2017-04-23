@@ -1507,6 +1507,11 @@ class Style:
         "state": "disabled"
     }
 
+    DATA_STYLE = {
+        "disabledforeground": "#000000",
+        "font": "Arial 11 bold"
+    }
+
     ATTR_FONT = "Arial 14 bold"
     SKILL_FONT = "Arial 12 bold"
 
