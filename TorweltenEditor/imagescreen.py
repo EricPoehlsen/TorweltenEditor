@@ -20,6 +20,9 @@ class ImageScreen(tk.Frame):
         self.app = app
         self.char = app.char
 
+        self.width = 0
+        self.height = 0
+
         self.image = None
         self.images = []
 
@@ -36,9 +39,9 @@ class ImageScreen(tk.Frame):
 
         # create canvas ... 
         self.edit_frame = tk.Frame(self)
-        self.edit_frame.pack(side=tk.LEFT, fill=tk.X, expand=1, anchor=tk.N)
+        self.edit_frame.pack(side=tk.LEFT, fill=tk.X, anchor=tk.N)
 
-        self.image_canvas = tk.Canvas(self, width=540, height=540)
+        self.image_canvas = tk.Canvas(self, width=1, height=1)
         self.image_canvas.bind("<B1-Motion>", self._moveFrame)
         self.image_canvas.bind("<ButtonRelease-1>", self._stopMotion)
         self.image_canvas.bind_all("+", self._scaleFrame)
@@ -47,8 +50,9 @@ class ImageScreen(tk.Frame):
         self.image_canvas.bind_all("<Right>", self._moveFrame)
         self.image_canvas.bind_all("<Up>", self._moveFrame)
         self.image_canvas.bind_all("<Down>", self._moveFrame)
+        self.image_canvas.bind("<Configure>", self.resize)
 
-        self.image_canvas.pack(side=tk.LEFT)
+        self.image_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
 
         self.load_button = tk.Button(self.edit_frame)
         self.load_button.pack()
@@ -77,7 +81,13 @@ class ImageScreen(tk.Frame):
             filename = image_tag.get("file") 
             self.image = Image.open(filename)
             self._displayImage()
- 
+
+    def resize(self, event):
+        self.width = event.width
+        self.height = event.height
+        self._displayImage()
+
+
     # display the file open dialog and load an image 
     def loadImageWindow(self):
         options = {}
@@ -110,9 +120,11 @@ class ImageScreen(tk.Frame):
 
     def _displayImage(self):
         if self.image is not None:
+            if self.img_on_canvas:
+                self.image_canvas.delete(self.img_on_canvas)
             real_width = self.image.size[0]
             real_height = self.image.size[1]
-            canvas_dim = self.image_canvas.winfo_reqheight()
+            canvas_dim = min([self.width, self.height])
             scale1 = 1.0 * canvas_dim / real_width
             scale2 = 1.0 * canvas_dim / real_height
             scale = min(scale1, scale2)
@@ -180,10 +192,13 @@ class ImageScreen(tk.Frame):
         # update buttons and retrieve selection ...
         buttons = self.variant_frame.winfo_children()
         for button in buttons:
-            button.config(style="TButton")
+            button.config(relief=tk.RAISED)
             if button is widget: 
                 text = button.cget("text")
-                button.config(style="selected.TButton")
+                button.after(
+                    150,
+                    lambda button=button: button.config(relief=tk.SUNKEN)
+                )
                 for variant in self.variants:
                     if variant[1] == text:
                         self.selected_size = variant[0]
