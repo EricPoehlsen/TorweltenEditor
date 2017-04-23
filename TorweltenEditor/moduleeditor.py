@@ -13,7 +13,7 @@ class ModuleEditor(tk.Toplevel):
     location: string "col row"
     """
 
-    def __init__(self, main, location):
+    def __init__(self, main, col, row):
         super().__init__()
 
         self.minsize(250, 1)
@@ -21,9 +21,8 @@ class ModuleEditor(tk.Toplevel):
         self.main = main
         main.open_windows["mod_ed"] = self
 
-        location = location.split()
-        self.col = int(location[0])
-        self.row = int(location[1])
+        self.col = col
+        self.row = row
         self.size = ""
 
         # store widgets for access
@@ -212,7 +211,7 @@ class ModuleEditor(tk.Toplevel):
     def _addModule(self):
         self._defineModule()
         self.main.addModule(self.module)
-        self.main.showPage(self.main.page_frame)
+        self.main.showPage(self.main.page_canvas)
         self.close()
 
     # retrieve the module ... 
