@@ -259,6 +259,10 @@ class CharScreen(tk.Frame):
             width=1,
             height=1
         )
+        self.active_skill_canvas.bind(
+            "<Configure>",
+            lambda event: self.updateSkillList()
+        )
         self.active_skill_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.active_skill_scroll = tk.Scrollbar(
             self.active_skill_frame,
@@ -437,6 +441,10 @@ class CharScreen(tk.Frame):
     def updateSkillList(self):
         """ Render the contents of the skill lists """
 
+        width = self.active_skill_canvas.winfo_width()
+        if width < 2:
+            return
+
         # retrieve edit mode once ... 
         edit_mode = self.char.getEditMode()
 
@@ -592,17 +600,16 @@ class CharScreen(tk.Frame):
 
                 )
 
-            skill_frame.place(
-                x=0,
-                y=y_pos*height,
-                relwidth=1,
+            canvas.create_window(
+                0,
+                y_pos * height,
+                width=width,
                 height=height,
-                anchor=tk.NW
+                anchor=tk.NW,
+                window=skill_frame
             )
 
-            print(name_label.winfo_reqwidth())
             self.update_idletasks()
-            print(skill_frame.bbox())
         # set scroll regions based on content
         self.active_skill_canvas.config(
             scrollregion=self.active_skill_canvas.bbox("all")

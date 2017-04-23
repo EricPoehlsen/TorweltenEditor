@@ -215,7 +215,7 @@ class SkillSelector(tk.Toplevel):
         # adding a new skill ...
         new_skill_name = self.new_skill_name.get()
         if new_skill_name != msg.SS_NEW_SKILL and self.origin != "":
-            origin = self.origin.replace(msg.SS_X, "")
+            origin = self.origin
             skill = new_skill_name
             self.all_skills.newSkill(skill, origin)
             skill_element = self.all_skills.getSkill(skill)
@@ -300,7 +300,6 @@ class SkillSelector(tk.Toplevel):
         new_name = self.new_skill_name.get()
         if new_name == msg.SS_NEW_SKILL:
             self.new_skill_name.set("")
-        self.list_box.config(selectbackground="#00bb00")
 
     def _skillEntryNoFocus(self, event):
         self.new_skill_entry_focus = False

@@ -412,7 +412,6 @@ class LayoutScreen(tk.Frame):
                 )
                 
             module_sorter.sort()
-            print(module_sorter)
             page[:] = [item[-1] for item in module_sorter]
             page_sorter.append((int(page.get("num")), page))
         page_sorter.sort()
@@ -534,7 +533,6 @@ class LayoutScreen(tk.Frame):
             if event.y < height:
                 break
 
-        print(col, row)
         if self.app.open_windows["mod_ed"] != 0:
             self.app.open_windows["mod_ed"].close()
 
@@ -626,7 +624,6 @@ class LayoutScreen(tk.Frame):
 
     def _getTemplate(self):
         filename = self.char.getPDFTemplate()
-        print(filename)
         if filename:
             with open(filename, mode="rb") as file:
                 self.template = et.parse(file)
