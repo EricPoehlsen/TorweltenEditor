@@ -333,7 +333,7 @@ class TraitSelector(tk.Toplevel):
                 self.submit.config(state=tk.DISABLED)
             if xp < 0:
                 self.info_xp.config(**config.Style.RED)
-                self.submit.config(state=tk.DISABLED)
+                self.submit.config(state=tk.NORMAL)
             if xp > 0:
                 self.info_xp.config(**config.Style.GREEN)
                 self.submit.config(state=tk.NORMAL)

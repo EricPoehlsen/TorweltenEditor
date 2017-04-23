@@ -1154,5 +1154,5 @@ class ItemEditor(tk.Toplevel):
                 self.char.logEvent(
                     self.item,
                     mod=mod_info,
-                    op=msg.CHAR_UPDATE
+                    op=msg.CHAR_UPDATED
                 )
