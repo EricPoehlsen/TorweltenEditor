@@ -28,6 +28,7 @@ class ExpansionScreen(tk.Frame):
         self.expansion = self._newExpansion()
 
         self.rowconfigure(1, weight=100)
+        self.columnconfigure(0, weight=100)
         self.toolbar = tk.Frame(self)
         self.toolbar.grid(row=0, column=0, sticky=tk.NSEW)
         self.showToolbar(self.toolbar)
@@ -37,9 +38,27 @@ class ExpansionScreen(tk.Frame):
         trait_frame = self.showTraits(self.frame)
         skill_frame = self.showSkills(self.frame)
         item_frame = self.showItems(self.frame)
-        trait_frame.pack(side=tk.LEFT, anchor=tk.N)
-        skill_frame.pack(side=tk.LEFT, anchor=tk.N)
-        item_frame.pack(side=tk.LEFT, anchor=tk.N)
+        trait_frame.place(
+            relx=0,
+            rely=0,
+            relwidth=1/3,
+            relheight=1,
+            anchor=tk.NW
+        )
+        skill_frame.place(
+            relx=1/3,
+            rely=0,
+            relwidth=1/3,
+            relheight=1,
+            anchor=tk.NW
+        )
+        item_frame.place(
+            relx=2/3,
+            rely=0,
+            relwidth=1/3,
+            relheight=1,
+            anchor=tk.NW
+        )
 
         self._select()
         
@@ -48,16 +67,16 @@ class ExpansionScreen(tk.Frame):
         list_frame = tk.Frame(trait_frame)
         self.widgets["traits"] = trait_list = tk.Listbox(
             list_frame,
-            width=39,
-            height=21
+            width=1,
+            height=1
         )
         trait_list.bind("<<ListboxSelect>>", self._select)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
         scroll.config(command=trait_list.yview)
         trait_list.config(yscrollcommand=scroll.set)
-        trait_list.pack(side=tk.LEFT)
+        trait_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         scroll.pack(side=tk.LEFT, fill=tk.Y)
-        list_frame.pack()
+        list_frame.pack(fill=tk.BOTH, expand=1)
         new_trait = tk.Button(
             trait_frame,
             text=msg.EX_NEW,
@@ -91,16 +110,16 @@ class ExpansionScreen(tk.Frame):
         list_frame = tk.Frame(skill_frame)
         self.widgets["skills"] = skill_list = tk.Listbox(
             list_frame,
-            width=39,
-            height=21
+            width=1,
+            height=1
         )
         skill_list.bind("<<ListboxSelect>>", self._select)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
         scroll.config(command=skill_list.yview)
         skill_list.config(yscrollcommand=scroll.set)
-        skill_list.pack(side=tk.LEFT)
+        skill_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         scroll.pack(side=tk.LEFT, fill=tk.Y)
-        list_frame.pack()
+        list_frame.pack(fill=tk.BOTH, expand=1)
 
         add_skill = tk.Button(
             skill_frame,
@@ -143,16 +162,16 @@ class ExpansionScreen(tk.Frame):
         list_frame = tk.Frame(item_frame)
         self.widgets["items"] = item_list = tk.Listbox(
             list_frame,
-            width=39,
-            height=21
+            width=1,
+            height=1
         )
         item_list.bind("<<ListboxSelect>>", self._select)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
         scroll.config(command=item_list.yview)
         item_list.config(yscrollcommand=scroll.set)
-        item_list.pack(side=tk.LEFT)
+        item_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         scroll.pack(side=tk.LEFT, fill=tk.Y)
-        list_frame.pack()
+        list_frame.pack(fill=tk.BOTH, expand=1)
         new_item = tk.Button(
             item_frame,
             text=msg.EX_NEW,
