@@ -23,7 +23,20 @@ EWT = [[2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,0.5],  # 1
 class Messages:
     """ Messages provides a variety of strings for the UI and PDF Export """
 
-    title = "Torwelten Charaktergenerator"
+    TITLE = "Torwelten Editor"
+    TITLE_EM_GENERATION = "[Charaktererschaffung]"
+    TITLE_EM_EDIT = "[Bearbeitungsmodus]"
+    TITLE_EM_VIEW = "[Ansichtsmodus]"
+    TITLE_EM_SIMULATION = "[Simulation]"
+
+    ERROR = "Fehler!"
+    ERROR_XML_UNKNOWN = "Allgemeiner Dateifehler beim\n"\
+                        "Versuch die Datei zu laden."
+    ERROR_XML_PARSE = "Fehler beim Versuch die XML-Daten zu verarbeiten."
+    ERROR_XML_NO_CHAR = "Bei dieser Datei handelt es\n"\
+                        "sich nicht um einen Charakter."
+    ERROR_XML_NO_TEMPLATE = "Bei dieser Datei handelt es\n"\
+                            "sich um kein PDF-Template."
 
     # #####GENERIC UI TEXT # ######
     NAME = "Name"
@@ -58,6 +71,7 @@ class Messages:
 
     # TOOLS MENU
     MENU_TOOLS = "Werkzeuge"
+    MENU_EDIT_EXPANSION = "Expansion bearbeiten"
     MENU_IMPROVE = "Charakter steigern ..."
     MENU_EWT = "EWT Tabelle"
     MENU_SETTINGS = "Einstellungen"
@@ -181,6 +195,9 @@ class Messages:
 
     # ####ITEM EDITOR and INVENTORY EDITOR # ####
     IE_DESTROY = "Zerstören"
+    IE_DEL_TITLE = "Zerstoren ..."
+    IE_DEL_TEXT = "Soll der Gegenstand wirklich zerstört/verbraucht werden?"
+
     IE_KG = " kg"
     IE_G = " g"
     IE_WEIGHT = "Gewicht: "
@@ -237,6 +254,11 @@ class Messages:
     IE_USE = "verwenden"
     IE_CALIBER_HEAD = "Kaliber und Kammern (für Fernkampfwaffen ...)"
     IE_CALIBER = "Kaliber: "
+    IE_OPTION_CALIBER = "Kailiber"
+    IE_OPTION_COLOR = "Farbe"
+    IE_OPTION_MATERIAL = "Material"
+    IE_OPTION_SIZE = "Größe"
+    IE_OPTION_VARIANT = "Variante"
     IE_CONTAINER = "Container (Taschen, Kisten, Behälter, ...)"
     IE_DESCRIPTION = "Beschreibung"
     IE_ADD_ITEM = "Gegenstand hinzufügen"
@@ -804,6 +826,7 @@ class Messages:
 
     # SOCIAL EDITOR
 
+    SE_CONTACT_TITLE = "Kontakt"
     SE_CLOSE = "Schließen"
     SE_SAVE = "Speichern"
     SE_DELETE = "Löschen"
@@ -828,6 +851,238 @@ class Messages:
     SE_FREQUENCY_4 = "häufig"
     SE_FREQUENCY_5 = "dauernd"
 
+    SE_DEL_TITLE = "Kontakt löschen ..."
+    SE_DEL_TEXT = "Soll der Kontakt {name}wirklich gelöscht werden?"
+
+    # EXPANSION SCREEN
+    EX_SAVE = "Erweiterung speichern ..."
+    EX_LOAD = "Erweiterung laden ..."
+
+    EX_TRAITS = "Eigenschaften"
+    EX_SKILLS = "Fertigkeiten"
+    EX_ITEMS = "Ausrüstung"
+    EX_CONTINUE = "Weiter"
+    EX_BACK = "Zurück"
+    EX_FINISH = "Hinzufügen"
+    EX_ABORT = "Abbrechen"
+    EX_NEW = "Neu ..."
+    EX_EDIT = "Bearbeiten"
+    EX_DEL = "Entfernen"
+    EX_SKILL_EXISTS = "Name bereits vergeben"
+    EX_SUPER_SKILL = "Übergeordnete Fertigkeit"
+    EX_NO_SUPER_SKILL = "Es muss eine übergeordnete\n"\
+                        "Fertigkeit gewählt werden!"
+
+    EX_ACTIVE_SKILL = "Aktive Fertigkeit"
+    EX_PASSIVE_SKILL = "Passive Fertigkeit"
+    EX_LANGUAGE_SKILL = "Sprachfertigkeit"
+    EX_SPEC2 = "Fertigkeit in "
+    EX_SPEC3 = "Spezialisierung von "
+    EX_NEW_SKILL = "Neue Fertigkeit"
+    EX_ID = "ID: "
+
+    EX_MENU_POS = "Wo im Menü einsortieren?"
+    EX_ITEM_TYPE = "Typ festlegen: "
+    EX_ITEM_PRICE = "Preis: "
+    EX_ITEM_WEIGHT = "Gewicht: "
+    EX_ITEM_AVAIL = "Verfügbarkeit: "
+    EX_DAMAGE = "Schadenswert: "
+    EX_DEFENSE = "Schutzwert: "
+    EX_CALIBER = "Kaliber: "
+    EX_CHAMBERS = "Kammern: "
+    EX_USE_CONTAINER = "als Behälter verwenden."
+    EX_DISPLAY_NAME = "Anzeigename"
+    EX_CONTAINER_SIZE = "Kapazität"
+    EX_CONTAINER_LIMIT = "Traglast"
+    EX_MIN_QUALITY = "Schlechteste Qualität: "
+    EX_MAX_QUALITY = "Beste Qualität: "
+    EX_OPTIONS = "Weitere Optionen"
+    EX_PACK_UNITS = "Verpackungseinheiten:"
+    EX_DESCRIPTION = "Beschreibung"
+
+    EX_NAME = "Bezeichnung"
+    EX_MODE_PLUS = "addieren"
+    EX_MODE_MULTIPLY = "multiplizieren"
+    EX_SPECIFICATION = "Spezifizierung: "
+    EX_ADD_VARIABLES = "Neuen Rang oder Variable hinzufügen."
+    EX_VARIABLE = "Variable"
+    EX_TRAIT_GROUP = "Eigenschaftsgruppe"
+    EX_RANK = "Rang"
+    EX_MIN_RANK = "Min"
+    EX_MAX_RANK = "Max"
+
+    EX_IT_GRP = "Gruppe:"
+    EX_IT_TYPE = "Typ: "
+    # item types
+    # groups
+    EX_IT_GRP_CLOTHING = "Bekleidung und Behälter"
+    EX_IT_GRP_MELEE = "Nahkampfwaffe"
+    EX_IT_GRP_GUN = "Fernkampfwaffe"
+    EX_IT_GRP_OTHER = "Werkzeug und mehr"
+    EX_IT_GRP_BIOTECH = "Biotech"
+
+    # clothing and more
+    EX_IT_CLOTHING = "Bekleidung"
+    EX_IT_HARNESS = "Harnisch"
+    EX_IT_ARMOR = "Rüstung"
+    EX_IT_BAG = "Tasche"
+    EX_IT_BOX = "Kiste"
+    EX_IT_CONTAINER = "Container"
+    #  melee weapons
+    EX_IT_NATURAL = "Natürliche Waffe"
+    EX_IT_CLUB = "Hiebwaffe"
+    EX_IT_BLADE = "Klingenwaffe"
+    EX_IT_STAFF = "Stabwaffe"
+    EX_IT_OTHER_MELEE = "sonstige Nahkampfwaffe"
+    #  guns
+    EX_IT_REVOLVER = "Revoler"
+    EX_IT_PISTOL = "Pistole"
+    EX_IT_RIFLE = "Gewehr mit Magazin"
+    EX_IT_SHOT_GUN = "Flinte mit Magazin"
+    EX_IT_RIFLE_SA = "Gewehr mit Kammern"
+    EX_IT_SHOT_GUN_SA = "Flinte mit Kammern"
+    EX_IT_AUTOMATIC_WEAPON = "Automatikwaffen"
+    EX_IT_BLASTER = "Blaster mit Magazin"
+    EX_IT_BLASTER_SA = "Blaster mit Kammern"
+    EX_IT_CLIP = "Magazin"
+    EX_IT_AMMO = "Munition"
+    #  various
+    EX_IT_TOOLS = "Werkzeug"
+    EX_IT_MONEY = "Wertgegenstand"
+    EX_IT_SERVICE = "Dienstleistung"
+    EX_IT_FOOD = "Nahrungsmittel"
+    EX_IT_DRUG = "Drogen"
+    EX_IT_GENERIC = "Sonstiges"
+    #biotech
+    EX_IT_IMPLANT = "Implantat"
+    EX_IT_PROSTHESIS = "Prothese"
+    EX_IT_IMPLANT_PART = "Einbauteil"
+
+    EX_ERROR_NAME_EMPTY = "Der Name darf nicht leer sein."
+    EX_ERROR_NAME_EXISTS = "Ein Gegenstand mit diesem Namen existiert bereits."
+    EX_ERROR_TRAIT_EXISTS = "Eine Eigenschaft mit diesem Namen gibt es bereits."
+    EX_ERROR_NAME_INVALID = "Der Name enthält ungültige Zeichen."
+    EX_ERROR_WEIGHT = "Das Gewicht muss ein positive ganzzahliger Wert sein."
+    EX_ERROR_PRICE = "Der Preis muss eine positive Zahl sein."
+    EX_ERROR_AVAIL = "Die Verfügbarkeit muss zwischen -6 und +6 liegen"
+    EX_ERROR_DAMAGE = "Der angegebene Schadenswert ist ungültig."
+    EX_ERROR_CHAMBERS = "Die Anzahl der Kammern muss ein"\
+                        " positiver ganzzahliger Wert sein."
+    EX_ERROR_CONTAINER = "Die angegebene Behältergröße und/oder Lastgrenze"\
+                         "ist ungültig."
+    EX_ERROR_INVALID_OPTION = "Mindestens ein Optionsname ist ungültig."
+    EX_ERROR_OPTION_LENGTH = "Variablen benötigen mindestens zwei Optionen."
+    EX_ERROR_INVALID_VAR_NAME = "Bezeichnungen der Variablen prüfen!"
+    EX_ERROR_INVALID_RANK_NAME = "Bezeichnungen der Ränge prüfen!"
+    EX_ERROR_RANK_MIN = "Der niedrigste mögliche Rang ist 'eins'."
+    EX_ERROR_RANK_MAX = "Der Maximalrang muss größer als der Minimalrang sein."
+    EX_ERROR_INVALID_DESC = "Ungültige Zeichen in der Beschreibung."
+    EX_ERROR_INVALID_SPEC = "Ungültige Zeichen im Namen der Spezifierung"
+    EX_ERROR_NO_PARENT = "Kein "
+    EX_ERROR_XP_VALUE = "XP-Werte müssen Zahlen != 0 sein."
+    EX_ERROR_NEG_MULT = "Bei Multiplikator-Faktoren sind nur "\
+                        "positive XP-Werte zulässig!"
+    EX_ERROR_NEG_ADV = "Bei Vorteilen müssen kumulative Faktoren positiv sein."
+    EX_ERROR_POS_DIS = "Bei Nachteilen müssen kumulative Faktoren negativ sein."
+
+    EX_ITEM_NOT_SAVED = "Speichern fehlgeschlagen!"
+
+    EX_TT_NEW = "Neue Expansion erstellen ..."
+    EX_TT_LOAD = "Expansion laden ..."
+    EX_TT_SAVE = "Expansion speichern ..."
+
+    EX_TT_NAME = "Jeder Gegenstand braucht einen Namen"
+    EX_TT_NAME_EXISTS = "Dieser Name wurde bereits verwendet!"
+    EX_TT_NAME_INVALID = "Dieser Name enthält ungültige Zeichen!"
+    EX_TT_NAME_OKAY = "Name in Ordnung."
+    EX_TT_TYPE = "Typ des Ausrüstungsgegenstands festlegen\n"\
+                 "Oben Gruppe wählen, unten den Typ aus dieser."
+    EX_TT_PRICE = "Preis festlegen!"
+    EX_TT_PRICE_OKAY = "Preis in Ordnung."
+    EX_TT_PRICE_INVALID = "Ungültiger Preis!"
+    EX_TT_WEIGHT = "Gewicht in Gramm."
+    EX_TT_WEIGHT_OKAY = "Gewicht in Ordnung."
+    EX_TT_WEIGHT_INVALID = "Ungültiges Gewicht!"
+    EX_TT_AVAIL = "Verfügbarkeit zwischen:\n"\
+                  "-6: allgegenwärtig\n"\
+                  "+6: extrem selten."
+    EX_TT_AVAIL_OKAY = "Verfügbarkeit in Ordnung"
+    EX_TT_DAMAGE = "Schadenswert S/D(/E)\n"\
+                   "S: Schadenswürfel (-X - +X)\n"\
+                   "D: Durchschlag (-7 bis +7)\n"\
+                   "E: 'E' für Energieschaden (optional)"
+    EX_TT_DAMAGE_OKAY = "Gültiger Schadenswert"
+    EX_TT_CONT_SIZE = "maximale Anzahl an Gegenständen\n"\
+                      "die Platz in dem Behälter finden.\n"\
+                      "0: unbegrenzt"
+    EX_TT_CONT_LIMIT = "Lastkapazität in Gramm.\n0: unbegrenzt"
+    EX_TT_CONT_ERROR = "Muss eine Zahl >= 0 sein."
+    EX_TT_CONT_NO_NAME = "Abweichender Anzeigename für den Inventar-\n"\
+                         "slot. Wird nichts angegeben, verwendet\n"\
+                         "das System den Namen des Gegenstands."
+    EX_TT_CONT_NAME_OKAY = "Anzeigename in Ordnung"
+    EX_TT_CONT_NAME_INVALID = "Der Name enthält ungültige Zeichen."
+    EX_TT_OPTION = "Kommagetrennte Liste an Optionen - oder leer lassen"
+    EX_TT_OPT_EMPTY = "Wenn Option aktiv, freies Auswahlfeld"
+    EX_TT_OPT_SINGLE = "Fixe Option (wirklich notwendig?)"
+    EX_TT_OPT_OKAY = "Liste mit {n} Optionen"
+    EX_TT_OPT_INVALID = "Liste enthält ungültige Zeichen!"
+    EX_TT_PACKS = "Falls der Gegenstand in Verpackungseinheiten\n"\
+                  "verkauft wird, werden diese hier definiert.\n"\
+                  "pro Zeile eine Verpackungseinheit im Format:\n"\
+                  "Anzahl:Bezeichnung"
+    EX_TT_PACKS_SINGLE = "Es wurde eine Verpackungseinheit definiert."
+    EX_TT_PACKS_MULTI = "Es wurden {n} Verpackungseinheiten definiert."
+    EX_TT_PACKS_NONE = "Keine Verpackungseinheiten festgelegt."
+    EX_TT_QUALITY = "Die Bandbreite der möglichen Qualitätsstufen festlegen."
+
+    EX_TT_TRAIT_NAME = "Jede Eigenschaft braucht einen Namen"
+    EX_TT_TRAIT_XP = "XP für diese Eigenschaft festlegen.\n"\
+                     "Negativ für Nachteile, positiv für Vorteile.\n"\
+                     "Wenn Ränge oder Variablen verwenden werden\n"\
+                     "sollte der Wert +1 bzw. -1 betragen."
+    EX_TT_TRAIT_GROUP = "Die Eigenschaftsgruppe kann bei der Auswahl\n"\
+                        "als Filter verwendet werden."
+    EX_TT_TRAIT_SPEC = "Eine Eigenschaftsspezifizierung kann verwendet\n"\
+                       "werden, um eine genauere Spezifizierung der\n"\
+                       "gewählten Eigenschaft zu fordern."
+    EX_TT_TRAIT_SPEC_OKAY = "Gültige Spezifizierung."
+    EX_TT_TRAIT_SPEC_NONE = "Keine Spezifizierung festgelegt."
+    EX_TT_TRAIT_DESC = "Allgemeine Beschreibung der Eigenschaft."
+    EX_TT_ADD_VAR = "Fügt eine Optionsvariable zur Eigenschaft hinzu."
+    EX_TT_ADD_RANK = "Fügt eine Rangvariable zur Eigenschaft hinzu."
+    EX_TT_VAR_NAME = "Name der Variable"
+    EX_TT_OPTION_NAME = "Name der Option"
+    EX_TT_OPTION_XP = "XP-Wert für diese Option"
+    EX_TT_POS_DIS = "Achtung:\n"\
+                    "Bei Nachteilen müssen kumulative Faktoren\n"\
+                    "negative XP-Werte haben."
+    EX_TT_NEG_ADV = "Achtung:\n"\
+                    "Bei Vorteilen müssen kumulative Faktoren\n"\
+                    "positive XP-Werte haben."
+    EX_TT_NEG_MULT = "Achtung:\n"\
+                     "Die XP-Werte für Multiplikatoren müssen\n"\
+                     "immer positiv sein!"
+    EX_TT_XP_OKAY = "XP in Ordnung."
+    EX_TT_INVALID_XP = "XP-Wert muss eine Zahl != 0 sein."
+    EX_TT_ADD_OPTION = "Option hinzufügen."
+    EX_TT_DEL_OPTION = "Option entfernen."
+    EX_TT_DEL_VAR = "Variable löschen!"
+    EX_TT_DEL_RANK = "Rang löschen!"
+    EX_TT_MINIMIZE = "Zusammenfalten."
+    EX_TT_RESTORE = "Zum Auffalten anklicken."
+    EX_TT_MOVE_UP = "nach oben schieben ..."
+    EX_TT_MOVE_DOWN = "nach unten schieben ..."
+    EX_TT_SWITCH_MODE = "Zum Wechsel zwischen kumulativen und\n"\
+                        "multiplikativen Modus der Variable."
+    EX_TT_MIN_RANK = "Die niedrigste Rank muss mindestens '1' betragen."
+    EX_TT_MAX_RANK = "Der höchste Rang muss größer als der niedrigste sein."
+    EX_TT_RANKS_OKAY = "Werte in Ordnung."
+    EX_TT_INVALID_RANKS = "Werte müssen Zahlen != 0 sein!"
+    EX_TT_RANKS = "Min: Niedrigster möglicher Rang.\n"\
+                  "Max: Höchster möglicher Rang.\n"\
+                  "XP: XP-Faktor pro Rang."
+
     # IMAGE SCREEN
     IS_ERROR = "Dateifehler!"
     IS_ERROR_TEXT = "Fehler beim Versuch die Datei %s zu laden."
@@ -839,7 +1094,9 @@ class Messages:
     IS_LOAD_MIME = "Bilddateien ..."
 
     # NOTESCREEN
-    NS_TT_DELETE = "zum Löschen 2x klicken ..."
+    NS_DEL_TITLE = "Notiz löschen"
+    NS_DEL_TEXT = "Soll die Notiz {name}wirklich gelöscht werden?"
+    NS_TT_DELETE = "Löschen ..."
     NS_TT_NEW = "Neue Charakternotiz anlegen."
 
     # for the sheetlayoutscreen
@@ -945,6 +1202,10 @@ class Messages:
     PDF_FULL = "1x4 - ganze Spalte"
     PDF_HALF = "2x4 - halbe Seite"
     PDF_ATTRIB_IMAGE = "im Attributsmodul"
+
+    PDF_ERROR_TITLE = "Fehler beim PDF Export"
+    PDF_ERROR_TEXT = "Schreiben der Datei ist fehlgeschlagen\n"\
+                     "vermutlich ist die Zieldatei geöffnet!"
 
     # SettingScreen
     SET_CORE_SETTINGS = "Programmoptionen"
@@ -1128,20 +1389,21 @@ class ItemTypes:
 
     #  melee weapons 
     NATURAL = "natural"
-    CLUBS = "club"
-    BLADES = "blade"
-    STAFFS = "staff"
+    CLUB = "club"
+    BLADE = "blade"
+    STAFF = "staff"
     OTHER_MELEE = "other_melee"
 
     #  guns 
-    REVOLVERS = "revolver"
-    PISTOLS = "pistol"
-    RIFLES = "rifle"
-    SHOT_GUNS = "shotgun"
-    RIFLES_SA = "rifle_sa"
-    SHOT_GUNS_SA = "shotgun_sa"
+    REVOLVER = "revolver"
+    PISTOL = "pistol"
+    RIFLE = "rifle"
+    SHOT_GUN = "shotgun"
+    RIFLE_SA = "rifle_sa"
+    SHOT_GUN_SA = "shotgun_sa"
     AUTOMATIC_WEAPON = "automatic_weapon"
     BLASTER = "blaster"
+    BLASTER_SA = "blaster_sa"
 
     #  various
     TOOLS = "tool"
@@ -1156,7 +1418,7 @@ class ItemTypes:
     CONTAINER = "container"
 
     #  other stuff
-    SERVICES = "service"
+    SERVICE = "service"
     FOOD = "food"
     DRUG = "drug"
 
@@ -1166,7 +1428,10 @@ class ItemTypes:
     IMPLANT_PART = "implant_part"
 
     OPTION_CALIBER = "caliber"
-    OPTION_COLOR = "Farbe"
+    OPTION_COLOR = "color"
+    OPTION_MATERIAL = "material"
+    OPTION_SIZE = "size"
+    OPTION_VARIANT = "variant"
 
 
 class TraitGroups:
@@ -1223,7 +1488,32 @@ class Colors:
 
 
 class Style:
+    MINSIZE = (600, 500)
+
+    RED = {
+        "foreground": "#ff0000"
+    }
+    GREEN = {
+        "foreground": "#00aa00"
+    }
+    BLACK = {
+        "foreground": "#000000"
+    }
+
+    HIDDEN_ENTRY = {
+        "disabledbackground": "#eeeeee",
+        "relief": "flat",
+        "disabledforeground": "#000000",
+        "state": "disabled"
+    }
+
+    DATA_STYLE = {
+        "disabledforeground": "#000000",
+        "font": "Arial 11 bold"
+    }
+
     ATTR_FONT = "Arial 14 bold"
+    SKILL_FONT = "Arial 12 bold"
 
     ATTR_LF_FONT = "Arial 12 bold"
     TITLE_LF_FONT = "Arial 10 bold"

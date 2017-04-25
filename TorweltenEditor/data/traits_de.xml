@@ -748,7 +748,7 @@ Der Charakter reagiert möglicherweise mit Vorurteilen oder Angst auf Technologi
 
 <trait name = "Zugriff auf Ausrüstung" group = "financial" xp = "1">
 <specification name = "Art der Ausrüstung"/>
-<rank id = "1" name = "Verfügbarkeit" values = "+4,+5,+6" xp = "1,2,3"/>
+<variable id = "1" name = "Verfügbarkeit" values = "+4,+5,+6" xp = "1,2,3"/>
 <description>Manche Ausrüstung ist selten und steht am Anfang einer Abenteurerkarriere eigentlich nicht zur Verfügung. Dein Charakter besitzt jedoch einen solchen seltenen Gegenstand. Üblicherweise kann man nur Gegenstände erwerben, deren Verfügbarkeit bei +3 oder mehr liegt. Wie viele Vorteilspunkte der Zugriff auf einen Gegenstand kostet hängt natürlich auch von der gespielten Kampagne ab.</description>
 <description>Natürlich muss so ein Besitz auch irgendwie begründet werden. 'Hab ich auf der Straße gefunden' kann vielleicht für ein Päckchen Drogen funktionieren, wird aber spätestens bei einer Servo-Rüstung oder einem Panzerfahrzeug etwas unglaubwürdig. Darüber hinaus muss die Ausrüstung zusätzlich mit Startkapital bezahlt werden.</description>
 </trait>

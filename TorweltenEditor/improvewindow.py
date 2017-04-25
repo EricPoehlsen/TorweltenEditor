@@ -7,9 +7,14 @@ msg = config.Messages()
 
 
 class Improve(tk.Toplevel):
+    """ Displays a window to add a character improvement event 
+    
+    Args:
+        app (Application) the main application instance
+    """
+
     def __init__(self, app):
         tk.Toplevel.__init__(self)
-        self.style = app.style
         self.app = app
         self.char = app.char
 
@@ -143,9 +148,9 @@ class Improve(tk.Toplevel):
             money = self.money_amount.get()
             money = money.replace(",", ".")
             money = float(money)
-            self.submit.state(["!disabled"])
+            self.submit.config(state=tk.NORMAL)
         except ValueError:
-            self.submit.state(["disabled"])
+            self.submit.config(state=tk.DISABLED)
 
     def close(self):
         # TODO UPDATE LIST OF OPEN WINDOWS # #

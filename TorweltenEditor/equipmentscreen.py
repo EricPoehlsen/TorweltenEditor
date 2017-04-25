@@ -15,9 +15,10 @@ class EquipmentScreen(tk.Frame):
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
         self.app = app
-        self.style = app.style
         self.char = app.char
         self.itemlist = app.itemlist
+
+        self.canvas_width = 0
 
         self.account_info = tk.StringVar()
 
@@ -26,11 +27,12 @@ class EquipmentScreen(tk.Frame):
 
         # define the three columns
         self.left_frame = tk.Frame(self)
-        self.left_frame.pack(
-            side=tk.LEFT,
-            anchor=tk.N,
-            fill=tk.Y,
-            expand=1
+        self.left_frame.place(
+            relx=0,
+            rely=0,
+            relwidth=1/3,
+            relheight=1,
+            anchor=tk.NW
         )
 
         # displaying the characters initial account
@@ -45,7 +47,7 @@ class EquipmentScreen(tk.Frame):
             text=msg.ES_BUY_BUTTON,
             command=self.displayInventoryEditor
         )
-        self.buy_button.pack(fill=tk.BOTH, expand=1)
+        self.buy_button.pack(fill=tk.X)
 
         # show equipped items 
         self.equipped_frame = tk.LabelFrame(
@@ -55,10 +57,10 @@ class EquipmentScreen(tk.Frame):
         )
         self.equipped_canvas = tk.Canvas(
             self.equipped_frame,
-            width=250,
-            height=450
+            width=1,
+            height=1
         )
-        self.equipped_canvas.pack(side=tk.LEFT)
+        self.equipped_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.equipped_scroll = tk.Scrollbar(
             self.equipped_frame,
             orient=tk.VERTICAL
@@ -70,7 +72,7 @@ class EquipmentScreen(tk.Frame):
         self.equipped_canvas.config(
             yscrollcommand=self.equipped_scroll.set
         )
-        self.equipped_frame.pack(fill=tk.Y)
+        self.equipped_frame.pack(fill=tk.BOTH, expand=1)
         self.showEquippedItems()
 
         # center frame
@@ -83,10 +85,10 @@ class EquipmentScreen(tk.Frame):
         )
         self.melee_canvas = tk.Canvas(
             self.melee_frame,
-            width=230,
-            height=250
+            width=1,
+            height=1
         )
-        self.melee_canvas.pack(side=tk.LEFT)
+        self.melee_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.melee_scroll = tk.Scrollbar(
             self.melee_frame,
             orient=tk.VERTICAL
@@ -98,7 +100,13 @@ class EquipmentScreen(tk.Frame):
         self.melee_canvas.config(
             yscrollcommand=self.melee_scroll.set
         )
-        self.melee_frame.pack()
+        self.melee_frame.place(
+            relx=0,
+            rely=0,
+            relwidth=1,
+            relheight=.5,
+            anchor=tk.NW
+        )
 
         self.guns_frame = tk.LabelFrame(
             self.center_frame,
@@ -107,10 +115,10 @@ class EquipmentScreen(tk.Frame):
         )
         self.guns_canvas = tk.Canvas(
             self.guns_frame,
-            width=230,
-            height=250
+            width=1,
+            height=1
         )
-        self.guns_canvas.pack(side=tk.LEFT)
+        self.guns_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.guns_scroll = tk.Scrollbar(
             self.guns_frame,
             orient=tk.VERTICAL
@@ -123,8 +131,20 @@ class EquipmentScreen(tk.Frame):
             yscrollcommand=self.guns_scroll.set
         )
 
-        self.guns_frame.pack()
-        self.center_frame.pack(side=tk.LEFT, anchor=tk.N)
+        self.guns_frame.place(
+            relx=0,
+            rely=0.5,
+            relwidth=1,
+            relheight=.5,
+            anchor=tk.NW
+        )
+        self.center_frame.place(
+            relx=1/3,
+            rely=0,
+            relwidth=1/3,
+            relheight=1,
+            anchor=tk.NW
+        )
         self.showEquippedGuns(self.guns_canvas)
         self.showEquippedMelee(self.melee_canvas)
         
@@ -137,10 +157,11 @@ class EquipmentScreen(tk.Frame):
         )
         self.unassigned_canvas = tk.Canvas(
             self.unassigned_frame,
-            height=500,
-            width=230
+            height=1,
+            width=1
         )
-        self.unassigned_canvas.pack(side=tk.LEFT)
+        self.unassigned_canvas.bind("<Configure>", self.updateItemList)
+        self.unassigned_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         self.unassigned_scroll = tk.Scrollbar(
             self.unassigned_frame,
             orient=tk.VERTICAL
@@ -152,8 +173,20 @@ class EquipmentScreen(tk.Frame):
         self.unassigned_canvas.config(
             yscrollcommand=self.unassigned_scroll.set
         )
-        self.unassigned_frame.pack(fill=tk.BOTH, expand=1)
-        self.right_frame.pack(side=tk.LEFT, anchor=tk.N, fill=tk.BOTH)
+        self.unassigned_frame.place(
+            relx=0,
+            rely=0,
+            relwidth=1,
+            relheight=1,
+            anchor=tk.NW
+        )
+        self.right_frame.place(
+            relx=2/3,
+            rely=0,
+            relwidth=1/3,
+            relheight=1,
+            anchor=tk.NW
+        )
         self.showUnassignedItems()
 
     # handling the initial account ... 
@@ -234,7 +267,9 @@ class EquipmentScreen(tk.Frame):
             self.open_windows["inv"].focus()
 
     # called when something has changed and the item lists need updating ...
-    def updateItemList(self):
+    def updateItemList(self, event=None):
+        if event:
+            self.canvas_width = event.width
         self.showEquippedItems()
         self.showEquippedGuns(self.guns_canvas)
         self.showEquippedMelee(self.melee_canvas)
@@ -251,6 +286,8 @@ class EquipmentScreen(tk.Frame):
         
         equippable_types = self.itemlist.EQUIPPABLE            
         y = 0
+        canvas.update()
+
         for item in items:
             # is the item currently packed or assigned as carried item?
             unassigned = True
@@ -273,7 +310,7 @@ class EquipmentScreen(tk.Frame):
                     justify=tk.LEFT,
                     width=4
                 )
-                amount_label.grid(row=0, column=0, sticky=tk.E)
+                amount_label.grid(row=0, column=0, sticky=tk.EW)
                 name_label = tk.Label(
                     item_frame,
                     text=item.get("name"),
@@ -284,7 +321,7 @@ class EquipmentScreen(tk.Frame):
                     lambda event, item_id=item_id:
                         self.displayItemEditor(event, item_id)
                 )
-                name_label.grid(row=0, column=1, sticky=tk.W)
+                name_label.grid(row=0, column=1, sticky=tk.EW)
                 item_type = item.get("type")
                 if item_type in equippable_types:
                     show = True
@@ -304,13 +341,13 @@ class EquipmentScreen(tk.Frame):
                             self.equipItem(event, item_id)
                     )
                     if show:
-                        equip_button.grid(row=0, column=2)
+                        equip_button.grid(row=0, column=2, sticky=tk.EW)
                     else:
                         empty = tk.Label(item_frame, text=" ", width=2)
                         empty.grid(row=0, column=2)
                 else:
                     empty = tk.Label(item_frame, text=" ", width=2)
-                    empty.grid(row=0, column=2)
+                    empty.grid(row=0, column=2, sticky=tk.EW)
                     
                 if self.active_bag_id >= 0:
                     pack_icon = ImageTk.PhotoImage(file="img/pack.png")
@@ -321,16 +358,16 @@ class EquipmentScreen(tk.Frame):
                         "<Button-1>",
                         lambda event, item_id=item_id:
                             self.packItem(event, item_id))
-                    pack_button.grid(row=0, column=3)
+                    pack_button.grid(row=0, column=3, sticky=tk.EW)
                 else:
                     empty = tk.Label(item_frame, text=" ", width=2)
-                    empty.grid(row=0, column=3)
+                    empty.grid(row=0, column=3, sticky=tk.EW)
                 
                 canvas.create_window(
                     0, y,  # x, y
+                    width=self.canvas_width,
                     window=item_frame,
                     anchor=tk.NW,
-                    width=230
                 )
 
                 y += name_label.winfo_reqheight() + 5
@@ -354,7 +391,7 @@ class EquipmentScreen(tk.Frame):
         armor_frame = tk.LabelFrame(
             canvas,
             text=msg.ES_CLOTHING_ARMOR,
-            width=250
+            width=self.canvas_width
         )
         lines = self.showEquippedClothing(armor_frame)
         if lines > 1:
@@ -362,7 +399,7 @@ class EquipmentScreen(tk.Frame):
                 0, y,  # x, y
                 window=armor_frame,
                 anchor=tk.NW,
-                width=250
+                width=self.canvas_width
             )
             self.update_idletasks()
             y += armor_frame.winfo_height()
@@ -378,7 +415,7 @@ class EquipmentScreen(tk.Frame):
                 0, y,  # x, y
                 window=cyber_frame,
                 anchor=tk.NW,
-                width=250
+                width = self.canvas_width
             )
             self.update_idletasks()
             y += cyber_frame.winfo_height()
@@ -392,7 +429,7 @@ class EquipmentScreen(tk.Frame):
                 0, y,  # x, y
                 window=bag_frame,
                 anchor=tk.NW,
-                width=250
+                width=self.canvas_width
             )
             self.update_idletasks()
             y += bag_frame.winfo_height()
@@ -566,9 +603,9 @@ class EquipmentScreen(tk.Frame):
             if item.get("equipped", "0") == "1":
                 item_type = item.get("type")
                 weapons = [
-                    it.CLUBS,
-                    it.BLADES,
-                    it.STAFFS,
+                    it.CLUB,
+                    it.BLADE,
+                    it.STAFF,
                     it.OTHER_MELEE,
                     it.TOOLS,
                     it.NATURAL
@@ -595,7 +632,7 @@ class EquipmentScreen(tk.Frame):
                             0, y,  # x, y
                             window=item_frame,
                             anchor=tk.NW,
-                            width=230
+                            width=self.canvas_width
                         )
                         self.update_idletasks()
                         y += item_frame.winfo_height()
@@ -616,12 +653,12 @@ class EquipmentScreen(tk.Frame):
             if item.get("equipped", "0") == "1":
                 item_type = item.get("type")
                 weapons = [
-                    it.PISTOLS,
-                    it.REVOLVERS,
-                    it.RIFLES,
-                    it.SHOT_GUNS,
-                    it.RIFLES_SA,
-                    it.SHOT_GUNS_SA,
+                    it.PISTOL,
+                    it.REVOLVER,
+                    it.RIFLE,
+                    it.SHOT_GUN,
+                    it.RIFLE_SA,
+                    it.SHOT_GUN_SA,
                     it.AUTOMATIC_WEAPON,
                 ]
                 if item_type in weapons:
@@ -726,7 +763,7 @@ class EquipmentScreen(tk.Frame):
                         0, y,  # x, y
                         window=weapon_frame,
                         anchor=tk.NW,
-                        width=230
+                        width=self.canvas_width
                     )
                     self.update_idletasks()
                     y += weapon_frame.winfo_height()

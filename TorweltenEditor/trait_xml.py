@@ -62,7 +62,7 @@ class TraitTree(object):
         self.xml_traits = self.loadTree("data/traits_de.xml")
         active_expansions = self.settings.getExpansions()
         for expansion in active_expansions:
-            self.addToTree("data/" + expansion)
+            self.addToTree("expansion/" + expansion)
 
     def getTraits(self):
         """ get all traits
@@ -84,7 +84,7 @@ class TraitTree(object):
         Returns:
             [(name, class, group),...]:
                 name (str): name of trait
-                class (str): class of trait
+                xp (str): base cost of trait
                 group (str): group of trait
         """
 

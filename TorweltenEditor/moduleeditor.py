@@ -13,7 +13,7 @@ class ModuleEditor(tk.Toplevel):
     location: string "col row"
     """
 
-    def __init__(self, main, location):
+    def __init__(self, main, col, row):
         super().__init__()
 
         self.minsize(250, 1)
@@ -21,9 +21,8 @@ class ModuleEditor(tk.Toplevel):
         self.main = main
         main.open_windows["mod_ed"] = self
 
-        location = location.split()
-        self.col = int(location[0])
-        self.row = int(location[1])
+        self.col = col
+        self.row = row
         self.size = ""
 
         # store widgets for access
@@ -76,7 +75,6 @@ class ModuleEditor(tk.Toplevel):
         select_button = tk.OptionMenu(
             frame,
             selected_type,
-            mod_types[0],
             *mod_types)
         selected_type.set(mod_types[0])
         select_button.pack(fill=tk.X, expand=1)
@@ -138,7 +136,6 @@ class ModuleEditor(tk.Toplevel):
         size_button = tk.OptionMenu(
             frame,
             size,
-            sizes[0],
             *sizes
         )
         size.set(cur_size)
@@ -214,7 +211,7 @@ class ModuleEditor(tk.Toplevel):
     def _addModule(self):
         self._defineModule()
         self.main.addModule(self.module)
-        self.main.showPage(self.main.page_frame)
+        self.main.showPage(self.main.page_canvas)
         self.close()
 
     # retrieve the module ... 
@@ -299,7 +296,6 @@ class ModuleEditor(tk.Toplevel):
             size_button = tk.OptionMenu(
                 frame,
                 size,
-                sizes[0],
                 *sizes
             )
             size.set(sizes[0])
@@ -322,7 +318,6 @@ class ModuleEditor(tk.Toplevel):
                 trait_type_button = tk.OptionMenu(
                     frame,
                     trait_type,
-                    trait_types[0],
                     *trait_types
                 )
                 trait_type.set(trait_types[0])
@@ -364,7 +359,6 @@ class ModuleEditor(tk.Toplevel):
                 skill_type_button = tk.OptionMenu(
                     frame,
                     skill_type,
-                    skill_types[0],
                     *skill_types
                 )
                 skill_type.set(skill_types[0])
@@ -384,7 +378,6 @@ class ModuleEditor(tk.Toplevel):
                 variant_button = tk.OptionMenu(
                     frame,
                     variant,
-                    variants[0],
                     *variants)
                 variant.set(variants[0])
                 variant_button.pack(fill=tk.X)
@@ -452,7 +445,6 @@ class ModuleEditor(tk.Toplevel):
                 tk.OptionMenu(
                     labelframe,
                     item_group,
-                    groups[0],
                     *groups
                 ).pack(fill=tk.X)
                 labelframe.pack(fill=tk.X)
@@ -551,7 +543,6 @@ class ModuleEditor(tk.Toplevel):
                     bag_list_button = tk.OptionMenu(
                         frame,
                         bag_list,
-                        bag_lists[0],
                         *bag_lists
                     )
                     bag_list.set(bag_lists[0])
@@ -624,7 +615,6 @@ class ModuleEditor(tk.Toplevel):
                 contact_type_button = tk.OptionMenu(
                     frame,
                     contact_type,
-                    contact_types[0],
                     *contact_types
                 )
                 contact_type.set(contact_types[0])
@@ -670,7 +660,6 @@ class ModuleEditor(tk.Toplevel):
                     button = tk.OptionMenu(
                         sub_frame,
                         var,
-                        entries[0],
                         *entries
                     )
                     button.pack(fill=tk.X)
@@ -949,15 +938,15 @@ class ModuleEditor(tk.Toplevel):
                     )
                 if show_weapons_var == 0:
                     weapons = [
-                        it.CLUBS,
-                        it.BLADES,
-                        it.STAFFS,
-                        it.PISTOLS,
-                        it.REVOLVERS,
-                        it.RIFLES,
-                        it.RIFLES_SA,
-                        it.SHOT_GUNS,
-                        it.SHOT_GUNS_SA,
+                        it.CLUB,
+                        it.BLADE,
+                        it.STAFF,
+                        it.PISTOL,
+                        it.REVOLVER,
+                        it.RIFLE,
+                        it.RIFLE_SA,
+                        it.SHOT_GUN,
+                        it.SHOT_GUN_SA,
                         it.BLASTER
                     ]
                     weapons_string = ",".join(weapons)

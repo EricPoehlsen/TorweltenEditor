@@ -16,10 +16,12 @@ from sheetlayoutscreen import LayoutScreen
 from exportpdf import ExportPdf
 from imagescreen import ImageScreen
 from notesscreen import NotesScreen
+from expansionscreen import ExpansionScreen
 from aboutscreen import About
 from improvewindow import Improve
 from PIL import ImageTk, Image, PngImagePlugin
 import tk_ as tk
+import tkinter.messagebox as tkmb
 
 msg = config.Messages()
 
@@ -35,8 +37,8 @@ class Application(tk.Frame):
     def __init__(self, main):
         tk.Frame.__init__(self, main)
         self.main = main
-        self.style = tk.Style()
-        self._setStyle()
+
+        self.module = None
 
         # setting up data
         self.settings = Settings()
@@ -99,6 +101,10 @@ class Application(tk.Frame):
             label=msg.MENU_CHAR_LOG,
             command=lambda: self._switchWindow(msg.MENU_CHAR_LOG)
         )
+        self.toolmenu.add_command(
+            label=msg.MENU_EDIT_EXPANSION,
+            command=lambda: self._switchWindow(msg.MENU_EDIT_EXPANSION)
+        )
         self.menubar.add_cascade(
             label=msg.MENU_TOOLS,
             menu=self.toolmenu
@@ -135,22 +141,40 @@ class Application(tk.Frame):
         self.widgets = {}
 
         # initializing the basic screen layout ...
-        self.columnconfigure(0, weight=100)
+        self.toolbar = tk.Frame(self)
+        self.toolbar.place(
+            x=0,
+            y=0,
+            relheight=.1,
+            relwidth=1,
+            anchor=tk.NW
+        )
 
         self.main_frame = tk.Frame(self)
-        self.main_frame.grid(row=1, sticky="nw")
-
+        self.main_frame.place(
+            x=0,
+            rely=.10,
+            relheight=.85,
+            relwidth=1,
+            anchor=tk.NW
+        )
         self.status_bar = StatusBar(self)
-        self.status_bar.grid(row=2, sticky="sw")
-
-        self.toolbar = tk.Frame(self)
-        self.toolbar.grid(row=0, sticky="we")
-
-        self.rowconfigure(1, weight=1000)
+        self.status_bar.place(
+            x=0,
+            rely=1,
+            relheight=.05,
+            relwidth=1,
+            anchor=tk.SW
+        )
 
         # self.startScreenImage()
         self.newChar()
         self.showToolbar()
+        self.updateTitle()
+        self.size = (
+            self.winfo_toplevel().winfo_reqwidth(),
+            self.winfo_toplevel().winfo_reqheight()
+        )
 
     def showToolbar(self):
         """ Rendering the toolbar """
@@ -163,13 +187,11 @@ class Application(tk.Frame):
             (msg.TOOLBAR_CHAR_IMAGE, "img/char_image.png"),
             (msg.TOOLBAR_CHAR_LAYOUT, "img/pdf.png")
         ]
-        width = 20
 
         for i, label in enumerate(buttons):
             image = ImageTk.PhotoImage(file=label[1])
             button = tk.Button(
                 self.toolbar,
-                width=width,
                 text=label[0],
                 image=image,
                 compound=tk.TOP
@@ -179,7 +201,12 @@ class Application(tk.Frame):
                 command=lambda label=label[0]:
                 self._switchWindow(label)
             )
-            button.grid(row=0, column=i, sticky=tk.EW)
+            button.place(
+                relx=i/6,
+                relwidth=1/6,
+                x=0,
+                relheight=1
+            )
 
     def newChar(self):
         """ Creating a new empty character template """
@@ -205,7 +232,14 @@ class Application(tk.Frame):
             }
         filename = tkfd.askopenfilename(**options)
         if filename:
-            self.char.load(filename)
+            error = self.char.load(filename)
+            if error:
+                errors = {
+                    -1: msg.ERROR_XML_UNKNOWN,
+                    1: msg.ERROR_XML_PARSE,
+                    2: msg.ERROR_XML_NO_CHAR
+                }
+                tkmb.showerror(msg.ERROR, errors[error], parent=self)
 
             self._switchWindow(msg.TOOLBAR_CHAR_DATA)
             self.status_bar.rebind(self)
@@ -291,11 +325,12 @@ class Application(tk.Frame):
             msg.MENU_EWT: EWTScreen,
             msg.MENU_CHAR_LOG: LogScreen,
             msg.MENU_ABOUT: About,
+            msg.MENU_EDIT_EXPANSION: ExpansionScreen,
         }
 
         # display the new module
-        window = ProgramModule[label](frame, app=self)
-        window.pack()
+        self.module = ProgramModule[label](frame, app=self)
+        self.module.place(x=0,y=0,relwidth=1,relheight=1,anchor=tk.NW)
 
     def _displayImprove(self):
         window = Improve(self)
@@ -342,6 +377,12 @@ class Application(tk.Frame):
             "destroy.TButton",
             background="#ff0000",
             foreground="#ff0000"
+        )
+
+        self.style.configure(
+            "invalid.TEntry",
+            foreground="#ff0000",
+
         )
 
         # edit_entry - editable labels for the itemeditor
@@ -398,10 +439,27 @@ class Application(tk.Frame):
             lambda event: self._switchEditMode("view")
         )
 
-
     def _switchEditMode(self, mode):
         self.char.setEditMode(mode)
+        self.updateTitle()
         self._switchWindow(msg.TOOLBAR_CHAR_DATA)
+
+    def updateTitle(self):
+        modes = {
+                "generation": msg.TITLE_EM_GENERATION,
+                "edit": msg.TITLE_EM_EDIT,
+                "view": msg.TITLE_EM_VIEW,
+                "simulation": msg.TITLE_EM_SIMULATION,
+            }
+
+        title = [
+            msg.TITLE,
+            self.char.getData("name"),
+            modes.get(self.char.getEditMode(), "")
+        ]
+        title = " - ".join(title)
+        self.main.title(title)
+
 
     def _reloadData(self):
         """ Reloading data files

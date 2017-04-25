@@ -1,4 +1,5 @@
 import tk_ as tk
+import tkinter.messagebox as tkmb
 import config
 from PIL import ImageTk
 from tooltip import ToolTip
@@ -11,7 +12,6 @@ msg = config.Messages()
 class ItemEditor(tk.Toplevel):
     def __init__(self, app, item):
         tk.Toplevel.__init__(self)
-        self.style = app.style
         self.app = app
         self.char = app.char
         self.item = item
@@ -145,7 +145,7 @@ class ItemEditor(tk.Toplevel):
         )
         destroy_button.image = destroy_icon
         if self.char.getEditMode() == "generation":
-            destroy_button.state(["disabled"])
+            destroy_button.config(state=tk.DISABLED)
         destroy_button.pack(side=tk.LEFT)
         ToolTip(destroy_button, msg.IE_TT_DESTROY)
 
@@ -175,10 +175,9 @@ class ItemEditor(tk.Toplevel):
         name_label = tk.Entry(
             item_title,
             font="Helvetica 12 bold",
-            style="edit_entry"
         )
         name_label.insert(0, self.item_name)
-        name_label.state(["disabled"])
+        name_label.config(**config.Style.HIDDEN_ENTRY)
         name_label.pack(side=tk.LEFT, expand=1)
         name_label.bind("<Double-Button-1>", self._activateEntryField)
         name_label.bind(
@@ -196,7 +195,7 @@ class ItemEditor(tk.Toplevel):
 
         weight_str = msg.IE_WEIGHT + weight_str
         
-        weight_label = tk.Label(item_body, text=weight_str)
+        weight_label = tk.Label(item_body, text=weight_str, anchor=tk.W)
         weight_label.pack(fill=tk.X)
 
         price = round(self.item_price * self.item_quantity, 2)
@@ -207,7 +206,7 @@ class ItemEditor(tk.Toplevel):
             price[1] = price[1][0:2]
             price = msg.MONEYSPLIT.join(price)
         price_str = msg.IE_PRICE_VALUE + price
-        price_label = tk.Label(item_body, text=price_str)
+        price_label = tk.Label(item_body, text=price_str, anchor=tk.W)
         price_label.pack(fill=tk.X)
 
         qualtities = {
@@ -234,7 +233,7 @@ class ItemEditor(tk.Toplevel):
         rep_label.image = rep_icon
         ToolTip(rep_label, msg.IE_TT_REPAIR)
         if self.item_quality >= 9:
-            rep_label.state(["disabled"])
+            rep_label.config(state=tk.DISABLED)
 
         rep_label.pack(side=tk.RIGHT, anchor=tk.W)
         dmg_icon = ImageTk.PhotoImage(file="img/damage.png")
@@ -244,7 +243,7 @@ class ItemEditor(tk.Toplevel):
         dmg_label.pack(side=tk.RIGHT, anchor=tk.W)
         ToolTip(dmg_label, msg.IE_TT_DAMAGE_ITEM)
         if self.item_quality <= 1:
-            dmg_label.state(["disabled"])
+            dmg_label.config(state=tk.DISABLED)
 
         quality_frame.pack(fill=tk.X)
 
@@ -267,19 +266,18 @@ class ItemEditor(tk.Toplevel):
             entry = tk.Entry(
                 frame,
                 width=len(value)+2,
-                style="edit_entry"
             )
             entry.delete(0, tk.END)
             entry.insert(0, value)
-            entry.state(["disabled"])
+            entry.config(**config.Style.HIDDEN_ENTRY)
             entry.bind("<Double-Button-1>", self._activateEntryField)
             entry.bind(
                 "<Return>",
                 lambda event, name=name:
                     self._updateTag(event, tagname="option", name=name)
             )
-            entry.pack(side=tk.RIGHT, anchor=tk.E)
-            frame.pack()
+            entry.pack(side=tk.RIGHT, anchor=tk.E, fill=tk.X, expand=1)
+            frame.pack(fill=tk.X, expand=1, anchor=tk.W)
 
         # display stuff according to item type ...
         self.showMore(item_body)
@@ -309,20 +307,20 @@ class ItemEditor(tk.Toplevel):
             it.HARNESS
         ]
         sa_weapons = [
-            it.REVOLVERS,
-            it.RIFLES_SA,
-            it.SHOT_GUNS_SA
+            it.REVOLVER,
+            it.RIFLE_SA,
+            it.SHOT_GUN_SA
         ]
         ha_weapons = [
-            it.PISTOLS,
-            it.RIFLES,
-            it.SHOT_GUNS,
+            it.PISTOL,
+            it.RIFLE,
+            it.SHOT_GUN,
             it.AUTOMATIC_WEAPON
         ]
         melee_weapons = [
-            it.CLUBS,
-            it.BLADES,
-            it.STAFFS,
+            it.CLUB,
+            it.BLADE,
+            it.STAFF,
             it.OTHER_MELEE,
             it.NATURAL
         ]
@@ -488,14 +486,14 @@ class ItemEditor(tk.Toplevel):
             loaded_round.set("weight", str(weight))
             value = float(float(loaded_round.get("price", "0")) / 10)
             loaded_round.find("damage").set("value", "0/0")
-        sa_weapons = [it.REVOLVERS, it.RIFLES_SA, it.SHOT_GUNS_SA]
+        sa_weapons = [it.REVOLVER, it.RIFLE_SA, it.SHOT_GUN_SA]
         if self.item.get("type") in sa_weapons:
             self.char.setActiveChamber(self.item, "next")
             self._showItemInfo()
         ha_weapons = [
-            it.PISTOLS,
-            it.RIFLES,
-            it.SHOT_GUNS,
+            it.PISTOL,
+            it.RIFLE,
+            it.SHOT_GUN,
             it.AUTOMATIC_WEAPON
         ]
         if self.item.get("type") in ha_weapons:
@@ -586,26 +584,14 @@ class ItemEditor(tk.Toplevel):
         # self.close(load=self.item)
 
     def destroyItem(self):
-        if self.destroy_check == 0: 
-            widgets = self.item_menu.winfo_children()
-            for widget in widgets:
-                widget.destroy()
-            self.destroy_check = 1
-            nope = tk.Button(
-                self.item_menu,
-                text=msg.IE_CANCEL,
-                command=self.addMenuIcons
-            )
-            nope.pack(side=tk.RIGHT)
-            confirm = tk.Button(
-                self.item_menu,
-                text=msg.IE_DESTROY,
-                style="destroy.TButton",
-                command=self.destroyItem
-            )
-            confirm.pack(side=tk.LEFT, fill=tk.X)
-        elif self.destroy_check == 1:
-            self.destroy_check = 0
+        destroy = tkmb.askyesno(
+            msg.IE_DEL_TITLE,
+            msg.IE_DEL_TEXT,
+            parent=self,
+            icon=tkmb.WARNING
+        )
+
+        if destroy:
             sub_item_ids = self.item.get("content", "")
             sub_item_ids = sub_item_ids.split()
             for sub_item_id in sub_item_ids:
@@ -1048,7 +1034,7 @@ class ItemEditor(tk.Toplevel):
         return ammo
 
     def damage(self, event):
-        if "disabled" in event.widget.state():
+        if event.widget.cget("state") == tk.DISABLED:
             return
         self.item_quality -= 1
         self.item_price *= .666
@@ -1064,7 +1050,7 @@ class ItemEditor(tk.Toplevel):
         pass
 
     def repair(self, event):
-        if "disabled" in event.widget.state():
+        if event.widget.cget("state") == tk.DISABLED:
             return
         self.item_quality += 1
         self.item_price *= 1.25
@@ -1168,5 +1154,5 @@ class ItemEditor(tk.Toplevel):
                 self.char.logEvent(
                     self.item,
                     mod=mod_info,
-                    op=msg.CHAR_UPDATE
+                    op=msg.CHAR_UPDATED
                 )

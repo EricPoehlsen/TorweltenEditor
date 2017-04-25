@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as et
 import tk_ as tk
+import tkinter.messagebox as tkmb
 import config
 
 msg = config.Messages()
@@ -22,7 +23,6 @@ class SocialEditor(tk.Toplevel):
         self.vars = {}
         self.xp_cost = tk.IntVar()
         self.changes = []
-        self.delete_check = False
 
         self.main_screen = tk.Frame(self)
         self.bottom_menu = tk.Frame(self)
@@ -451,7 +451,19 @@ class SocialEditor(tk.Toplevel):
         self.xp_cost.set(int(xp_cost_round - old_xp))
 
     def deleteContact(self):
-        if self.delete_check:
+        name = self.contact.get("name")
+        if name:
+            text = msg.SE_DEL_TEXT.format(name="'"+name+"' ")
+        else:
+            text = msg.SE_DEL_TEXT.format(name="")
+        delete = tkmb.askyesno(
+            msg.SE_DEL_TITLE,
+            text,
+            parent=self,
+            icon=tkmb.WARNING
+        )
+
+        if delete:
             contact_id = self.contact.get("id")
             
             # if generation mode, return spent/gained xp
@@ -464,9 +476,6 @@ class SocialEditor(tk.Toplevel):
             self.char.removeContactById(contact_id)
             self.app.showContacts(self.app.contact_canvas)
             self.close()
-        else:
-            self.delete_check = True
-            self.updateMenu(self.bottom_menu)
 
     def close(self):
         self.app.open_windows["contact"] = 0

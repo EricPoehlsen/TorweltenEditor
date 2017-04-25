@@ -3,14 +3,13 @@ import os
 from threading import Thread
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
-from reportlab.lib.units import cm 
-from reportlab.pdfbase import pdfmetrics  
+from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont  
 from reportlab.lib.utils import ImageReader
 from reportlab import rl_settings,rl_config
 
 from PIL import Image,PngImagePlugin,JpegImagePlugin
-import tkinter as tk
+import tkinter.messagebox as tkmb
 
 page_data = config.Page()
 SINGLE = page_data.SINGLE
@@ -104,8 +103,14 @@ class ExportPdf:
     # write file
     @staticmethod
     def save(canvas):
-        canvas.save()
-        pass
+        try:
+            canvas.save()
+        except PermissionError:
+            tkmb.showerror(
+                msg.PDF_ERROR_TITLE,
+                msg.PDF_ERROR_TEXT
+            )
+
 
     # open pdf in os
     def display(self):
@@ -1480,18 +1485,18 @@ class ExportPdf:
         # based on item_type
         elif item_type is not None:
             melee = [
-                it.CLUBS,
+                it.CLUB,
                 it.NATURAL,
-                it.STAFFS,
-                it.BLADES
+                it.STAFF,
+                it.BLADE
             ]
             guns = [
-                it.PISTOLS,
-                it.REVOLVERS,
-                it.RIFLES,
-                it.RIFLES_SA,
-                it.SHOT_GUNS,
-                it.SHOT_GUNS_SA,
+                it.PISTOL,
+                it.REVOLVER,
+                it.RIFLE,
+                it.RIFLE_SA,
+                it.SHOT_GUN,
+                it.SHOT_GUN_SA,
                 it.AUTOMATIC_WEAPON,
                 it.BLASTER
             ]
@@ -1881,22 +1886,22 @@ class ExportPdf:
             if variant == "melee":
                 title = msg.PDF_MELEE.upper()
                 item_type = [
-                    it.CLUBS,
+                    it.CLUB,
                     it.NATURAL,
-                    it.STAFFS,
-                    it.BLADES,
+                    it.STAFF,
+                    it.BLADE,
                     it.OTHER_MELEE,
                     it.TOOLS
                 ]
             elif variant == "guns":
                 title = msg.PDF_GUNS.upper()
                 item_type = [
-                    it.PISTOLS,
-                    it.REVOLVERS,
-                    it.RIFLES,
-                    it.RIFLES_SA,
-                    it.SHOT_GUNS,
-                    it.SHOT_GUNS_SA,
+                    it.PISTOL,
+                    it.REVOLVER,
+                    it.RIFLE,
+                    it.RIFLE_SA,
+                    it.SHOT_GUN,
+                    it.SHOT_GUN_SA,
                     it.AUTOMATIC_WEAPON,
                     it.BLASTER
                 ]

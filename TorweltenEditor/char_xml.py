@@ -83,10 +83,22 @@ class Character(object):
             filename (string): a filename to load from.
         """
 
+        result = -1
+
         with open(filename, mode="rb") as file:
-            self.xml_char = et.parse(file)
+            result = 0
+            try:
+                self.xml_char = et.parse(file)
+            except et.ParseError:
+                return 1
+            root = self.xml_char.getroot()
+            if root.tag != "character":
+                self.xml_char = self._newChar()
+                return 2
             self.checkHashes()
             self.logEvent(self.xml_char.getroot(), op=msg.CHAR_LOADED)
+
+        return result
 
     def save(self, filename):
         """ Saving a character to an XML file
@@ -450,7 +462,8 @@ class Character(object):
         skill_list = []
         for skill in skills:
             key = skill.get("id")
-            skill_list.append((key, skill))
+            name = skill.get("name")
+            skill_list.append((key, name, skill))
         skill_list.sort()
         # overwriting the skills ... 
         skills[:] = [new_skill[-1] for new_skill in skill_list]

@@ -62,7 +62,7 @@ class SkillTree(object):
         self.addToTree("data/own_skills.xml")
         active_expansions = self.settings.getExpansions()
         for expansion in active_expansions:
-            self.addToTree("data/"+expansion)
+            self.addToTree("expansion/"+expansion)
 
     def getList(self, minspec=1, maxspec=3):
         """ Get a list of skills

@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as et
 import tkinter.filedialog as tkfd
+import tkinter.messagebox as tkmb
 from moduleeditor import ModuleEditor
 from PIL import ImageTk, Image, PngImagePlugin
 import tk_ as tk
@@ -36,7 +37,6 @@ class LayoutScreen(tk.Frame):
     def __init__(self, main, app):
         tk.Frame.__init__(self, main)
         self.app = app
-        self.style = app.style
         self.char = app.char
         self.open_windows = app.open_windows
         self.widgets = {}
@@ -61,97 +61,114 @@ class LayoutScreen(tk.Frame):
         )
         self.cur_page.set(page_label)
 
-        self.center_frame = tk.Frame(self)
-        
-        self.page_frame = tk.Frame(self.center_frame)
-        self.showPage(self.page_frame)
-        self.page_frame.pack(fill=tk.BOTH)
-        self.control_frame = tk.Frame(self.center_frame)
+        self.page_frame = tk.Frame(self)
+        self.page_canvas = tk.Canvas(
+            self.page_frame,
+            width=1,
+            height=1,
+            borderwidth=0,
+            highlightthickness=0,
+            relief=tk.FLAT,
+            bg="#ffffff"
+        )
+        self.page_canvas.pack(fill=tk.BOTH, expand=1)
+        self.page_canvas.bind("<Button-1>", self._editModule)
+        self.page_canvas.bind(
+            "<Configure>",
+            lambda event: self.showPage(self.page_canvas)
+        )
+        self.page_frame.pack(fill=tk.BOTH, expand=1)
+        self.control_frame = tk.Frame(self)
         self.showControl(self.control_frame)
         self._switchPage(0)
-        self.control_frame.pack(fill=tk.BOTH)
-        self.center_frame.pack()
+        self.control_frame.pack(fill=tk.X)
 
-    def showPage(self, frame):
+    def showPage(self, canvas):
         cur_page = self.template.find("page[@num='"+str(self.active_page)+"']")
+        canvas.delete("all")
+
+        width = canvas.winfo_width()
+        height = canvas.winfo_height()
+
         self._generateGrid()
-        for row in range(4):    
+
+        if width == 1 or height == 1:
+            return
+
+        slot_width = width // 4
+        slot_height = height // 4
+        x1 = 4
+        y1 = 4
+        width = slot_width - 8
+        height = slot_height - 8
+        r = 4
+
+        for i in range(1, 4):
+            canvas.create_line(
+                0,
+                i*slot_height,
+                4*slot_width,
+                i*slot_height,
+                fill="#cccccc"
+            )
+            canvas.create_line(
+                i*slot_width,
+                0,
+                i*slot_width,
+                4 * slot_height,
+                fill="#cccccc"
+            )
+            canvas.create_line(145, 0, 150, 0, fill="#dddddd")
+            canvas.create_line(0, 95, 0, 100, fill="#dddddd")
+
+        for row in range(4):
             for col in range(4):
+                text = ""
+                text_col = "#cccccc"
+
                 id = str(self.grid[self.active_page-1][col][row])
-                position = str(col) + " " + str(row)
-                text = msg.SL_EMPTY
-                text_col = "#dddddd"
                 module = cur_page.find("module[@id='"+id+"']")
-                slot = tk.Canvas(
-                    frame,
-                    width=195,
-                    height=120,
-                    borderwidth=0,
-                    highlightthickness=0,
-                    relief=tk.RIDGE,
-                    bg="#ffffff")
-                self.widgets[position] = slot
 
                 # display module ... 
                 if module is not None:
-
-                    # coordinates for a small module poly ... 
-                    x1 = 4
-                    y1 = 4
-                    x2 = 191
-                    y2 = 116
-                    r = 4
-
-                    # retrieve position and dimensions of module ... 
+                    # retrieve position and dimensions of module ...
                     m_row = int(module.get("row"))
                     m_col = int(module.get("col"))
                     m_size = module.get("size")
                     m_rows = self.sizes[m_size][0] - 1
                     m_cols = self.sizes[m_size][1] - 1
 
-                    # stretch box ... vertical
-                    if row > m_row:
-                        y1 -= 20
-                    if row < m_row + m_rows:
-                        y2 += 20
-
-                    # stretch box ... horizontal
-                    if col > m_col:
-                        x1 -= 20
-                    if col < m_col + m_cols:
-                        x2 += 20
-
                     if row == m_row and col == m_col:
                         text = self._text(module)
                         text_col = "#000000"
-                        
+
+                        # draw the box for this module
+                        poly_x = x1 + m_col * slot_width
+                        poly_y = y1 + m_row * slot_height
+                        poly_width = width + m_cols * slot_width
+                        poly_height = height + m_rows * slot_height
+                        self.drawPoly(
+                            canvas,
+                            poly_x,
+                            poly_y,
+                            poly_width,
+                            poly_height,
+                            r
+                        )
+
                     else:
                         text = ""
 
-                    # draw box ...
-                    self.drawPoly(slot, x1, y1, x2, y2, r)
 
-                # generate the module crosses ...    
-                slot.create_line(0, 0, 5, 0, fill="#dddddd")
-                slot.create_line(0, 0, 0, 5, fill="#dddddd")
-                slot.create_line(145, 0, 150, 0, fill="#dddddd")
-                slot.create_line(0, 95, 0, 100, fill="#dddddd")
-
-                # render text ... 
-                slot.create_text(
-                    97,
-                    60,
+                # render text ...
+                xp = (col + 0.5) * slot_width
+                yp = (row + 0.5) * slot_height
+                canvas.create_text(
+                    xp,
+                    yp,
                     text=text,
                     justify=tk.CENTER,
                     fill=text_col
-                )
-
-                # place canvas ...                 
-                slot.grid(row=row, column=col)
-                slot.bind(
-                    "<Button-1>",
-                    lambda event, position=position:
-                        self._editModule(position)
                 )
 
     def showControl(self, frame):
@@ -332,7 +349,7 @@ class LayoutScreen(tk.Frame):
                 self.widgets["del_page"].config(state=tk.NORMAL)
 
             # show page
-            self.showPage(self.page_frame)
+            self.showPage(self.page_canvas)
             
             # update page display
             page_label = "{page} / {pages}".format(
@@ -395,7 +412,6 @@ class LayoutScreen(tk.Frame):
                 )
                 
             module_sorter.sort()
-            print(module_sorter)
             page[:] = [item[-1] for item in module_sorter]
             page_sorter.append((int(page.get("num")), page))
         page_sorter.sort()
@@ -503,10 +519,24 @@ class LayoutScreen(tk.Frame):
         return text
 
     # open an edit window
-    def _editModule(self, position):
-        if self.app.open_windows["mod_ed"] != 0: 
+    def _editModule(self, event):
+        w = self.page_canvas.winfo_width()
+        h = self.page_canvas.winfo_height()
+        x_slots = [w * 1/4, w * 1/2, w * 3/4, w]
+        y_slots = [h * 1/4, h * 1/2, h * 3/4, h]
+
+        col, row = 0, 0
+        for col, width in enumerate(x_slots):
+            if event.x < width:
+                break
+        for row, height in enumerate(y_slots):
+            if event.y < height:
+                break
+
+        if self.app.open_windows["mod_ed"] != 0:
             self.app.open_windows["mod_ed"].close()
-        ModuleEditor(self, position)
+
+        self.app.open_windows["mod_ed"] = ModuleEditor(self, col, row)
 
     # retrieve the highest given module id ...     
     def getHighestModuleId(self):
@@ -568,18 +598,32 @@ class LayoutScreen(tk.Frame):
         }
         filename = tkfd.askopenfilename(**options)
         if filename:
+            error = msg.ERROR_XML_UNKNOWN
             with open(filename, mode="rb") as file:
-                self.char.setPDFTemplate(filename)
-                self.template = et.parse(file)
-                self.pages = len(self.template.findall("page"))
-                self._generateGrid()
-                self._switchPage(0)
+                error = 0
+                try:
+                    template = et.parse(file)
+                    root = template.getroot()
+                    if root.tag != "template":
+                        error = msg.ERROR_XML_NO_TEMPLATE
+                except et.ParseError:
+                    error = msg.ERROR_XML_PARSE
+
+                if not error:
+
+                    self.char.setPDFTemplate(filename)
+                    self.template = template
+                    self.pages = len(self.template.findall("page"))
+                    self._generateGrid()
+                    self._switchPage(0)
+
+            if error:
+                tkmb.showerror(msg.ERROR, error, parent=self)
         else:
             pass
 
     def _getTemplate(self):
         filename = self.char.getPDFTemplate()
-        print(filename)
         if filename:
             with open(filename, mode="rb") as file:
                 self.template = et.parse(file)
@@ -647,33 +691,19 @@ class LayoutScreen(tk.Frame):
             self.grid.append(page_grid)
 
     @staticmethod
-    def drawPoly(canvas, x1, y1, x2, y2, r):
+    def drawPoly(canvas, x1, y1, width, height, r):
+
+        x2 = x1 + width
+        y2 = y1 + height
         canvas.create_polygon(
-            x1, y1 + 2 * r,  # corner 1
-            x1, y1 + 2 * r,
             x1, y1 + r,
             x1 + r, y1,
-            x1 + 2 * r, y1,
-            x1 + 2 * r, y1,
-            x2 - 2 * r, y1,  # corner 2
-            x2 - 2 * r, y1,
             x2 - r, y1,
             x2, y1 + r,
-            x2, y1 + 2 * r,
-            x2, y1 + 2 * r,
-            x2, y2 - 2 * r,  # corner 3
-            x2, y2 - 2 * r,
             x2, y2 - r,
             x2 - r, y2,
-            x2 - 2 * r, y2,
-            x2 - 2 * r, y2,
-            x1 + 2 * r, y2,  # corner 4
-            x1 + 2 * r, y2,
             x1 + r, y2,
             x1, y2 - r,
-            x1, y2 - 2 * r,
-            x1, y2 - 2 * r,
-            smooth=1,
             fill="#ffffff",
             outline="#000000",
             width=2

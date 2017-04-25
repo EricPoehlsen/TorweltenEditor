@@ -19,15 +19,15 @@ class ItemTree(object):
             it.BOX,
             it.HARNESS,
             it.ARMOR,
-            it.CLUBS,
-            it.BLADES,
-            it.STAFFS,
+            it.CLUB,
+            it.BLADE,
+            it.STAFF,
             it.OTHER_MELEE,
-            it.PISTOLS,
-            it.REVOLVERS,
-            it.RIFLES,
-            it.SHOT_GUNS,
-            it.RIFLES_SA,
+            it.PISTOL,
+            it.REVOLVER,
+            it.RIFLE,
+            it.SHOT_GUN,
+            it.RIFLE_SA,
             it.AUTOMATIC_WEAPON,
             it.TOOLS,
             it.NATURAL,
@@ -37,7 +37,7 @@ class ItemTree(object):
         self.xml_items = self.loadTree('data/items_de.xml')
         active_expansions = self.settings.getExpansions()
         for expansion in active_expansions:
-            self.addToTree("data/"+expansion)
+            self.addToTree("expansion/"+expansion)
 
     def loadTree(self, filename=None):
         tree = None
