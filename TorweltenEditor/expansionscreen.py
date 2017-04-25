@@ -627,9 +627,9 @@ class ItemEditor(tk.Toplevel):
 
         name_frame = tk.LabelFrame(self, text=msg.NAME)
         self.name = tk.Entry(name_frame, textvariable=name)
-        self.name.pack(fill=tk.X, expand=1)
+        self.name.pack(fill=tk.BOTH, expand=1)
         self.tt["name"] = ToolTip(self.name, msg.EX_TT_NAME, variant="info")
-        name_frame.pack(fill=tk.X, expand=1)
+        name_frame.pack(fill=tk.BOTH, expand=1)
 
         # item type is split into groups for better usability ...
         type_frame = tk.LabelFrame(self, text=msg.EX_ITEM_TYPE)
@@ -655,7 +655,7 @@ class ItemEditor(tk.Toplevel):
             groups[0],
             *groups
         )
-        self.grp.pack(fill=tk.X, expand=1)
+        self.grp.pack(fill=tk.BOTH, expand=1)
 
         tk.Label(type_frame, text=msg.EX_IT_TYPE).pack(fill=tk.X)
 
@@ -670,8 +670,8 @@ class ItemEditor(tk.Toplevel):
             "",
             ""
         )
-        self.tp.pack(fill=tk.X, expand=1)
-        type_frame.pack(fill=tk.X, expand=1)
+        self.tp.pack(fill=tk.BOTH, expand=1)
+        type_frame.pack(fill=tk.BOTH, expand=1)
 
         grp.trace("w", lambda n, e, m, var=grp: self._updateTypes(var))
         grp.set(start_group)
@@ -748,12 +748,21 @@ class ItemEditor(tk.Toplevel):
         if var:
             try:
                 selected = var.get()
+
+                menu = self.tp["menu"]
+                menu.delete(0, tk.END)
+                for entry in groups[selected]:
+                    menu.add_command(
+                        label=entry,
+                        command=lambda value=entry:
+                            self.data["type"].set(value))
                 value = None
+
                 if self.data.get("type"):
                     value = self.data["type"].get()
                 if not value or value not in groups[selected]:
                     value = groups[selected][0]
-                self.tp.set_menu(value, *groups[selected])
+                self.data["type"].set(value)
 
             except tk.TclError:
                 pass
@@ -787,20 +796,20 @@ class ItemEditor(tk.Toplevel):
         invalid = re.findall("[\"\'&§<>]", name)
 
         if name in self.existing_names:
-            self.name.config(style="invalid.TEntry")
+            self.name.config(**config.Style.RED)
             self.tt["name"].msg = msg.EX_TT_NAME_EXISTS
             self.tt["name"].variant = "error"
         elif len(invalid) > 0:
-            self.name.config(style="invalid.TEntry")
+            self.name.config(**config.Style.RED)
             self.tt["name"].msg = msg.EX_TT_NAME_INVALID
             self.tt["name"].variant = "error"
         elif len(name) == 0:
-            self.name.config(style="invalid.TEntry")
+            self.name.config(**config.Style.RED)
             self.tt["name"].msg = msg.EX_TT_NAME
             self.tt["name"].variant = "error"
 
         else:
-            self.name.config(style="TEntry")
+            self.name.config(**config.Style.BLACK)
             self.tt["name"].msg = msg.EX_TT_NAME_OKAY
             self.tt["name"].variant = "okay"
 
@@ -811,7 +820,7 @@ class ItemEditor(tk.Toplevel):
             self,
             text=self.data["name"].get(),
             font="Arial 12 bold"
-        ).pack()
+        ).pack(fill=tk.BOTH, expand=1)
         tk.Label(self, text=self.data["type"].get()).pack()
 
     def _addData(self):
@@ -871,13 +880,13 @@ class ItemEditor(tk.Toplevel):
             price = float(price)
             if price < 0.01:
                 raise ValueError
-            self.p_entry.config(style="TEntry")
+            self.p_entry.config(**config.Style.BLACK)
             self.tt["p"].update(
                 msg.EX_TT_PRICE_OKAY,
                 "okay"
             )
         except ValueError:
-            self.p_entry.config(style="invalid.TEntry")
+            self.p_entry.config(**config.Style.RED)
             self.tt["p"].update(
                 msg.EX_TT_PRICE_INVALID,
                 "error"
@@ -890,13 +899,13 @@ class ItemEditor(tk.Toplevel):
             weight = int(weight)
             if weight < 1:
                 raise ValueError
-            self.w_entry.config(style="TEntry")
+            self.w_entry.config(**config.Style.BLACK)
             self.tt["w"].update(
                 msg.EX_TT_WEIGHT_OKAY,
                 "okay"
             )
         except ValueError:
-            self.w_entry.config(style="invalid.TEntry")
+            self.w_entry.config(**config.Style.RED)
             self.tt["w"].update(
                 msg.EX_TT_WEIGHT_INVALID,
                 "error"
@@ -909,14 +918,14 @@ class ItemEditor(tk.Toplevel):
             avail = int(avail)
             if not -6 <= avail <= 6:
                 raise ValueError
-            self.a_entry.config(style="TEntry")
+            self.a_entry.config(**config.Style.BLACK)
             self.tt["a"].update(
                 msg.EX_TT_AVAIL_OKAY,
                 "okay"
             )
 
         except ValueError:
-            self.a_entry.config(style="invalid.TEntry")
+            self.a_entry.config(**config.Style.RED)
             self.tt["a"].update(
                 msg.EX_TT_AVAIL,
                 "error"
@@ -1086,13 +1095,13 @@ class ItemEditor(tk.Toplevel):
             if len(damage) > 3:
                 raise ValueError
 
-            self.d_entry.config(style="TEntry")
+            self.d_entry.config(**config.Style.BLACK)
             self.tt["d"].update(
                 msg.EX_TT_DAMAGE_OKAY,
                 "okay"
             )
         except ValueError:
-            self.d_entry.config(style="invalid.TEntry")
+            self.d_entry.config(**config.Style.RED)
             self.tt["d"].update(
                 msg.EX_TT_DAMAGE,
                 "error"
@@ -1155,23 +1164,27 @@ class ItemEditor(tk.Toplevel):
         use_container.pack(fill=tk.X)
         name_frame = tk.LabelFrame(self, text=msg.EX_DISPLAY_NAME)
         self.n_entry = tk.Entry(name_frame, textvariable=name)
-        self.n_entry.pack(fill=tk.X, expand=1)
+        self.n_entry.pack(fill=tk.X)
         self.tt["n"] = ToolTip(self.n_entry, msg.EX_TT_CONT_NO_NAME, "info")
 
-        name_frame.pack(fill=tk.X, expand=1)
+        name_frame.pack(fill=tk.X)
+
         frame = tk.Frame(self)
+        frame.columnconfigure(0, weight=100)
+        frame.columnconfigure(1, weight=100)
         size_frame = tk.LabelFrame(frame, text=msg.EX_CONTAINER_SIZE)
         self.s_entry = tk.Entry(size_frame, textvariable=size)
         self.s_entry.pack(fill=tk.X, expand=1)
         self.tt["s"] = ToolTip(self.s_entry, msg.EX_TT_CONT_SIZE, "info")
-
         size_frame.grid(row=0, column=0, sticky=tk.NSEW)
+
         limit_frame = tk.LabelFrame(frame, text=msg.EX_CONTAINER_LIMIT)
         self.l_entry = tk.Entry(limit_frame, textvariable=limit)
         self.l_entry.pack(fill=tk.X, expand=1)
         self.tt["l"] = ToolTip(self.l_entry, msg.EX_TT_CONT_LIMIT, "info")
         limit_frame.grid(row=0, column=1, sticky=tk.NSEW)
-        frame.pack(fill=tk.X, expand=1)
+
+        frame.pack(fill=tk.X)
 
         limit.trace("w", lambda n, e, m: self._checkContainer())
         size.trace("w", lambda n, e, m: self._checkContainer())
@@ -1187,14 +1200,14 @@ class ItemEditor(tk.Toplevel):
             limit = int(limit)
             if limit < 0:
                 raise ValueError
-            self.l_entry.config(style="TEntry")
+            self.l_entry.config(**config.Style.BLACK)
             self.tt["l"].update(
                 msg.EX_TT_CONT_LIMIT,
                 "okay"
             )
 
         except ValueError:
-            self.l_entry.config(style="invalid.TEntry")
+            self.l_entry.config(**config.Style.RED)
             self.tt["l"].update(
                 msg.EX_TT_CONT_ERROR,
                 "error"
@@ -1205,13 +1218,13 @@ class ItemEditor(tk.Toplevel):
             size = int(size)
             if size < 0:
                 raise ValueError
-            self.s_entry.config(style="TEntry")
+            self.s_entry.config(**config.Style.BLACK)
             self.tt["s"].update(
                 msg.EX_TT_CONT_SIZE,
                 "okay"
             )
         except ValueError:
-            self.s_entry.config(style="invalid.TEntry")
+            self.s_entry.config(**config.Style.RED)
             self.tt["s"].update(
                 msg.EX_TT_CONT_ERROR,
                 "error"
@@ -1224,20 +1237,20 @@ class ItemEditor(tk.Toplevel):
                 msg.EX_TT_CONT_NAME_INVALID,
                 "error"
             )
-            self.n_entry.config(style="invalid.TEntry")
+            self.n_entry.config(**config.Style.RED)
         elif len(name) == 0:
             self.tt["n"].update(
                 msg.EX_TT_CONT_NO_NAME,
                 "okay"
             )
-            self.n_entry.config(style="TEntry")
+            self.n_entry.config(**config.Style.BLACK)
 
         else:
             self.tt["n"].update(
                 msg.EX_TT_CONT_NAME_OKAY,
                 "okay"
             )
-            self.n_entry.config(style="TEntry")
+            self.n_entry.config(**config.Style.BLACK)
 
     def _addOptions(self):
         """ Screen for adding additonal item options and packs. """
@@ -1268,6 +1281,8 @@ class ItemEditor(tk.Toplevel):
             min_q_frame,
             from_=3,
             to=9,
+            showvalue=0,
+            orient=tk.HORIZONTAL,
             variable=min_q,
             command=lambda v, var=min_q: self._updateQuality(var)
         )
@@ -1281,6 +1296,8 @@ class ItemEditor(tk.Toplevel):
             max_q_frame,
             from_=3,
             to=9,
+            showvalue=0,
+            orient=tk.HORIZONTAL,
             variable=max_q,
             command=lambda v, var=max_q: self._updateQuality(var)
         )
@@ -1364,13 +1381,13 @@ class ItemEditor(tk.Toplevel):
         count = len(value.split(","))
 
         if len(invalid) > 0:
-            widget.config(style="invalid.TEntry")
+            widget.config(**config.Style.RED)
             self.tt[name].update(
                 msg.EX_TT_OPT_INVALID,
                 "error"
             )
         else:
-            widget.config(style="TEntry")
+            widget.config(**config.Style.BLACK)
 
         if len(value) == 0:
             self.tt[name].update(
@@ -1901,14 +1918,14 @@ class ItemEditor(tk.Toplevel):
             text=msg.EX_CONTINUE,
             command=self._nextPage
         )
-        self.c_button.pack(fill=tk.X, expand=1)
+        self.c_button.pack(fill=tk.BOTH, expand=1)
         self.b_button = tk.Button(
             self,
             text=msg.EX_BACK,
             command=self._lastPage
         )
         if self.page != 1:
-            self.b_button.pack(fill=tk.X, expand=1)
+            self.b_button.pack(fill=tk.BOTH, expand=1)
 
     def _nextPage(self):
         self.page += 1
@@ -1978,7 +1995,6 @@ class SkillEditor(tk.Toplevel):
         super().__init__(master, **kwargs)
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.app = app
-        self.style = app.style
 
         self.minsize(200, 100)
 
@@ -2119,7 +2135,7 @@ class SkillEditor(tk.Toplevel):
         var.trace("w", lambda n, e, m, var=var: self._searchSuper(var))
 
         entry = tk.Entry(super_frame, textvariable=var)
-        entry.pack(fill=tk.X, expand=1)
+        entry.pack(fill=tk.X)
         list_frame = tk.Frame(super_frame)
         self.skill_list = tk.Listbox(list_frame)
         scroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
@@ -2129,7 +2145,7 @@ class SkillEditor(tk.Toplevel):
         scroll.pack(side=tk.LEFT, fill=tk.Y)
         list_frame.pack(fill=tk.BOTH, expand=1)
 
-        super_frame.pack(fill=tk.BOTH)
+        super_frame.pack(fill=tk.BOTH, expand=1)
 
         # fill the list
 
@@ -2286,8 +2302,8 @@ class SkillEditor(tk.Toplevel):
         id_entry = tk.Entry(
             id_frame,
             textvariable=self.data["id"],
-            style="edit_entry",
-            width="7"
+            width="7",
+            **config.Style.HIDDEN_ENTRY
         )
 
         id_entry.config(state=tk.DISABLED)
@@ -3057,10 +3073,10 @@ class VarFrame(tk.Frame):
                 tt.update(msg.EX_TT_TRAIT_NAME, "error")
             elif len(invalid) > 0:
                 tt.update(msg.EX_TT_NAME_INVALID, "error")
-                tt.widget.config(style="invalid.TEntry")
+                tt.widget.config(**config.Style.RED)
             else:
                 tt.update(msg.EX_TT_NAME_OKAY, "okay")
-                tt.widget.config(style="TEntry")
+                tt.widget.config(**config.Style.BLACK)
 
         tt = ToolTip(name_entry, msg.EX_TT_VAR_NAME, "info")
         self.name.trace(
@@ -3155,10 +3171,10 @@ class VarFrame(tk.Frame):
                 tt.update(msg.EX_TT_TRAIT_NAME, "error")
             elif len(invalid) > 0:
                 tt.update(msg.EX_TT_NAME_INVALID, "error")
-                tt.widget.config(style="invalid.TEntry")
+                tt.widget.config(**config.Style.RED)
             else:
                 tt.update(msg.EX_TT_NAME_OKAY, "okay")
-                tt.widget.config(style="TEntry")
+                tt.widget.config(**config.Style.BLACK)
 
         def checkXP(var, tt):
             """ inline check on the XP value. Run as a trace on the variable 
@@ -3186,23 +3202,23 @@ class VarFrame(tk.Frame):
                 if self.mode == "add":
                     if p_xp < 0 < xp:
                         tt.update(msg.EX_TT_POS_DIS, "error")
-                        tt.widget.config(style="invalid.TEntry")
+                        tt.widget.config(**config.Style.RED)
                     if p_xp > 0 > xp:
                         tt.update(msg.EX_TT_NEG_ADV, "error")
-                        tt.widget.config(style="invalid.TEntry")
+                        tt.widget.config(**config.Style.RED)
                     else:
                         tt.update(msg.EX_TT_XP_OKAY, "okay")
-                        tt.widget.config(style="TEntry")
+                        tt.widget.config(**config.Style.BLACK)
                 else:
                     if xp < 0:
                         tt.update(msg.EX_TT_NEG_MULT, "error")
-                        tt.widget.config(style="invalid.TEntry")
+                        tt.widget.config(**config.Style.RED)
                     else:
                         tt.update(msg.EX_TT_XP_OKAY, "okay")
-                        tt.widget.config(style="TEntry")
+                        tt.widget.config(**config.Style.BLACK)
 
             except ValueError:
-                tt.widget.config(style="invalid.TEntry")
+                tt.widget.config(**config.Style.RED)
                 tt.update(msg.EX_TT_INVALID_XP, "error")
 
         # clear the frame
@@ -3311,10 +3327,10 @@ class RankFrame(tk.Frame):
                 tt.update(msg.EX_TT_TRAIT_NAME, "error")
             elif len(invalid) > 0:
                 tt.update(msg.EX_TT_NAME_INVALID, "error")
-                tt.widget.config(style="invalid.TEntry")
+                tt.widget.config(**config.Style.RED)
             else:
                 tt.update(msg.EX_TT_NAME_OKAY, "okay")
-                tt.widget.config(style="TEntry")
+                tt.widget.config(**config.Style.BLACK)
 
         def checkXP(tt):
             """ inline check for xp values - run as a trace 
@@ -3369,11 +3385,11 @@ class RankFrame(tk.Frame):
 
             if error:
                 for entry in entries:
-                    entry.config(style="invalid.TEntry")
+                    entry.config(**config.Style.RED)
                 tt.update("\n".join(error), "error")
             else:
                 for entry in entries:
-                    entry.config(style="TEntry")
+                    entry.config(**config.Style.BLACK)
                 tt.update(msg.EX_TT_RANKS_OKAY, "okay")
 
         self.full = tk.LabelFrame(self, text=msg.EX_RANK)
@@ -3549,13 +3565,13 @@ class SkillCopy(tk.Frame):
 
         invalid = re.findall("[\"\'§&]", name)
         if name in self.loaded_skills:
-            self.name_entry.config(style="invalid.TEntry")
+            self.name_entry.config(**config.Style.RED)
             self.okay_button.config(state=tk.DISABLED)
         elif len(invalid) > 0:
-            self.name_entry.config(style="invalid.TEntry")
+            self.name_entry.config(**config.Style.RED)
             self.okay_button.config(state=tk.DISABLED)
         else:
-            self.name_entry.config(style="TEntry")
+            self.name_entry.config(**config.Style.BLACK)
             self.okay_button.config(state=tk.NORMAL)
             self.skill.set("name", name)
 
