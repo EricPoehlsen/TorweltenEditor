@@ -2389,14 +2389,14 @@ class TraitEditor(tk.Toplevel):
                 tt.update(msg.EX_TT_TRAIT_NAME, "error")
             elif len(invalid) > 0:
                 tt.update(msg.EX_TT_NAME_INVALID, "error")
-                tt.widget.config(style="invalid.TEntry")
+                tt.widget.config(**config.Style.RED)
 
             elif name in self._existingNames():
                 tt.update(msg.EX_TT_NAME_EXISTS, "error")
-                tt.widget.config(style="invalid.TEntry")
+                tt.widget.config(**config.Style.RED)
             else:
                 tt.update(msg.EX_TT_NAME_OKAY, "okay")
-                tt.widget.config(style="TEntry")
+                tt.widget.config(**config.Style.BLACK)
 
         def checkXP(var, tt):
             """ Inline check for the given xp value run as trace. """
@@ -2406,10 +2406,10 @@ class TraitEditor(tk.Toplevel):
                 xp = int(xp)
                 if xp == 0:
                     raise ValueError
-                tt.widget.config(style="TEntry")
+                tt.widget.config(**config.Style.BLACK)
                 tt.variant = "okay"
             except ValueError:
-                tt.widget.config(style="invalid.TEntry")
+                tt.widget.config(**config.Style.RED)
                 tt.variant = "error"
 
         def checkSpec(var, tt):
@@ -2422,10 +2422,10 @@ class TraitEditor(tk.Toplevel):
                 tt.update(msg.EX_TT_TRAIT_SPEC_NONE, "okay")
             elif len(invalid) > 0:
                 tt.update(msg.EX_TT_NAME_INVALID, "error")
-                tt.widget.config(style="invalid.TEntry")
+                tt.widget.config(**config.Style.RED)
             else:
                 tt.update(msg.EX_TT_TRAIT_SPEC_OKAY, "okay")
-                tt.widget.config(style="TEntry")
+                tt.widget.config(**config.Style.BLACK)
 
         t_frame = tk.Frame(self)
         name_frame = tk.LabelFrame(t_frame, text=msg.NAME)
@@ -2439,7 +2439,7 @@ class TraitEditor(tk.Toplevel):
             lambda n, e, m, v=self.name, tt=tt:
                 checkName(v, tt)
         )
-        name_entry.pack(fill=tk.X, expand=1)
+        name_entry.pack(fill=tk.X)
         name_frame.pack(side=tk.LEFT, fill=tk.X, expand=1)
         xp_frame = tk.LabelFrame(t_frame, text=msg.XP)
         xp_entry = tk.Entry(
@@ -2454,9 +2454,9 @@ class TraitEditor(tk.Toplevel):
             checkXP(v, tt)
         )
 
-        xp_entry.pack(fill=tk.X, expand=1)
+        xp_entry.pack(fill=tk.X)
         xp_frame.pack(side=tk.LEFT, fill=tk.X, expand=1)
-        t_frame.pack(fill=tk.X, expand=1)
+        t_frame.pack(fill=tk.X)
 
         group_frame = tk.LabelFrame(self, text=msg.EX_TRAIT_GROUP)
         ToolTip(group_frame, msg.EX_TT_TRAIT_GROUP, "info")
@@ -2468,7 +2468,7 @@ class TraitEditor(tk.Toplevel):
         )
 
         group_button.pack(fill=tk.X, expand=1)
-        group_frame.pack(fill=tk.X, expand=1)
+        group_frame.pack(fill=tk.X)
 
         spec_frame = tk.LabelFrame(self, text=msg.EX_SPECIFICATION)
         spec_entry = tk.Entry(
@@ -2483,7 +2483,7 @@ class TraitEditor(tk.Toplevel):
         )
 
         spec_entry.pack(fill=tk.X, expand=1)
-        spec_frame.pack(fill=tk.X, expand=1)
+        spec_frame.pack(fill=tk.X)
 
         vars_frame = tk.LabelFrame(self, text=msg.EX_ADD_VARIABLES)
         var_button = tk.Button(
@@ -2500,10 +2500,7 @@ class TraitEditor(tk.Toplevel):
         )
         ToolTip(var_button, msg.EX_TT_ADD_RANK)
         rank_button.pack(side=tk.LEFT, fill=tk.X, expand=1)
-        vars_frame.pack(fill=tk.X, expand=1)
-
-        self.frame = tk.Frame(self)
-        self.frame.pack(fill=tk.BOTH, expand=1)
+        vars_frame.pack(fill=tk.X)
 
         self.desc_frame = tk.LabelFrame(self, text=msg.EX_DESCRIPTION)
         self.desc_text = tk.Text(
@@ -2518,9 +2515,9 @@ class TraitEditor(tk.Toplevel):
             "<KeyRelease>",
             self._updateDescription
         )
-        self.desc_frame.pack(fill=tk.X, expand=1)
+        self.desc_frame.pack(fill=tk.BOTH, expand=1)
 
-        finish = tk.Button(self, text=msg.EX_FINISH,command=self._finalize)
+        finish = tk.Button(self, text=msg.EX_FINISH, command=self._finalize)
         finish.pack(fill=tk.X)
 
         self.state = tk.StringVar()
