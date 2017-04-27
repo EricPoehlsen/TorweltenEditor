@@ -65,6 +65,8 @@ class LogScreen(tk.Frame):
                     event_string = self.displayXP(event)
             elif element == "attribute":
                 event_string = self.displayAttribute(event)
+            elif element == "trait":
+                event_string = self.displayTrait(event)
             elif element == "skill":
                 event_string = self.displaySkill(event)
             elif element == "data":
@@ -72,11 +74,7 @@ class LogScreen(tk.Frame):
             elif element == "item":
                 event_string, display = self.displayItem(event)
             elif element == "account":
-                amount = float(event.get("mod", "0"))
-                if amount:
-                    event_string = self.displayAccount(event)
-                else:
-                    linebreak = False
+                event_string = self.displayAccount(event)
             elif element == "contact":
                 event_string = self.displayContact(event)
             elif element == "modified":
@@ -109,12 +107,8 @@ class LogScreen(tk.Frame):
 
     @staticmethod
     def displayXP(event):
-        delta = int(float(event.get("mod", "0")))
-        if delta > 0:
-            event_string = "+"+str(delta)
-        else:
-            event_string = str(delta)
-
+        delta = event.get("mod", "0")
+        event_string = delta
         op = event.get("op")
         if op == msg.CHAR_INITIAL_XP:
             event_string = msg.LOG_INITIAL_XP + event_string
@@ -139,10 +133,17 @@ class LogScreen(tk.Frame):
             "generation": msg.LOG_EDIT_GENERATION,
             "edit": msg.LOG_EDIT_EDIT,
             "simulation": msg.LOG_EDIT_SIM,
-            "view": msg.LOG_EDIT_VIEW
+            "view": msg.LOG_EDIT_VIEW,
+            "on": msg.LOG_EDIT_ON,
+            "off": msg.LOG_EDIT_OFF
+
         }
         mode = event.get("mod")
-        return modes[mode]
+        op = event.get("op")
+
+        event_string = modes[mode]
+
+        return event_string
 
     @staticmethod
     def displayAttribute(event):
@@ -154,7 +155,26 @@ class LogScreen(tk.Frame):
         )
         return event_string
 
-    def displaySkill(self, event):
+    @staticmethod
+    def displayTrait(event):
+        op = event.get("op")
+        name = event.get("name")
+
+        event_string = ""
+        if op == msg.CHAR_ADDED:
+            event_string = msg.LOG_TRAIT_ADDED
+        if op == msg.CHAR_TRAIT_AMPLIFIED:
+            event_string = msg.LOG_TRAIT_AMPLIFIED
+        if op == msg.CHAR_TRAIT_REDUCED:
+            event_string = msg.LOG_TRAIT_REDUCED
+        if op == msg.CHAR_REMOVED:
+            event_string = msg.LOG_TRAIT_REMOVED
+
+        event_string = event_string.format(name=name)
+        return event_string
+
+    @staticmethod
+    def displaySkill(event):
         op = event.get("op")
         id = event.get("id")
 
@@ -293,8 +313,12 @@ class LogScreen(tk.Frame):
     def displayAccount(event):
         op = event.get("op", "")
         event_string = ""
-        amount = float(event.get("mod", "0"))
-        amount_str = "{:+.2f}".format(amount)
+        amount = event.get("mod", "0")
+        if amount == "X":
+            amount_str = "XXX"
+        else:
+            amount = float(amount)
+            amount_str = "{:+.2f}".format(amount)
 
         if op == msg.CHAR_STARTING_CAPITAL:
             if amount > 0:

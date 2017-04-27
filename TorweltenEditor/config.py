@@ -72,6 +72,7 @@ class Messages:
     # TOOLS MENU
     MENU_TOOLS = "Werkzeuge"
     MENU_EDIT_EXPANSION = "Expansion bearbeiten"
+    MENU_EDITMODE = "Bearbeitungsmodus wechseln"
     MENU_IMPROVE = "Charakter steigern ..."
     MENU_EWT = "EWT Tabelle"
     MENU_SETTINGS = "Einstellungen"
@@ -1218,6 +1219,9 @@ class Messages:
     SET_EDIT_VIEW = "Ansichtsmodus"
     SET_EDIT_SIM = "Simulation"
     SET_EDIT_SWITCH = "Modus wechseln"
+    SET_FREE_MODE = "Gratismodus"
+    SET_FREE_XP = "Verrechnung von\nErfahrungspunkten\ndeaktivieren."
+    SET_FREE_MONEY = "Geldverrechnung\ndeaktivieren."
     SET_EXPANSIONS = "Erweiterungen auswählen: "
 
     # these strings are used in the character xml 
@@ -1227,9 +1231,13 @@ class Messages:
     CHAR_LOADED = "loaded"
     CHAR_SAVED = "saved"
     CHAR_SWITCHED_EDIT_MODE = "editmode"
+    CHAR_SWITCHED_XP_MODE = "xpmode"
+    CHAR_SWITCHED_MONEY_MODE = "moneymode"
     CHAR_UPDATED = "updated"
     CHAR_ADDED = "added"
     CHAR_REMOVED = "removed"
+    CHAR_TRAIT_AMPLIFIED = "amplified"
+    CHAR_TRAIT_REDUCED = "reduced"
     CHAR_ITEM_DESTROY = "destroyed"
     CHAR_ITEM_SELL = "sold"
     CHAR_ITEM_SPLIT = "split"
@@ -1260,6 +1268,12 @@ class Messages:
     LOG_EDIT_EDIT = "Charakter wurde in den Bearbeitungsmodus gesetzt."
     LOG_EDIT_VIEW = "Charakter wurde in den Ansichtsmodus versetzt."
     LOG_EDIT_SIM = "Charakter wurde in den Simulationsmodus gesetzt."
+    LOG_EDIT_ON = "Freier {type}-Modus aktiviert."
+    LOG_EDIT_OFF = "Freier {type}-Modus aktiviert."
+    LOG_TRAIT_ADDED = "Die Eigenschaft {name} wurde hinzugefügt."
+    LOG_TRAIT_AMPLIFIED = "Eigenschaft {name} intensiviert"
+    LOG_TRAIT_REDUCED = "Eigenschaft {name} reduziert."
+    LOG_TRAIT_REMOVED = "Die Eigenschaft {name} wurde entfernt."
     LOG_SKILL_ADDED = "Fertigkeit {name} aktiviert."
     LOG_SKILL_UPDATED = "Fertigkeit {name} geändert. Neuer Wert ist {value}"
     LOG_SKILL_REMOVED = "Fertigkeit {name} entfernt."
@@ -1510,6 +1524,13 @@ class Style:
     DATA_STYLE = {
         "disabledforeground": "#000000",
         "font": "Arial 11 bold"
+    }
+
+    STATUSBAR_FREE = {
+        "foreground": "#acacac"
+    }
+    STATUSBAR_NORMAL = {
+        "foreground": "#000000"
     }
 
     ATTR_FONT = "Arial 14 bold"

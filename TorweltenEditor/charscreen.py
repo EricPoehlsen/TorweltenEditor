@@ -359,8 +359,8 @@ class CharScreen(tk.Frame):
         if self.char.getEditMode() == "edit":
             new_value = self.char.skill_values[skill_name].get()
             
-            id = self.widgets[skill_name+"_txt"]
-            canvas.itemconfig(id, text=new_value)
+            label = self.widgets[skill_name]
+            label.config(text=new_value)
 
     def dataUpdated(self, event):
         """ Passing modified character data to the character """
@@ -522,7 +522,7 @@ class CharScreen(tk.Frame):
             )
             value_text = self.char.skill_values[skill_text].get()
 
-            value_label = tk.Label(
+            self.widgets[skill_text] = value_label = tk.Label(
                 skill_frame,
                 font=config.Style.SKILL_FONT,
                 textvariable=value_var

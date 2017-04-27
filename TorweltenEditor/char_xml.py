@@ -136,7 +136,27 @@ class Character(object):
         edit_type = self.xml_char.find('basics/edit')
         return edit_type.get('type')
 
-    def setEditMode(self, edit_mode):
+    def getFreeMoney(self):
+        """ Retrieve the free money flag
+                
+        Returns:
+            (str) "true" or None
+        """
+
+        edit_type = self.xml_char.find('basics/edit')
+        return edit_type.get('free_money')
+
+    def getFreeXP(self):
+        """ Retrieve the free xp flag 
+        
+        Returns:
+            (str) "true" or None
+        """
+
+        edit_type = self.xml_char.find('basics/edit')
+        return edit_type.get('free_xp')
+
+    def setEditMode(self, edit_mode, free_xp=None, free_money=None):
         """ Setting the characters edit mode
 
         edit_mode (str): "generation", "edit", "simulation", "view"
@@ -145,12 +165,55 @@ class Character(object):
         ALLOWED_MODES = ["generation", "edit", "simulation", "view"]
         if edit_mode in ALLOWED_MODES:
             edit_type = self.xml_char.find('basics/edit')
-            edit_type.set("type", edit_mode)
-            self.logEvent(
-                edit_type,
-                mod=edit_mode,
-                op=msg.CHAR_SWITCHED_EDIT_MODE
-            )
+
+            if edit_type.get("type") != edit_mode:
+                edit_type.set("type", edit_mode)
+
+                self.logEvent(
+                    edit_type,
+                    mod=edit_mode,
+                    op=msg.CHAR_SWITCHED_EDIT_MODE
+                )
+
+            if free_xp:
+                if edit_type.get("free_xp") != "true":
+                    self.logEvent(
+                        edit_type,
+                        mod="on",
+                        op=msg.CHAR_SWITCHED_XP_MODE
+                    )
+
+                edit_type.set("free_xp", "true")
+            else:
+                try:
+                    del edit_type.attrib["free_xp"]
+                    self.logEvent(
+                        edit_type,
+                        mod="off",
+                        op=msg.CHAR_SWITCHED_XP_MODE
+                    )
+                except KeyError:
+                    pass
+
+            if free_money:
+                if edit_type.get("free_money") != "true":
+                    self.logEvent(
+                        edit_type,
+                        mod="on",
+                        op=msg.CHAR_SWITCHED_MONEY_MODE
+                    )
+
+                edit_type.set("free_money", "true")
+            else:
+                try:
+                    del edit_type.attrib["free_money"]
+                    self.logEvent(
+                        edit_type,
+                        mod="off",
+                        op=msg.CHAR_SWITCHED_MONEY_MODE
+                    )
+                except KeyError:
+                    pass
 
     # get a single attribute value # #
     def getAttributeValue(self, name):
@@ -582,8 +645,9 @@ class Character(object):
         if xp:
             cur_trait_xp = int(trait.get("xp"))
             trait.set("xp", str(cur_trait_xp + xp))
-
             self.updateAvailableXP(-xp)
+
+
 
 
 
@@ -646,13 +710,15 @@ class Character(object):
         Args:
             value (int): the experience to add/remove
         """
-
-        value = int(value)
         xp_element = self.xml_char.find("basics/xp")
-        old_value = int(float(xp_element.get('available')))
-        new_value = int(old_value + value)
-        xp_element.set("available", str(new_value))
-        self.xp_avail.set(new_value)
+        value = int(value)
+        if self.getFreeXP():
+            value = "X"
+        else:
+            old_value = int(float(xp_element.get('available')))
+            new_value = int(old_value + value)
+            xp_element.set("available", str(new_value))
+            self.xp_avail.set(new_value)
         self.logEvent(xp_element, mod=value, op=msg.CHAR_UPDATED)
 
     def getInventory(self):
@@ -1325,11 +1391,15 @@ class Character(object):
         """
 
         account = self.getAccount(name)
-        cur_balance = float(account.get("balance", "0.0"))
-        new_balance = float(cur_balance) + float(amount)
-        account.set("balance", str(new_balance))
 
-        self.updateAccountDisplay(amount)
+        if self.getFreeMoney():
+            amount = "X"
+        else:
+            cur_balance = float(account.get("balance", "0.0"))
+            new_balance = float(cur_balance) + float(amount)
+            account.set("balance", str(new_balance))
+
+            self.updateAccountDisplay(amount)
 
         self.logEvent(account, mod=amount, op=reason)
 
@@ -1561,7 +1631,10 @@ class Character(object):
 
         # adding additional information ...
         if tag.tag == "xp":
-            if mod > 0:
+            if mod == "X":
+                event.set("mod", "XXX")
+                event.set("xp", tag.get("available"))
+            elif mod > 0:
                 event.set("mod", "+"+str(mod))
                 event.set("xp", tag.get("available"))
         if tag.tag == "attribute":

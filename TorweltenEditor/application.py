@@ -82,8 +82,12 @@ class Application(tk.Frame):
         # building the tools menu
         self.toolmenu = tk.Menu(self.menubar, tearoff="0")
         self.toolmenu.add_command(
+            label=msg.MENU_EDITMODE,
+            command=self._editModeWindow
+        )
+        self.toolmenu.add_command(
             label=msg.MENU_EWT,
-            command=lambda: self._switchWindow(msg.MENU_EWT)
+            command=lambda: self.switchWindow(msg.MENU_EWT)
         )
         self.toolmenu.add_command(
             label=msg.MENU_IMPROVE, 
@@ -91,7 +95,7 @@ class Application(tk.Frame):
         )
         self.toolmenu.add_command(
             label=msg.MENU_SETTINGS,
-            command=lambda: self._switchWindow(msg.MENU_SETTINGS)
+            command=lambda: self.switchWindow(msg.MENU_SETTINGS)
         )
         self.toolmenu.add_command(
             label=msg.MENU_RELOAD_DATA,
@@ -99,11 +103,11 @@ class Application(tk.Frame):
         )
         self.toolmenu.add_command(
             label=msg.MENU_CHAR_LOG,
-            command=lambda: self._switchWindow(msg.MENU_CHAR_LOG)
+            command=lambda: self.switchWindow(msg.MENU_CHAR_LOG)
         )
         self.toolmenu.add_command(
             label=msg.MENU_EDIT_EXPANSION,
-            command=lambda: self._switchWindow(msg.MENU_EDIT_EXPANSION)
+            command=lambda: self.switchWindow(msg.MENU_EDIT_EXPANSION)
         )
         self.menubar.add_cascade(
             label=msg.MENU_TOOLS,
@@ -199,7 +203,7 @@ class Application(tk.Frame):
             button.image = image
             button.config(
                 command=lambda label=label[0]:
-                self._switchWindow(label)
+                self.switchWindow(label)
             )
             button.place(
                 relx=i/6,
@@ -216,7 +220,7 @@ class Application(tk.Frame):
             amount=init_xp,
             reason=msg.CHAR_INITIAL_XP
         )
-        self._switchWindow(msg.TOOLBAR_CHAR_DATA)
+        self.switchWindow(msg.TOOLBAR_CHAR_DATA)
         self.status_bar.rebind(self)
     
     def openCharWindow(self):
@@ -241,7 +245,7 @@ class Application(tk.Frame):
                 }
                 tkmb.showerror(msg.ERROR, errors[error], parent=self)
 
-            self._switchWindow(msg.TOOLBAR_CHAR_DATA)
+            self.switchWindow(msg.TOOLBAR_CHAR_DATA)
             self.status_bar.rebind(self)
         else:
             pass
@@ -296,7 +300,7 @@ class Application(tk.Frame):
         for widget in widgets:
             widget.destroy()
 
-    def _switchWindow(self, label):
+    def switchWindow(self, label):
 
         """ switching program modules
 
@@ -336,7 +340,7 @@ class Application(tk.Frame):
         window = Improve(self)
 
     def about(self):
-        self._switchWindow(msg.MENU_ABOUT)
+        self.switchWindow(msg.MENU_ABOUT)
 
     # TODO this is a currently unused
     def startScreenImage(self):
@@ -442,7 +446,7 @@ class Application(tk.Frame):
     def _switchEditMode(self, mode):
         self.char.setEditMode(mode)
         self.updateTitle()
-        self._switchWindow(msg.TOOLBAR_CHAR_DATA)
+        self.switchWindow(msg.TOOLBAR_CHAR_DATA)
 
     def updateTitle(self):
         modes = {
@@ -459,7 +463,6 @@ class Application(tk.Frame):
         ]
         title = " - ".join(title)
         self.main.title(title)
-
 
     def _reloadData(self):
         """ Reloading data files
@@ -483,6 +486,9 @@ class Application(tk.Frame):
         
         dpi = (width/width_in,height/height_in)
         print(dpi)
+
+    def _editModeWindow(self):
+        window = EditModeSwitcher(self)
 
 
 class StatusBar(tk.Frame):
@@ -512,6 +518,24 @@ class StatusBar(tk.Frame):
             textvariable=self.char.account_balance
             )
         self.money_info.pack(side=tk.LEFT)
+        self.freeMode()
+
+    def freeMode(self):
+        print("free mode")
+        print(self.char.getData("name"))
+        if self.char.getFreeXP():
+            self.xp_info.config(**config.Style.STATUSBAR_FREE)
+            self.xp_label.config(**config.Style.STATUSBAR_FREE)
+        else:
+            self.xp_info.config(**config.Style.STATUSBAR_NORMAL)
+            self.xp_label.config(**config.Style.STATUSBAR_NORMAL)
+
+        if self.char.getFreeMoney():
+            self.money_info.config(**config.Style.STATUSBAR_FREE)
+            self.money_label.config(**config.Style.STATUSBAR_FREE)
+        else:
+            self.money_info.config(**config.Style.STATUSBAR_NORMAL)
+            self.money_label.config(**config.Style.STATUSBAR_NORMAL)
 
     def rebind(self, app):
         """ Rebinding the status bar
@@ -527,3 +551,85 @@ class StatusBar(tk.Frame):
 
         self.xp_info.config(textvariable=app.char.xp_avail)
         self.money_info.config(textvariable=app.char.account_balance)
+        self.char = app.char
+
+
+class EditModeSwitcher(tk.Toplevel):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.wm_protocol("WM_DELETE_WINDOW", self.close)
+        self.char = master.char
+        self.data = {}
+        editmode = self.editModeSwitcher(self)
+        editmode.pack(fill=tk.BOTH, expand=1)
+
+        freemode = self.freeModeSwitcher(self)
+        freemode.pack(fill=tk.BOTH, expand=1)
+
+        switch = tk.Button(
+            self,
+            text=msg.SET_EDIT_SWITCH,
+            command=self.setEditMode
+        )
+        switch.pack(fill=tk.X)
+
+    def editModeSwitcher(self, parent):
+        var = self.data["editmode"] = tk.StringVar()
+
+        frame = tk.LabelFrame(parent, text=msg.SET_EDIT_MODE)
+        modes = [
+            (msg.SET_EDIT_GENERATION, "generation"),
+            (msg.SET_EDIT_EDIT, "edit"),
+            (msg.SET_EDIT_VIEW, "view"),
+            (msg.SET_EDIT_SIM, "simulation")
+        ]
+        for txt, val in modes:
+            button = tk.Radiobutton(
+                frame,
+                text=txt,
+                variable=var,
+                value=val,
+            )
+            button.deselect()
+            button.pack(anchor=tk.W)
+
+        var.set(self.char.getEditMode())
+
+        return frame
+
+    def freeModeSwitcher(self, parent):
+        free_xp = self.data["free_xp"] = tk.IntVar()
+        if self.char.getFreeXP(): free_xp.set(1)
+        free_money = self.data["free_money"] = tk.IntVar()
+        if self.char.getFreeMoney(): free_money.set(1)
+
+        frame=tk.LabelFrame(parent, text=msg.SET_FREE_MODE)
+        free_xp_button = tk.Checkbutton(
+            frame,
+            text=msg.SET_FREE_XP,
+            variable=free_xp,
+            onvalue=1,
+            offvalue=0
+        )
+        free_xp_button.pack()
+        free_money_button = tk.Checkbutton(
+            frame,
+            text=msg.SET_FREE_MONEY,
+            variable=free_money,
+            onvalue=1,
+            offvalue=0
+        )
+        free_money_button.pack()
+        return frame
+
+    def setEditMode(self):
+        mode = self.data["editmode"].get()
+        free_xp = self.data["free_xp"].get()
+        free_money = self.data["free_money"].get()
+        self.char.setEditMode(mode, free_xp=free_xp, free_money=free_money)
+        self.master.switchWindow(msg.TOOLBAR_CHAR_DATA)
+        self.master.status_bar.freeMode()
+        self.close()
+
+    def close(self):
+        self.destroy()
