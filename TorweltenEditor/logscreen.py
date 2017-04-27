@@ -27,14 +27,11 @@ class LogScreen(tk.Frame):
         self.renderLog()
 
     def renderLog(self):
-        
         events_tag = self.char.getEvents()
-        stored_hash = int(self.char.getEvents().get("hash"))
-        current_hash = 0
         events = events_tag.findall("event")
 
         # draw the header
-        x, y = 0, 65
+        x, y = 0, 0
         label = tk.Label(self.log_canvas, text=msg.LOG_HEADER)
         self.log_canvas.create_window(
             x,
@@ -44,11 +41,8 @@ class LogScreen(tk.Frame):
         )
         y += label.winfo_reqheight()
 
-        # building the log display and extracting data for integrity checks
+        # building the log display
         for event in events:
-            # hash for integrity check
-            event_hash = self.char.hashElement(event)
-            current_hash += event_hash
 
             op = event.get("op")
 
@@ -110,21 +104,7 @@ class LogScreen(tk.Frame):
                 if linebreak:
                     y += label.winfo_reqheight()
  
-        # display the result of the integrity checks ...
-        data_integrity = tk.LabelFrame(
-            self.log_canvas,
-            text=msg.LOG_INTEGRITY
-        )
-        self.checkIntegrity(data_integrity)
-        self.log_canvas.create_window(
-            0,
-            0,
-            window=data_integrity,
-            anchor=tk.NW,
-            width=770
-        )
-
-        # ... finally set the canvas scrollbox ... 
+        # ... finally set the canvas scrollbox ...
         self.log_canvas.config(scrollregion=self.log_canvas.bbox(tk.ALL))
 
     @staticmethod
@@ -236,7 +216,6 @@ class LogScreen(tk.Frame):
         name = event.get("name")
         id = int(str(event.get("id")))
         quantity = int(event.get("quantity"))
-        hash_value = int(event.get("hash"))
         event_string = ""
         if op == msg.CHAR_ADDED:
             new = event.get("mod")
@@ -391,30 +370,3 @@ class LogScreen(tk.Frame):
             diff=info)
 
         return event_string
-
-    def checkIntegrity(self, frame):
-        tick = ImageTk.PhotoImage(file="img/tick.png")
-        cross = ImageTk.PhotoImage(file="img/cross.png")
-
-        icon = tk.Label(frame)
-        icon.pack(side=tk.LEFT)
-
-        text = tk.Label(frame)
-        text.pack(side=tk.LEFT)
-
-        hash_element = self.char.getHashes()
-        if hash_element is None:
-            icon.config(image=tick)
-            icon.image = tick
-            text.config(text=msg.LOG_UNSAVED)
-        else:
-            check = hash_element.get("check")
-            modified = self.char.getModified()
-            if check == "1" and modified is None:
-                icon.config(image=tick)
-                icon.image = tick
-                text.config(text=msg.LOG_OKAY)
-            else:
-                icon.config(image=cross)
-                icon.image = cross
-                text.config(text=msg.LOG_WARN)

@@ -95,7 +95,6 @@ class Character(object):
             if root.tag != "character":
                 self.xml_char = self._newChar()
                 return 2
-            self.checkHashes()
             self.logEvent(self.xml_char.getroot(), op=msg.CHAR_LOADED)
 
         return result
@@ -108,10 +107,8 @@ class Character(object):
         """
 
         with open(filename, mode="wb") as file:
-            self.createHashes()
             self.logEvent(self.xml_char.getroot(), op=msg.CHAR_SAVED)
             self.xml_char.write(file, encoding="utf-8", xml_declaration=True)
-            self.checkHashes()
 
     def addXP(self, amount, reason=None):
         """ Adding experience points to character
@@ -1598,7 +1595,6 @@ class Character(object):
             event.set("name", name)
             event.set("id", id)
             event.set("quantity", quantity)
-            event.set("hash", str(self.hashElement(tag)))
         elif tag.tag == "contact":
             if "name" in mod:
                 event.set("oldname", op)
@@ -1623,31 +1619,12 @@ class Character(object):
                     event.set("desc", str(length))
             id = tag.get("id")
             event.set("id", id)
-            event.set("hash", str(self.hashElement(tag)))
 
         events = self.xml_char.find("events")
         if events is None:
             root = self.xml_char.getroot()
             events = et.SubElement(root, "events")
         events.append(event)
-
-        event_hash = self.hashElement(event)
-        events_hash = int(events.get("hash", "0"))
-        events_hash += event_hash
-        events.set("hash", str(events_hash))
-
-    def hashElement(self, element):
-        """ Generating a consistent element hash
-
-        Args:
-            Element<any>: element to create a hash of
-
-        Returns:
-            int: hash value
-        """
-
-        element_string = et.tostring(element)
-        return hash(element_string)
 
     def getEvents(self):
         """ Get the stored events
@@ -1657,62 +1634,3 @@ class Character(object):
         """
 
         return self.xml_char.find("events")
-
-    def createHashes(self):
-        """ Storing hashes for the data blocks """
-
-        hash_element = self.xml_char.find("hash")
-        if hash_element is None:
-            root = self.xml_char.getroot()
-            hash_element = et.SubElement(root, "hash")
-
-        tags = [
-            "basics",
-            "attributes",
-            "skills",
-            "inventory",
-            "contacts"
-        ]
-
-        for tag in tags:
-            tag_hash = self.hashElement(self.xml_char.find(tag))
-            hash_element.set(tag, str(tag_hash))
-
-    def checkHashes(self):
-        """ Check the hashes when the character is loaded """
-
-        def modified():
-            """ store 'illegal' modifications """
-            basics = self.xml_char.find("basics")
-            bad_file = et.SubElement(basics, "modified")
-            self.logEvent(bad_file)
-
-        tags = [
-            "basics",
-            "attributes",
-            "skills",
-            "inventory",
-            "contacts"
-        ]
-
-        hash_element = self.xml_char.find("hash")
-
-        if hash_element is None:
-            modified()
-            return
-
-        for tag in tags:
-            tag_hash = self.hashElement(self.xml_char.find(tag))
-            stored_hash = int(hash_element.get(tag))
-            if tag_hash == stored_hash:
-                hash_element.set("check", "1")
-            else:
-                hash_element.set("check", "0")
-                modified()
-                break
-
-    def getHashes(self):
-        return self.xml_char.find("hash")
-
-    def getModified(self):
-        return self.xml_char.find("basics/modified")
