@@ -143,6 +143,11 @@ class LogScreen(tk.Frame):
 
         event_string = modes[mode]
 
+        if op == msg.CHAR_SWITCHED_XP_MODE:
+            event_string = event_string.format(type=msg.LOG_FREE_XP)
+        if op == msg.CHAR_SWITCHED_MONEY_MODE:
+            event_string = event_string.format(type=msg.LOG_FREE_MONEY)
+
         return event_string
 
     @staticmethod

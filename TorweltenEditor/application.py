@@ -521,8 +521,8 @@ class StatusBar(tk.Frame):
         self.freeMode()
 
     def freeMode(self):
-        print("free mode")
-        print(self.char.getData("name"))
+        """ formats text for free modes ... """
+
         if self.char.getFreeXP():
             self.xp_info.config(**config.Style.STATUSBAR_FREE)
             self.xp_label.config(**config.Style.STATUSBAR_FREE)
@@ -555,6 +555,12 @@ class StatusBar(tk.Frame):
 
 
 class EditModeSwitcher(tk.Toplevel):
+    """ Create a window to switch character edit modes 
+    
+    Args: 
+        master (Application): needs to be set to the main app instance
+    """
+
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.wm_protocol("WM_DELETE_WINDOW", self.close)
@@ -574,6 +580,18 @@ class EditModeSwitcher(tk.Toplevel):
         switch.pack(fill=tk.X)
 
     def editModeSwitcher(self, parent):
+        """ create a frame with the edit modes 
+        
+        Note: 
+            registers a tk.StringVar for the selected mode
+        
+        Args:
+            parent (tk.Widget): the master widget
+        
+        Returns:
+            tk.LabelFrame: the selector 
+        """
+
         var = self.data["editmode"] = tk.StringVar()
 
         frame = tk.LabelFrame(parent, text=msg.SET_EDIT_MODE)
@@ -598,6 +616,18 @@ class EditModeSwitcher(tk.Toplevel):
         return frame
 
     def freeModeSwitcher(self, parent):
+        """ displays Checkbuttons for the free modes 
+                
+        Note: 
+            registers a tk.IntVars for the selected modes
+        
+        Args:
+            parent (tk.Widget): the master widget
+        
+        Returns:
+            tk.LabelFrame: the selector 
+        """
+
         free_xp = self.data["free_xp"] = tk.IntVar()
         if self.char.getFreeXP(): free_xp.set(1)
         free_money = self.data["free_money"] = tk.IntVar()
@@ -623,6 +653,8 @@ class EditModeSwitcher(tk.Toplevel):
         return frame
 
     def setEditMode(self):
+        """ actually set the edit modes """
+
         mode = self.data["editmode"].get()
         free_xp = self.data["free_xp"].get()
         free_money = self.data["free_money"].get()
@@ -632,4 +664,5 @@ class EditModeSwitcher(tk.Toplevel):
         self.close()
 
     def close(self):
+        self.master.open_windows["editmode"] = 0
         self.destroy()
