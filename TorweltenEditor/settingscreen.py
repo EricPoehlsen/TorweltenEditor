@@ -26,19 +26,8 @@ class SettingScreen(tk.Frame):
             height=app.main_frame.winfo_reqheight()
         )
 
-        self.char_settings = self.charSettings(self)
-        self.char_settings.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
-
         self.basic_frame = self.coreSettings(self)
         self.basic_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
-
-    def charSettings(self, parent):
-        frame = tk.LabelFrame(parent, text=msg.SET_CHAR_SETTINGS)
-
-        editmode = self.editModeSwitcher(frame)
-        editmode.pack()
-
-        return frame
 
     def coreSettings(self, parent):
         frame = tk.LabelFrame(parent, text=msg.SET_CORE_SETTINGS)
@@ -55,40 +44,6 @@ class SettingScreen(tk.Frame):
         ).pack()
 
         return frame
-
-    def editModeSwitcher(self, parent):
-        var = self.data["editmode"] = tk.StringVar()
-
-        frame = tk.LabelFrame(parent, text=msg.SET_EDIT_MODE)
-        modes = [
-            (msg.SET_EDIT_GENERATION, "generation"),
-            (msg.SET_EDIT_EDIT, "edit"),
-            (msg.SET_EDIT_VIEW, "view"),
-            (msg.SET_EDIT_SIM, "simulation")
-        ]
-        for txt, val in modes:
-            button = tk.Radiobutton(
-                frame,
-                text=txt,
-                variable=var,
-                value=val,
-            )
-            button.deselect()
-            button.pack(anchor=tk.W)
-
-        var.set(self.char.getEditMode())
-        switch = tk.Button(
-            frame,
-            text=msg.SET_EDIT_SWITCH,
-            command=self.setEditMode
-        )
-        switch.pack(fill=tk.X)
-
-        return frame
-
-    def setEditMode(self):
-        mode = self.data["editmode"].get()
-        self.char.setEditMode(mode)
 
     def initialXPEntry(self, parent):
         """ create an entry for the initial XP """
@@ -118,7 +73,6 @@ class SettingScreen(tk.Frame):
         self.scanDataFiles()
         frame = tk.LabelFrame(parent, text=msg.SET_EXPANSIONS)
         cur_selection = self.settings.getExpansions()
-        print(cur_selection)
         for name, lang, file in self.data["expansions"]:
             self.data["exp_"+file] = var = tk.IntVar()
             button = tk.Checkbutton(
@@ -130,6 +84,7 @@ class SettingScreen(tk.Frame):
             )
             var.set(0)
             if file in cur_selection:
+
                 var.set(1)
             button.pack(anchor=tk.W, expand=1)
         return frame
@@ -159,7 +114,7 @@ class SettingScreen(tk.Frame):
                             lang = meta.get("lang")
                             self.data["expansions"].append((name, lang, file))
                 except et.ParseError:
-                    print(file + "error")
+                    print("Parse Error - Expansion: ", file)
 
     def updateDataSources(self):
         for expansion in self.data["expansions"]:
@@ -174,7 +129,6 @@ class SettingScreen(tk.Frame):
         """ saving settings """
 
         new_initial_xp = self.data["init_xp"].get()
-        self.settings.setInitialXP(new_initial_xp)
         self.updateDataSources()
-
+        self.settings.setInitialXP(new_initial_xp)
         self.settings.save()

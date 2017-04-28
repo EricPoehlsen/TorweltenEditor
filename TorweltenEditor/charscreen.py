@@ -9,6 +9,7 @@ from tooltip import ToolTip
 import tk_ as tk
 
 msg = config.Messages()
+cd = config.CharData()
 
 
 class CharScreen(tk.Frame):
@@ -51,13 +52,23 @@ class CharScreen(tk.Frame):
         # starting with the attribute frame ...
         attr_frame = tk.Frame(frame_1)
         attr_list = self.char.ATTRIB_LIST
+        attr_names = [
+            msg.PHY,
+            msg.MEN,
+            msg.SOZ,
+            msg.NK,
+            msg.FK,
+            msg.LP,
+            msg.EP,
+            msg.MP
+        ]
 
         edit_mode = self.char.getEditMode()
-        for attr in attr_list:
+        for attr, name in zip(attr_list, attr_names):
             frame = tk.LabelFrame(
                 attr_frame,
                 font=config.Style.ATTR_LF_FONT,
-                text=attr.upper(),
+                text=name,
             )
             # initiate the IntVars and bind their tcl names to the attributes
             attrib_values = self.char.attrib_values
@@ -65,7 +76,7 @@ class CharScreen(tk.Frame):
             attrib_values[attr].set(self.char.getAttributeValue(attr))
             
             # in generation mode we have spinboxes ...             
-            if edit_mode == "generation":
+            if edit_mode == cd.GENERATION:
                 self.char.attrib_trace[str(attrib_values[attr])] = attr
 
                 self.widgets[attr] = tk.Spinbox(
@@ -85,7 +96,7 @@ class CharScreen(tk.Frame):
                 )
 
             # in edit mode there are buttons and labels
-            if edit_mode == "edit":
+            if edit_mode == cd.EDIT:
                 frame.columnconfigure(0, weight=100)
                 value_field = tk.Label(
                     frame, 
@@ -115,7 +126,7 @@ class CharScreen(tk.Frame):
                     sticky=tk.EW
                 )
             # in view and sim mode there is only a label ...
-            if edit_mode in ["view", "simulation"]:
+            if edit_mode in [cd.VIEW, cd.SIMULATION]:
                 value_field = tk.Label(
                     frame,
                     textvariable=attrib_values[attr],
@@ -138,8 +149,7 @@ class CharScreen(tk.Frame):
         xp_total_text = " / " + str(self.char.getTotalXP())
         self.xp_total = tk.Label(xp_frame, text=xp_total_text)
         self.xp_total.pack(side=tk.LEFT)
-        xp_frame.pack()
-        
+        xp_frame.pack(fill=tk.X)
 
         # this makes the second block 
         frame_2 = tk.Frame(self)
@@ -152,19 +162,19 @@ class CharScreen(tk.Frame):
         )
 
         data_list = [
-            ['name', msg.NAME, 0, 0, 4],
-            ['species', msg.SPECIES, 1, 0, 4],
-            ['origin', msg.ORIGIN, 2, 0, 4],
-            ['concept', msg.CONCEPT, 3, 0, 4],
-            ['player', msg.PLAYER, 4, 0, 4],
-            ['height', msg.HEIGHT, 5, 0, 1],
-            ['weight', msg.WEIGHT, 5, 1, 1],
-            ['age', msg.AGE, 5, 2, 1],
-            ['gender', msg.GENDER, 5, 3, 1],
-            ['hair', msg.HAIR, 6, 0, 1],
-            ['eyes', msg.EYES, 6, 1, 1],
-            ['skin', msg.SKIN_COLOR, 6, 2, 1],
-            ['skintype', msg.SKIN_TYPE, 6, 3, 1]
+            [cd.NAME, msg.NAME, 0, 0, 4],
+            [cd.SPECIES, msg.SPECIES, 1, 0, 4],
+            [cd.ORIGIN, msg.ORIGIN, 2, 0, 4],
+            [cd.CONCEPT, msg.CONCEPT, 3, 0, 4],
+            [cd.PLAYER, msg.PLAYER, 4, 0, 4],
+            [cd.HEIGHT, msg.HEIGHT, 5, 0, 1],
+            [cd.WEIGHT, msg.WEIGHT, 5, 1, 1],
+            [cd.AGE, msg.AGE, 5, 2, 1],
+            [cd.GENDER, msg.GENDER, 5, 3, 1],
+            [cd.HAIR, msg.HAIR, 6, 0, 1],
+            [cd.EYES, msg.EYES, 6, 1, 1],
+            [cd.SKIN, msg.SKIN_COLOR, 6, 2, 1],
+            [cd.SKIN_TYPE, msg.SKIN_TYPE, 6, 3, 1]
         ]
         for data in data_list:
             frame = tk.LabelFrame(data_frame, text=data[1])
@@ -186,7 +196,7 @@ class CharScreen(tk.Frame):
                 width=width,
                 **config.Style.DATA_STYLE
             )
-            if edit_mode in ["view", "simulation"]:
+            if edit_mode in [cd.VIEW, cd.SIMULATION]:
                 entry.config(state=tk.DISABLED)
             else:
                 entry.bind("<FocusOut>", self.dataUpdated)
@@ -230,7 +240,7 @@ class CharScreen(tk.Frame):
             command=self.showTraitWindow
         )
 
-        if edit_mode in ["view", "simulation"]:
+        if edit_mode in [cd.VIEW, cd.SIMULATION]:
             new_traits_button.config(state=tk.DISABLED)
         new_traits_button.pack(fill=tk.X)
 
@@ -356,11 +366,11 @@ class CharScreen(tk.Frame):
         self.char.increaseSkill(skill_name)
 
         # update text in edit mode ... 
-        if self.char.getEditMode() == "edit":
+        if self.char.getEditMode() == cd.EDIT:
             new_value = self.char.skill_values[skill_name].get()
             
-            id = self.widgets[skill_name+"_txt"]
-            canvas.itemconfig(id, text=new_value)
+            label = self.widgets[skill_name]
+            label.config(text=new_value)
 
     def dataUpdated(self, event):
         """ Passing modified character data to the character """
@@ -369,7 +379,7 @@ class CharScreen(tk.Frame):
         data_name = self.char.data_trace[var_name]
         data_value = self.char.data_values[data_name].get()
         self.char.updateData(data_name, data_value)
-        if data_name == "name":
+        if data_name == cd.NAME:
             self.app.updateTitle()
 
     def updateTraitList(self):
@@ -495,7 +505,7 @@ class CharScreen(tk.Frame):
             value_var.set(skill_value)
             
             # how to display the value (spinbox / value+button / only value)
-            if edit_mode == "generation":
+            if edit_mode == cd.GENERATION:
                 # adding a trace to the variable
                 value_var.trace("w", self.char.skillChange)
 
@@ -522,7 +532,7 @@ class CharScreen(tk.Frame):
             )
             value_text = self.char.skill_values[skill_text].get()
 
-            value_label = tk.Label(
+            self.widgets[skill_text] = value_label = tk.Label(
                 skill_frame,
                 font=config.Style.SKILL_FONT,
                 textvariable=value_var
@@ -555,7 +565,7 @@ class CharScreen(tk.Frame):
 
             skill_frame.columnconfigure(0, weight=100)
 
-            if edit_mode == "generation":
+            if edit_mode == cd.GENERATION:
                 skill_frame.columnconfigure(0,weight=100)
                 name_label.grid(
                     row=0,
@@ -569,7 +579,7 @@ class CharScreen(tk.Frame):
 
                 )
 
-            elif edit_mode == "edit":
+            elif edit_mode == cd.EDIT:
                 name_label.grid(
                     row=0,
                     column=0,
@@ -646,4 +656,3 @@ class CharScreen(tk.Frame):
 
     def showSkillInfo(self, name):
         window = SkillInfo(self, name)
-

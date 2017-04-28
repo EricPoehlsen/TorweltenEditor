@@ -288,8 +288,6 @@ class ExpansionScreen(tk.Frame):
         else:
             self.widgets[msg.EX_TT_SAVE].config(state=tk.NORMAL)
 
-
-        print(name)
         root = self.expansion.getroot()
         root.set("name", name)
 
@@ -593,7 +591,6 @@ class ItemEditor(tk.Toplevel):
             q = pack.get("quantity")
             name = pack.get("name")
             q_label = re.findall("\(*\)", name)
-            print(q_label)
             packs.append(q+": "+name)
         self.data["packs"] = "\n".join(packs)
 
@@ -1866,7 +1863,6 @@ class ItemEditor(tk.Toplevel):
             errors.append(msg.EX_ERROR_INVALID_DESC)
 
         parent = self.data["parent"].get()
-        print(parent)
         if parent == "":
             errors.append(msg.EX_ERROR_NO_PARENT)
 
@@ -2372,6 +2368,7 @@ class TraitEditor(tk.Toplevel):
         self.group.set(self._traitGroupsList()[0])
         self.description = ""
         self.vars = []
+        self.frame = tk.Frame(self)
 
         if self.trait is None:
             self.trait = et.Element("trait")
@@ -2518,6 +2515,8 @@ class TraitEditor(tk.Toplevel):
         rank_button.pack(side=tk.LEFT, fill=tk.X, expand=1)
         vars_frame.pack(fill=tk.X)
 
+        self.frame.pack(fill=tk.X)
+
         self.desc_frame = tk.LabelFrame(self, text=msg.EX_DESCRIPTION)
         self.desc_text = tk.Text(
             self.desc_frame,
@@ -2533,8 +2532,12 @@ class TraitEditor(tk.Toplevel):
         )
         self.desc_frame.pack(fill=tk.BOTH, expand=1)
 
-        finish = tk.Button(self, text=msg.EX_FINISH, command=self._finalize)
-        finish.pack(fill=tk.X)
+        self.finish = tk.Button(
+            self,
+            text=msg.EX_FINISH,
+            command=self._finalize,
+        )
+        self.finish.pack(fill=tk.X)
 
         self.state = tk.StringVar()
         self.info = tk.Label(self, textvariable=self.state)
@@ -2553,7 +2556,7 @@ class TraitEditor(tk.Toplevel):
             
         """
 
-        var = VarFrame(self.frame)
+        var = VarFrame(master=self.frame)
         self.vars.append(var)
         if not load:
             var.pack(fill=tk.X)
@@ -2566,7 +2569,7 @@ class TraitEditor(tk.Toplevel):
 
         """
 
-        rank = RankFrame(self.frame)
+        rank = RankFrame(master=self.frame)
         self.vars.append(rank)
         if not load:
             rank.pack(fill=tk.X)
@@ -2638,7 +2641,6 @@ class TraitEditor(tk.Toplevel):
         xp = 0
         try:
             xp = int(self.xp.get())
-            print(xp)
             if xp == 0:
                 raise ValueError
         except ValueError:
@@ -2922,7 +2924,6 @@ class TraitEditor(tk.Toplevel):
                 xp = element.get("xp").split(",")
                 var.options = []
                 for value, xp_val in zip(values, xp):
-                    print(value, xp_val)
                     val = tk.StringVar()
                     val.set(value)
                     xp_var = tk.StringVar()

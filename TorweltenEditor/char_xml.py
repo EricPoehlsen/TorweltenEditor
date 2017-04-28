@@ -10,7 +10,7 @@ from datetime import datetime
 import config
 
 msg = config.Messages()
-
+cd = config.CharData()
 
 class Character(object):
     """ a character object 
@@ -22,13 +22,22 @@ class Character(object):
 
     def __init__(self):
         # this is the xml interpretation of the character
-        self.ATTRIB_LIST = ["phy", "men", "soz", "nk", "fk", "lp", "ep", "mp"]
+        self.ATTRIB_LIST = [
+            cd.PHY,
+            cd.MEN,
+            cd.SOZ,
+            cd.NK,
+            cd.FK,
+            cd.LP,
+            cd.EP,
+            cd.MP
+        ]
 
         # this is the main ElementTree!
         self.xml_char = self._newChar()
 
         # initial event
-        self.logEvent(self.xml_char.getroot(), op=msg.CHAR_CREATED)
+        self.logEvent(self.xml_char.getroot(), op=cd.CREATED)
 
         # some of the data is needed in other variables as well
         # the charactere attributes are stored as tkinter IntVar in a dict
@@ -95,8 +104,7 @@ class Character(object):
             if root.tag != "character":
                 self.xml_char = self._newChar()
                 return 2
-            self.checkHashes()
-            self.logEvent(self.xml_char.getroot(), op=msg.CHAR_LOADED)
+            self.logEvent(self.xml_char.getroot(), op=cd.LOADED)
 
         return result
 
@@ -108,10 +116,8 @@ class Character(object):
         """
 
         with open(filename, mode="wb") as file:
-            self.createHashes()
-            self.logEvent(self.xml_char.getroot(), op=msg.CHAR_SAVED)
+            self.logEvent(self.xml_char.getroot(), op=cd.SAVED)
             self.xml_char.write(file, encoding="utf-8", xml_declaration=True)
-            self.checkHashes()
 
     def addXP(self, amount, reason=None):
         """ Adding experience points to character
@@ -139,21 +145,84 @@ class Character(object):
         edit_type = self.xml_char.find('basics/edit')
         return edit_type.get('type')
 
-    def setEditMode(self, edit_mode):
+    def getFreeMoney(self):
+        """ Retrieve the free money flag
+                
+        Returns:
+            (str) "true" or None
+        """
+
+        edit_type = self.xml_char.find('basics/edit')
+        return edit_type.get('free_money')
+
+    def getFreeXP(self):
+        """ Retrieve the free xp flag 
+        
+        Returns:
+            (str) "true" or None
+        """
+
+        edit_type = self.xml_char.find('basics/edit')
+        return edit_type.get('free_xp')
+
+    def setEditMode(self, edit_mode, free_xp=None, free_money=None):
         """ Setting the characters edit mode
 
         edit_mode (str): "generation", "edit", "simulation", "view"
         """
 
-        ALLOWED_MODES = ["generation", "edit", "simulation", "view"]
+        ALLOWED_MODES = [cd.GENERATION, cd.EDIT, cd.VIEW, cd.SIMULATION]
         if edit_mode in ALLOWED_MODES:
             edit_type = self.xml_char.find('basics/edit')
-            edit_type.set("type", edit_mode)
-            self.logEvent(
-                edit_type,
-                mod=edit_mode,
-                op=msg.CHAR_SWITCHED_EDIT_MODE
-            )
+
+            if edit_type.get("type") != edit_mode:
+                edit_type.set("type", edit_mode)
+
+                self.logEvent(
+                    edit_type,
+                    mod=edit_mode,
+                    op=cd.SWITCHED_EDIT_MODE
+                )
+
+            if free_xp:
+                if edit_type.get("free_xp") != "true":
+                    self.logEvent(
+                        edit_type,
+                        mod="on",
+                        op=cd.SWITCHED_XP_MODE
+                    )
+
+                edit_type.set("free_xp", "true")
+            else:
+                try:
+                    del edit_type.attrib["free_xp"]
+                    self.logEvent(
+                        edit_type,
+                        mod="off",
+                        op=cd.SWITCHED_XP_MODE
+                    )
+                except KeyError:
+                    pass
+
+            if free_money:
+                if edit_type.get("free_money") != "true":
+                    self.logEvent(
+                        edit_type,
+                        mod="on",
+                        op=cd.SWITCHED_MONEY_MODE
+                    )
+
+                edit_type.set("free_money", "true")
+            else:
+                try:
+                    del edit_type.attrib["free_money"]
+                    self.logEvent(
+                        edit_type,
+                        mod="off",
+                        op=cd.SWITCHED_MONEY_MODE
+                    )
+                except KeyError:
+                    pass
 
     # get a single attribute value # #
     def getAttributeValue(self, name):
@@ -194,7 +263,7 @@ class Character(object):
             skill.set("value", "0")
             charskills = self.xml_char.find('skills')
             charskills.append(skill)
-            self.logEvent(skill, op=msg.CHAR_ADDED)
+            self.logEvent(skill, op=cd.ADDED)
 
     def delSkill(self, name):
         """ Removing a skill from a character
@@ -212,7 +281,7 @@ class Character(object):
             if skill_type == "language" or skill_type == "passive":
                 xp /= 2
             self.updateAvailableXP(xp)
-            self.logEvent(skill, op=msg.CHAR_REMOVED)
+            self.logEvent(skill, op=cd.REMOVED)
             skills.remove(skill)
     
     def addTrait(self, full_trait, variables, xp_var, description=None):
@@ -283,7 +352,7 @@ class Character(object):
         char_traits.append(trait)
         self.updateAvailableXP(-int(xp))
         
-        self.logEvent(trait, op=msg.CHAR_ADDED, mod=trait_name)
+        self.logEvent(trait, op=cd.ADDED, mod=trait_name)
 
     def resetTraitIDs(self):
         """ Reset trait ids if necessary """
@@ -322,13 +391,13 @@ class Character(object):
             cur_value = dataset.get("value")
             if data_value != cur_value:
                 dataset.set("value", str(data_value))
-                self.logEvent(dataset, op=msg.CHAR_UPDATED, mod=cur_value)
+                self.logEvent(dataset, op=cd.UPDATED, mod=cur_value)
         elif data_value != "":
             dataset = et.Element("data")
             dataset.set("name", str(data_name))
             dataset.set("value", str(data_value))
             basics.append(dataset)
-            self.logEvent(dataset, op=msg.CHAR_ADDED)
+            self.logEvent(dataset, op=cd.ADDED)
 
     def getData(self, data_name):
         """ Retrieve basic data about the character
@@ -387,7 +456,7 @@ class Character(object):
             xp_cost = new_xp_cost - old_xp_cost
             self.updateAvailableXP(-xp_cost)
             xml_skill.set("value", str(new_value))
-            self.logEvent(xml_skill, op=msg.CHAR_UPDATED)
+            self.logEvent(xml_skill, op=cd.UPDATED)
 
     def increaseAttribute(self, attr):
         """ Incremental increase of an attribute
@@ -453,7 +522,7 @@ class Character(object):
             self.updateAvailableXP(-xp_cost)
             self.skill_values[skill_name].set(new_value)
             xml_skill.set("value", str(new_value))
-            self.logEvent(xml_skill, op=msg.CHAR_UPDATED)
+            self.logEvent(xml_skill, op=cd.UPDATED)
 
     def sortSkills(self):
         """ Sorting skills by id"""
@@ -518,7 +587,7 @@ class Character(object):
         xml_attr = self.xml_char.find(search)
         xml_attr.set("value", str(value))
         self.attrib_values[attr].set(value)
-        self.logEvent(xml_attr, op=msg.CHAR_UPDATED)
+        self.logEvent(xml_attr, op=cd.UPDATED)
 
     def getTraits(self):
         """ Retrieving the characters traits
@@ -574,7 +643,7 @@ class Character(object):
         trait = traits.find("trait[@id='"+id+"']")
         xp = int(trait.get("xp"))
         if trait is not None:
-            self.logEvent(trait, op=msg.CHAR_REMOVED)
+            self.logEvent(trait, op=cd.REMOVED)
             traits.remove(trait)
             self.updateAvailableXP(xp)
 
@@ -585,8 +654,9 @@ class Character(object):
         if xp:
             cur_trait_xp = int(trait.get("xp"))
             trait.set("xp", str(cur_trait_xp + xp))
-
             self.updateAvailableXP(-xp)
+
+
 
 
 
@@ -649,14 +719,16 @@ class Character(object):
         Args:
             value (int): the experience to add/remove
         """
-
-        value = int(value)
         xp_element = self.xml_char.find("basics/xp")
-        old_value = int(float(xp_element.get('available')))
-        new_value = int(old_value + value)
-        xp_element.set("available", str(new_value))
-        self.xp_avail.set(new_value)
-        self.logEvent(xp_element, mod=value, op=msg.CHAR_UPDATED)
+        value = int(value)
+        if self.getFreeXP():
+            value = "X"
+        else:
+            old_value = int(float(xp_element.get('available')))
+            new_value = int(old_value + value)
+            xp_element.set("available", str(new_value))
+            self.xp_avail.set(new_value)
+        self.logEvent(xp_element, mod=value, op=cd.UPDATED)
 
     def getInventory(self):
         """ Retrieve the characters inverntory
@@ -725,7 +797,7 @@ class Character(object):
             identical_item.set("quantity", str(new_quantity))
             self.logEvent(
                 identical_item,
-                op=msg.CHAR_ADDED,
+                op=cd.ADDED,
                 mod=item.get("quantity")
             )
         else:
@@ -735,7 +807,7 @@ class Character(object):
             inventory.append(item)
             self.logEvent(
                 item,
-                op=msg.CHAR_ADDED,
+                op=cd.ADDED,
                 mod=item.get("quantity")
             )
         # pay for item
@@ -783,7 +855,7 @@ class Character(object):
             item_quantity -= amount
             item.set("quantity", str(item_quantity))
 
-            self.logEvent(new_item, op=msg.CHAR_ITEM_SPLIT)
+            self.logEvent(new_item, op=cd.ITEM_SPLIT)
             self.logEvent(item)  # for integrity reasons
 
             return item_quantity, new_id
@@ -807,7 +879,7 @@ class Character(object):
             item.set("quantity", str(item_quantity))
             inventory.remove(identical_item)
             identical_item = self.getIdenticalItem(item)
-            self.logEvent(item, op=msg.CHAR_ITEM_CONDENSED)
+            self.logEvent(item, op=cd.ITEM_CONDENSED)
         return item_quantity
 
     def setItemQuantity(self, item, quantity):
@@ -861,7 +933,7 @@ class Character(object):
             elif 1 <= chamber <= chambers:
                 ammo_tag.set("active", str(chamber))
 
-            self.logEvent(weapon, op=msg.CHAR_ITEM_ROTATECHAMBER)
+            self.logEvent(weapon, op=cd.ITEM_ROTATECHAMBER)
             return chamber
 
     @staticmethod
@@ -1062,8 +1134,8 @@ class Character(object):
             item.set("inside", container_id)
             item.set("equipped", "0")
 
-            self.logEvent(item, mod=container_id, op=msg.CHAR_ITEM_PACKED)
-            self.logEvent(container, op=msg.CHAR_ITEM_BAG)
+            self.logEvent(item, mod=container_id, op=cd.ITEM_PACKED)
+            self.logEvent(container, op=cd.ITEM_BAG)
 
     def unpackItem(self, item, equip=False):
         """ Removing an item from its container
@@ -1086,13 +1158,13 @@ class Character(object):
             container.set("content", new_content)
            
             item.set("inside", "-1")
-            self.logEvent(container, op=msg.CHAR_ITEM_BAG)
+            self.logEvent(container, op=cd.ITEM_BAG)
 
         if equip:
             item.set("equipped", "1")
-            self.logEvent(item, mod=container_id, op=msg.CHAR_ITEM_EQUIP)
+            self.logEvent(item, mod=container_id, op=cd.ITEM_EQUIP)
         else:
-            self.logEvent(item, mod=container_id, op=msg.CHAR_ITEM_UNPACKED)
+            self.logEvent(item, mod=container_id, op=cd.ITEM_UNPACKED)
 
     def getWeight(self, item):
         """ Retrieving the weight of an item and all packed sub items
@@ -1222,7 +1294,7 @@ class Character(object):
         """
 
         item.set("equipped", "1")
-        self.logEvent(item, op=msg.CHAR_ITEM_EQUIP)
+        self.logEvent(item, op=cd.ITEM_EQUIP)
 
     def unequipItem(self, item):
         """ Unequipping an item
@@ -1232,7 +1304,7 @@ class Character(object):
         """
 
         item.set("equipped", "0")
-        self.logEvent(item, op=msg.CHAR_ITEM_UNEQUIP)
+        self.logEvent(item, op=cd.ITEM_UNEQUIP)
 
     def getHighestItemID(self):
         """ retrieving the highest current item id
@@ -1328,11 +1400,15 @@ class Character(object):
         """
 
         account = self.getAccount(name)
-        cur_balance = float(account.get("balance", "0.0"))
-        new_balance = float(cur_balance) + float(amount)
-        account.set("balance", str(new_balance))
 
-        self.updateAccountDisplay(amount)
+        if self.getFreeMoney():
+            amount = "X"
+        else:
+            cur_balance = float(account.get("balance", "0.0"))
+            new_balance = float(cur_balance) + float(amount)
+            account.set("balance", str(new_balance))
+
+            self.updateAccountDisplay(amount)
 
         self.logEvent(account, mod=amount, op=reason)
 
@@ -1564,7 +1640,10 @@ class Character(object):
 
         # adding additional information ...
         if tag.tag == "xp":
-            if mod > 0:
+            if mod == "X":
+                event.set("mod", "XXX")
+                event.set("xp", tag.get("available"))
+            elif mod > 0:
                 event.set("mod", "+"+str(mod))
                 event.set("xp", tag.get("available"))
         if tag.tag == "attribute":
@@ -1582,7 +1661,7 @@ class Character(object):
         elif tag.tag == "trait":
             name = tag.get("name")
             xp = tag.get("xp")
-            if op == msg.CHAR_REMOVED:
+            if op == cd.REMOVED:
                 xp = str(-int(xp))
             event.set("name", name)
             event.set("xp", xp)
@@ -1598,7 +1677,6 @@ class Character(object):
             event.set("name", name)
             event.set("id", id)
             event.set("quantity", quantity)
-            event.set("hash", str(self.hashElement(tag)))
         elif tag.tag == "contact":
             if "name" in mod:
                 event.set("oldname", op)
@@ -1623,31 +1701,12 @@ class Character(object):
                     event.set("desc", str(length))
             id = tag.get("id")
             event.set("id", id)
-            event.set("hash", str(self.hashElement(tag)))
 
         events = self.xml_char.find("events")
         if events is None:
             root = self.xml_char.getroot()
             events = et.SubElement(root, "events")
         events.append(event)
-
-        event_hash = self.hashElement(event)
-        events_hash = int(events.get("hash", "0"))
-        events_hash += event_hash
-        events.set("hash", str(events_hash))
-
-    def hashElement(self, element):
-        """ Generating a consistent element hash
-
-        Args:
-            Element<any>: element to create a hash of
-
-        Returns:
-            int: hash value
-        """
-
-        element_string = et.tostring(element)
-        return hash(element_string)
 
     def getEvents(self):
         """ Get the stored events
@@ -1657,62 +1716,3 @@ class Character(object):
         """
 
         return self.xml_char.find("events")
-
-    def createHashes(self):
-        """ Storing hashes for the data blocks """
-
-        hash_element = self.xml_char.find("hash")
-        if hash_element is None:
-            root = self.xml_char.getroot()
-            hash_element = et.SubElement(root, "hash")
-
-        tags = [
-            "basics",
-            "attributes",
-            "skills",
-            "inventory",
-            "contacts"
-        ]
-
-        for tag in tags:
-            tag_hash = self.hashElement(self.xml_char.find(tag))
-            hash_element.set(tag, str(tag_hash))
-
-    def checkHashes(self):
-        """ Check the hashes when the character is loaded """
-
-        def modified():
-            """ store 'illegal' modifications """
-            basics = self.xml_char.find("basics")
-            bad_file = et.SubElement(basics, "modified")
-            self.logEvent(bad_file)
-
-        tags = [
-            "basics",
-            "attributes",
-            "skills",
-            "inventory",
-            "contacts"
-        ]
-
-        hash_element = self.xml_char.find("hash")
-
-        if hash_element is None:
-            modified()
-            return
-
-        for tag in tags:
-            tag_hash = self.hashElement(self.xml_char.find(tag))
-            stored_hash = int(hash_element.get(tag))
-            if tag_hash == stored_hash:
-                hash_element.set("check", "1")
-            else:
-                hash_element.set("check", "0")
-                modified()
-                break
-
-    def getHashes(self):
-        return self.xml_char.find("hash")
-
-    def getModified(self):
-        return self.xml_char.find("basics/modified")

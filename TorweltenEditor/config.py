@@ -39,6 +39,16 @@ class Messages:
                             "sich um kein PDF-Template."
 
     # #####GENERIC UI TEXT # ######
+    # Attributes
+    PHY = "PHY"
+    MEN = "MEN"
+    SOZ = "SOZ"
+    NK = "NK"
+    FK = "FK"
+    LP = "LP"
+    EP = "EP"
+    MP = "MP"
+
     NAME = "Name"
     SPECIES = "Spezies"
     ORIGIN = "Herkunft"
@@ -63,15 +73,15 @@ class Messages:
     # ##### MENU 
     # FILE MENU
     MENU_FILE = "Datei"
-    MENU_NEW = "Neu ..."
+    MENU_NEW = "Neuer Charakter ..."
     MENU_LOAD = "Charakter öffnen ..."
     MENU_SAVE = "Charakter speichern ..."
-    MENU_PDFEXPORT = "PDF Export ..."
     MENU_QUIT = "Beenden"
 
     # TOOLS MENU
     MENU_TOOLS = "Werkzeuge"
     MENU_EDIT_EXPANSION = "Expansion bearbeiten"
+    MENU_EDITMODE = "Bearbeitungsmodus wechseln"
     MENU_IMPROVE = "Charakter steigern ..."
     MENU_EWT = "EWT Tabelle"
     MENU_SETTINGS = "Einstellungen"
@@ -90,6 +100,14 @@ class Messages:
     TOOLBAR_CHAR_NOTES = "Notizen"
     TOOLBAR_CHAR_LAYOUT = "PDF-Export"
 
+    # FILE DIALOGS
+    FD_CHAR_FILES = "Charakterdateien"
+    FD_LOAD_CHAR_TITLE = "Charakter laden ..."
+    FD_SAVE_CHAR_TITLE = "CHarakter speichern ..."
+
+    # STATUS BAR
+    SB_XP_AVAIL = "XP verfügbar: "
+    SB_MONEY_AVAIL = "Geld verfügbar: "
     # CHAR SCREEN
     CS_BASE_DATA = "Basisdaten"
     CS_TRAITS = "Vor- und Nachteile"
@@ -139,7 +157,8 @@ class Messages:
     SS_ADD_MULTIPLE_SKILLS = "{add} Fertigkeiten hinzufügen"
     SS_REMOVE_SINGLE_SKILL = "Fertigkeit entfernen"
     SS_REMOVE_MULTIPLE_SKILLS = "{rem} Fertigkeiten entfernen"
-    SS_ADD_REMOVE_MULTIPLE_SKILLS = "Fertigkeiten: {add} hinzufügen, {rem} entfernen"
+    SS_ADD_REMOVE_MULTIPLE_SKILLS = "Fertigkeiten: {add} hinzufügen,"\
+                                    " {rem} entfernen"
     SS_NEW_SKILL = "Eigene Fertigkeit hinzufügen ..."
     SS_SKILL_EXISTS = "Fertigkeit existiert bereits!"
     SS_ILLEGAL_CHARS = "Ungültige Zeichen im Namen!"
@@ -810,7 +829,6 @@ class Messages:
     IE_TT_REPAIR = "Gegenstand reparieren / verbessern"
     IE_TT_DAMAGE_ITEM = "Gegenstand beschädigen"
 
-
     # IMPROVE WINDOW
     IW_TITLE = "Steigern ..."
     IW_EVENT = "Ereignis: "
@@ -822,10 +840,10 @@ class Messages:
     IW_ADD = "Ereignis hinzufügen"
 
     # ACOUNTS MANAGEMENT
-    AC_PRIMARY_NAME = "Barvermögen [unspezifiziert]" #don't use () in this string!
+    # don't use () in the following string!
+    AC_PRIMARY_NAME = "Barvermögen [unspezifiziert]"
 
     # SOCIAL EDITOR
-
     SE_CONTACT_TITLE = "Kontakt"
     SE_CLOSE = "Schließen"
     SE_SAVE = "Speichern"
@@ -953,7 +971,8 @@ class Messages:
     EX_IT_FOOD = "Nahrungsmittel"
     EX_IT_DRUG = "Drogen"
     EX_IT_GENERIC = "Sonstiges"
-    #biotech
+
+    # biotech
     EX_IT_IMPLANT = "Implantat"
     EX_IT_PROSTHESIS = "Prothese"
     EX_IT_IMPLANT_PART = "Einbauteil"
@@ -1218,32 +1237,10 @@ class Messages:
     SET_EDIT_VIEW = "Ansichtsmodus"
     SET_EDIT_SIM = "Simulation"
     SET_EDIT_SWITCH = "Modus wechseln"
+    SET_FREE_MODE = "Gratismodus"
+    SET_FREE_XP = "Verrechnung von\nErfahrungspunkten\ndeaktivieren."
+    SET_FREE_MONEY = "Geldverrechnung\ndeaktivieren."
     SET_EXPANSIONS = "Erweiterungen auswählen: "
-
-    # these strings are used in the character xml 
-    CHAR_CREATED = "created"
-    CHAR_INITIAL_XP = "init_xp"
-    CHAR_STARTING_CAPITAL = "init_money"
-    CHAR_LOADED = "loaded"
-    CHAR_SAVED = "saved"
-    CHAR_SWITCHED_EDIT_MODE = "editmode"
-    CHAR_UPDATED = "updated"
-    CHAR_ADDED = "added"
-    CHAR_REMOVED = "removed"
-    CHAR_ITEM_DESTROY = "destroyed"
-    CHAR_ITEM_SELL = "sold"
-    CHAR_ITEM_SPLIT = "split"
-    CHAR_ITEM_CONDENSED = "joined"
-    CHAR_ITEM_ROTATECHAMBER = "rotate_chamber"
-    CHAR_ITEM_BAG = "bag"
-    CHAR_ITEM_PACKED = "packed"
-    CHAR_ITEM_UNPACKED = "unpacked"
-    CHAR_ITEM_EQUIP = "equipped"
-    CHAR_ITEM_UNEQUIP = "unequipped"
-    CHAR_ITEM_DESCRIPTION = "description"
-    CHAR_ITEM_RENAMED = "renamed"
-    CHAR_ITEM_REPAIRED = "repaired"
-    CHAR_ITEM_DAMAGED = "damaged"
 
     # LOG DISPLAY
     LOG_HEADER = " ΔXP     Zeitpunkt:                  Ereignis:"
@@ -1260,6 +1257,14 @@ class Messages:
     LOG_EDIT_EDIT = "Charakter wurde in den Bearbeitungsmodus gesetzt."
     LOG_EDIT_VIEW = "Charakter wurde in den Ansichtsmodus versetzt."
     LOG_EDIT_SIM = "Charakter wurde in den Simulationsmodus gesetzt."
+    LOG_EDIT_ON = "Freier {type}-Modus aktiviert."
+    LOG_EDIT_OFF = "Freier {type}-Modus deaktiviert."
+    LOG_FREE_XP = "XP"
+    LOG_FREE_MONEY = "Budget"
+    LOG_TRAIT_ADDED = "Die Eigenschaft {name} wurde hinzugefügt."
+    LOG_TRAIT_AMPLIFIED = "Eigenschaft {name} intensiviert"
+    LOG_TRAIT_REDUCED = "Eigenschaft {name} reduziert."
+    LOG_TRAIT_REMOVED = "Die Eigenschaft {name} wurde entfernt."
     LOG_SKILL_ADDED = "Fertigkeit {name} aktiviert."
     LOG_SKILL_UPDATED = "Fertigkeit {name} geändert. Neuer Wert ist {value}"
     LOG_SKILL_REMOVED = "Fertigkeit {name} entfernt."
@@ -1295,9 +1300,6 @@ class Messages:
     LOG_UNSAVED = "Der Charakter wurde bisher nicht gespeichert"
     LOG_CORRUPT_FILE = "Externe Bearbeitung festgestellt ..."
 
-    # Tooltip messages
-    TT_ADD_TRAITS = "Hier klicken zum hinzufügen\nneuer Eigenschaften."
-
     phy = "Physisch"
     men = "Mental"
     soz = "Sozial"
@@ -1320,11 +1322,28 @@ class Values:
     IE_AREA_LARGE = 100
 
 
-# THIS CLASS DEFINES VALUES CONCERNING PDF EXPORTS
 class Page:
     """ 
     The Page class defines core variables for the PDF Export. 
     """
+    # defining module sizes in points ...
+    #  These were created for A4 pages!
+    SINGLE_WIDTH = 193
+    DOUBLE_WIDTH = 400
+    SINGLE_HEIGHT = 131
+    DOUBLE_HEIGHT = 276
+    TRIPLE_HEIGHT = 421
+    FULL_HEIGHT = 566
+
+    BAR_WIDTH = 20
+    OUTER_RADIUS = 4
+    INNER_RADIUS = 2
+    Y_PADDING = 4
+    SPACER = 14
+    MINLINE_HEIGHT = 14
+    INFO_LINE = 9
+    STROKE = 1
+
     # Size parameters:
     #  WARNING: These parameters are used to evaluate data
     #  from XML files. Changing these will break import of
@@ -1339,24 +1358,6 @@ class Page:
     BIG = 'big'
     HALF = 'half'
     ATTRIB_IMAGE = 'attrimg'
-
-    # defining module sizes in points ... 
-    #  These were created for A4 pages!
-    SINGLE_WIDTH = 193
-    DOUBLE_WIDTH = 400
-    SINGLE_HEIGHT = 131
-    DOUBLE_HEIGHT = 276
-    TRIPLE_HEIGHT = 421
-    FULL_HEIGHT = 566
-        
-    BAR_WIDTH = 20
-    OUTER_RADIUS = 4
-    INNER_RADIUS = 2
-    Y_PADDING = 4
-    SPACER = 14
-    MINLINE_HEIGHT = 14
-    INFO_LINE = 9
-    STROKE = 1
 
     # Module names:
     #  WARNING: These parameters are used to evaluate data
@@ -1374,13 +1375,82 @@ class Page:
     MOD_IMAGE = "image"
 
 
+class CharData:
+    """ Storing some data used for the character XML """
+    #  WARNING: These parameters are used to evaluate data
+    #  from XML files. Changing these will break import of
+    #  templates created on other machines and will make it
+    #  impossible to import your templates on other computers!
+
+    # attributes
+    PHY = "phy"
+    MEN = "men"
+    SOZ = "soz"
+    NK = "nk"
+    FK = "fk"
+    LP = "lp"
+    EP = "ep"
+    MP = "mp"
+
+    # char data names
+    NAME = "name"
+    SPECIES = "species"
+    ORIGIN = "origin"
+    CONCEPT = "concept"
+    PLAYER = "player"
+    HEIGHT = "height"
+    WEIGHT = "weight"
+    AGE = "age"
+    GENDER = "gender"
+    HAIR = "hair"
+    EYES = "eyes"
+    SKIN = "skin"
+    SKIN_TYPE = "skintype"
+
+    # edit modes
+    GENERATION = "generation"
+    EDIT = "edit"
+    SIMULATION = "simulation"
+    VIEW = "view"
+    ON = "on"
+    OFF = "off"
+
+    # log names
+    CREATED = "created"
+    INITIAL_XP = "init_xp"
+    STARTING_CAPITAL = "init_money"
+    LOADED = "loaded"
+    SAVED = "saved"
+    SWITCHED_EDIT_MODE = "editmode"
+    SWITCHED_XP_MODE = "xpmode"
+    SWITCHED_MONEY_MODE = "moneymode"
+    UPDATED = "updated"
+    ADDED = "added"
+    REMOVED = "removed"
+    TRAIT_AMPLIFIED = "amplified"
+    TRAIT_REDUCED = "reduced"
+    ITEM_DESTROY = "destroyed"
+    ITEM_SELL = "sold"
+    ITEM_SPLIT = "split"
+    ITEM_CONDENSED = "joined"
+    ITEM_ROTATECHAMBER = "rotate_chamber"
+    ITEM_BAG = "bag"
+    ITEM_PACKED = "packed"
+    ITEM_UNPACKED = "unpacked"
+    ITEM_EQUIP = "equipped"
+    ITEM_UNEQUIP = "unequipped"
+    ITEM_DESCRIPTION = "description"
+    ITEM_RENAMED = "renamed"
+    ITEM_REPAIRED = "repaired"
+    ITEM_DAMAGED = "damaged"
+
+
 class ItemTypes:
-    """ handling item import from xml files 
-    
-    Note:
-        This handles how data from xml is parsed, changing it might
-        break import of data files!
-    """
+    """ xml data names for item types """
+    #  WARNING: These parameters are used to evaluate data
+    #  from XML files. Changing these will break import of
+    #  templates created on other machines and will make it
+    #  impossible to import your templates on other computers!
 
     #  clothing and armor
     CLOTHING = "clothing"
@@ -1422,11 +1492,12 @@ class ItemTypes:
     FOOD = "food"
     DRUG = "drug"
 
-    #biotech
+    # biotech
     IMPLANT = "implant"
     PROSTHESIS = "prosthesis"
     IMPLANT_PART = "implant_part"
 
+    # option data
     OPTION_CALIBER = "caliber"
     OPTION_COLOR = "color"
     OPTION_MATERIAL = "material"
@@ -1435,6 +1506,11 @@ class ItemTypes:
 
 
 class TraitGroups:
+    """ xml names for trait groups """
+    #  WARNING: These parameters are used to evaluate data
+    #  from XML files. Changing these will break import of
+    #  templates created on other machines and will make it
+    #  impossible to import your templates on other computers!
 
     BODY = "body"
     MIND = "mind"
@@ -1448,36 +1524,6 @@ class TraitGroups:
     BEHAVIOR = "behavior"
     PSI = "psi"
     XS = "xs"
-
-
-"""
-# this class handles character XML data names
-class Character:
-    # attributes
-    PHY = "phy"
-    MEN = "men"
-    SOZ = "soz"
-
-    NK = "nk"
-    FK = "fk"
-
-    LP = "lp"
-
-    # data
-    NAME = "name"
-    SPECIES = "species"
-    ORIGIN = "origin"
-    CONCEPT = "concept"
-    PLAYER = "player"
-    HEIGHT = "height"
-    WEIGHT = "weight"
-    AGE = "age"
-    GENDER = "gender"
-    HAIR = "hair"
-    EYES = "eyes"
-    SKIN = "skin"
-    SKIN_TYPE = "skintype"
-"""
 
 
 class Colors:
@@ -1510,6 +1556,13 @@ class Style:
     DATA_STYLE = {
         "disabledforeground": "#000000",
         "font": "Arial 11 bold"
+    }
+
+    STATUSBAR_FREE = {
+        "foreground": "#acacac"
+    }
+    STATUSBAR_NORMAL = {
+        "foreground": "#000000"
     }
 
     ATTR_FONT = "Arial 14 bold"

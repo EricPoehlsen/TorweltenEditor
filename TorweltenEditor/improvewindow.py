@@ -136,7 +136,7 @@ class Improve(tk.Toplevel):
             account = "0"
         self.char.addXP(xp, reason=event_name)
         self.char.updateAccount(money, reason=event_name)
-        self.app._switchWindow(msg.TOOLBAR_CHAR_DATA)
+        self.app.switchWindow(msg.TOOLBAR_CHAR_DATA)
         self.close()
 
     def _check(self, n, e, m):
