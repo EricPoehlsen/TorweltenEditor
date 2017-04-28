@@ -21,9 +21,11 @@ from improvewindow import Improve
 from PIL import ImageTk, Image, PngImagePlugin
 import tk_ as tk
 import tkinter.messagebox as tkmb
+from exportpdf import ExportPdf
 
 msg = config.Messages()
 cd = config.CharData()
+
 
 class Application(tk.Frame):
     """ The applications main window layout
@@ -266,6 +268,28 @@ class Application(tk.Frame):
         filename = tkfd.asksaveasfilename(**options)
         if filename:
             self.char.save(filename)
+
+    def exportCharWindow(self, template=None):
+        """ File save dialog => PDF export to disk """
+
+        suggested_filename = "character.pdf"
+        charname = self.char.getData("name")
+        if len(charname) > 0:
+            regex = "[^a-zA-Z0-9\xE4\xF6\xFC\xC4\xD6\xDC\xDF]"
+            suggested_filename = re.subn(regex, "_", charname)[0] + ".pdf"
+
+        options = {
+            'defaultextension': '.pdf',
+            'filetypes': [('PDF Dokument', '.pdf')],
+            'initialdir': './chars',
+            'initialfile': suggested_filename,
+            'parent': self.main,
+            'title': 'Charakter speichern ...'
+        }
+        filename = tkfd.asksaveasfilename(**options)
+
+        if len(filename) > 0:
+            ExportPdf(filename, self.char, self.traits, template)
 
     def _clearMainFrame(self):
         """ destroying all children in self.main_frame """

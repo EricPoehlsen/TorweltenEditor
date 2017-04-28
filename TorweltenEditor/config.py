@@ -157,7 +157,8 @@ class Messages:
     SS_ADD_MULTIPLE_SKILLS = "{add} Fertigkeiten hinzufügen"
     SS_REMOVE_SINGLE_SKILL = "Fertigkeit entfernen"
     SS_REMOVE_MULTIPLE_SKILLS = "{rem} Fertigkeiten entfernen"
-    SS_ADD_REMOVE_MULTIPLE_SKILLS = "Fertigkeiten: {add} hinzufügen, {rem} entfernen"
+    SS_ADD_REMOVE_MULTIPLE_SKILLS = "Fertigkeiten: {add} hinzufügen,"\
+                                    " {rem} entfernen"
     SS_NEW_SKILL = "Eigene Fertigkeit hinzufügen ..."
     SS_SKILL_EXISTS = "Fertigkeit existiert bereits!"
     SS_ILLEGAL_CHARS = "Ungültige Zeichen im Namen!"
@@ -828,7 +829,6 @@ class Messages:
     IE_TT_REPAIR = "Gegenstand reparieren / verbessern"
     IE_TT_DAMAGE_ITEM = "Gegenstand beschädigen"
 
-
     # IMPROVE WINDOW
     IW_TITLE = "Steigern ..."
     IW_EVENT = "Ereignis: "
@@ -840,10 +840,10 @@ class Messages:
     IW_ADD = "Ereignis hinzufügen"
 
     # ACOUNTS MANAGEMENT
-    AC_PRIMARY_NAME = "Barvermögen [unspezifiziert]" #don't use () in this string!
+    # don't use () in the following string!
+    AC_PRIMARY_NAME = "Barvermögen [unspezifiziert]"
 
     # SOCIAL EDITOR
-
     SE_CONTACT_TITLE = "Kontakt"
     SE_CLOSE = "Schließen"
     SE_SAVE = "Speichern"
@@ -971,7 +971,8 @@ class Messages:
     EX_IT_FOOD = "Nahrungsmittel"
     EX_IT_DRUG = "Drogen"
     EX_IT_GENERIC = "Sonstiges"
-    #biotech
+
+    # biotech
     EX_IT_IMPLANT = "Implantat"
     EX_IT_PROSTHESIS = "Prothese"
     EX_IT_IMPLANT_PART = "Einbauteil"
@@ -1309,8 +1310,77 @@ class Messages:
     mp = "Moralpunkte"
 
 
+class Values:
+    """ Values that are needed somewhere ..."""
+
+    # InventoryEditor and ItemEditor
+    IE_BASE_PRICE1 = 5
+    IE_BASE_PRICE2 = 2.5
+    IE_PRICE_ARMOR = 10  # factor for each armor level
+    IE_AREA_SMALL = 25
+    IE_AREA_MEDIUM = 50
+    IE_AREA_LARGE = 100
+
+
+class Page:
+    """ 
+    The Page class defines core variables for the PDF Export. 
+    """
+    # defining module sizes in points ...
+    #  These were created for A4 pages!
+    SINGLE_WIDTH = 193
+    DOUBLE_WIDTH = 400
+    SINGLE_HEIGHT = 131
+    DOUBLE_HEIGHT = 276
+    TRIPLE_HEIGHT = 421
+    FULL_HEIGHT = 566
+
+    BAR_WIDTH = 20
+    OUTER_RADIUS = 4
+    INNER_RADIUS = 2
+    Y_PADDING = 4
+    SPACER = 14
+    MINLINE_HEIGHT = 14
+    INFO_LINE = 9
+    STROKE = 1
+
+    # Size parameters:
+    #  WARNING: These parameters are used to evaluate data
+    #  from XML files. Changing these will break import of
+    #  templates created on other machines and will make it
+    #  impossible to import your templates on other computers!
+    SINGLE = 'single'
+    DOUBLE = 'double'
+    TRIPLE = 'triple'
+    FULL = 'full'
+    WIDE = 'wide'
+    QUART = 'quart'
+    BIG = 'big'
+    HALF = 'half'
+    ATTRIB_IMAGE = 'attrimg'
+
+    # Module names:
+    #  WARNING: These parameters are used to evaluate data
+    #  from XML files. Changing these will break import of
+    #  templates created on other machines and will make it
+    #  impossible to import your templates on other computers!
+    MOD_ATTRIBUTES = "attributes"
+    MOD_TRAITS = "traits"
+    MOD_SKILLS = "skills"
+    MOD_EQUIPMENT = "equipment"
+    MOD_WEAPONS = "weapons"
+    MOD_CONTACTS = "contacts"
+    MOD_EWT = "ewt"
+    MOD_NOTES = "notes"
+    MOD_IMAGE = "image"
+
+
 class CharData:
     """ Storing some data used for the character XML """
+    #  WARNING: These parameters are used to evaluate data
+    #  from XML files. Changing these will break import of
+    #  templates created on other machines and will make it
+    #  impossible to import your templates on other computers!
 
     # attributes
     PHY = "phy"
@@ -1375,79 +1445,12 @@ class CharData:
     ITEM_DAMAGED = "damaged"
 
 
-class Values:
-    """ Values that are needed somewhere ..."""
-
-    # InventoryEditor and ItemEditor
-    IE_BASE_PRICE1 = 5
-    IE_BASE_PRICE2 = 2.5
-    IE_PRICE_ARMOR = 10  # factor for each armor level
-    IE_AREA_SMALL = 25
-    IE_AREA_MEDIUM = 50
-    IE_AREA_LARGE = 100
-
-
-# THIS CLASS DEFINES VALUES CONCERNING PDF EXPORTS
-class Page:
-    """ 
-    The Page class defines core variables for the PDF Export. 
-    """
-    # Size parameters:
-    #  WARNING: These parameters are used to evaluate data
-    #  from XML files. Changing these will break import of
-    #  templates created on other machines and will make it
-    #  impossible to import your templates on other computers!
-    SINGLE = 'single'
-    DOUBLE = 'double'
-    TRIPLE = 'triple'
-    FULL = 'full'
-    WIDE = 'wide'
-    QUART = 'quart'
-    BIG = 'big'
-    HALF = 'half'
-    ATTRIB_IMAGE = 'attrimg'
-
-    # defining module sizes in points ... 
-    #  These were created for A4 pages!
-    SINGLE_WIDTH = 193
-    DOUBLE_WIDTH = 400
-    SINGLE_HEIGHT = 131
-    DOUBLE_HEIGHT = 276
-    TRIPLE_HEIGHT = 421
-    FULL_HEIGHT = 566
-        
-    BAR_WIDTH = 20
-    OUTER_RADIUS = 4
-    INNER_RADIUS = 2
-    Y_PADDING = 4
-    SPACER = 14
-    MINLINE_HEIGHT = 14
-    INFO_LINE = 9
-    STROKE = 1
-
-    # Module names:
-    #  WARNING: These parameters are used to evaluate data
-    #  from XML files. Changing these will break import of
-    #  templates created on other machines and will make it
-    #  impossible to import your templates on other computers!
-    MOD_ATTRIBUTES = "attributes"
-    MOD_TRAITS = "traits"
-    MOD_SKILLS = "skills"
-    MOD_EQUIPMENT = "equipment"
-    MOD_WEAPONS = "weapons"
-    MOD_CONTACTS = "contacts"
-    MOD_EWT = "ewt"
-    MOD_NOTES = "notes"
-    MOD_IMAGE = "image"
-
-
 class ItemTypes:
-    """ handling item import from xml files 
-    
-    Note:
-        This handles how data from xml is parsed, changing it might
-        break import of data files!
-    """
+    """ xml data names for item types """
+    #  WARNING: These parameters are used to evaluate data
+    #  from XML files. Changing these will break import of
+    #  templates created on other machines and will make it
+    #  impossible to import your templates on other computers!
 
     #  clothing and armor
     CLOTHING = "clothing"
@@ -1489,18 +1492,25 @@ class ItemTypes:
     FOOD = "food"
     DRUG = "drug"
 
-    #biotech
+    # biotech
     IMPLANT = "implant"
     PROSTHESIS = "prosthesis"
     IMPLANT_PART = "implant_part"
 
+    # option data
     OPTION_CALIBER = "caliber"
     OPTION_COLOR = "color"
     OPTION_MATERIAL = "material"
     OPTION_SIZE = "size"
     OPTION_VARIANT = "variant"
 
+
 class TraitGroups:
+    """ xml names for trait groups """
+    #  WARNING: These parameters are used to evaluate data
+    #  from XML files. Changing these will break import of
+    #  templates created on other machines and will make it
+    #  impossible to import your templates on other computers!
 
     BODY = "body"
     MIND = "mind"
@@ -1514,25 +1524,6 @@ class TraitGroups:
     BEHAVIOR = "behavior"
     PSI = "psi"
     XS = "xs"
-
-
-
-
-"""
-# this class handles character XML data names
-class Character:
-    # attributes
-    PHY = "phy"
-    MEN = "men"
-    SOZ = "soz"
-
-    NK = "nk"
-    FK = "fk"
-
-    LP = "lp"
-
-    # data
-"""
 
 
 class Colors:
