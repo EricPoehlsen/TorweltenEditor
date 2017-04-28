@@ -6,6 +6,7 @@ from tooltip import ToolTip
 import re
 
 it = config.ItemTypes()
+cd = config.CharData()
 msg = config.Messages()
 
 
@@ -561,7 +562,7 @@ class ItemEditor(tk.Toplevel):
             sub_item = self.char.getItemById(sub_item_id)
             if sub_item is not None:
                 self.char.unpackItem(sub_item)
-        self.char.logEvent(self.item, op=msg.CHAR_ITEM_SELL)
+        self.char.logEvent(self.item, op=cd.ITEM_SELL)
         self.char.setItemQuantity(self.item, 0)
         self.char.updateAccount(price * quantity)
         self.app.updateItemList()
@@ -599,7 +600,7 @@ class ItemEditor(tk.Toplevel):
                 if sub_item is not None:
                     self.char.unpackItem(sub_item)
 
-            self.char.logEvent(self.item, op=msg.CHAR_ITEM_DESTROY)
+            self.char.logEvent(self.item, op=cd.ITEM_DESTROY)
             self.char.setItemQuantity(self.item, 0)
             self.app.updateItemList()
             self.close(destroy=True)
@@ -1042,7 +1043,7 @@ class ItemEditor(tk.Toplevel):
         self.item.set("price", str(self.item_price))
         self.char.logEvent(
             self.item,
-            op=msg.CHAR_ITEM_DAMAGED,
+            op=cd.ITEM_DAMAGED,
             mod=str(self.item_quality)
         )
 
@@ -1058,7 +1059,7 @@ class ItemEditor(tk.Toplevel):
         self.item.set("price", str(self.item_price))
         self.char.logEvent(
             self.item,
-            op=msg.CHAR_ITEM_REPAIRED,
+            op=cd.ITEM_REPAIRED,
             mod=str(self.item_quality)
         )
 
@@ -1070,7 +1071,7 @@ class ItemEditor(tk.Toplevel):
     def close(self, load=None, destroy=False):
         if not destroy and len(self.description_content) > 1: 
             self.item.find("description").text = self.description_content
-            self.char.logEvent(self.item, op=msg.CHAR_ITEM_DESCRIPTION)
+            self.char.logEvent(self.item, op=cd.ITEM_DESCRIPTION)
                 
         # destroy window and remove from list
         self.destroy()
@@ -1108,16 +1109,16 @@ class ItemEditor(tk.Toplevel):
             if new_value != old_value:
                 if attribute == "name":
                     mod_info = self.item.get(attribute)
-                    op = msg.CHAR_ITEM_RENAMED
+                    op = cd.ITEM_RENAMED
                 else:
                     mod_info = attribute+":"+new_value
-                    op = msg.CHAR_UPDATE
+                    op = cd.UPDATE
                     
                 self.item.set(attribute, new_value)
                 self.char.logEvent(
                     self.item,
                     mod=mod_info,
-                    op=msg.CHAR_UPDATE
+                    op=cd.UPDATE
                 )
                 self.app.updateItemList()
 
@@ -1154,5 +1155,5 @@ class ItemEditor(tk.Toplevel):
                 self.char.logEvent(
                     self.item,
                     mod=mod_info,
-                    op=msg.CHAR_UPDATED
+                    op=cd.UPDATED
                 )

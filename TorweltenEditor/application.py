@@ -13,7 +13,6 @@ from socialscreen import SocialScreen
 from settingscreen import SettingScreen
 from logscreen import LogScreen
 from sheetlayoutscreen import LayoutScreen
-from exportpdf import ExportPdf
 from imagescreen import ImageScreen
 from notesscreen import NotesScreen
 from expansionscreen import ExpansionScreen
@@ -24,7 +23,7 @@ import tk_ as tk
 import tkinter.messagebox as tkmb
 
 msg = config.Messages()
-
+cd = config.CharData()
 
 class Application(tk.Frame):
     """ The applications main window layout
@@ -65,10 +64,6 @@ class Application(tk.Frame):
         self.filemenu.add_command(
             label=msg.MENU_SAVE,
             command=self.saveCharWindow
-        )
-        self.filemenu.add_command(
-            label=msg.MENU_PDFEXPORT,
-            command=self.exportCharWindow
         )
         self.filemenu.add_command(
             label=msg.MENU_QUIT,
@@ -139,7 +134,8 @@ class Application(tk.Frame):
             "contact": 0,
             "itemedit": 0,
             "mod_ed": 0,
-            "improve": 0
+            "improve": 0,
+            "editmode": 0
         }
 
         self.widgets = {}
@@ -218,7 +214,7 @@ class Application(tk.Frame):
         init_xp = int(self.settings.getInitialXP())
         self.char.addXP(
             amount=init_xp,
-            reason=msg.CHAR_INITIAL_XP
+            reason=cd.INITIAL_XP
         )
         self.switchWindow(msg.TOOLBAR_CHAR_DATA)
         self.status_bar.rebind(self)
@@ -228,11 +224,11 @@ class Application(tk.Frame):
 
         options = {
             'defaultextension': '.xml',
-            'filetypes': [('Charakterdateien', '.xml')],
+            'filetypes': [(msg.FD_CHAR_FILES, '.xml')],
             'initialdir': './chars',
             'initialfile': 'character.xml',
             'parent': self.main,
-            'title': 'Charakter laden ...',
+            'title': msg.FD_LOAD_CHAR_TITLE,
             }
         filename = tkfd.askopenfilename(**options)
         if filename:
@@ -261,37 +257,15 @@ class Application(tk.Frame):
 
         options = {
             'defaultextension': '.xml',
-            'filetypes': [('Charakterdateien', '.xml')],
+            'filetypes': [(msg.FD_CHAR_FILES, '.xml')],
             'initialdir': './chars',
             'initialfile': suggested_filename,
             'parent': self.main,
-            'title': 'Charakter speichern ...',
+            'title': msg.FD_SAVE_CHAR_TITLE,
             }
         filename = tkfd.asksaveasfilename(**options)
         if filename:
             self.char.save(filename)
-
-    def exportCharWindow(self, template=None):
-        """ File save dialog => PDF export to disk """
-
-        suggested_filename = "character.pdf"
-        charname = self.char.getData("name")
-        if len(charname) > 0:
-            regex = "[^a-zA-Z0-9\xE4\xF6\xFC\xC4\xD6\xDC\xDF]"
-            suggested_filename = re.subn(regex, "_", charname)[0]+".pdf"
-            
-        options = {
-            'defaultextension': '.pdf',
-            'filetypes': [('PDF Dokument', '.pdf')],
-            'initialdir': './chars',
-            'initialfile': suggested_filename,
-            'parent': self.main,
-            'title': 'Charakter speichern ...'
-            }
-        filename = tkfd.asksaveasfilename(**options)
-        
-        if len(filename) > 0:
-            ExportPdf(filename, self.char, self.traits, template)
 
     def _clearMainFrame(self):
         """ destroying all children in self.main_frame """
@@ -350,63 +324,6 @@ class Application(tk.Frame):
         label.image = photo
         label.pack()
 
-    def _setStyle(self):
-        self.style.configure(
-            "red.TLabel",
-            foreground = config.Colors.DARK_RED
-        )
-        self.style.configure(
-            "green.TLabel",
-            foreground=config.Colors.DARK_GREEN
-        )
-        self.style.configure(
-            "attr.TLabel",
-            font="Arial 14 bold",
-            justify=tk.CENTER,
-            anchor=tk.CENTER
-
-        )
-
-        self.style.configure(
-            "test.TFrame",
-            background = "#ff0000"
-        )
-        self.style.configure(
-            "selected.TButton",
-            foreground="#000000",
-            font="Arial 10 bold"
-        )
-
-        self.style.configure(
-            "destroy.TButton",
-            background="#ff0000",
-            foreground="#ff0000"
-        )
-
-        self.style.configure(
-            "invalid.TEntry",
-            foreground="#ff0000",
-
-        )
-
-        # edit_entry - editable labels for the itemeditor
-        self.style.layout(
-            "edit_entry",
-            [('edit_entry', {'sticky': 'nswe', 'children':
-                [('Entry.background', {'sticky': 'nswe', 'children':
-                    [('Entry.padding', {'sticky': 'nswe', 'children':
-                        [('Entry.textarea', {'sticky': 'nswe'})]}
-                    )]}
-                )]}
-            )]
-        )
-        self.style.map(
-            "edit_entry",
-            foreground=[("active", "#000000"), ("disabled", "#000000")],
-            background=[("active", "#ffffff"), ("disabled", "#eeeeee")],
-            borderwidth=[("active", 0), ("disabled", 0)],
-        )
-
     def _setHotkeys(self):
         """ Binding global hotkeys """
 
@@ -450,15 +367,15 @@ class Application(tk.Frame):
 
     def updateTitle(self):
         modes = {
-                "generation": msg.TITLE_EM_GENERATION,
-                "edit": msg.TITLE_EM_EDIT,
-                "view": msg.TITLE_EM_VIEW,
-                "simulation": msg.TITLE_EM_SIMULATION,
+                cd.GENERATION: msg.TITLE_EM_GENERATION,
+                cd.EDIT: msg.TITLE_EM_EDIT,
+                cd.VIEW: msg.TITLE_EM_VIEW,
+                cd.SIMULATION: msg.TITLE_EM_SIMULATION,
             }
 
         title = [
             msg.TITLE,
-            self.char.getData("name"),
+            self.char.getData(cd.NAME),
             modes.get(self.char.getEditMode(), "")
         ]
         title = " - ".join(title)
@@ -488,7 +405,10 @@ class Application(tk.Frame):
         print(dpi)
 
     def _editModeWindow(self):
-        window = EditModeSwitcher(self)
+        if self.open_windows.get("editmode"):
+            self.open_windows["editmode"].focus()
+        else:
+            self.open_windows["editmode"] = EditModeSwitcher(self)
 
 
 class StatusBar(tk.Frame):
@@ -499,7 +419,7 @@ class StatusBar(tk.Frame):
         self.char = main.char
         self.xp_label = tk.Label(
             self,
-            text="XP verfügbar: "
+            text=msg.SB_XP_AVAIL
             )
         self.xp_label.pack(side=tk.LEFT)
         self.xp_info = tk.Label(
@@ -508,9 +428,10 @@ class StatusBar(tk.Frame):
             textvariable=self.char.xp_avail
             )
         self.xp_info.pack(side=tk.LEFT)
+        tk.Label(self, text="  ").pack(side=tk.LEFT)
         self.money_label = tk.Label(
             self, 
-            text="| Geld verfügbar: "
+            text=msg.SB_MONEY_AVAIL
             )
         self.money_label.pack(side=tk.LEFT)
         self.money_info = tk.Label(
@@ -596,10 +517,10 @@ class EditModeSwitcher(tk.Toplevel):
 
         frame = tk.LabelFrame(parent, text=msg.SET_EDIT_MODE)
         modes = [
-            (msg.SET_EDIT_GENERATION, "generation"),
-            (msg.SET_EDIT_EDIT, "edit"),
-            (msg.SET_EDIT_VIEW, "view"),
-            (msg.SET_EDIT_SIM, "simulation")
+            (msg.SET_EDIT_GENERATION, cd.GENERATION),
+            (msg.SET_EDIT_EDIT, cd.EDIT),
+            (msg.SET_EDIT_VIEW, cd.VIEW),
+            (msg.SET_EDIT_SIM, cd.SIMULATION)
         ]
         for txt, val in modes:
             button = tk.Radiobutton(
@@ -633,7 +554,7 @@ class EditModeSwitcher(tk.Toplevel):
         free_money = self.data["free_money"] = tk.IntVar()
         if self.char.getFreeMoney(): free_money.set(1)
 
-        frame=tk.LabelFrame(parent, text=msg.SET_FREE_MODE)
+        frame = tk.LabelFrame(parent, text=msg.SET_FREE_MODE)
         free_xp_button = tk.Checkbutton(
             frame,
             text=msg.SET_FREE_XP,

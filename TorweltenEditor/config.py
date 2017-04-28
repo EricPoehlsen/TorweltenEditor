@@ -39,6 +39,16 @@ class Messages:
                             "sich um kein PDF-Template."
 
     # #####GENERIC UI TEXT # ######
+    # Attributes
+    PHY = "PHY"
+    MEN = "MEN"
+    SOZ = "SOZ"
+    NK = "NK"
+    FK = "FK"
+    LP = "LP"
+    EP = "EP"
+    MP = "MP"
+
     NAME = "Name"
     SPECIES = "Spezies"
     ORIGIN = "Herkunft"
@@ -63,10 +73,9 @@ class Messages:
     # ##### MENU 
     # FILE MENU
     MENU_FILE = "Datei"
-    MENU_NEW = "Neu ..."
+    MENU_NEW = "Neuer Charakter ..."
     MENU_LOAD = "Charakter öffnen ..."
     MENU_SAVE = "Charakter speichern ..."
-    MENU_PDFEXPORT = "PDF Export ..."
     MENU_QUIT = "Beenden"
 
     # TOOLS MENU
@@ -91,6 +100,14 @@ class Messages:
     TOOLBAR_CHAR_NOTES = "Notizen"
     TOOLBAR_CHAR_LAYOUT = "PDF-Export"
 
+    # FILE DIALOGS
+    FD_CHAR_FILES = "Charakterdateien"
+    FD_LOAD_CHAR_TITLE = "Charakter laden ..."
+    FD_SAVE_CHAR_TITLE = "CHarakter speichern ..."
+
+    # STATUS BAR
+    SB_XP_AVAIL = "XP verfügbar: "
+    SB_MONEY_AVAIL = "Geld verfügbar: "
     # CHAR SCREEN
     CS_BASE_DATA = "Basisdaten"
     CS_TRAITS = "Vor- und Nachteile"
@@ -1224,35 +1241,6 @@ class Messages:
     SET_FREE_MONEY = "Geldverrechnung\ndeaktivieren."
     SET_EXPANSIONS = "Erweiterungen auswählen: "
 
-    # these strings are used in the character xml 
-    CHAR_CREATED = "created"
-    CHAR_INITIAL_XP = "init_xp"
-    CHAR_STARTING_CAPITAL = "init_money"
-    CHAR_LOADED = "loaded"
-    CHAR_SAVED = "saved"
-    CHAR_SWITCHED_EDIT_MODE = "editmode"
-    CHAR_SWITCHED_XP_MODE = "xpmode"
-    CHAR_SWITCHED_MONEY_MODE = "moneymode"
-    CHAR_UPDATED = "updated"
-    CHAR_ADDED = "added"
-    CHAR_REMOVED = "removed"
-    CHAR_TRAIT_AMPLIFIED = "amplified"
-    CHAR_TRAIT_REDUCED = "reduced"
-    CHAR_ITEM_DESTROY = "destroyed"
-    CHAR_ITEM_SELL = "sold"
-    CHAR_ITEM_SPLIT = "split"
-    CHAR_ITEM_CONDENSED = "joined"
-    CHAR_ITEM_ROTATECHAMBER = "rotate_chamber"
-    CHAR_ITEM_BAG = "bag"
-    CHAR_ITEM_PACKED = "packed"
-    CHAR_ITEM_UNPACKED = "unpacked"
-    CHAR_ITEM_EQUIP = "equipped"
-    CHAR_ITEM_UNEQUIP = "unequipped"
-    CHAR_ITEM_DESCRIPTION = "description"
-    CHAR_ITEM_RENAMED = "renamed"
-    CHAR_ITEM_REPAIRED = "repaired"
-    CHAR_ITEM_DAMAGED = "damaged"
-
     # LOG DISPLAY
     LOG_HEADER = " ΔXP     Zeitpunkt:                  Ereignis:"
     LOG_CHAR_CREATED = "Der Charakter wurde erstellt."
@@ -1311,9 +1299,6 @@ class Messages:
     LOG_UNSAVED = "Der Charakter wurde bisher nicht gespeichert"
     LOG_CORRUPT_FILE = "Externe Bearbeitung festgestellt ..."
 
-    # Tooltip messages
-    TT_ADD_TRAITS = "Hier klicken zum hinzufügen\nneuer Eigenschaften."
-
     phy = "Physisch"
     men = "Mental"
     soz = "Sozial"
@@ -1322,6 +1307,72 @@ class Messages:
     lp = "Lebenspunkte"
     ep = "Energiepunkte"
     mp = "Moralpunkte"
+
+
+class CharData:
+    """ Storing some data used for the character XML """
+
+    # attributes
+    PHY = "phy"
+    MEN = "men"
+    SOZ = "soz"
+    NK = "nk"
+    FK = "fk"
+    LP = "lp"
+    EP = "ep"
+    MP = "mp"
+
+    # char data names
+    NAME = "name"
+    SPECIES = "species"
+    ORIGIN = "origin"
+    CONCEPT = "concept"
+    PLAYER = "player"
+    HEIGHT = "height"
+    WEIGHT = "weight"
+    AGE = "age"
+    GENDER = "gender"
+    HAIR = "hair"
+    EYES = "eyes"
+    SKIN = "skin"
+    SKIN_TYPE = "skintype"
+
+    # edit modes
+    GENERATION = "generation"
+    EDIT = "edit"
+    SIMULATION = "simulation"
+    VIEW = "view"
+    ON = "on"
+    OFF = "off"
+
+    # log names
+    CREATED = "created"
+    INITIAL_XP = "init_xp"
+    STARTING_CAPITAL = "init_money"
+    LOADED = "loaded"
+    SAVED = "saved"
+    SWITCHED_EDIT_MODE = "editmode"
+    SWITCHED_XP_MODE = "xpmode"
+    SWITCHED_MONEY_MODE = "moneymode"
+    UPDATED = "updated"
+    ADDED = "added"
+    REMOVED = "removed"
+    TRAIT_AMPLIFIED = "amplified"
+    TRAIT_REDUCED = "reduced"
+    ITEM_DESTROY = "destroyed"
+    ITEM_SELL = "sold"
+    ITEM_SPLIT = "split"
+    ITEM_CONDENSED = "joined"
+    ITEM_ROTATECHAMBER = "rotate_chamber"
+    ITEM_BAG = "bag"
+    ITEM_PACKED = "packed"
+    ITEM_UNPACKED = "unpacked"
+    ITEM_EQUIP = "equipped"
+    ITEM_UNEQUIP = "unequipped"
+    ITEM_DESCRIPTION = "description"
+    ITEM_RENAMED = "renamed"
+    ITEM_REPAIRED = "repaired"
+    ITEM_DAMAGED = "damaged"
 
 
 class Values:
@@ -1449,7 +1500,6 @@ class ItemTypes:
     OPTION_SIZE = "size"
     OPTION_VARIANT = "variant"
 
-
 class TraitGroups:
 
     BODY = "body"
@@ -1466,6 +1516,8 @@ class TraitGroups:
     XS = "xs"
 
 
+
+
 """
 # this class handles character XML data names
 class Character:
@@ -1480,19 +1532,6 @@ class Character:
     LP = "lp"
 
     # data
-    NAME = "name"
-    SPECIES = "species"
-    ORIGIN = "origin"
-    CONCEPT = "concept"
-    PLAYER = "player"
-    HEIGHT = "height"
-    WEIGHT = "weight"
-    AGE = "age"
-    GENDER = "gender"
-    HAIR = "hair"
-    EYES = "eyes"
-    SKIN = "skin"
-    SKIN_TYPE = "skintype"
 """
 
 

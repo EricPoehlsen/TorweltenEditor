@@ -7,6 +7,7 @@ from inventoryeditor import InventoryEditor
 import config
 
 it = config.ItemTypes()
+cd = config.CharData()
 msg = config.Messages()
 colors = config.Colors()
 
@@ -250,7 +251,7 @@ class EquipmentScreen(tk.Frame):
         # update the account and xp ..
         if change != 0:
             self.char.updateAvailableXP(-change)
-            self.char.updateAccount(change*1000, reason=msg.CHAR_STARTING_CAPITAL)
+            self.char.updateAccount(change*1000, reason=cd.STARTING_CAPITAL)
         account.set("initial", str(new_value))
 
         # display the value ...

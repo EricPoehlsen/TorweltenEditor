@@ -4,6 +4,7 @@ from tooltip import ToolTip
 from PIL import ImageTk
 
 msg = config.Messages()
+cd = config.CharData()
 # Display additional information about selected traits ... # #
 
 
@@ -257,9 +258,9 @@ class TraitInfo(tk.Toplevel):
         if new_xp == 0:
             self.removeTrait()
         elif abs(new_xp) > abs(cur_xp):
-            self.char.logEvent(tag=self.char_trait, op=msg.CHAR_TRAIT_AMPLIFIED)
+            self.char.logEvent(tag=self.char_trait, op=cd.TRAIT_AMPLIFIED)
         else:
-            self.char.logEvent(tag=self.char_trait, op=msg.CHAR_TRAIT_REDUCED)
+            self.char.logEvent(tag=self.char_trait, op=cd.TRAIT_REDUCED)
 
     def finalize(self):
         """ Called at the end of layout to set scroll area"""

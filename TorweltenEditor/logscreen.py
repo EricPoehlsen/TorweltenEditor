@@ -2,7 +2,7 @@ import tk_ as tk
 from PIL import ImageTk
 import config
 msg = config.Messages()
-
+cd = config.CharData()
 
 class LogScreen(tk.Frame):
     """ The log screen displays the character edit history 
@@ -56,7 +56,7 @@ class LogScreen(tk.Frame):
             x = 40
             anchor = tk.NW
             if element == "xp":
-                if op == msg.CHAR_UPDATED:
+                if op == cd.UPDATED:
                     event_string = self.displayXP(event)
                     linebreak = False
                     x = 35
@@ -110,7 +110,7 @@ class LogScreen(tk.Frame):
         delta = event.get("mod", "0")
         event_string = delta
         op = event.get("op")
-        if op == msg.CHAR_INITIAL_XP:
+        if op == cd.INITIAL_XP:
             event_string = msg.LOG_INITIAL_XP + event_string
         return event_string
 
@@ -118,11 +118,11 @@ class LogScreen(tk.Frame):
     def displayCharacter(event):
         event_string = ""
         op = event.get("op")
-        if op == msg.CHAR_LOADED:
+        if op == cd.LOADED:
             return msg.LOG_CHAR_LOADED
-        if op == msg.CHAR_SAVED:
+        if op == cd.SAVED:
             return msg.LOG_CHAR_SAVED
-        if op == msg.CHAR_CREATED:
+        if op == cd.CREATED:
             return msg.LOG_CHAR_CREATED
         return event_string
 
@@ -143,9 +143,9 @@ class LogScreen(tk.Frame):
 
         event_string = modes[mode]
 
-        if op == msg.CHAR_SWITCHED_XP_MODE:
+        if op == cd.SWITCHED_XP_MODE:
             event_string = event_string.format(type=msg.LOG_FREE_XP)
-        if op == msg.CHAR_SWITCHED_MONEY_MODE:
+        if op == cd.SWITCHED_MONEY_MODE:
             event_string = event_string.format(type=msg.LOG_FREE_MONEY)
 
         return event_string
@@ -166,13 +166,13 @@ class LogScreen(tk.Frame):
         name = event.get("name")
 
         event_string = ""
-        if op == msg.CHAR_ADDED:
+        if op == cd.ADDED:
             event_string = msg.LOG_TRAIT_ADDED
-        if op == msg.CHAR_TRAIT_AMPLIFIED:
+        if op == cd.TRAIT_AMPLIFIED:
             event_string = msg.LOG_TRAIT_AMPLIFIED
-        if op == msg.CHAR_TRAIT_REDUCED:
+        if op == cd.TRAIT_REDUCED:
             event_string = msg.LOG_TRAIT_REDUCED
-        if op == msg.CHAR_REMOVED:
+        if op == cd.REMOVED:
             event_string = msg.LOG_TRAIT_REMOVED
 
         event_string = event_string.format(name=name)
@@ -184,11 +184,11 @@ class LogScreen(tk.Frame):
         id = event.get("id")
 
         event_string = ""
-        if op == msg.CHAR_ADDED:
+        if op == cd.ADDED:
             event_string = msg.LOG_SKILL_ADDED
-        if op == msg.CHAR_UPDATED:
+        if op == cd.UPDATED:
             event_string = msg.LOG_SKILL_UPDATED
-        if op == msg.CHAR_REMOVED:
+        if op == cd.REMOVED:
             event_string = msg.LOG_SKILL_REMOVED
         name = event.get("name")
         value = event.get("value", "0")
@@ -218,9 +218,9 @@ class LogScreen(tk.Frame):
         name = event.get("name", "")
         value = event.get("value", "")
         event_string = ""
-        if op == msg.CHAR_ADDED:
+        if op == cd.ADDED:
             event_string = msg.LOG_DATA_ADDED
-        if op == msg.CHAR_UPDATED:
+        if op == cd.UPDATED:
             event_string = msg.LOG_DATA_UPDATED
             if value == "":
                 event_string = msg.LOG_DATA_REMOVED
@@ -242,17 +242,17 @@ class LogScreen(tk.Frame):
         id = int(str(event.get("id")))
         quantity = int(event.get("quantity"))
         event_string = ""
-        if op == msg.CHAR_ADDED:
+        if op == cd.ADDED:
             new = event.get("mod")
             event_string = msg.LOG_ITEM_ADDED.format(
                 new=new,
                 name=name,
                 total=quantity
             )
-        elif op == msg.CHAR_ITEM_RENAMED:
+        elif op == cd.ITEM_RENAMED:
             old_name = event.get("mod")
             event_string = msg.LOG_ITEM_RENAMED % (old_name, name)
-        elif op == msg.CHAR_ITEM_PACKED:
+        elif op == cd.ITEM_PACKED:
             bag_id = event.get("mod")
             bag_item = self.char.getItemById(bag_id)
             if bag_item is not None:
@@ -263,7 +263,7 @@ class LogScreen(tk.Frame):
                 name=name,
                 container=bag_name
             )
-        elif op == msg.CHAR_ITEM_UNPACKED:
+        elif op == cd.ITEM_UNPACKED:
             bag_id = event.get("mod")
             bag_item = self.char.getItemById(bag_id)
             if bag_item is not None:
@@ -274,41 +274,41 @@ class LogScreen(tk.Frame):
                 )
             else:
                 display = False
-        elif op == msg.CHAR_ITEM_EQUIP:
+        elif op == cd.ITEM_EQUIP:
             event_string = msg.LOG_ITEM_EQUIPPED.format(
                 name=name
             )
-        elif op == msg.CHAR_ITEM_REPAIRED:
+        elif op == cd.ITEM_REPAIRED:
             event_string = msg.LOG_ITEM_REPAIRED.format(
                 name=name,
                 value=mod
             )
-        elif op == msg.CHAR_ITEM_SPLIT:
+        elif op == cd.ITEM_SPLIT:
             event_string = msg.LOG_ITEM_SPLIT.format(
                 name=name,
                 quantity = quantity
             )
-        elif op == msg.CHAR_ITEM_SPLIT:
+        elif op == cd.ITEM_SPLIT:
             event_string = msg.LOG_ITEM_JOIN.format(
                 name=name,
                 quantity=quantity
             )
-        elif op == msg.CHAR_ITEM_SELL:
+        elif op == cd.ITEM_SELL:
             event_string = msg.LOG_ITEM_SELL.format(
                 name=name,
                 quantity=quantity
             )
-        elif op == msg.CHAR_ITEM_DESTROY:
+        elif op == cd.ITEM_DESTROY:
             event_string = msg.LOG_ITEM_DESTROY.format(
                 name=name,
                 quantity=quantity
             )
-        elif op == msg.CHAR_ITEM_DAMAGED:
+        elif op == cd.ITEM_DAMAGED:
             event_string = msg.LOG_ITEM_DAMAGED.format(
                 name=name,
                 value=mod
             )
-        elif op == msg.CHAR_ITEM_BAG or op is None:
+        elif op == cd.ITEM_BAG or op is None:
             display = False
         else:
             event_string = name + " " + str(quantity) + " " + str(op)
@@ -325,7 +325,7 @@ class LogScreen(tk.Frame):
             amount = float(amount)
             amount_str = "{:+.2f}".format(amount)
 
-        if op == msg.CHAR_STARTING_CAPITAL:
+        if op == cd.STARTING_CAPITAL:
             if amount > 0:
                 event_string = msg.LOG_ACCOUNT_CAP_INC
             else:
