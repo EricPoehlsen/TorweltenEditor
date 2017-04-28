@@ -99,7 +99,6 @@ class SkillSelector(tk.Toplevel):
             state=tk.DISABLED
         )
         self.new_skill_entry.bind("<FocusIn>", self._skillEntryFocus)
-        self.new_skill_entry.bind("<FocusOut>", self._skillEntryNoFocus)
 
         self.new_skill_entry_focus = False
         self.new_skill_entry.pack(fill=tk.X)
@@ -301,11 +300,7 @@ class SkillSelector(tk.Toplevel):
         if new_name == msg.SS_NEW_SKILL:
             self.new_skill_name.set("")
 
-    def _skillEntryNoFocus(self, event):
-        self.new_skill_entry_focus = False
-        self.list_box.config(state=tk.NORMAL)
-
-    # checks the name of a potential skill 
+    # checks the name of a potential skill
     def _newSkillName(self):
         """ this method checks the entered name for a new skill. 
         In case it contains illegal chars or is a duplicate of an existing name

@@ -15,7 +15,6 @@ class Settings(object):
         try:
             self.xml_settings = et.parse("settings.xml")
         except FileNotFoundError:
-            print("new")
             self.new()
 
     def save(self):
@@ -69,3 +68,4 @@ class Settings(object):
         else:
             if element is not None:
                 data.remove(element)
+

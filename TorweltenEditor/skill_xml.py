@@ -1,6 +1,4 @@
-import os
 import xml.etree.ElementTree as et
-import tkinter as tk
 
 
 class SkillTree(object):
@@ -22,7 +20,7 @@ class SkillTree(object):
                 else:
                     tree = None
         except (FileNotFoundError, et.ParseError) as e:
-            print(str(e))
+            print("Error load skill tree", filename, str(e))
         return tree
 
     def addToTree(self, filename=None):
@@ -58,8 +56,9 @@ class SkillTree(object):
                 self.sortSkills(relevant_group)
 
     def buildTree(self):
+        """ build the skill tree """
+
         self.xml_skills = self.loadTree("data/skills_de.xml")
-        self.addToTree("data/own_skills.xml")
         active_expansions = self.settings.getExpansions()
         for expansion in active_expansions:
             self.addToTree("expansion/"+expansion)
@@ -87,8 +86,17 @@ class SkillTree(object):
         return result
 
     def getSkill(self, name):
+        """ Retrieve a skill by name """
+
         skill = self.xml_skills.find(".//skill[@name='"+name+"']") 
         return skill
+
+    def getSkillById(self, id):
+        """ Retrieve a skill by id"""
+
+        id = str(id)
+        xml_skill = self.xml_skills.find(".//skill[@id='"+str(id)+"']")
+        return xml_skill
 
     def getChildren(self, id):
         """ Gets the children or siblings of a skill:
@@ -111,8 +119,9 @@ class SkillTree(object):
         skills = self.xml_skills.findall(".//skill[@parent='"+search_id+"']")
         return skills
 
-    # this creates a new skill and stores it in the skill
     def newSkill(self, name, origin):
+        """ Create a new skill and store it within the local skill expansion."""
+
         origin = self.getSkill(origin)
 
         origin_spec = int(origin.get("spec"))
@@ -152,39 +161,58 @@ class SkillTree(object):
         )
         relevant_group.append(skill)
         self.sortSkills(relevant_group)
-        self.updateLocalSkills(skill)
+        self.addToLocalSkills(skill)
 
-    def updateLocalSkills(self,skill):
-        filename = "data/own_skills.xml"
-        local = self.loadTree(filename)
+    def addToLocalSkills(self, skill):
+        """ Adds the given skill to the local skills expansion 
+        
+        Note:
+            A new local skills expansion will be created if it does not exist.
+            The local skills expansion will be activated! 
+        
+        """
+
+        filename = "expansion/local_skills.xml"
+        local = None
+        with open(filename, mode="rb") as file:
+            local = et.parse(filename)
         if local is not None:
             root = local.getroot()
-            root.append(skill)
+            skills = root.find(".//skills")
+            skills.append(skill)
         else:
-            root = et.Element("skills")
-            root.append(skill)
+            root = et.Element("expansion", {"name": "local"})
+            et.SubElement(root, "meta", {"lang": "*"})
+            skills = et.SubElement(root, "skills")
+            skills.append(skill)
             local = et.ElementTree(root)
-        with open(filename, mode="wb") as file:
+
+        with open(filename, 'wb') as file:
             local.write(file, encoding="utf-8", xml_declaration=True)
+            self.settings.updateExpansions(filename.split("/")[1], include=True)
+            self.settings.save()
 
-    # returns a single skill element by Id
-    def getSkillById(self, id):
-        id = str(id)
-        xml_skill = self.xml_skills.find(".//skill[@id='"+str(id)+"']")
-        return xml_skill
+    @staticmethod
+    def sortSkills(group):
+        """ sorting a group of skills in place """
 
-    def sortSkills(self, group):
         skill_list = []
         for skill in group:
             id = skill.get("id")
             name = skill.get("name")
-            skill_list.append((id,name, skill))
+            skill_list.append((id, name, skill))
         skill_list.sort()
         # overwriting the skills ...
         group[:] = [new_skill[-1] for new_skill in skill_list]
 
-    # Writing parents based on the ID of a skill. 
-    def repairParents(self):
+    def repairParents(self, filename):
+        """ rewrites the parents of the skills based on their id
+        
+        Warning: 
+            This is a utility method which pretty agressivly rewrites parents
+            of skills and outputs the result to the specified file. 
+        """
+
         skills = self.xml_skills.findall(".//skill")
         for skill in skills:
             id = skill.get("id")
@@ -199,5 +227,5 @@ class SkillTree(object):
                 parent = id[:4] + "00"
                 skill.set("parent", parent)
 
-        with open("data/skill.xml", mode="wb") as file:
+        with open(filename, mode="wb") as file:
             self.xml_skills.write(file, encoding="utf-8", xml_declaration=True)

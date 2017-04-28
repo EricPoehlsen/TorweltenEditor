@@ -73,7 +73,6 @@ class SettingScreen(tk.Frame):
         self.scanDataFiles()
         frame = tk.LabelFrame(parent, text=msg.SET_EXPANSIONS)
         cur_selection = self.settings.getExpansions()
-        print(cur_selection)
         for name, lang, file in self.data["expansions"]:
             self.data["exp_"+file] = var = tk.IntVar()
             button = tk.Checkbutton(
@@ -85,6 +84,7 @@ class SettingScreen(tk.Frame):
             )
             var.set(0)
             if file in cur_selection:
+
                 var.set(1)
             button.pack(anchor=tk.W, expand=1)
         return frame
@@ -114,7 +114,7 @@ class SettingScreen(tk.Frame):
                             lang = meta.get("lang")
                             self.data["expansions"].append((name, lang, file))
                 except et.ParseError:
-                    print(file + "error")
+                    print("Parse Error - Expansion: ", file)
 
     def updateDataSources(self):
         for expansion in self.data["expansions"]:
@@ -129,7 +129,6 @@ class SettingScreen(tk.Frame):
         """ saving settings """
 
         new_initial_xp = self.data["init_xp"].get()
-        self.settings.setInitialXP(new_initial_xp)
         self.updateDataSources()
-
+        self.settings.setInitialXP(new_initial_xp)
         self.settings.save()
