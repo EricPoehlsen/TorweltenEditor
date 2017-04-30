@@ -857,7 +857,7 @@ class Character(object):
 
             self.logEvent(new_item, op=cd.ITEM_SPLIT)
             self.logEvent(item)  # for integrity reasons
-
+            self.unpackItem(new_item)
             return item_quantity, new_id
 
     def condenseItem(self, item):

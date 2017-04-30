@@ -728,15 +728,15 @@ Der Charakter reagiert möglicherweise mit Vorurteilen oder Angst auf Technologi
 
 <trait name = "Gesellschaftlicher Makel" group = "social" xp = "-1">
 <specification name = "Bezeichnung"/>
-<variable id = "1" name = "Auswirkung" values = "geringfügig,schwerwiegend,bedrohlich,lebensbedrohlich" xp = "-1,-3,-6,-12"/>
+<variable id = "1" name = "Auswirkung" values = "geringfügig,schwerwiegend,bedrohlich,lebensbedrohlich" xp = "-1,-3,-6,-12" />
 <description>Der Charakter ist aus irgend einem Grund in seiner gewöhnlichen Gesellschaft nicht akzeptiert. Das kann verschiedenste Gründe haben. Die Höhe der Punkte für diesen Nachteil hängt davon ab, wie stark der Charakter in der Gesellschaft zurückgesetzt wird.</description>
 <description>Der Nachteil kann von 'vernachlässigbar' (ein Mann auf einer matriarchischen Welt) für 1 Punkt bis hin zu lebensbedrohlich (ein Agent hinter feindlichen Linien) für 12 Punkte gehen.</description>
 </trait>
 
 <trait name = "Schulden" group = "financial" xp = "-1">
 <specification name = "Gläubiger"/>
-<variable id = "1" name = "Betrag" values = "2000,4000,6000,8000,10000,20000" xp = "-1,-2,-3,-4,-5,-10"/>
-<variable>Durch diesen Nachteil bekommst du kein Geld, aber du kannst du Kosten deines Startkapitals reduzieren. Natürlich kann man mehr Schulden haben als Startkapital.</variable>
+<variable id = "1" name = "Betrag" values = "2000,4000,6000,8000,10000,20000" xp = "-1,-2,-3,-4,-5,-10" />
+<description>Durch diesen Nachteil bekommst du kein Geld, aber du kannst du Kosten deines Startkapitals reduzieren. Natürlich kann man mehr Schulden haben als Startkapital.</description>
 </trait>
 
 <trait name = "Regelmäßiges Einkommen" group = "financial" xp = "1">

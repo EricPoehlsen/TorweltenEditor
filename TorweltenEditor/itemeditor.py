@@ -195,8 +195,16 @@ class ItemEditor(tk.Toplevel):
             weight_str = str(weight) + msg.IE_G 
 
         weight_str = msg.IE_WEIGHT + weight_str
-        
+
+        # check for limit:
+        limit = 0
+        container = self.item.find("container")
+        if container is not None:
+            limit = int(container.get("limit", "0"))
+
         weight_label = tk.Label(item_body, text=weight_str, anchor=tk.W)
+        if weight > limit > 0:
+            weight_label.config(**config.Style.RED)
         weight_label.pack(fill=tk.X)
 
         price = round(self.item_price * self.item_quantity, 2)

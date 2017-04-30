@@ -643,7 +643,7 @@ class CharScreen(tk.Frame):
         """ Opening a window to add character traits """
 
         if self.open_windows["trait"] != 0:
-            self.open_windows["trait"].trait_editor.focus()
+            self.open_windows["trait"].focus()
         else:
             # first check if the character may be edited
             edit_mode = self.char.getEditMode()
