@@ -534,8 +534,19 @@
 		</item>
 	</group>
 
-	<group name = "Sonstige Nahkampfwaffen" parent = "3" id = "3-4">
-		<item name = "Peitsche" weight = "300" price = "100" type = "other_melee" parent = "3-4">
+    <group name = "Natürliche Waffen" parent= "3" id = "3-4">
+        <item name = "Raubtiergebiss" weight = "0" price = "0" avail = "0" parent = "3-4" type = "natural">
+            <damage value="1/-1" />
+            <description>Diese Waffe repräsentiert ein natürliches Raubtiergebiss und sollte nur ins Inventar genommen werden, wenn der Charakter einen entsprechenden Vorteil besitzt.</description>
+        </item>
+        <item name = "Krallen" weight = "0" price = "0" avail = "0" parent = "3-4" type = "natural">
+            <damage value="1/-1" />
+            <description>Diese Waffe repräsentiert ein natürliche Krallen und sollte nur ins Inventar genommen werden, wenn der Charakter einen entsprechenden Vorteil besitzt.</description>
+        </item>
+    </group>
+
+	<group name = "Sonstige Nahkampfwaffen" parent = "3" id = "3-5">
+		<item name = "Peitsche" weight = "300" price = "100" type = "other_melee" parent = "3-5">
 			<damage value = "1/-1"/>
 			<description>Peitsche</description>
 		</item>
@@ -688,26 +699,31 @@
 	
 	<group name = "Waffenzubehör" parent = "4" id = "4-8">
 		<item name = "Pistolenmagazin, kurz" price = "10" weight = "100" type = "clip" parent = "4-8">
+            <description>Ein kurzes Pistolenmagazin mit einer Kapazität von bis zu acht Patronen</description>
 			<container size = "8" />
 			<option name = "caliber" values = ".22 long,.38 short,.38 Special,9x19 mm,.357 ParaTec,.500 OMG"/>
 		</item>
 
 		<item name = "Pistolenmagazin, lang" price = "15" weight = "150" type = "clip" parent = "4-8">
-			<container size = "15" />
+			<description>Das lange Pistolenmagazin bietet Platz für bis zu 15 Patronen des gewählten Kalibers</description>
+            <container size = "15" />
 			<option name = "caliber" values = ".22 long,.38 short,.38 Special,9x19 mm,.357 ParaTec,.500 OMG"/>
 		</item>
 
 		<item name = "Gewehrmagazin, kurz" price = "15" weight = "100" type = "clip" parent = "4-8">
+            <description>Ein kurzes Magazin für Jagdgewehre, kann mit bis zu fünf Patronen des gewählten Kalibers bestückt werden</description>
 			<container size = "5" />
 			<option name = "caliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW,.50 OMG"/>
 		</item>
 
 		<item name = "Gewehrmagazin, lang" price = "20" weight = "100" type = "clip" parent = "4-8">
+            <description>Dieses Magazin wird vornehmlich für automatische Waffen, z.B. Sturmgewehre verwendet und kann mit bis zu 30 Patronen gefüllt werden.</description>
 			<container size = "30" />
 			<option name = "caliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW,.50 OMG"/>
 		</item>
 
 		<item name = "Gurt" price = "15" weight = "100" type = "clip" parent = "4-8">
+            <description>Der Gurt wird für Maschinengewehre verwendet.</description>
 			<container size = "100" />
 			<option name = "caliber" values = "5.56x45mm NA,.223 SMI,7.62x51mm NA,.308FuDW,.50 OMG"/>
 		</item>
