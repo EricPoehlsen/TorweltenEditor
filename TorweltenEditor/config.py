@@ -35,12 +35,20 @@ EWT = [[2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,0.5],  # 1
 
 
 class Core:
-    MAX_ATTRIBUTE = 11
-    MIN_ATTRIBUTE = 0
-    MAX_SKILL = 3
-    MIN_SKILL = 3
+    """ Defines Core values for the game mechanics """
 
-# THIS CLASS CONTAINS MESSAGES TO BE DISPLAYED ON THE UI OR PDF EXPORTS
+    # Attribte and skill ranges
+    MIN_ATTRIBUTE = 0
+    MAX_ATTRIBUTE = 11
+    MIN_SKILL = 0
+    MAX_SKILL = 3
+
+    # Weight limits (factor to PHY value)
+    WEIGHT_LIGHT = 1
+    WEIGHT_MARCH = 5
+    WEIGHT_HEAVY = 10
+    WEIGHT_LIMIT = 20
+
 class Messages:
     """ Messages provides a variety of strings for the UI and PDF Export """
 
@@ -105,6 +113,7 @@ class Messages:
     MENU_EDITMODE = "Bearbeitungsmodus wechseln"
     MENU_IMPROVE = "Charakter steigern ..."
     MENU_EWT = "EWT Tabelle"
+    MENU_MOVEMENT = "Charakterbewegung"
     MENU_SETTINGS = "Einstellungen"
     MENU_RELOAD_DATA = "XMLs neu laden"
     MENU_CHAR_LOG = "Charakter Log"
@@ -893,6 +902,12 @@ class Messages:
     SE_DEL_TITLE = "Kontakt löschen ..."
     SE_DEL_TEXT = "Soll der Kontakt {name}wirklich gelöscht werden?"
 
+    # MOVEMENT SCREEN
+    MV_WEIGHT_LIGHT = "Leichtes Gepäck"
+    MV_WEIGHT_MARCH = "Marschgepäck"
+    MV_WEIGHT_HEAVY = "Schwer Beladen"
+    MV_WEIGHT_LIMIT = "Tragelimit"
+
     # EXPANSION SCREEN
     EX_SAVE = "Erweiterung speichern ..."
     EX_LOAD = "Erweiterung laden ..."
@@ -1401,7 +1416,7 @@ class CharData:
     #  WARNING: These parameters are used to evaluate data
     #  from XML files. Changing these will break import of
     #  templates created on other machines and will make it
-    #  impossible to import your templates on other computers!
+    #  impossible to import your files on other computers!
 
     # attributes
     PHY = "phy"

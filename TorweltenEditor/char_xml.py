@@ -327,6 +327,16 @@ class Character(object):
                 rank_tag.set("id", rank_id)
                 rank_tag.set("value", rank_value)
 
+        # get the effect
+        effect_tags = full_trait.findall("effect")
+        if effect_tags:
+            for effect in effect_tags:
+                effect_name = effect.get("name")
+                effect_factor = effect.get("factor")
+                effect_tag = et.SubElement(trait, "effect")
+                effect_tag.set("name", effect_name)
+                effect_tag.set("factor", effect_factor)
+
         # get the variables
         variable_tags = full_trait.findall("variable")
         if variable_tags:
