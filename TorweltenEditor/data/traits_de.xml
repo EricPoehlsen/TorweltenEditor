@@ -233,46 +233,54 @@ Die nachfolgende Auflistung erhebt aus diesem Grund auch keinen Anspruch auf Vol
 <description>Eine gekaufte Rüstung mag zwar ein besseres Verhältnis aus Kosten und Panzerungswert besitzen, jedoch kann man eine natürliche Panzerung nicht verlieren oder es soziale Umstände geben, die ihr Tragen unangemessen erscheinen lassen.</description>
 </trait>
 
-<trait name ="Kräftig" xp = "9" group = "body">
+<trait name ="Kräftig" xp = "1" group = "body">
 <description>Der Charakter ist besonders muskulös und athlethisch. Athletikproben werden um einen Punkt erleichtert.&#10;</description>
 <description>Der Charakter sollte ein PHY Attribut von 5 oder mehr besitzen, wenn er diesen Vorteil wählt.</description>
+<rank id ="1" name = "Rang" min = "1" max = "3" xp = "3"/>
+<effect name = "strength" factor = "1"/>
 </trait>
 
-<trait name = "Schwach" xp = "-9" group = "body">
+<trait name = "Schwach" xp = "-1" group = "body">
 <description>Die Kraft des Charakters lässt zu wünschen übrig. Athletikproben für diesen Charakter werden um 1 Punkt erschwert.&#10;</description>
 <description>Sofern die Regeloption für Traglast verwendet wird, wird der PHY-Wert für die Berechnung der Traglast um einen Punkt reduziert.&#10;Dieser Nachteil sollte nicht von Charakteren gewählt werden, die einen PHY-Wert von 5 oder mehr besitzen. Darüber hinaus, empfielt es sich, entsprechende Fertigkeiten maximal auf Rang 2 zu beherrschen.</description>
+<rank id ="1" name = "Rang" min = "1" max = "3" xp = "-3"/>
+<effect name = "strength" factor = "-1"/>
 </trait>
 
-<trait name = "Gelenkig" xp = "9" group = "body">
+<trait name = "Gelenkig" xp = "1" group = "body">
 <description>Durch diesen Vorteil ist der Charakter besonders beweglich, er kann sich durch sehr schmale Ritzen schieben. Proben bei denen es auf Gewandheit ankommt, werden um einen Punkt erleichtert.&#10;</description>
 <description>Um diesen Vorteil zu wählen, sollte der Charakter mindestens einen PHY-Wert von 5 besitzen.</description>
+<rank id ="1" name = "Rang" min = "1" max = "3" xp = "3"/>
 </trait>
 
-<trait name = "Ungelenkig" xp = "-9" group ="body">
+<trait name = "Ungelenkig" xp = "-1" group ="body">
 <description>Dieser Charakter ist eher unbeweglich und hat Schwierigkeiten mit komplexen, koordinierten Körperbewegungen. Proben, die sich um Gewandheit drehen, werden um einen Punkt erschwert.&#10;</description>
 <description>Der Charakter sollte maximal ein PHY Attribut von 4 besitzen, Fertigkeiten aus der Betroffenen Gruppe, sollten nicht über einem Wert von 2 beherrscht werden.</description>
+<rank id ="1" name = "Rang" min = "1" max = "3" xp = "-3"/>
 </trait>
 
-<trait name ="Fingerfertig" xp = "9" group = "body">
+<trait name ="Fingerfertig" xp = "1" group = "body">
 <description>Durch diesen Vorteil hat der Charakter besonders flinke Finger und eine gute Hand-Auge-Koordination. Proben, die sich auf Fingerfertigkeit beziehen, werden um einen Punkt erleichtert.&#10;</description>
 <description>Da die Fingerfertigkeit eher ein kleiner Aspekt der gesamten körperlichen Präsenz ist, ergeht hier keine zwingende Empfehlung, dass der PHY-Wert mindestens 5 betragen sollte.</description>
+<rank id ="1" name = "Rang" min = "1" max = "3" xp = "3"/>
 </trait>
 
-<trait name = "Grobmotoriker" xp ="-9" group = "body">
+<trait name = "Grobmotoriker" xp ="-1" group = "body">
 <description>Dieser Nachteil ist für Charaktere gedacht, die sich regelmäßig die Finger verknoten. Fingerfertigkeitsproben sind um einen Punkt erschwert.&#10;</description>
 <description>Ebenso gibt es auch keinen Grund, diesen Nachteil von einem maximalen PHY-Wert abhängig zu machen, allerdings wäre zu empfehlen, keine Fertigkeiten aus der Fingerfertigkeitsgruppe über einem Wert von 2 zu nehmen.</description>
+<rank id ="1" name = "Rang" min = "1" max = "3" xp = "-3"/>
 </trait>
 
 <trait name = "Schnell" xp = "1" group = "body">
 <description>Der Charakter ist besonders flink. Jeder Rang in diesem Vorteil erhöht die Effektive Bewegung um 1.&#10;</description>
-<description>Der Rang in diesem Vorteil sollte das PHY-Attribut nicht übersteigen.</description>
-<rank id ="1" name = "Rang" min = "1" max = "9" xp = "3"/>
+<rank id ="1" name = "Rang" min = "1" max = "3" xp = "3"/>
+<effect name = "movement" factor = "1"/>
 </trait>
 
 <trait name ="Langsam" xp ="-1" group ="body">
 <description>Der Charakter ist eher träge unterwegs. Jeder Rang in diesem Nachteil senkt die Effektive Bewegung um 1.</description>
-<description>Durch die Wahl dieses Nachteils darf die effektive Bewegung des Charakters nicht unter 1 sinken.</description>
-<rank id ="1" name = "Rang" min = "1" max = "9" xp = "-3"/>
+<rank id ="1" name = "Rang" min = "1" max = "3" xp = "-3"/>
+<effect name = "movement" factor = "-1"/>
 </trait>
 
 <trait name = "Eiserner Lebenswille" xp ="1" group = "body">
