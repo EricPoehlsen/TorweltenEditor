@@ -10,7 +10,7 @@ import tk_ as tk
 
 msg = config.Messages()
 cd = config.CharData()
-
+core = config.Core()
 
 class CharScreen(tk.Frame):
     """ The CharScreen displays the character on the main window
@@ -81,8 +81,8 @@ class CharScreen(tk.Frame):
 
                 self.widgets[attr] = tk.Spinbox(
                     frame, 
-                    from_=0, 
-                    to=9,
+                    from_=core.MIN_ATTRIBUTE,
+                    to=core.MAX_ATTRIBUTE,
                     font=config.Style.ATTR_FONT,
                     justify=tk.CENTER,
                     textvariable=attrib_values[attr], 
