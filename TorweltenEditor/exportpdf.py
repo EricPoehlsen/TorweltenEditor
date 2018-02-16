@@ -54,7 +54,13 @@ class DisplayPdf(Thread):
 
 
 class ExportPdf:
-    # defining some constants in points ...
+    """ This generates the PDF based on the given data
+
+        filename: where to store the data
+        char: XML Character data
+        traits: XML full traits data
+        template: XML template for the PDF renderer.
+    """
 
     def __init__(self, filename, char, traits, template):
         self.char = char
@@ -91,18 +97,18 @@ class ExportPdf:
         self.save(self.pdf)
         self.display()
 
-    # begin generation of a new pdf
     def start(self):
+        """ Begins the generation of a new PDF File """
         return canvas.Canvas(self.filename, pagesize=landscape(A4))
 
-    # store page - next page
     @staticmethod
     def nextPage(canvas):
+        """ Store current page create new page """
         canvas.showPage()
 
-    # write file
     @staticmethod
     def save(canvas):
+        """ write file to disk """
         try:
             canvas.save()
         except PermissionError:
@@ -111,14 +117,17 @@ class ExportPdf:
                 msg.PDF_ERROR_TEXT
             )
 
-
-    # open pdf in os
     def display(self):
+        """ instruct the OS to display the generated PDF """
         thread = DisplayPdf(self.filename)
         thread.start()
 
-    # this renders a page template
     def renderPage(self, canvas, page):
+        """ Rendering a single page
+
+        canvas: the PDF Canvas
+        page: XML Data for the current page
+        """
         if page is not None:
             modules = page.findall("module")
             for module in modules:
@@ -156,8 +165,11 @@ class ExportPdf:
                 elif mod_type == page_data.MOD_IMAGE:
                     self.moduleImage(**kwargs)
 
-    # standard one page sheet ...
     def renderStandard(self):
+        """ This is a hard coded one page character sheet
+
+            It is used when no template is provided
+        """
         self.moduleAttributes(
             self.pdf,
             X_ORIGINS[0],
@@ -300,62 +312,71 @@ class ExportPdf:
             )
 
             # draw the vitals ...
-            vitals = ["lp", "ep", "mp"]
-            vit_width = 30
-            vit_count = 3
-            box_dims = vit_width * 1.0 / 2
-            tag_height = box_dims
-            tag_text_size = tag_height - 3
-            small_box_dims = vit_width * 1.0 / 5
-            local_height = 10.0*box_dims + tag_height + 2.0*small_box_dims + 2*padding
+            vitals = ["mp", "ep", "lp"]
+            box_dims = 12.0
+            local_height = 2.0 * box_dims + 2 * padding
+            small_box_dims = box_dims / 2.0
+            tag_text_size = box_dims - 3
 
-            for vital in vitals:
+            for v_count, vital in enumerate(vitals):
 
-                local_x = x + width - vit_count*vit_width
-                local_y = y - height
+                local_x = x + width - 9.0 * box_dims
+                local_y = y - height + v_count * (local_height + padding)
 
                 canvas.setFillColorRGB(0, 0, 0)
                 self.drawBackground(
                     canvas,
-                    local_x + box_dims / 2,
+                    local_x,
                     local_y + local_height,
-                    box_dims,
+                    9.0 * box_dims,
                     local_height,
                 )
 
-                lower_box_height = 2*padding + 2*small_box_dims + tag_height
-                self.drawBackground(
-                    canvas,
-                    local_x,
-                    local_y + lower_box_height,
-                    vit_width,
-                    lower_box_height,
-                )
-
                 canvas.setFillColorRGB(1, 1, 1)
 
-                for i in range(10):
-                    local_y = y - (height-local_height) - padding - (i+1)*box_dims
-                    canvas.roundRect(
-                        local_x+box_dims/2,
-                        local_y,
-                        box_dims,
-                        box_dims,
-                        i_rad,
-                        1,
-                        1
-                    )
-                local_y -= tag_height
-                canvas.setFillColorRGB(1, 1, 1)
+                # 6x2 array of boxes for the vital stat
+                for line in range(0,2):
+                    for col in range(1,7):
+                        box_x = (x + width) - box_dims * col
+                        box_y = local_y + padding + line * box_dims
+                        canvas.roundRect(
+                            box_x,
+                            box_y,
+                            box_dims,
+                            box_dims,
+                            i_rad,
+                            1,
+                            1
+                        )
+
+                # 6x2 array of boxes for the below zero stats
+                for line in range(0,2):
+                    for col in range(1,7):
+                        box_x = (x + width) - small_box_dims * col - 6 * box_dims
+                        box_y = local_y + padding + line * small_box_dims
+                        canvas.roundRect(
+                            box_x,
+                            box_y,
+                            small_box_dims,
+                            small_box_dims,
+                            i_rad,
+                            1,
+                            1
+                        )
+
+                # box for base value
+                box_x = x + width - 9.0 * box_dims
+                box_y = local_y + padding + box_dims
                 canvas.roundRect(
-                    local_x,
-                    local_y,
-                    vit_width,
-                    tag_height,
+                    box_x,
+                    box_y,
+                    box_dims * 3,
+                    box_dims,
                     i_rad,
                     1,
                     1
                 )
+
                 canvas.setFillColorRGB(0, 0, 0)
                 canvas.setFont(FONT_NAME, tag_text_size)
                 value = self.char.getAttributeValue(vital)
@@ -365,40 +386,26 @@ class ExportPdf:
                 else:
                     text += ":    "
                 canvas.drawCentredString(
-                    local_x + vit_width/2,
-                    local_y+2,
+                    box_x + 1.5 * box_dims,
+                    box_y + 2,
                     text
                 )
-
-                local_y -= small_box_dims
-                canvas.setFillColorRGB(1, 1, 1)
-                for col in range(5):
-                    for row in range(2):
-                        canvas.roundRect(
-                            local_x+col*small_box_dims,
-                            local_y-row*small_box_dims,
-                            small_box_dims,
-                            small_box_dims,
-                            1,
-                            1,
-                            1
-                        )
-                vit_count -= 1
 
             # draw the other attribs
             attribs = ["phy", "men", "soz", "nk", "fk"]
 
-            line_height = tag_height
             text_size = tag_text_size
-            scale_width = inner_width - 3.0*vit_width
-            att_col = 1.0 * vit_width - 5
-            val_col = (1.0 * scale_width - att_col) / 11
+            line_height = box_dims * 1.2
+            val_col = (inner_width - 2 * box_dims) / 12
+            att_col = 2.0 * box_dims
 
             # draw outer_box ...
-            bounding_width = att_col + 10.0 * val_col + bar
-            bounding_height = len(attribs) * line_height + 2*padding
+            bounding_width = width
+            bounding_height = len(attribs) * line_height + 2 * padding
+
             local_x = x
-            local_y = y - height
+            local_y = y - height + 6 * box_dims + 9 * padding
+
             attr_y = local_y + bounding_height
             canvas.setFillColorRGB(0, 0, 0)
             self.drawBackground(
@@ -413,11 +420,11 @@ class ExportPdf:
             i = len(attribs) - 1
             for attrib in attribs:
                 local_x = x + bar
-                local_y = y - height + i * line_height + padding
+                box_y = local_y + i * line_height + padding
                 canvas.setFillColorRGB(1, 1, 1)
                 canvas.roundRect(
                     local_x,
-                    local_y,
+                    box_y,
                     att_col,
                     line_height,
                     i_rad,
@@ -428,16 +435,16 @@ class ExportPdf:
                 canvas.setFillColorRGB(0, 0, 0)
                 canvas.drawCentredString(
                     local_x + att_col / 2,
-                    local_y + 3,
+                    box_y + 3,
                     attrib.upper()
                 )
 
                 attr_value = self.char.getAttributeValue(attrib)
-                for value in range(10):
+                for value in range(12):
                     canvas.setFillColorRGB(1, 1, 1)
                     canvas.roundRect(
                         local_x + att_col + value*val_col,
-                        local_y,
+                        box_y,
                         val_col,
                         line_height,
                         i_rad,
@@ -448,229 +455,230 @@ class ExportPdf:
                         canvas.setFillColorRGB(0, 0, 0)
                         canvas.roundRect(
                             local_x + att_col + value*val_col + 1,
-                            local_y + 1,
+                            box_y + 1,
                             val_col - 2,
                             line_height - 2,
-                            1,
+                            i_rad,
                             0,
                             1
                         )
                 i -= 1
 
-        # draw character_data ...
-        data_list_1 = [
-            "name",
-            "species",
-            "origin",
-            "concept",
-            "player"
-        ]
-        data_list_2 = [
-            "height",
-            "weight",
-            "age",
-            "gender"
-        ]
-        data_list_3 = [
-            "hair",
-            "eyes",
-            "skin",
-            "skintype"
-        ]
+            # Render character data ...
+            data_list_1 = [
+                "name",
+                "species",
+                "origin",
+                "concept",
+                "player"
+            ]
+            data_list_2 = [
+                "height",
+                "weight",
+                "age",
+                "gender"
+            ]
+            data_list_3 = [
+                "hair",
+                "eyes",
+                "skin",
+                "skintype"
+            ]
 
-        data_names = {
-            "name": msg.NAME,
-            "species": msg.SPECIES,
-            "origin": msg.ORIGIN,
-            "concept": msg.CONCEPT,
-            "player": msg.PLAYER,
-            "height": msg.HEIGHT,
-            "weight": msg.WEIGHT,
-            "age": msg.AGE,
-            "gender": msg.GENDER,
-            "hair": msg.HAIR,
-            "eyes": msg.EYES,
-            "skin": msg.SKIN_COLOR,
-            "skintype": msg.SKIN_TYPE
-        }
+            data_names = {
+                "name": msg.NAME,
+                "species": msg.SPECIES,
+                "origin": msg.ORIGIN,
+                "concept": msg.CONCEPT,
+                "player": msg.PLAYER,
+                "height": msg.HEIGHT,
+                "weight": msg.WEIGHT,
+                "age": msg.AGE,
+                "gender": msg.GENDER,
+                "hair": msg.HAIR,
+                "eyes": msg.EYES,
+                "skin": msg.SKIN_COLOR,
+                "skintype": msg.SKIN_TYPE
+            }
 
-        # get space
-        data_height = inner_height - (6 * vit_width) - (3 * padding)
-        data_width = inner_width / 5.0
-        line_height = data_height / 5.0
+            # get space
+            line_height = box_dims * 1.2
+            data_height = 5 * line_height
+            data_width = inner_width / 5.0
 
-        # set local positions
-        local_x = x
-        local_y = y - data_height - 2*padding
-        offset = 1.5
+            # set local positions
+            local_x = x
+            local_y = y - data_height - 2*padding
+            offset = 1.5
 
-        # draw border
-        canvas.setFillColorRGB(0, 0, 0)
-        self.drawBackground(
-            canvas,
-            local_x,
-            local_y + data_height,
-            width,
-            data_height,
-        )
-
-        # draw contents ...
-        info_font = 4
-        for i in range(5):
-            local_x = x + bar
-            local_y = y - padding - (i+1)*line_height
-            # #draw the boxes ...
-            canvas.setFillColorRGB(1, 1, 1)
-            canvas.roundRect(
+            # draw border
+            canvas.setFillColorRGB(0, 0, 0)
+            self.drawBackground(
+                canvas,
                 local_x,
+                local_y + data_height,
+                width,
+                data_height,
+            )
+
+            # draw contents ...
+            info_font = 4
+            for i in range(5):
+                local_x = x + bar
+                local_y = y - padding - (i+1) * line_height
+                # #draw the boxes ...
+                canvas.setFillColorRGB(1, 1, 1)
+                canvas.roundRect(
+                    local_x,
+                    local_y,
+                    data_width*3,
+                    line_height,
+                    i_rad,
+                    1,
+                    1
+                )
+                canvas.setFillColorRGB(0, 0, 0)
+                data = data_list_1[i]
+                info_text = data_names[data]
+                data_text = self.char.getData(data)
+                canvas.setFontSize(info_font)
+                canvas.drawString(local_x+offset, local_y+offset, info_text)
+                canvas.setFontSize(line_height-3)
+                canvas.drawString(local_x+offset*8, local_y+offset+1, data_text)
+
+                if i < 4:
+                    canvas.setFillColorRGB(1, 1, 1)
+                    canvas.roundRect(
+                        local_x+data_width*3,
+                        local_y,
+                        data_width,
+                        line_height,
+                        i_rad,
+                        1,
+                        1
+                    )
+                    canvas.roundRect(
+                        local_x+data_width*4,
+                        local_y,
+                        data_width,
+                        line_height,
+                        i_rad,
+                        1,
+                        1
+                    )
+                    canvas.setFillColorRGB(0, 0, 0)
+
+                    data = data_list_2[i]
+                    info_text = data_names[data]
+                    data_text = self.char.getData(data)
+                    canvas.setFontSize(info_font)
+                    canvas.drawString(
+                        local_x + data_width*3 + offset,
+                        local_y + offset,
+                        info_text
+                    )
+                    canvas.setFontSize(line_height-info_font-3)
+                    canvas.drawCentredString(
+                        local_x+data_width*3.5,
+                        local_y+offset+info_font+1,
+                        data_text
+                    )
+
+                    data = data_list_3[i]
+                    info_text = data_names[data]
+                    data_text = self.char.getData(data)
+                    canvas.setFontSize(info_font)
+                    canvas.drawString(
+                        local_x+data_width*4+offset,
+                        local_y+offset,
+                        info_text
+                    )
+                    canvas.setFontSize(line_height-info_font-3)
+                    canvas.drawCentredString(
+                        local_x+data_width*4.5,
+                        local_y+offset+info_font+1,
+                        data_text
+                    )
+                # xp box
+                else:
+                    canvas.setFillColorRGB(1, 1, 1)
+                    canvas.roundRect(
+                        local_x+data_width*3,
+                        local_y,
+                        data_width*2,
+                        line_height,
+                        i_rad,
+                        1,
+                        1
+                    )
+                    canvas.setFillColorRGB(0, 0, 0)
+                    canvas.setFontSize(info_font)
+                    canvas.drawString(
+                        local_x+data_width*3+offset,
+                        local_y+offset,
+                        "XP"
+                    )
+                    xp_avail = self.char.getAvailableXP()
+                    xp_total = self.char.getTotalXP()
+                    canvas.setFontSize(line_height-3)
+                    xp_text = ""
+                    if xp_avail != xp_total:
+                        xp_text = str(xp_avail) + " / " + str(xp_total)
+                    canvas.drawCentredString(
+                        local_x+data_width*4,
+                        local_y+offset+1,
+                        xp_text
+                    )
+
+            # draw image box
+            local_x = x
+            local_y = y - height
+            upper_y = local_y + 6 * box_dims + 8 * padding
+
+            bounding_width = width - 9 * box_dims - padding
+            bounding_height = upper_y - local_y
+            canvas.setFillColorRGB(0, 0, 0)
+            self.drawBackground(
+                canvas,
+                local_x,
+                local_y + bounding_height,
+                bounding_width,
+                bounding_height,
+            )
+            local_y += padding
+            canvas.setFillColorRGB(1, 1, 1)
+            img_width = bounding_width-bar
+            img_height = bounding_height-2*padding
+            canvas.roundRect(
+                local_x+bar,
                 local_y,
-                data_width*3,
-                line_height,
+                img_width,
+                img_height,
                 i_rad,
                 1,
                 1
             )
-            canvas.setFillColorRGB(0, 0, 0)
-            data = data_list_1[i]
-            info_text = data_names[data]
-            data_text = self.char.getData(data)
+
+            # get the image ...
+            image = self._loadImage("attrimg", img_width, img_height)
+
+            # draw image ...
+            if image is not None:
+                img = ImageReader(image)
+                canvas.drawImage(
+                    img,
+                    local_x+bar,
+                    local_y,
+                    width=img_width,
+                    height=img_height,
+                    mask="auto")
+
             canvas.setFontSize(info_font)
-            canvas.drawString(local_x+offset, local_y+offset, info_text)
-            canvas.setFontSize(line_height-3)
-            canvas.drawString(local_x+offset*8, local_y+offset+1, data_text)
+            canvas.setFillColorRGB(0, 0, 0)
+            canvas.drawString(local_x+bar+offset, local_y+offset, "Bild")
 
-            if i < 4:
-                canvas.setFillColorRGB(1, 1, 1)
-                canvas.roundRect(
-                    local_x+data_width*3,
-                    local_y,
-                    data_width,
-                    line_height,
-                    i_rad,
-                    1,
-                    1
-                )
-                canvas.roundRect(
-                    local_x+data_width*4,
-                    local_y,
-                    data_width,
-                    line_height,
-                    i_rad,
-                    1,
-                    1
-                )
-                canvas.setFillColorRGB(0, 0, 0)
-
-                data = data_list_2[i]
-                info_text = data_names[data]
-                data_text = self.char.getData(data)
-                canvas.setFontSize(info_font)
-                canvas.drawString(
-                    local_x + data_width*3 + offset,
-                    local_y + offset,
-                    info_text
-                )
-                canvas.setFontSize(line_height-info_font-3)
-                canvas.drawCentredString(
-                    local_x+data_width*3.5,
-                    local_y+offset+info_font+1,
-                    data_text
-                )
-
-                data = data_list_3[i]
-                info_text = data_names[data]
-                data_text = self.char.getData(data)
-                canvas.setFontSize(info_font)
-                canvas.drawString(
-                    local_x+data_width*4+offset,
-                    local_y+offset,
-                    info_text
-                )
-                canvas.setFontSize(line_height-info_font-3)
-                canvas.drawCentredString(
-                    local_x+data_width*4.5,
-                    local_y+offset+info_font+1,
-                    data_text
-                )
-            # xp box
-            else:
-                canvas.setFillColorRGB(1, 1, 1)
-                canvas.roundRect(
-                    local_x+data_width*3,
-                    local_y,
-                    data_width*2,
-                    line_height,
-                    i_rad,
-                    1,
-                    1
-                )
-                canvas.setFillColorRGB(0, 0, 0)
-                canvas.setFontSize(info_font)
-                canvas.drawString(
-                    local_x+data_width*3+offset,
-                    local_y+offset,
-                    "XP"
-                )
-                xp_avail = self.char.getAvailableXP()
-                xp_total = self.char.getTotalXP()
-                canvas.setFontSize(line_height-3)
-                xp_text = ""
-                if xp_avail != xp_total:
-                    xp_text = str(xp_avail) + " / " + str(xp_total)
-                canvas.drawCentredString(
-                    local_x+data_width*4,
-                    local_y+offset+1,
-                    xp_text
-                )
-
-        # draw image box
-        local_x = x
-        local_y = attr_y + 2*padding
-        upper_y = y - height + 2*padding + 11*box_dims + 2*small_box_dims
-
-        bounding_height = upper_y - local_y
-        canvas.setFillColorRGB(0, 0, 0)
-        self.drawBackground(
-            canvas,
-            local_x,
-            local_y + bounding_height,
-            bounding_width,
-            bounding_height,
-        )
-        local_y += padding
-        canvas.setFillColorRGB(1, 1, 1)
-        img_width = bounding_width-bar
-        img_height = bounding_height-2*padding
-        canvas.roundRect(
-            local_x+bar,
-            local_y,
-            img_width,
-            img_height,
-            i_rad,
-            1,
-            1
-        )
-
-        # get the image ...
-        image = self._loadImage("attrimg", img_width, img_height)
-
-        # draw image ...
-        if image is not None:
-            img = ImageReader(image)
-            canvas.drawImage(
-                img,
-                local_x+bar,
-                local_y,
-                width=img_width,
-                height=img_height,
-                mask="auto")
-
-        canvas.setFontSize(info_font)
-        canvas.setFillColorRGB(0, 0, 0)
-        canvas.drawString(local_x+bar+offset, local_y+offset, "Bild")
-
-        # draw title last ... for reasons :D
-        self.drawTitle(canvas, x, y, height, title)
+            # draw title last ... for reasons :D
+            self.drawTitle(canvas, x, y, height, title)
 
     def moduleNotes(
         self,
