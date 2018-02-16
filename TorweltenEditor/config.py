@@ -903,10 +903,21 @@ class Messages:
     SE_DEL_TEXT = "Soll der Kontakt {name}wirklich gelöscht werden?"
 
     # MOVEMENT SCREEN
+    MV_WEIGHT_CLASSES = "Gewichtsklassen"
     MV_WEIGHT_LIGHT = "Leichtes Gepäck"
     MV_WEIGHT_MARCH = "Marschgepäck"
     MV_WEIGHT_HEAVY = "Schwer Beladen"
     MV_WEIGHT_LIMIT = "Tragelimit"
+
+    MV_WEIGHT_RANGE = "{low},0 kg bis {high},0 kg"
+
+    MV_PHY_VALUE = "PHY Basis: "
+    MV_SPD_MOD = "Bewegungsmodifikator: "
+    MV_WGT_MOD = "Traglastmodifikator: "
+
+    MV_RUNNING = "Laufreichweite"
+    MV_JUMPING = "Sprungdistanz {}"
+
 
     # EXPANSION SCREEN
     EX_SAVE = "Erweiterung speichern ..."
