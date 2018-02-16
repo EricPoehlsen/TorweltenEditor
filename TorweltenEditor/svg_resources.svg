@@ -14,7 +14,7 @@
    viewBox="0 0 744.09448819 1052.3622047"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.92.1 r15371"
    sodipodi:docname="svg_resources.svg">
   <defs
      id="defs4" />
@@ -25,16 +25,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="208.32159"
-     inkscape:cy="699.38791"
+     inkscape:zoom="2"
+     inkscape:cx="651.12921"
+     inkscape:cy="-93.011012"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1366"
-     inkscape:window-height="745"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1920"
+     inkscape:window-height="1013"
+     inkscape:window-x="-9"
+     inkscape:window-y="1071"
      inkscape:window-maximized="1"
      inkscape:object-nodes="true" />
   <metadata
@@ -185,7 +185,7 @@
        inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:20.5813961px;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:0%;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        x="-15.659252"
        y="155.34737"
        id="text4190"
@@ -197,7 +197,7 @@
          id="tspan4192"
          x="-15.659252"
          y="155.34737"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none">1</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:20.5813961px;line-height:1.25;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none">1</tspan></text>
     <path
        sodipodi:nodetypes="ccccc"
        inkscape:connector-curvature="0"
@@ -248,12 +248,12 @@
        id="text4204"
        y="155.34737"
        x="42.765762"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:20.5813961px;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:0%;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\Eric\Documents\Visual Studio 2015\Projects\experiments\experiments\images\d2.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:20.5813961px;line-height:1.25;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none"
          y="155.34737"
          x="42.765762"
          id="tspan4206"
@@ -305,7 +305,7 @@
        inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:20.5813961px;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:0%;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        x="101.19078"
        y="155.34737"
        id="text4218"
@@ -317,7 +317,7 @@
          id="tspan4220"
          x="101.19078"
          y="155.34737"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none">3</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:20.5813961px;line-height:1.25;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none">3</tspan></text>
     <path
        sodipodi:nodetypes="ccccc"
        inkscape:connector-curvature="0"
@@ -368,12 +368,12 @@
        id="text4232"
        y="155.34737"
        x="159.6158"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:20.5813961px;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:0%;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\Eric\Documents\Visual Studio 2015\Projects\experiments\experiments\images\d4.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:20.5813961px;line-height:1.25;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none"
          y="155.34737"
          x="159.6158"
          id="tspan4234"
@@ -425,7 +425,7 @@
        inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:20.5813961px;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:0%;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        x="218.04082"
        y="155.34737"
        id="text4246"
@@ -437,7 +437,7 @@
          id="tspan4248"
          x="218.04082"
          y="155.34737"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none">5</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:20.5813961px;line-height:1.25;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none">5</tspan></text>
     <path
        sodipodi:nodetypes="ccccc"
        inkscape:connector-curvature="0"
@@ -488,12 +488,12 @@
        id="text4260"
        y="155.34737"
        x="276.46582"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:20.5813961px;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:0%;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\Eric\Documents\Visual Studio 2015\Projects\experiments\experiments\images\d6.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:20.5813961px;line-height:1.25;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none"
          y="155.34737"
          x="276.46582"
          id="tspan4262"
@@ -545,7 +545,7 @@
        inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:20.5813961px;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:0%;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        x="334.89084"
        y="155.34737"
        id="text4274"
@@ -557,7 +557,7 @@
          id="tspan4276"
          x="334.89084"
          y="155.34737"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none">7</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:20.5813961px;line-height:1.25;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none">7</tspan></text>
     <path
        sodipodi:nodetypes="ccccc"
        inkscape:connector-curvature="0"
@@ -608,12 +608,12 @@
        id="text4288"
        y="155.34737"
        x="393.31586"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:20.5813961px;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:0%;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\Eric\Documents\Visual Studio 2015\Projects\experiments\experiments\images\d8.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:20.5813961px;line-height:1.25;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none"
          y="155.34737"
          x="393.31586"
          id="tspan4290"
@@ -665,7 +665,7 @@
        inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:20.5813961px;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:0%;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        x="451.74088"
        y="155.34737"
        id="text4302"
@@ -677,7 +677,7 @@
          id="tspan4304"
          x="451.74088"
          y="155.34737"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none">9</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:20.5813961px;line-height:1.25;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none">9</tspan></text>
     <path
        sodipodi:nodetypes="ccccc"
        inkscape:connector-curvature="0"
@@ -728,12 +728,12 @@
        id="text4349"
        y="155.34737"
        x="510.16589"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:20.5813961px;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:0%;font-family:Torwelten;-inkscape-font-specification:'Torwelten Medium';text-align:center;text-anchor:middle;opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\Eric\Documents\Visual Studio 2015\Projects\experiments\experiments\images\d0.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:20.5813961px;line-height:1.25;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#000000;stroke:none"
          y="155.34737"
          x="510.16589"
          id="tspan4351"
@@ -779,5 +779,473 @@
        inkscape:export-filename="C:\Users\Eric\Documents\Visual Studio 2015\Projects\experiments\experiments\images\bullet.png"
        inkscape:export-xdpi="199.74821"
        inkscape:export-ydpi="199.74821" />
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path4485"
+       sodipodi:sides="6"
+       sodipodi:cx="82.020828"
+       sodipodi:cy="58.119045"
+       sodipodi:r1="36.896751"
+       sodipodi:r2="31.953522"
+       sodipodi:arg1="0.52359878"
+       sodipodi:arg2="1.0471976"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       transform="matrix(2.1623734,0,0,2.1647234,266.07809,183.11303)"
+       inkscape:export-xdpi="47.630001"
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_light.png" />
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path4489"
+       sodipodi:sides="6"
+       sodipodi:cx="82.020828"
+       sodipodi:cy="58.119045"
+       sodipodi:r1="36.896751"
+       sodipodi:r2="31.953522"
+       sodipodi:arg1="0.52359878"
+       sodipodi:arg2="1.0471976"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       transform="matrix(2.1623734,0,0,2.1647234,266.07809,370.61304)"
+       inkscape:export-xdpi="31.75"
+       inkscape:export-ydpi="31.75" />
+    <path
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-xdpi="47.630001"
+       transform="matrix(2.1623734,0,0,2.1647234,266.07809,558.11307)"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="true"
+       sodipodi:arg2="1.0471976"
+       sodipodi:arg1="0.52359878"
+       sodipodi:r2="31.953522"
+       sodipodi:r1="36.896751"
+       sodipodi:cy="58.119045"
+       sodipodi:cx="82.020828"
+       sodipodi:sides="6"
+       id="path4497"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       sodipodi:type="star"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex.png" />
+    <path
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.5433073;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 374.34231,282.34989 h 78.05635 l 28.38413,26.57481 -28.38413,26.57479 h -78.05635 z"
+       id="rect4499"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc" />
+    <path
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path4502"
+       d="m 374.34327,469.8499 h 82.49999 l 30.00001,26.5748 -30.00001,26.57481 h -82.49999 z"
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.5433073;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
+    <rect
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect4504"
+       width="138.18898"
+       height="53.149605"
+       x="374.34326"
+       y="657.34998" />
+    <path
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-xdpi="47.630001"
+       transform="matrix(2.1623734,0,0,2.1647234,453.57812,183.11303)"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="true"
+       sodipodi:arg2="1.0471976"
+       sodipodi:arg1="0.52359878"
+       sodipodi:r2="31.953522"
+       sodipodi:r1="36.896751"
+       sodipodi:cy="58.119045"
+       sodipodi:cx="82.020828"
+       sodipodi:sides="6"
+       id="path4510"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       sodipodi:type="star"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_heavy.png" />
+    <path
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path4512"
+       d="m 561.84233,282.34988 h 78.05639 l 28.38416,26.57481 -28.38416,26.5748 h -78.05639 z"
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.5433073;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4528"
+       d="m 651.84297,282.34969 30.00001,26.57591 -30.00001,26.57409 h 48.18972 v -53.15 z"
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.5433073;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path4530"
+       sodipodi:sides="6"
+       sodipodi:cx="82.020828"
+       sodipodi:cy="58.119045"
+       sodipodi:r1="36.896751"
+       sodipodi:r2="31.953522"
+       sodipodi:arg1="0.52359878"
+       sodipodi:arg2="1.0471976"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       transform="matrix(2.1623734,0,0,2.1647234,453.57812,370.61304)"
+       inkscape:export-xdpi="47.630001"
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_march.png" />
+    <path
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.5433073;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 561.84233,469.8499 h 78.05639 l 28.38416,26.5748 -28.38416,26.57481 h -78.05639 z"
+       id="path4532"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc" />
+    <path
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.5433073;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 651.84297,469.8497 30.00001,26.57589 -30.00001,26.57413 h 48.18972 V 469.8497 Z"
+       id="path4534"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.3837471px;line-height:1.25;font-family:'IM FELL French Canon PRO';-inkscape-font-specification:'IM FELL French Canon PRO';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       x="381.26193"
+       y="302.32742"
+       id="text5219"><tspan
+         sodipodi:role="line"
+         id="tspan5217"
+         x="381.26193"
+         y="302.32742"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Impact;-inkscape-font-specification:Impact;stroke-width:0.9375">Leichtes</tspan><tspan
+         sodipodi:role="line"
+         x="381.26193"
+         y="329.05652"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Impact;-inkscape-font-specification:Impact;stroke-width:0.9375"
+         id="tspan5221">Gepäck</tspan></text>
+    <text
+       id="text5227"
+       y="489.63812"
+       x="567.82446"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.3837471px;line-height:1.25;font-family:'IM FELL French Canon PRO';-inkscape-font-specification:'IM FELL French Canon PRO';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       xml:space="preserve"><tspan
+         id="tspan5225"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Impact;-inkscape-font-specification:Impact;stroke-width:0.9375"
+         y="489.63812"
+         x="567.82446"
+         sodipodi:role="line">Marsch-</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Impact;-inkscape-font-specification:Impact;stroke-width:0.9375"
+         y="516.36725"
+         x="567.82446"
+         sodipodi:role="line"
+         id="tspan5231">gepäck</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.3837471px;line-height:1.25;font-family:'IM FELL French Canon PRO';-inkscape-font-specification:'IM FELL French Canon PRO';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       x="567.82446"
+       y="303.26913"
+       id="text5237"><tspan
+         id="tspan5235"
+         sodipodi:role="line"
+         x="567.82446"
+         y="303.26913"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Impact;-inkscape-font-specification:Impact;stroke-width:0.9375">Schwer</tspan><tspan
+         sodipodi:role="line"
+         x="567.82446"
+         y="329.99823"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Impact;-inkscape-font-specification:Impact;stroke-width:0.9375"
+         id="tspan5241">Beladen</tspan></text>
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path5243"
+       sodipodi:sides="6"
+       sodipodi:cx="82.020828"
+       sodipodi:cy="58.119045"
+       sodipodi:r1="36.896751"
+       sodipodi:r2="31.953522"
+       sodipodi:arg1="0.52359878"
+       sodipodi:arg2="1.0471976"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       transform="matrix(2.1623734,0,0,2.1647234,453.57812,558.11303)"
+       inkscape:export-xdpi="47.630001"
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_limit.png" />
+    <path
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.5433073;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 561.84233,657.34988 h 78.05639 l 28.38416,26.57481 -28.38416,26.5748 h -78.05639 z"
+       id="path5245"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc" />
+    <path
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.5433073;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 651.84297,657.34969 30.00001,26.57591 -30.00001,26.57409 h 48.18972 v -53.15 z"
+       id="path5247"
+       inkscape:connector-curvature="0" />
+    <text
+       id="text5253"
+       y="692.89722"
+       x="567.82446"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.3837471px;line-height:1.25;font-family:'IM FELL French Canon PRO';-inkscape-font-specification:'IM FELL French Canon PRO';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       xml:space="preserve"><tspan
+         id="tspan5251"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Impact;-inkscape-font-specification:Impact;stroke-width:0.9375"
+         y="692.89722"
+         x="567.82446"
+         sodipodi:role="line">Überladen</tspan></text>
+    <path
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start.png"
+       sodipodi:type="star"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path4601"
+       sodipodi:sides="6"
+       sodipodi:cx="82.020828"
+       sodipodi:cy="58.119045"
+       sodipodi:r1="36.896751"
+       sodipodi:r2="31.953522"
+       sodipodi:arg1="0.52359878"
+       sodipodi:arg2="1.0471976"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       transform="matrix(2.1623734,0,0,2.1647234,266.07809,764.36307)"
+       inkscape:export-xdpi="47.625023"
+       inkscape:export-ydpi="47.625023" />
+    <path
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 443.15724,916.74958 h -68.81398 v -53.1496 h 68.81398"
+       id="rect4603"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start.png"
+       inkscape:export-xdpi="47.625023"
+       inkscape:export-ydpi="47.625023" />
+    <path
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 443.15723,863.59998 c 22.29435,-0.009 47.61019,-65.88336 68.81398,-65.625 v 38.1496 c -21.31547,1.18628 -47.04786,79.76563 -68.81398,80.625 z"
+       id="rect4605"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start.png"
+       inkscape:export-xdpi="47.625023"
+       inkscape:export-ydpi="47.625023" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path4611"
+       d="m 443.15723,863.59998 c 22.29435,-0.009 47.61019,-65.88336 68.81398,-65.625"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start.png"
+       inkscape:export-xdpi="47.625023"
+       inkscape:export-ydpi="47.625023" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path4613"
+       d="m 511.97121,836.12458 c -21.31547,1.18628 -47.04786,79.76563 -68.81398,80.625"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start.png"
+       inkscape:export-xdpi="47.625023"
+       inkscape:export-ydpi="47.625023" />
+    <path
+       inkscape:export-ydpi="47.625004"
+       inkscape:export-xdpi="47.625004"
+       transform="matrix(-2.1623734,0,0,2.1647234,808.2974,764.36307)"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="true"
+       sodipodi:arg2="1.0471976"
+       sodipodi:arg1="0.52359878"
+       sodipodi:r2="31.953522"
+       sodipodi:r1="36.896751"
+       sodipodi:cy="58.119045"
+       sodipodi:cx="82.020828"
+       sodipodi:sides="6"
+       id="path4616"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       sodipodi:type="star"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_land.png" />
+    <path
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.5433073;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 597.46825,863.59992 h 46.87499 l 30.00001,26.5748 -30.00001,26.57481 h -13.12499"
+       id="path4660"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_land.png"
+       inkscape:export-xdpi="47.625004"
+       inkscape:export-ydpi="47.625004" />
+    <path
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path4620"
+       d="m 631.21826,863.59998 c -22.29435,-0.009 -47.61019,-65.88336 -68.81398,-65.625 v 38.1496 c 21.31547,1.18628 47.04786,79.76563 68.81398,80.625 z"
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_land.png"
+       inkscape:export-xdpi="47.625004"
+       inkscape:export-ydpi="47.625004" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 631.21826,863.59998 c -22.29435,-0.009 -47.61019,-65.88336 -68.81398,-65.625"
+       id="path4622"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_land.png"
+       inkscape:export-xdpi="47.625004"
+       inkscape:export-ydpi="47.625004" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 562.40428,836.12458 c 21.31547,1.18628 47.04786,79.76563 68.81398,80.625"
+       id="path4624"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_land.png"
+       inkscape:export-xdpi="47.625004"
+       inkscape:export-ydpi="47.625004" />
+    <path
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-xdpi="47.630001"
+       transform="matrix(2.1623734,0,0,2.1647234,78.57809,764.36307)"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="true"
+       sodipodi:arg2="1.0471976"
+       sodipodi:arg1="0.52359878"
+       sodipodi:r2="31.953522"
+       sodipodi:r1="36.896751"
+       sodipodi:cy="58.119045"
+       sodipodi:cx="82.020828"
+       sodipodi:sides="6"
+       id="path4634"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       sodipodi:type="star"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump.png" />
+    <rect
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.5433073;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect4654"
+       width="137.06693"
+       height="38.149597"
+       x="187.40428"
+       y="797.97498"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump.png"
+       inkscape:export-xdpi="47.630001"
+       inkscape:export-ydpi="47.630001" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.5433071;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 511.97121,797.97498 v 38.1496"
+       id="path4656"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start.png"
+       inkscape:export-xdpi="47.625023"
+       inkscape:export-ydpi="47.625023" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.5433071;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 562.40428,797.97498 v 38.1496"
+       id="path4658"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_land.png"
+       inkscape:export-xdpi="47.625004"
+       inkscape:export-ydpi="47.625004" />
+    <path
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_start.png"
+       sodipodi:type="star"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path4662"
+       sodipodi:sides="6"
+       sodipodi:cx="82.020828"
+       sodipodi:cy="58.119045"
+       sodipodi:r1="36.896751"
+       sodipodi:r2="31.953522"
+       sodipodi:arg1="0.52359878"
+       sodipodi:arg2="1.0471976"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       transform="matrix(2.1623734,0,0,2.1647234,78.57809,558.11307)"
+       inkscape:export-xdpi="47.625"
+       inkscape:export-ydpi="47.625" />
+    <rect
+       y="657.34998"
+       x="254.46034"
+       height="53.149605"
+       width="70.571892"
+       id="rect4664"
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.54330683;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
+    <path
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-xdpi="47.630001"
+       transform="matrix(2.1623734,0,0,2.1647234,266.07809,970.61307)"
+       d="M 113.97435,76.567421 82.020828,95.015797 50.067304,76.567421 l 0,-36.896752 31.953524,-18.448375 31.953522,18.448376 z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="true"
+       sodipodi:arg2="1.0471976"
+       sodipodi:arg1="0.52359878"
+       sodipodi:r2="31.953522"
+       sodipodi:r1="36.896751"
+       sodipodi:cy="58.119045"
+       sodipodi:cx="82.020828"
+       sodipodi:sides="6"
+       id="path4666"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.63772976;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       sodipodi:type="star"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start_1.png" />
+    <path
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-xdpi="47.630001"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start_1.png"
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path4670"
+       d="m 443.15723,1069.85 c 22.29435,-0.01 47.61019,-65.8834 68.81398,-65.625 v 38.1496 c -21.31547,1.1863 -47.04786,79.7656 -68.81398,80.625 z"
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
+    <path
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-xdpi="47.630001"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start_1.png"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 443.15723,1069.85 c 22.29435,-0.01 47.61019,-65.8834 68.81398,-65.625"
+       id="path4672"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-xdpi="47.630001"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start_1.png"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 511.97121,1042.3746 c -21.31547,1.1863 -47.04786,79.7656 -68.81398,80.625"
+       id="path4674"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-xdpi="47.630001"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start_1.png"
+       inkscape:connector-curvature="0"
+       id="path4676"
+       d="m 511.97121,1004.225 v 38.1496"
+       style="fill:none;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       inkscape:export-ydpi="47.630001"
+       inkscape:export-xdpi="47.630001"
+       inkscape:export-filename="C:\Users\eric\PycharmProjects\TorweltenEditor\TorweltenEditor\img\hex_jump_start_1.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path4668"
+       d="m 443.15724,1122.9996 h -10e-6 V 1069.85 h 10e-6"
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
   </g>
 </svg>

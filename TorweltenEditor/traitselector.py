@@ -108,7 +108,7 @@ class TraitSelector(tk.Toplevel):
         self.list_box.bind("<<ListboxSelect>>", self.displayTraitInfo)
         self.scrollbar_select.pack(side=tk.RIGHT, fill=tk.Y)
         self.select_frame.pack(fill=tk.BOTH, expand=1)
-        self.left_frame.pack(fill=tk.Y, side=tk.LEFT, expand=1)
+        self.left_frame.pack(fill=tk.Y, side=tk.LEFT)
         
         # the info frame displays the information about the selected trait.
         self.info_frame = tk.Frame(self, width=300)
@@ -125,10 +125,10 @@ class TraitSelector(tk.Toplevel):
             font="Arial 12 bold",
             justify=tk.LEFT
         )
-        self.info_title.pack(fill=tk.X, side=tk.LEFT)
+        self.info_title.pack(fill=tk.BOTH, side=tk.LEFT, expand=1)
         self.info_title_frame.pack(fill=tk.X)
         self.info_subtrait = tk.Frame(self.info_frame)
-        self.info_subtrait.pack(fill=tk.X, expand=1)
+        self.info_subtrait.pack(fill=tk.X)
         self.info_subtrait_widgets = {}
         self.info_subtrait_vars = {}
         self.info_subtrait_tcl = {}
@@ -144,7 +144,7 @@ class TraitSelector(tk.Toplevel):
         self.info_description.config(yscrollcommand=self.info_scrollbar.set)
         self.info_scrollbar.config(command=self.info_description.yview)
         self.info_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.info_description.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.info_description.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         
         # the submit button
         self.submit = tk.Button(
@@ -152,9 +152,9 @@ class TraitSelector(tk.Toplevel):
             text=msg.TS_ADD_TRAIT,
             command=self.addTrait)
         self.submit.pack(side=tk.BOTTOM, fill=tk.X)
-        self.info_description_frame.pack(fill=tk.BOTH)
+        self.info_description_frame.pack(fill=tk.BOTH, expand=1)
 
-        self.info_frame.pack(fill=tk.BOTH, side=tk.LEFT)
+        self.info_frame.pack(fill=tk.BOTH, side=tk.LEFT, expand=1)
         
         self.listTraits()
         self.focus()

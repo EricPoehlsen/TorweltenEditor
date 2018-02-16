@@ -195,8 +195,16 @@ class ItemEditor(tk.Toplevel):
             weight_str = str(weight) + msg.IE_G 
 
         weight_str = msg.IE_WEIGHT + weight_str
-        
+
+        # check for limit:
+        limit = 0
+        container = self.item.find("container")
+        if container is not None:
+            limit = int(container.get("limit", "0"))
+
         weight_label = tk.Label(item_body, text=weight_str, anchor=tk.W)
+        if weight > limit > 0:
+            weight_label.config(**config.Style.RED)
         weight_label.pack(fill=tk.X)
 
         price = round(self.item_price * self.item_quantity, 2)
@@ -608,12 +616,11 @@ class ItemEditor(tk.Toplevel):
     # unpack an Item 
     def unpackItem(self, event, sub_item, line_widget):
         self.char.unpackItem(sub_item)
-        line_widget.destroy()
+        self._showItemInfo()
         self.app.updateItemList()
 
     def unpackProsthesis(self, sub_item):
         self.char.unpackItem(sub_item),
-
         self.close(load=self.item)
 
     def packItem(self, sub_item):
@@ -1065,7 +1072,6 @@ class ItemEditor(tk.Toplevel):
 
         self._showItemInfo()
         pass
-
 
     # this is called to close the window (or switch the item ...)
     def close(self, load=None, destroy=False):

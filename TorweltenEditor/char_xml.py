@@ -11,6 +11,7 @@ import config
 
 msg = config.Messages()
 cd = config.CharData()
+core = config.Core()
 
 class Character(object):
     """ a character object 
@@ -326,6 +327,16 @@ class Character(object):
                 rank_tag.set("id", rank_id)
                 rank_tag.set("value", rank_value)
 
+        # get the effect
+        effect_tags = full_trait.findall("effect")
+        if effect_tags:
+            for effect in effect_tags:
+                effect_name = effect.get("name")
+                effect_factor = effect.get("factor")
+                effect_tag = et.SubElement(trait, "effect")
+                effect_tag.set("name", effect_name)
+                effect_tag.set("factor", effect_factor)
+
         # get the variables
         variable_tags = full_trait.findall("variable")
         if variable_tags:
@@ -474,8 +485,8 @@ class Character(object):
         old_value = self.getAttributeValue(attr)
         new_value = old_value + 1
         # limit to 9
-        if new_value > 9:
-            new_value = 9
+        if new_value > core.MAX_ATTRIBUTE:
+            new_value = core.MAX_ATTRIBUTE
         old_xp = old_value * (old_value + 1)
         new_xp = new_value * (new_value + 1)
         xp_cost = new_xp - old_xp
@@ -502,8 +513,8 @@ class Character(object):
         new_value = old_value + 1
 
         # limit for skills is 3
-        if new_value > 3:
-            new_value = 3
+        if new_value > core.MAX_SKILL:
+            new_value = core.MAX_SKILL
         old_xp = old_value * (old_value + 1)
         new_xp = new_value * (new_value + 1)
         xp_cost = new_xp - old_xp
@@ -553,11 +564,11 @@ class Character(object):
         # within the valid bounds. 
         try:
             new_value = self.attrib_values[attrib_name].get()
-            if new_value > 9:
-                new_value = 9
+            if new_value > core.MAX_ATTRIBUTE:
+                new_value = core.MAX_ATTRIBUTE
                 self.attrib_values[attrib_name].set(new_value)
-            if new_value < 0:
-                new_value = 0
+            if new_value < core.MIN_ATTRIBUTE:
+                new_value = core.MIN_ATTRIBUTE
                 self.attrib_values[attrib_name].set(new_value)
         except ValueError:
             self.attrib_values[attrib_name].set(old_value)
@@ -655,10 +666,6 @@ class Character(object):
             cur_trait_xp = int(trait.get("xp"))
             trait.set("xp", str(cur_trait_xp + xp))
             self.updateAvailableXP(-xp)
-
-
-
-
 
     def getSkills(self):
         """ Get all character skill elements
@@ -857,7 +864,7 @@ class Character(object):
 
             self.logEvent(new_item, op=cd.ITEM_SPLIT)
             self.logEvent(item)  # for integrity reasons
-
+            self.unpackItem(new_item)
             return item_quantity, new_id
 
     def condenseItem(self, item):

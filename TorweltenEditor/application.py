@@ -16,6 +16,7 @@ from sheetlayoutscreen import LayoutScreen
 from imagescreen import ImageScreen
 from notesscreen import NotesScreen
 from expansionscreen import ExpansionScreen
+from movescreen import MoveScreen
 from aboutscreen import About
 from improvewindow import Improve
 from PIL import ImageTk, Image, PngImagePlugin
@@ -85,6 +86,10 @@ class Application(tk.Frame):
         self.toolmenu.add_command(
             label=msg.MENU_EWT,
             command=lambda: self.switchWindow(msg.MENU_EWT)
+        )
+        self.toolmenu.add_command(
+            label=msg.MENU_MOVEMENT,
+            command=lambda: self.switchWindow(msg.MENU_MOVEMENT)
         )
         self.toolmenu.add_command(
             label=msg.MENU_IMPROVE, 
@@ -328,6 +333,7 @@ class Application(tk.Frame):
             msg.MENU_CHAR_LOG: LogScreen,
             msg.MENU_ABOUT: About,
             msg.MENU_EDIT_EXPANSION: ExpansionScreen,
+            msg.MENU_MOVEMENT: MoveScreen
         }
 
         # display the new module
